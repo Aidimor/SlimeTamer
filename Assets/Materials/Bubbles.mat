@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Custom_ToonTransparent
+  m_Name: Bubbles
   m_Shader: {fileID: 4800000, guid: 59e641679f0531848bf5b807744c56c8, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -25,15 +25,15 @@ Material:
     m_TexEnvs:
     - _MainTex:
         m_Texture: {fileID: 0}
-        m_Scale: {x: 0, y: 0}
+        m_Scale: {x: 1, y: 1}
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
     - _Cutoff: 1
     - _RimPower: 8
-    - _ShadowSteps: 4
+    - _ShadowSteps: 5
     - _Transparency: 0
     m_Colors:
-    - _Color: {r: 0.3764706, g: 0.29540855, b: 0.19215687, a: 1}
-    - _RimColor: {r: 0.2735849, g: 0.2735849, b: 0.2735849, a: 1}
+    - _Color: {r: 0, g: 0.78431374, b: 0.0066701104, a: 1}
+    - _RimColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

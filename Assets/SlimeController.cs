@@ -96,11 +96,16 @@ public class SlimeController : MonoBehaviour
     public void ChangeSlime()
     {
         _mainMaterial.color = _slimeAssets[_slimeType]._mainColor;
-        for(int i = 0; i < _allParticles.Length; i++)
+        for(int i = 1; i < _allParticles.Length; i++)
         {
-            _allParticles[i].gameObject.SetActive(false);
+         
+                _allParticles[i].gameObject.SetActive(false);
         }
-        _allParticles[_slimeAssets[_slimeType]._particlesID].gameObject.SetActive(true);
+        if(_allParticles[_slimeAssets[_slimeType]._particlesID] != null)
+        {
+            _allParticles[_slimeAssets[_slimeType]._particlesID].gameObject.SetActive(true);
+        }
+
         _slimeAnimator.SetInteger("ID", _slimeType);
     
     }
@@ -109,6 +114,6 @@ public class SlimeController : MonoBehaviour
     {
         yield return new WaitForSeconds(3);
         _slimeType = 0;
-        //ChangeSlime();
+        ChangeSlime();
     }
 }
