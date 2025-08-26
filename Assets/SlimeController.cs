@@ -5,6 +5,7 @@ using UnityEngine;
 public class SlimeController : MonoBehaviour
 {
     public int _slimeType; //0 = Null, 1 = Water, 2 = Air, 3 = Earth
+    public Animator _slimeAnimator;
     public ParticleSystem[] _allParticles;
 
     [System.Serializable]
@@ -21,31 +22,74 @@ public class SlimeController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        
+        _slimeAnimator = GetComponent<Animator>();
     }
 
     // Update is called once per frame
     void Update()
     {
-     
-       if(Input.GetAxisRaw("Vertical") > 0 && !_borrar)
+
+        if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            _slimeType++;
+            _slimeType = 1;
             ChangeSlime();
-            _borrar = true;
+            StartCoroutine(ActionSlimeNumerator());
+         }
+
+
+        if (Input.GetKeyDown(KeyCode.Alpha2))
+        {
+            _slimeType = 2;
+            ChangeSlime();
+            StartCoroutine(ActionSlimeNumerator());
         }
 
-        if (Input.GetAxisRaw("Vertical") < 0 && !_borrar)
+        if (Input.GetKeyDown(KeyCode.Alpha3))
         {
-            _slimeType--;
+            _slimeType = 3;
             ChangeSlime();
-            _borrar = true;
+            StartCoroutine(ActionSlimeNumerator());
         }
 
-        if (Input.GetAxisRaw("Vertical") == 0)
-        {       
-            _borrar = false;
+        if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            _slimeType = 4;
+            ChangeSlime();
+            StartCoroutine(ActionSlimeNumerator());
         }
+
+        if (Input.GetKeyDown(KeyCode.Alpha5))
+        {
+            _slimeType = 5;
+            ChangeSlime();
+            StartCoroutine(ActionSlimeNumerator());
+        }
+
+        if (Input.GetKeyDown(KeyCode.Alpha6))
+        {
+            _slimeType = 6;
+            ChangeSlime();
+            StartCoroutine(ActionSlimeNumerator());
+        }
+
+        //if(Input.GetAxisRaw("Vertical") > 0 && !_borrar)
+        // {
+        //     _slimeType++;
+        //     ChangeSlime();
+        //     _borrar = true;
+        // }
+
+        // if (Input.GetAxisRaw("Vertical") < 0 && !_borrar)
+        // {
+        //     _slimeType--;
+        //     ChangeSlime();
+        //     _borrar = true;
+        // }
+
+        // if (Input.GetAxisRaw("Vertical") == 0)
+        // {       
+        //     _borrar = false;
+        // }
 
     }
 
@@ -57,6 +101,14 @@ public class SlimeController : MonoBehaviour
             _allParticles[i].gameObject.SetActive(false);
         }
         _allParticles[_slimeAssets[_slimeType]._particlesID].gameObject.SetActive(true);
+        _slimeAnimator.SetInteger("ID", _slimeType);
     
+    }
+
+    public IEnumerator ActionSlimeNumerator()
+    {
+        yield return new WaitForSeconds(3);
+        _slimeType = 0;
+        //ChangeSlime();
     }
 }

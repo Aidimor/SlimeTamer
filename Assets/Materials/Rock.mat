@@ -31,9 +31,9 @@ Material:
     m_Floats:
     - _Cutoff: 1
     - _RimPower: 8
-    - _ShadowSteps: 4.29
+    - _ShadowSteps: 5
     - _Transparency: 0
     m_Colors:
-    - _Color: {r: 0.26415092, g: 0.22128339, b: 0.16820931, a: 1}
+    - _Color: {r: 0.254717, g: 0.20910823, b: 0.16700785, a: 1}
     - _RimColor: {r: 1, g: 1, b: 1, a: 1}
   m_BuildTextureStacks: []

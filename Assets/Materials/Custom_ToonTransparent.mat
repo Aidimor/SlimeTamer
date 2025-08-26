@@ -34,6 +34,6 @@ Material:
     - _ShadowSteps: 4
     - _Transparency: 0
     m_Colors:
-    - _Color: {r: 0.30980393, g: 0.105882354, b: 0.20032115, a: 1}
+    - _Color: {r: 0.051886797, g: 0.56044734, b: 1, a: 0.8235294}
     - _RimColor: {r: 0.2735849, g: 0.2735849, b: 0.2735849, a: 1}
   m_BuildTextureStacks: []
