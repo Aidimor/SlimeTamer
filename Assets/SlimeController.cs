@@ -18,16 +18,41 @@ public class SlimeController : MonoBehaviour
     public SlimeAssets[] _slimeAssets;
 
     public Material _mainMaterial;
+    public Color[] _materialColors;
     public bool _borrar;
+
+
+
+    public float fillAmount;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
         _slimeAnimator = GetComponent<Animator>();
+        _mainMaterial.SetColor("_BaseColor", _materialColors[0]);
+        // Get the material instance
+
     }
 
-    // Update is called once per frame
-    void Update()
+
+
+  
+
+
+
+
+
+// Update is called once per frame
+void Update()
     {
+        // Update the fill amount in real-time
+        _mainMaterial.SetFloat("_FillAmount", fillAmount);
+    
+        _mainMaterial.SetColor("_FillColorA", _materialColors[1]);
+        _mainMaterial.SetColor("_FillColorB", _materialColors[2]);
+
 
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {

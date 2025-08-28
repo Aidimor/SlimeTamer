@@ -1,14 +1,18 @@
-Shader "Custom/ToonTransparentSlimeSmooth"
+﻿Shader "Custom/ToonTripleFillGlass"
 {
     Properties
     {
         _MainTex("Texture", 2D) = "white" {}
-        _Color("Color", Color) = (1,1,1,1)
-        _Transparency("Transparency", Range(0,1)) = 0
+        _BaseColor("Base Color", Color) = (1,1,1,1)
+        _FillColorA("Fill Color A", Color) = (0,1,0,0.8)
+        _FillColorB("Fill Color B", Color) = (1,0,0,0.8)
+        _FillAmount("Fill Amount", Range(0,1)) = 0.5
+        _FillEdge("Fill Edge Smoothness", Range(0,0.2)) = 0.05
         _ShadowSteps("Shadow Steps", Range(1,5)) = 3
         _RimColor("Rim Color", Color) = (1,1,1,1)
         _RimPower("Rim Power", Range(0.5,8)) = 3
     }
+
         SubShader
         {
             Tags { "RenderType" = "Transparent" "Queue" = "Transparent" }
@@ -40,8 +44,11 @@ Shader "Custom/ToonTransparentSlimeSmooth"
                 };
 
                 sampler2D _MainTex;
-                float4 _Color;
-                float _Transparency; // 0 = fully visible, 1 = fully invisible
+                float4 _BaseColor;
+                float4 _FillColorA;
+                float4 _FillColorB;
+                float _FillAmount;
+                float _FillEdge;
                 int _ShadowSteps;
                 float4 _RimColor;
                 float _RimPower;
@@ -66,20 +73,35 @@ Shader "Custom/ToonTransparentSlimeSmooth"
                     float stepShade = ceil(NdotL * _ShadowSteps) / _ShadowSteps;
                     stepShade = saturate(stepShade);
 
-                    // Sample texture
-                    fixed4 tex = tex2D(_MainTex, i.uv) * _Color;
+                    // Base texture
+                    fixed4 tex = tex2D(_MainTex, i.uv) * _BaseColor;
 
-                    // Bright toon effect
-                    tex.rgb *= stepShade * 1.5;
+                    // --- FILL COLORS ---
+                    fixed4 fill = tex;
+
+                    // Fill Color A (0 - 0.5)
+                    float tA = smoothstep(0.0, 0.5, i.uv.y) * smoothstep(0.0, _FillEdge, _FillAmount - i.uv.y);
+                    tA = saturate(tA * (_FillAmount <= 0.5 ? _FillAmount / 0.5 : 1.0));
+                    fill.rgb = lerp(fill.rgb, _FillColorA.rgb, tA * _FillColorA.a);
+                    fill.a = lerp(fill.a, _FillColorA.a, tA);
+
+                    // Fill Color B (0.5 - 1)
+                    if (_FillAmount > 0.5)
+                    {
+                        float tB = smoothstep(0.5, 1.0, i.uv.y) * smoothstep(0.0, _FillEdge, _FillAmount - 0.5);
+                        tB = saturate(tB * ((_FillAmount - 0.5) / 0.5));
+                        fill.rgb = lerp(fill.rgb, _FillColorB.rgb, tB * _FillColorB.a);
+                        fill.a = lerp(fill.a, _FillColorB.a, tB);
+                    }
+
+                    // Toon brightness
+                    fill.rgb *= stepShade * 1.5;
 
                     // Rim light
                     float rim = pow(1.0 - max(0, dot(i.viewDir, i.normalDir)), _RimPower);
-                    tex.rgb += _RimColor.rgb * rim;
+                    fill.rgb += _RimColor.rgb * rim;
 
-                    // Smooth transparency control
-                    tex.a *= 1.0 - _Transparency; // 0 = fully visible, 1 = fully invisible
-
-                    return tex;
+                    return fill;
                 }
                 ENDCG
             }
