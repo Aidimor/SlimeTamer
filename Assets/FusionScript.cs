@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
@@ -71,33 +71,19 @@ public class FusionScript : MonoBehaviour
                 }
 
                 if (Input.GetButtonDown("Submit"))
-                {
-                    _buttonsAvailable = false;
-                    _particleOnSlime[0].gameObject.SetActive(true);
-                    var particle1 = _particleOnSlime[0].main;
-                    var particle2 = _particleOnSlime[1].main;
-                    particle1.startColor = _elementsOptions[_onElement]._releaseParticles.main.startColor;
-                    particle2.startColor = _elementsOptions[_onElement]._releaseParticles.main.startColor;
-                    _elementsOptions[_onElement]._releaseParticles.Play();
-                    _elementsOptions[_onElement]._parent.transform.localScale = new Vector3(1f, 1f, 1);
-                    _elementChoosed[_onElement]++;          
-                    _elementSelection.Add(_onElement);
-                    _scriptSlime._materialColors[1] = _halfColors[_onElement];
-                      //  _elementsOptions[_onElement]._parent.GetComponent<Image>().color;
+                {                
+           
                     StartCoroutine(ChooseElementNumerator());
 
                 }
             }
           
 
-            if(_elementSelection.Count == 1)
-            {
-                _scriptSlime.fillAmount = Mathf.Lerp(_scriptSlime.fillAmount, 0.5f, 1 * Time.deltaTime);
-       
-            }
-     
 
-      
+       
+
+
+
 
             _fusionParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_fusionParent.GetComponent<RectTransform>().anchoredPosition,
 new Vector2(_xPoses[_totalUnlocked - 1], _fusionParent.GetComponent<RectTransform>().anchoredPosition.y), 25 * Time.deltaTime);
@@ -110,30 +96,23 @@ new Vector2(_xPoses[_totalUnlocked - 1], _fusionParent.GetComponent<RectTransfor
 
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+
+        if (_elementSelection.Count == 1)
         {
-            _panelActive = !_panelActive;
-            for (int i = 0; i < 3; i++)
-            {
-                _elementsOptions[i]._parent.SetActive(false);
-            }
-            switch (_panelActive)
-            {
-                case false:
-           
+            _scriptSlime.fillAmount = Mathf.Lerp(_scriptSlime.fillAmount, 0.5f, 1 * Time.deltaTime);
 
-              
-                    break;
-                case true:
-             
+        }
 
-                    for (int i = 0; i < _totalUnlocked; i++)
-                    {
-                        _elementsOptions[i]._parent.SetActive(true);
-                    }
-                    break;
-            }
-        
+        else if (_elementSelection.Count == 2)
+        {
+            _scriptSlime.fillAmount = Mathf.Lerp(_scriptSlime.fillAmount, 1f, 1 * Time.deltaTime);
+
+        }
+
+        else if (_elementSelection.Count == 0)
+        {
+            _scriptSlime.fillAmount = Mathf.Lerp(_scriptSlime.fillAmount, 0, 1 * Time.deltaTime);
+
         }
 
     }
@@ -149,6 +128,122 @@ new Vector2(_xPoses[_totalUnlocked - 1], _fusionParent.GetComponent<RectTransfor
 
     public IEnumerator ChooseElementNumerator()
     {
+
+        _particleOnSlime[0].gameObject.SetActive(true);
+        var particle1 = _particleOnSlime[0].main;
+        var particle2 = _particleOnSlime[1].main;
+        particle1.startColor = _elementsOptions[_onElement]._releaseParticles.main.startColor;
+        particle2.startColor = _elementsOptions[_onElement]._releaseParticles.main.startColor;
+        _elementsOptions[_onElement]._releaseParticles.Play();
+        _elementsOptions[_onElement]._parent.transform.localScale = new Vector3(1f, 1f, 1);
+        _elementChoosed[_onElement]++;
+        _elementSelection.Add(_onElement);
+        _scriptSlime._materialColors[_elementSelection.Count] = _halfColors[_onElement];
+        _buttonsAvailable = false;
+
+        for (int i = 0; i < 3; i++)
+        {
+            _elementsOptions[i]._parent.transform.localScale = new Vector3(0.6f, 0.6f, 1);
+        }
+
+        if(_elementSelection.Count == 2)
+        {
+     
+            _buttonsAvailable = false;
+            yield return new WaitForSeconds(0.5f);
+            _panelActive = false;
+            for (int i = 0; i < 3; i++)
+            {
+                _elementsOptions[i]._parent.gameObject.SetActive(false);
+            }
+            FuseElements();
+        }
+
+
+        yield return new WaitForSeconds(1);
+        _buttonsAvailable = true;
         yield return null;
     }
+
+    public void FuseElements()
+    {
+        if (_elementSelection.Count < 2)
+        {
+            Debug.Log("Need at least 2 elements to fuse!");
+            return;
+        }
+
+        int e1 = _elementSelection[0];
+        int e2 = _elementSelection[1];
+
+        // Same element → produce that element's slime
+        if (e1 == e2)
+        {
+            Debug.Log($"Created {_elementsOptions[e1]._parent.name} Slime!");
+            _scriptSlime._slimeType = e1 + 1;
+            Debug.Log(e1 + 1);
+            _elementSelection.Clear();
+            _particleOnSlime[0].gameObject.SetActive(false);
+            _scriptSlime.ChangeSlime();
+            return;
+        }
+
+        // Fusion combinations
+        if ((e1 == 2 && e2 == 1) || (e1 == 1 && e2 == 2))
+        {
+            // Earth + Wind = Sand
+            Debug.Log("Created Sand Slime!");
+            _scriptSlime._slimeType = 4;
+            _elementSelection.Clear();
+            _particleOnSlime[0].gameObject.SetActive(false);
+            _scriptSlime.ChangeSlime();
+        }
+        else if ((e1 == 1 && e2 == 0) || (e1 == 0 && e2 == 1))
+        {
+            // Wind + Water = Snow
+            Debug.Log("Created Snow Slime!");
+            _scriptSlime._slimeType = 5;
+            _elementSelection.Clear();
+            _particleOnSlime[0].gameObject.SetActive(false);
+            _scriptSlime.ChangeSlime();
+        }
+        else if ((e1 == 2 && e2 == 0) || (e1 == 0 && e2 == 2))
+        {
+            // Earth + Water = Sticky Mud
+            Debug.Log("Created Sticky Mud Slime!");
+            _scriptSlime._slimeType = 6;
+            _elementSelection.Clear();
+            _particleOnSlime[0].gameObject.SetActive(false);
+            _scriptSlime.ChangeSlime();
+        }
+     
+      
+   
+    }
+
+    public void ActivatePanel()
+    {
+        _panelActive = !_panelActive;
+        for (int i = 0; i < 3; i++)
+        {
+            _elementsOptions[i]._parent.SetActive(false);
+        }
+        switch (_panelActive)
+        {
+            case false:
+
+
+
+                break;
+            case true:
+
+
+                for (int i = 0; i < _totalUnlocked; i++)
+                {
+                    _elementsOptions[i]._parent.SetActive(true);
+                }
+                break;
+        }
+    }
+
 }

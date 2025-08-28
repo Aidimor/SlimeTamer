@@ -120,7 +120,7 @@ void Update()
 
     public void ChangeSlime()
     {
-        _mainMaterial.color = _slimeAssets[_slimeType]._mainColor;
+        //_mainMaterial.color = _slimeAssets[_slimeType]._mainColor;
         for(int i = 1; i < _allParticles.Length; i++)
         {
          
@@ -132,7 +132,10 @@ void Update()
         }
 
         _slimeAnimator.SetInteger("ID", _slimeType);
-    
+        _mainMaterial.SetColor("_BaseColor", _slimeAssets[_slimeType]._mainColor);
+        //_materialColors[0] = _slimeAssets[_slimeType]._mainColor;
+
+
     }
 
     public IEnumerator ActionSlimeNumerator()
