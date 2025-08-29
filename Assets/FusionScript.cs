@@ -31,6 +31,8 @@ public class FusionScript : MonoBehaviour
     public List<int> _elementSelection = new List<int>();
     public bool _buttonsAvailable;
     public Color[] _halfColors;
+
+    public bool _correctAction;
  
     // Start is called before the first frame update
     void Start()
@@ -128,7 +130,7 @@ new Vector2(_xPoses[_totalUnlocked - 1], _fusionParent.GetComponent<RectTransfor
 
     public IEnumerator ChooseElementNumerator()
     {
-
+     
         _particleOnSlime[0].gameObject.SetActive(true);
         var particle1 = _particleOnSlime[0].main;
         var particle2 = _particleOnSlime[1].main;
@@ -167,10 +169,11 @@ new Vector2(_xPoses[_totalUnlocked - 1], _fusionParent.GetComponent<RectTransfor
 
     public void FuseElements()
     {
+    
         if (_elementSelection.Count < 2)
         {
             Debug.Log("Need at least 2 elements to fuse!");
-            return;
+            //return;
         }
 
         int e1 = _elementSelection[0];
@@ -184,8 +187,9 @@ new Vector2(_xPoses[_totalUnlocked - 1], _fusionParent.GetComponent<RectTransfor
             Debug.Log(e1 + 1);
             _elementSelection.Clear();
             _particleOnSlime[0].gameObject.SetActive(false);
+            StartCoroutine(_scriptSlime.ActionSlimeNumerator());
             _scriptSlime.ChangeSlime();
-            return;
+            //return;
         }
 
         // Fusion combinations
@@ -196,6 +200,7 @@ new Vector2(_xPoses[_totalUnlocked - 1], _fusionParent.GetComponent<RectTransfor
             _scriptSlime._slimeType = 4;
             _elementSelection.Clear();
             _particleOnSlime[0].gameObject.SetActive(false);
+            StartCoroutine(_scriptSlime.ActionSlimeNumerator());
             _scriptSlime.ChangeSlime();
         }
         else if ((e1 == 1 && e2 == 0) || (e1 == 0 && e2 == 1))
@@ -205,6 +210,7 @@ new Vector2(_xPoses[_totalUnlocked - 1], _fusionParent.GetComponent<RectTransfor
             _scriptSlime._slimeType = 5;
             _elementSelection.Clear();
             _particleOnSlime[0].gameObject.SetActive(false);
+            StartCoroutine(_scriptSlime.ActionSlimeNumerator());
             _scriptSlime.ChangeSlime();
         }
         else if ((e1 == 2 && e2 == 0) || (e1 == 0 && e2 == 2))
@@ -214,6 +220,7 @@ new Vector2(_xPoses[_totalUnlocked - 1], _fusionParent.GetComponent<RectTransfor
             _scriptSlime._slimeType = 6;
             _elementSelection.Clear();
             _particleOnSlime[0].gameObject.SetActive(false);
+            StartCoroutine(_scriptSlime.ActionSlimeNumerator());
             _scriptSlime.ChangeSlime();
         }
      
