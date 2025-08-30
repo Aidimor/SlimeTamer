@@ -5,8 +5,10 @@ using UnityEngine;
 public class MainGameplayScript : MonoBehaviour
 {
     [SerializeField] private SlimeController _scriptSlime;
-    [SerializeField] private FusionScript _scriptFusion;
+    public FusionScript _scriptFusion;
+    public GameEventsScript _scriptEvents;
     public int _onEventID;
+    public int _rightElementID;
     public Animator _BordersAnimator;
     // Start is called before the first frame update
     void Start()

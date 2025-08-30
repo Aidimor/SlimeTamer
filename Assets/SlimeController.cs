@@ -144,17 +144,34 @@ void Update()
     {
         yield return new WaitForSeconds(0.5f);
 
-        if (_slimeType == _scriptMain._onEventID)
+        if (_slimeType == _scriptMain._rightElementID)
         {
             Debug.Log("Correcto");
+            yield return new WaitForSeconds(1);
+            switch (_scriptMain._onEventID)
+            {
+                case 1:
+                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BridgeEvent>()._activateBridge = true;
+                    yield return new WaitForSeconds(2);
+          
+                    break;
+
+            }
+            _scriptMain._BordersAnimator.SetBool("BorderOut", false);
+            yield return new WaitForSeconds(0.5f);
+            _slimeType = 0;
+            ChangeSlime();
         }
         else
         {
             _wrongParticle.Play();
             _slimeAnimator.SetTrigger("Wrong");
+            yield return new WaitForSeconds(2);
+            _scriptMain._scriptFusion.ActivatePanel();
+            _slimeType = 0;
+            ChangeSlime();
         }
-        yield return new WaitForSeconds(2);
-        _slimeType = 0;
-        ChangeSlime();
+
+
     }
 }

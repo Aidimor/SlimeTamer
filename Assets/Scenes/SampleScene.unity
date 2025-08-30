@@ -26067,6 +26067,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: caf12ca133566de4f921e9dc46bd5afc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _scriptMain: {fileID: 1220292388}
   _specialEvents:
   - {fileID: 11400000, guid: 168bd1b099ef33449b98f6a3d3f59c2d, type: 2}
   _eventosParent: {fileID: 1937603800}
@@ -40900,6 +40901,7 @@ MonoBehaviour:
   - {r: 0, g: 0.4354236, b: 1, a: 1}
   - {r: 0, g: 1, b: 0.294147, a: 1}
   - {r: 0.8207547, g: 0.38582632, b: 0, a: 1}
+  _correctAction: 0
 --- !u!4 &546274165
 Transform:
   m_ObjectHideFlags: 0
@@ -87516,6 +87518,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scriptSlime: {fileID: 2082077615}
   _scriptFusion: {fileID: 546274164}
+  _scriptEvents: {fileID: 448153738}
+  _onEventID: 0
+  _rightElementID: 0
   _BordersAnimator: {fileID: 1511142574}
 --- !u!4 &1220292389
 Transform:
@@ -113022,7 +113027,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &1511142573
 RectTransform:
   m_ObjectHideFlags: 0
@@ -158922,6 +158927,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f925dbc2f7d7d2d4c96312f643efd402, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _scriptMain: {fileID: 1220292388}
   _slimeType: 0
   _slimeAnimator: {fileID: 0}
   _allParticles:

@@ -31,25 +31,35 @@ public class GameEventsScript : MonoBehaviour
             switch (_specialEvents[0]._weakto)
             {
                 case GameEvent.WeakTo.Water:
-                    _scriptMain._onEventID = 1;
+                    _scriptMain._rightElementID = 1;
                     break;
                 case GameEvent.WeakTo.Air:
-                    _scriptMain._onEventID = 2;
+                    _scriptMain._rightElementID = 2;
                     break;
                 case GameEvent.WeakTo.Earth:
-                    _scriptMain._onEventID = 3;
+                    _scriptMain._rightElementID = 3;
                     break;
                 case GameEvent.WeakTo.Sand:
-                    _scriptMain._onEventID = 4;
+                    _scriptMain._rightElementID = 4;
                     break;
                 case GameEvent.WeakTo.Snow:
-                    _scriptMain._onEventID = 5;
+                    _scriptMain._rightElementID = 5;
                     break;
                 case GameEvent.WeakTo.Mud:
-                    _scriptMain._onEventID = 6;
+                    _scriptMain._rightElementID = 6;
                     break;
             }
-     
+
+
+            switch (_specialEvents[0]._eventType)
+            {
+                case GameEvent.EventType.Bridge:
+                    _scriptMain._onEventID = 1;
+                    break;
+  
+            }
+
+
             Debug.Log($"Evento instanciado: {_specialEvents[0]._eventType} débil contra {_specialEvents[0]._weakto}");
         }
     }
