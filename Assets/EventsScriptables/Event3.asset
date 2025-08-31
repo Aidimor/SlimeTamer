@@ -10,8 +10,8 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 52eedf4d328dee94582bf2e83d851549, type: 3}
-  m_Name: New Game Event
+  m_Name: Event3
   m_EditorClassIdentifier: 
-  _eventType: 0
-  _weakto: 1
-  _eventPrefab: {fileID: 6564443148038896895, guid: 22f8a8476fedc0a498c644098ac66622, type: 3}
+  _eventType: 2
+  _weakto: 0
+  _eventPrefab: {fileID: 3968215594434490243, guid: cb0a349da10aba946a1cfcbbccdbdb85, type: 3}

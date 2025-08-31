@@ -9,15 +9,21 @@ public class GameEventsScript : MonoBehaviour
     [Header("Padre de los objetos instanciados")]
     public Transform _eventosParent;
     public GameObject _currentEventPrefab;
+    public int _onEvent;
   
 
     void Start()
+    {
+        StartLevel();
+    }
+
+    public void StartLevel()
     {
         // Ejemplo: instanciar el primer evento
         if (_specialEvents.Length > 0 && _specialEvents[0]._eventPrefab != null)
         {
             GameObject evento = Instantiate(
-                _specialEvents[0]._eventPrefab,
+                _specialEvents[_onEvent]._eventPrefab,
                 transform.position,
                 transform.rotation,
                 _eventosParent   // opcional: lo hace hijo directo
@@ -28,7 +34,7 @@ public class GameEventsScript : MonoBehaviour
             evento.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 90);
             _currentEventPrefab = evento;
 
-            switch (_specialEvents[0]._weakto)
+            switch (_specialEvents[_onEvent]._weakto)
             {
                 case GameEvent.WeakTo.Water:
                     _scriptMain._rightElementID = 1;
@@ -51,16 +57,24 @@ public class GameEventsScript : MonoBehaviour
             }
 
 
-            switch (_specialEvents[0]._eventType)
+            switch (_specialEvents[_onEvent]._eventType)
             {
                 case GameEvent.EventType.Bridge:
                     _scriptMain._onEventID = 1;
                     break;
-  
+                case GameEvent.EventType.Lagoon:
+                    _scriptMain._onEventID = 2;
+                    evento.GetComponent<WaterFallEvent>()._scriptMain = _scriptMain;
+                    //evento.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 0);
+                    break;
+                case GameEvent.EventType.Well:
+                    _scriptMain._onEventID = 3;
+                    break;
+
             }
 
-
-            Debug.Log($"Evento instanciado: {_specialEvents[0]._eventType} débil contra {_specialEvents[0]._weakto}");
+            StartCoroutine(_scriptMain.StartStageNumerator());
+            Debug.Log($"Evento instanciado: {_specialEvents[_onEvent]._eventType} débil contra {_specialEvents[_onEvent]._weakto}");
         }
     }
 }

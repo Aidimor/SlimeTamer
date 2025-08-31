@@ -8,6 +8,8 @@ public class GameEvent : ScriptableObject
     public enum EventType
     {
        Bridge,
+       Lagoon,
+       Well,
        other
     }
     public EventType _eventType;

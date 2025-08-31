@@ -121,7 +121,7 @@ void Update()
 
     public void ChangeSlime()
     {
-        Debug.Log("repite");
+
         //_mainMaterial.color = _slimeAssets[_slimeType]._mainColor;
         for (int i = 1; i < _allParticles.Length; i++)
         {
@@ -135,8 +135,8 @@ void Update()
 
         _slimeAnimator.SetInteger("ID", _slimeType);
         _mainMaterial.SetColor("_BaseColor", _slimeAssets[_slimeType]._mainColor);
-        //_materialColors[0] = _slimeAssets[_slimeType]._mainColor;
-    
+  
+
 
     }
 
@@ -155,12 +155,25 @@ void Update()
                     yield return new WaitForSeconds(2);
           
                     break;
+                case 2:
+                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFallEvent>().ActivateFreeze();
+                    yield return new WaitForSeconds(5);
+
+                    break;
+                case 3:
+                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFillEvent>()._fillBool = true;
+                    yield return new WaitForSeconds(5);
+
+                    break;
 
             }
             _scriptMain._BordersAnimator.SetBool("BorderOut", false);
-            yield return new WaitForSeconds(0.5f);
-            _slimeType = 0;
-            ChangeSlime();
+
+
+            yield return new WaitForSeconds(2);
+            Destroy(_scriptMain._scriptEvents._currentEventPrefab);
+            _scriptMain._scriptEvents._onEvent++;
+            _scriptMain._scriptEvents.StartLevel();
         }
         else
         {
@@ -168,10 +181,12 @@ void Update()
             _slimeAnimator.SetTrigger("Wrong");
             yield return new WaitForSeconds(2);
             _scriptMain._scriptFusion.ActivatePanel();
-            _slimeType = 0;
-            ChangeSlime();
+         
         }
-
+        _scriptMain._snowBool = false;
+        _slimeType = 0;
+        ChangeSlime();
+     
 
     }
 }
