@@ -33,6 +33,7 @@ public class GameEventsScript : MonoBehaviour
             evento.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
             evento.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 90);
             _currentEventPrefab = evento;
+           
 
             switch (_specialEvents[_onEvent]._weakto)
             {
@@ -69,6 +70,15 @@ public class GameEventsScript : MonoBehaviour
                     break;
                 case GameEvent.EventType.Well:
                     _scriptMain._onEventID = 3;
+                    break;
+                case GameEvent.EventType.StrongAir:
+                    _scriptMain._onEventID = 4;
+                    break;
+                case GameEvent.EventType.FallingBridge:
+                    _scriptMain._onEventID = 5;
+                    break;
+                case GameEvent.EventType.Gears:
+                    _scriptMain._onEventID = 6;
                     break;
 
             }

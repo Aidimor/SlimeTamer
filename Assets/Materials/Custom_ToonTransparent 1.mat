@@ -7,7 +7,7 @@ Material:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Custom_ToonTransparent
+  m_Name: Custom_ToonTransparent 1
   m_Shader: {fileID: 4800000, guid: 59e641679f0531848bf5b807744c56c8, type: 3}
   m_Parent: {fileID: 0}
   m_ModifiedSerializedProperties: 0
@@ -34,7 +34,7 @@ Material:
     m_Ints: []
     m_Floats:
     - _Cutoff: 1
-    - _FillAmount: 0.016870134
+    - _FillAmount: 0.000003200109
     - _FillEdge: 0.2
     - _FillHeightMax: 1
     - _FillHeightMin: 0
@@ -44,7 +44,7 @@ Material:
     - _ShadowSteps: 5
     - _Transparency: 0
     m_Colors:
-    - _BaseColor: {r: 0, g: 1, b: 0.7725673, a: 0.6862745}
+    - _BaseColor: {r: 0.2924528, g: 0.2924528, b: 0.2924528, a: 1}
     - _Color: {r: 0.7311321, g: 1, b: 0.9573655, a: 1}
     - _Color2: {r: 0, g: 1, b: 0, a: 1}
     - _Color3: {r: 1, g: 0, b: 0, a: 1}
@@ -53,7 +53,7 @@ Material:
     - _FillColor: {r: 1, g: 0, b: 0, a: 1}
     - _FillColor1: {r: 0.3018868, g: 0.3018868, b: 0.3018868, a: 0.8}
     - _FillColor2: {r: 1, g: 0, b: 0, a: 0.5}
-    - _FillColorA: {r: 0, g: 1, b: 0.294147, a: 1}
-    - _FillColorB: {r: 0, g: 1, b: 0.294147, a: 1}
+    - _FillColorA: {r: 0.8207547, g: 0.38582632, b: 0, a: 1}
+    - _FillColorB: {r: 0.8207547, g: 0.38582632, b: 0, a: 1}
     - _RimColor: {r: 0, g: 0, b: 0, a: 1}
   m_BuildTextureStacks: []

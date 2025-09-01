@@ -26,6 +26,7 @@ public class SlimeController : MonoBehaviour
 
     public float fillAmount;
     public ParticleSystem _wrongParticle;
+    public GameObject _WindBlocker;
 
 
     // Start is called before the first frame update
@@ -165,12 +166,28 @@ void Update()
                     yield return new WaitForSeconds(5);
 
                     break;
+                case 4:
+                    _scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(5);
+
+                    break;
+                case 5:
+                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<SandCutEventScript>().StartCuttingVoid();
+                    yield return new WaitForSeconds(5);
+
+                    break;
+                case 6:
+                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._Stopped = true;
+                    yield return new WaitForSeconds(5);
+
+                    break;
 
             }
             _scriptMain._BordersAnimator.SetBool("BorderOut", false);
 
 
             yield return new WaitForSeconds(2);
+            _scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(false);
             Destroy(_scriptMain._scriptEvents._currentEventPrefab);
             _scriptMain._scriptEvents._onEvent++;
             _scriptMain._scriptEvents.StartLevel();

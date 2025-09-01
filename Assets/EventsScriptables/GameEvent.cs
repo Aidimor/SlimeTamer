@@ -10,6 +10,9 @@ public class GameEvent : ScriptableObject
        Bridge,
        Lagoon,
        Well,
+       StrongAir,
+       FallingBridge,
+       Gears,
        other
     }
     public EventType _eventType;

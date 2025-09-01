@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class MainGameplayScript : MonoBehaviour
 {
-    [SerializeField] private SlimeController _scriptSlime;
+    public SlimeController _scriptSlime;
     public FusionScript _scriptFusion;
     public GameEventsScript _scriptEvents;
     public int _onEventID;
