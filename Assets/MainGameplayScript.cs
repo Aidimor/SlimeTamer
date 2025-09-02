@@ -13,6 +13,7 @@ public class MainGameplayScript : MonoBehaviour
     public Animator _BordersAnimator;
     public bool _snowBool;
     public Image _snowImage;
+    public Animator _wasp;
 
     // Start is called before the first frame update
     void Start()

@@ -80,6 +80,10 @@ public class GameEventsScript : MonoBehaviour
                 case GameEvent.EventType.Gears:
                     _scriptMain._onEventID = 6;
                     break;
+                case GameEvent.EventType.FightWasp:
+                    evento.GetComponent<WaspFightScript>()._waspAnimator = _scriptMain._wasp;
+                    _scriptMain._onEventID = 7;
+                    break;
 
             }
 

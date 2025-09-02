@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -18,127 +18,62 @@ public class SlimeController : MonoBehaviour
     }
     public SlimeAssets[] _slimeAssets;
 
-    public Material _mainMaterial;
+    // 🔹 Este será el material instanciado en runtime
+
     public Color[] _materialColors;
     public bool _borrar;
-
-
 
     public float fillAmount;
     public ParticleSystem _wrongParticle;
     public GameObject _WindBlocker;
+    public GameObject _slimeMainBody;
 
+    public int _fightChances;
 
-    // Start is called before the first frame update
     void Start()
     {
         _slimeAnimator = GetComponent<Animator>();
-        _mainMaterial.SetColor("_BaseColor", _materialColors[0]);
-        // Get the material instance
 
+        //// ✅ Crear una instancia segura del material
+        //_mainMaterial = new Material(_mainMaterial);
+
+        //// Asignar la instancia al renderer para este slime
+        //var renderer = GetComponent<Renderer>();
+        //if (renderer != null)
+        //{
+        //    renderer.material = _mainMaterial;
+        //}
+
+        //// Inicializar color base
+        //_mainMaterial.SetColor("_BaseColor", _materialColors[0]);
     }
 
-
-
-  
-
-
-
-
-
-// Update is called once per frame
-void Update()
+    void Update()
     {
-        // Update the fill amount in real-time
-        _mainMaterial.SetFloat("_FillAmount", fillAmount);
-    
-        _mainMaterial.SetColor("_FillColorA", _materialColors[1]);
-        _mainMaterial.SetColor("_FillColorB", _materialColors[2]);
-
-
-        //if (Input.GetKeyDown(KeyCode.Alpha1))
-        //{
-        //    _slimeType = 1;
-        //    ChangeSlime();
-        //    StartCoroutine(ActionSlimeNumerator());
-        // }
-
-
-        //if (Input.GetKeyDown(KeyCode.Alpha2))
-        //{
-        //    _slimeType = 2;
-        //    ChangeSlime();
-        //    StartCoroutine(ActionSlimeNumerator());
-        //}
-
-        //if (Input.GetKeyDown(KeyCode.Alpha3))
-        //{
-        //    _slimeType = 3;
-        //    ChangeSlime();
-        //    StartCoroutine(ActionSlimeNumerator());
-        //}
-
-        //if (Input.GetKeyDown(KeyCode.Alpha4))
-        //{
-        //    _slimeType = 4;
-        //    ChangeSlime();
-        //    StartCoroutine(ActionSlimeNumerator());
-        //}
-
-        //if (Input.GetKeyDown(KeyCode.Alpha5))
-        //{
-        //    _slimeType = 5;
-        //    ChangeSlime();
-        //    StartCoroutine(ActionSlimeNumerator());
-        //}
-
-        //if (Input.GetKeyDown(KeyCode.Alpha6))
-        //{
-        //    _slimeType = 6;
-        //    ChangeSlime();
-        //    StartCoroutine(ActionSlimeNumerator());
-        //}
-
-        //if(Input.GetAxisRaw("Vertical") > 0 && !_borrar)
-        // {
-        //     _slimeType++;
-        //     ChangeSlime();
-        //     _borrar = true;
-        // }
-
-        // if (Input.GetAxisRaw("Vertical") < 0 && !_borrar)
-        // {
-        //     _slimeType--;
-        //     ChangeSlime();
-        //     _borrar = true;
-        // }
-
-        // if (Input.GetAxisRaw("Vertical") == 0)
-        // {       
-        //     _borrar = false;
-        // }
-
+        // Actualizar parámetros en la instancia
+        _slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_FillAmount", fillAmount);
+        _slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_FillColorA", _materialColors[1]);
+        _slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_FillColorB", _materialColors[2]);
     }
 
     public void ChangeSlime()
     {
-
-        //_mainMaterial.color = _slimeAssets[_slimeType]._mainColor;
+        // Desactivar partículas
         for (int i = 1; i < _allParticles.Length; i++)
         {
-         
-                _allParticles[i].gameObject.SetActive(false);
+            _allParticles[i].gameObject.SetActive(false);
         }
-        if(_allParticles[_slimeAssets[_slimeType]._particlesID] != null)
+
+        if (_allParticles[_slimeAssets[_slimeType]._particlesID] != null)
         {
             _allParticles[_slimeAssets[_slimeType]._particlesID].gameObject.SetActive(true);
         }
 
+        // Cambiar animación
         _slimeAnimator.SetInteger("ID", _slimeType);
-        _mainMaterial.SetColor("_BaseColor", _slimeAssets[_slimeType]._mainColor);
-  
 
-
+        // Cambiar color en la instancia del material
+        _slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_BaseColor", _slimeAssets[_slimeType]._mainColor);
     }
 
     public IEnumerator ActionSlimeNumerator()
@@ -154,37 +89,34 @@ void Update()
                 case 1:
                     _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BridgeEvent>()._activateBridge = true;
                     yield return new WaitForSeconds(2);
-          
                     break;
                 case 2:
                     _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFallEvent>().ActivateFreeze();
                     yield return new WaitForSeconds(5);
-
                     break;
                 case 3:
                     _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFillEvent>()._fillBool = true;
                     yield return new WaitForSeconds(5);
-
                     break;
                 case 4:
                     _scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(true);
                     yield return new WaitForSeconds(5);
-
                     break;
                 case 5:
                     _scriptMain._scriptEvents._currentEventPrefab.GetComponent<SandCutEventScript>().StartCuttingVoid();
                     yield return new WaitForSeconds(5);
-
                     break;
                 case 6:
                     _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._Stopped = true;
                     yield return new WaitForSeconds(5);
-
                     break;
-
+                case 7:
+                    StartCoroutine(_scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaspFightScript>().DeadNumerator());        
+                     Debug.Log("Wasp Destroyed");
+                    yield return new WaitForSeconds(3);
+                    break;
             }
             _scriptMain._BordersAnimator.SetBool("BorderOut", false);
-
 
             yield return new WaitForSeconds(2);
             _scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(false);
@@ -194,16 +126,28 @@ void Update()
         }
         else
         {
-            _wrongParticle.Play();
-            _slimeAnimator.SetTrigger("Wrong");
-            yield return new WaitForSeconds(2);
-            _scriptMain._scriptFusion.ActivatePanel();
-         
+            switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._scriptEvents._onEvent]._eventClassification)
+            {
+                case GameEvent.EventClassification.Normal:
+                    _wrongParticle.Play();
+                    _slimeAnimator.SetTrigger("Wrong");
+                    yield return new WaitForSeconds(2);
+                    _scriptMain._scriptFusion.ActivatePanel();
+                    break;
+                case GameEvent.EventClassification.Fight:
+                    _wrongParticle.Play();
+                    _slimeAnimator.SetTrigger("Wrong");
+                    yield return new WaitForSeconds(2);
+                    _scriptMain._scriptFusion.ActivatePanel();
+                    break;
+                case GameEvent.EventClassification.Questionary:
+                    break;
+            }
+   
         }
+
         _scriptMain._snowBool = false;
         _slimeType = 0;
         ChangeSlime();
-     
-
     }
 }

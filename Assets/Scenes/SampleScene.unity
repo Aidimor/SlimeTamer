@@ -26123,7 +26123,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scriptMain: {fileID: 1220292388}
   _specialEvents:
-  - {fileID: 11400000, guid: 01b0779631603b2408cd0fc02279a8d7, type: 2}
+  - {fileID: 11400000, guid: 9de39a5d302f6b547b000a3ed4f5ab4f, type: 2}
   - {fileID: 11400000, guid: 168bd1b099ef33449b98f6a3d3f59c2d, type: 2}
   - {fileID: 11400000, guid: 9d440ec6af5d2ad4ab4713cd16636e8a, type: 2}
   _eventosParent: {fileID: 1937603800}
@@ -47519,78 +47519,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 745094035}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
---- !u!1 &749908078
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 749908079}
-  - component: {fileID: 749908081}
-  - component: {fileID: 749908080}
-  m_Layer: 10
-  m_Name: RawImage
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &749908079
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 749908078}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.15, y: 0.15, z: 0.15}
-  m_ConstrainProportionsScale: 1
-  m_Children: []
-  m_Father: {fileID: 1600006399}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 0, y: 0}
-  m_SizeDelta: {x: 1024, y: 1024}
-  m_Pivot: {x: 0.5, y: 0.5}
---- !u!114 &749908080
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 749908078}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 1344c3c82d62a2a41a3576d8abb8e3ea, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
-  m_RaycastTarget: 1
-  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
-  m_Maskable: 1
-  m_OnCullStateChanged:
-    m_PersistentCalls:
-      m_Calls: []
-  m_Texture: {fileID: 8400000, guid: c17a9905f2e8b4a41bc8c22d03bfa5ce, type: 2}
-  m_UVRect:
-    serializedVersion: 2
-    x: 0
-    y: 0
-    width: 1
-    height: 1
---- !u!222 &749908081
-CanvasRenderer:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 749908078}
-  m_CullTransparentMesh: 1
 --- !u!1 &787019107
 GameObject:
   m_ObjectHideFlags: 0
@@ -68004,7 +67932,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!114 &1059432252
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -87934,6 +87862,7 @@ MonoBehaviour:
   _BordersAnimator: {fileID: 1511142574}
   _snowBool: 0
   _snowImage: {fileID: 796764876}
+  _wasp: {fileID: 932839517}
 --- !u!4 &1220292389
 Transform:
   m_ObjectHideFlags: 0
@@ -93416,7 +93345,6 @@ RectTransform:
   - {fileID: 1741143188}
   - {fileID: 1198436653}
   - {fileID: 2003032244}
-  - {fileID: 1600006399}
   - {fileID: 796764875}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -128083,42 +128011,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1590554107}
   m_CullTransparentMesh: 1
---- !u!1 &1600006398
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1600006399}
-  m_Layer: 10
-  m_Name: EnemyParent
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!224 &1600006399
-RectTransform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1600006398}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 749908079}
-  m_Father: {fileID: 1369059620}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 204, y: -38}
-  m_SizeDelta: {x: 1024, y: 1024}
-  m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &1622089307
 GameObject:
   m_ObjectHideFlags: 0
@@ -160337,7 +160229,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scriptMain: {fileID: 1220292388}
   _slimeType: 0
-  _slimeAnimator: {fileID: 0}
+  _slimeAnimator: {fileID: 2082077613}
   _allParticles:
   - {fileID: 0}
   - {fileID: 1622089310}
@@ -160368,7 +160260,6 @@ MonoBehaviour:
   - name: Sticky Mud Slime
     _mainColor: {r: 0.16757086, g: 0.3207547, b: 0.095318615, a: 1}
     _particlesID: 6
-  _mainMaterial: {fileID: 2100000, guid: 02affbe30ebfe444a93f2b568c13c26f, type: 2}
   _materialColors:
   - {r: 0.14150941, g: 0.14150941, b: 0.14150941, a: 1}
   - {r: 1, g: 1, b: 1, a: 1}
@@ -160377,6 +160268,8 @@ MonoBehaviour:
   fillAmount: 0
   _wrongParticle: {fileID: 321646325}
   _WindBlocker: {fileID: 1714516510}
+  _slimeMainBody: {fileID: 16626017}
+  _fightChances: 0
 --- !u!1 &2093407845
 GameObject:
   m_ObjectHideFlags: 0

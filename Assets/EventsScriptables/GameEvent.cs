@@ -5,6 +5,15 @@ using System.Collections.Generic;
 public class GameEvent : ScriptableObject
 {
     [System.Serializable]
+    public enum EventClassification
+    {
+        Normal,
+        Fight,
+        Questionary
+    }
+    public EventClassification _eventClassification;
+
+    [System.Serializable]
     public enum EventType
     {
        Bridge,
@@ -13,6 +22,7 @@ public class GameEvent : ScriptableObject
        StrongAir,
        FallingBridge,
        Gears,
+       FightWasp,
        other
     }
     public EventType _eventType;
