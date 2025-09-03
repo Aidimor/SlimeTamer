@@ -9,7 +9,7 @@ public class MainGameplayScript : MonoBehaviour
     public FusionScript _scriptFusion;
     public GameEventsScript _scriptEvents;
     public int _onEventID;
-    public int _rightElementID;
+    public int[] _rightElementID;
     public Animator _BordersAnimator;
     public bool _snowBool;
     public Image _snowImage;
@@ -41,6 +41,23 @@ public class MainGameplayScript : MonoBehaviour
         _BordersAnimator.SetBool("BorderOut", true);
         yield return new WaitForSeconds(1);
         _scriptFusion.ActivatePanel();
+    }
+
+    public IEnumerator StartStageQuestionary()
+    {
+        yield return new WaitForSeconds(1);
+        _BordersAnimator.SetBool("BorderOut", true);
+        yield return new WaitForSeconds(2);
+        Debug.Log("Questionario");
+        _BordersAnimator.SetBool("BorderOut", false);
+
+        yield return new WaitForSeconds(2);
+        _scriptSlime._WindBlocker.gameObject.SetActive(false);
+        Destroy(_scriptEvents._currentEventPrefab);
+        _scriptEvents._onEvent++;
+        _scriptEvents.StartLevel();
+
+        //_scriptFusion.ActivatePanel();
     }
 
 }

@@ -9,6 +9,8 @@ public class WaspFightScript : MonoBehaviour
     
     public GameObject _waspImageParent;
     public float _fallSpeed;
+
+
     // Start is called before the first frame update
     void Start()
     {

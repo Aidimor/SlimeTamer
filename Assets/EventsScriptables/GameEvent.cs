@@ -23,6 +23,7 @@ public class GameEvent : ScriptableObject
        FallingBridge,
        Gears,
        FightWasp,
+       FightSnail,
        other
     }
     public EventType _eventType;
@@ -37,7 +38,7 @@ public class GameEvent : ScriptableObject
         Snow,
         Mud
     }
-    public WeakTo _weakto;
+    public WeakTo[] _weakto;
 
     public GameObject _eventPrefab;
 

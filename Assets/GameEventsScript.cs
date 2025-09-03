@@ -19,8 +19,7 @@ public class GameEventsScript : MonoBehaviour
 
     public void StartLevel()
     {
-        // Ejemplo: instanciar el primer evento
-        if (_specialEvents.Length > 0 && _specialEvents[0]._eventPrefab != null)
+        if (_specialEvents.Length > 0 && _specialEvents[_onEvent]._eventPrefab != null)
         {
             GameObject evento = Instantiate(
                 _specialEvents[_onEvent]._eventPrefab,
@@ -33,62 +32,106 @@ public class GameEventsScript : MonoBehaviour
             evento.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
             evento.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 90);
             _currentEventPrefab = evento;
+            // Ejemplo: instanciar el primer evento
+            switch (_specialEvents[_onEvent]._eventClassification)
+        {
+            case GameEvent.EventClassification.Normal:
+            case GameEvent.EventClassification.Fight:
+                    switch (_specialEvents[_onEvent]._weakto.Length)
+                    {
+                        case 1:
+                            switch (_specialEvents[_onEvent]._weakto[0])
+                            {
+                                case GameEvent.WeakTo.Water:
+                                    _scriptMain._rightElementID[0] = 1;
+                                    break;
+                                case GameEvent.WeakTo.Air:
+                                    _scriptMain._rightElementID[0] = 2;
+                                    break;
+                                case GameEvent.WeakTo.Earth:
+                                    _scriptMain._rightElementID[0] = 3;
+                                    break;
+                                case GameEvent.WeakTo.Sand:
+                                    _scriptMain._rightElementID[0] = 4;
+                                    break;
+                                case GameEvent.WeakTo.Snow:
+                                    _scriptMain._rightElementID[0] = 5;
+                                    break;
+                                case GameEvent.WeakTo.Mud:
+                                    _scriptMain._rightElementID[0] = 6;
+                                    break;
+                            }
+                            break;
+                        case 2:
+                            for (int i = 0; i < 2; i++)
+                            {
+                                switch (_specialEvents[_onEvent]._weakto[i])
+                                {
+                                    case GameEvent.WeakTo.Water:
+                                        _scriptMain._rightElementID[i] = 1;
+                                        break;
+                                    case GameEvent.WeakTo.Air:
+                                        _scriptMain._rightElementID[i] = 2;
+                                        break;
+                                    case GameEvent.WeakTo.Earth:
+                                        _scriptMain._rightElementID[i] = 3;
+                                        break;
+                                    case GameEvent.WeakTo.Sand:
+                                        _scriptMain._rightElementID[i] = 4;
+                                        break;
+                                    case GameEvent.WeakTo.Snow:
+                                        _scriptMain._rightElementID[i] = 5;
+                                        break;
+                                    case GameEvent.WeakTo.Mud:
+                                        _scriptMain._rightElementID[i] = 6;
+                                        break;
+                                }
+                            }
+                            break;
+                    }
+
+
+
+                    switch (_specialEvents[_onEvent]._eventType)
+                    {
+                        case GameEvent.EventType.Bridge:
+                            _scriptMain._onEventID = 1;
+                            break;
+                        case GameEvent.EventType.Lagoon:
+                            _scriptMain._onEventID = 2;
+                            evento.GetComponent<WaterFallEvent>()._scriptMain = _scriptMain;
+                            //evento.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 0);
+                            break;
+                        case GameEvent.EventType.Well:
+                            _scriptMain._onEventID = 3;
+                            break;
+                        case GameEvent.EventType.StrongAir:
+                            _scriptMain._onEventID = 4;
+                            break;
+                        case GameEvent.EventType.FallingBridge:
+                            _scriptMain._onEventID = 5;
+                            break;
+                        case GameEvent.EventType.Gears:
+                            _scriptMain._onEventID = 6;
+                            break;
+                        case GameEvent.EventType.FightWasp:
+                            evento.GetComponent<WaspFightScript>()._waspAnimator = _scriptMain._wasp;
+                            _scriptMain._onEventID = 7;
+                            break;
+
+                    }
+                    StartCoroutine(_scriptMain.StartStageNumerator());
+                    break;
+            case GameEvent.EventClassification.Questionary:
+                    StartCoroutine(_scriptMain.StartStageQuestionary());
+                    break;
+        }
+  
            
+      
 
-            switch (_specialEvents[_onEvent]._weakto)
-            {
-                case GameEvent.WeakTo.Water:
-                    _scriptMain._rightElementID = 1;
-                    break;
-                case GameEvent.WeakTo.Air:
-                    _scriptMain._rightElementID = 2;
-                    break;
-                case GameEvent.WeakTo.Earth:
-                    _scriptMain._rightElementID = 3;
-                    break;
-                case GameEvent.WeakTo.Sand:
-                    _scriptMain._rightElementID = 4;
-                    break;
-                case GameEvent.WeakTo.Snow:
-                    _scriptMain._rightElementID = 5;
-                    break;
-                case GameEvent.WeakTo.Mud:
-                    _scriptMain._rightElementID = 6;
-                    break;
-            }
-
-
-            switch (_specialEvents[_onEvent]._eventType)
-            {
-                case GameEvent.EventType.Bridge:
-                    _scriptMain._onEventID = 1;
-                    break;
-                case GameEvent.EventType.Lagoon:
-                    _scriptMain._onEventID = 2;
-                    evento.GetComponent<WaterFallEvent>()._scriptMain = _scriptMain;
-                    //evento.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 0);
-                    break;
-                case GameEvent.EventType.Well:
-                    _scriptMain._onEventID = 3;
-                    break;
-                case GameEvent.EventType.StrongAir:
-                    _scriptMain._onEventID = 4;
-                    break;
-                case GameEvent.EventType.FallingBridge:
-                    _scriptMain._onEventID = 5;
-                    break;
-                case GameEvent.EventType.Gears:
-                    _scriptMain._onEventID = 6;
-                    break;
-                case GameEvent.EventType.FightWasp:
-                    evento.GetComponent<WaspFightScript>()._waspAnimator = _scriptMain._wasp;
-                    _scriptMain._onEventID = 7;
-                    break;
-
-            }
-
-            StartCoroutine(_scriptMain.StartStageNumerator());
-            Debug.Log($"Evento instanciado: {_specialEvents[_onEvent]._eventType} débil contra {_specialEvents[_onEvent]._weakto}");
+           
+        
         }
     }
 }

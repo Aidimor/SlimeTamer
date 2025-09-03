@@ -10,9 +10,9 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 52eedf4d328dee94582bf2e83d851549, type: 3}
-  m_Name: Event1
+  m_Name: Event9
   m_EditorClassIdentifier: 
-  _eventClassification: 0
-  _eventType: 0
-  _weakto: 01000000
-  _eventPrefab: {fileID: 6564443148038896895, guid: 22f8a8476fedc0a498c644098ac66622, type: 3}
+  _eventClassification: 2
+  _eventType: 8
+  _weakto: 
+  _eventPrefab: {fileID: 5248544132973583, guid: 233e0c0bc44288c438ac3cedc37c8165, type: 3}

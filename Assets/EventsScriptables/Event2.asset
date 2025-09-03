@@ -12,6 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 52eedf4d328dee94582bf2e83d851549, type: 3}
   m_Name: Event2
   m_EditorClassIdentifier: 
+  _eventClassification: 0
   _eventType: 1
-  _weakto: 4
+  _weakto: 04000000
   _eventPrefab: {fileID: 2506343339763102902, guid: 999b35f634047b1479c05fee26352571, type: 3}
