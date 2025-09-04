@@ -14,15 +14,20 @@ public class GameEventsScript : MonoBehaviour
 
     void Start()
     {
+        for (int i = 0; i < _scriptMain._totalStages._total; i++)
+        {
+   
+            _scriptMain._GamesList.Add(Random.Range(0, _specialEvents.Length));
+        }
         StartLevel();
     }
 
     public void StartLevel()
     {
-        if (_specialEvents.Length > 0 && _specialEvents[_onEvent]._eventPrefab != null)
+        if (_specialEvents.Length > 0 && _specialEvents[_scriptMain._GamesList[_onEvent]]._eventPrefab != null)
         {
             GameObject evento = Instantiate(
-                _specialEvents[_onEvent]._eventPrefab,
+                _specialEvents[_scriptMain._GamesList[_onEvent]]._eventPrefab,
                 transform.position,
                 transform.rotation,
                 _eventosParent   // opcional: lo hace hijo directo
@@ -33,14 +38,14 @@ public class GameEventsScript : MonoBehaviour
             evento.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 90);
             _currentEventPrefab = evento;
             // Ejemplo: instanciar el primer evento
-            switch (_specialEvents[_onEvent]._eventClassification)
+            switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._eventClassification)
         {
             case GameEvent.EventClassification.Normal:
             case GameEvent.EventClassification.Fight:
-                    switch (_specialEvents[_onEvent]._weakto.Length)
+                    switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._weakto.Length)
                     {
                         case 1:
-                            switch (_specialEvents[_onEvent]._weakto[0])
+                            switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._weakto[0])
                             {
                                 case GameEvent.WeakTo.Water:
                                     _scriptMain._rightElementID[0] = 1;
@@ -65,7 +70,7 @@ public class GameEventsScript : MonoBehaviour
                         case 2:
                             for (int i = 0; i < 2; i++)
                             {
-                                switch (_specialEvents[_onEvent]._weakto[i])
+                                switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._weakto[i])
                                 {
                                     case GameEvent.WeakTo.Water:
                                         _scriptMain._rightElementID[i] = 1;
@@ -92,7 +97,7 @@ public class GameEventsScript : MonoBehaviour
 
 
 
-                    switch (_specialEvents[_onEvent]._eventType)
+                    switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._eventType)
                     {
                         case GameEvent.EventType.Bridge:
                             _scriptMain._onEventID = 1;

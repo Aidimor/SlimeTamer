@@ -80,7 +80,7 @@ public class SlimeController : MonoBehaviour
     {
         yield return new WaitForSeconds(0.5f);
 
-        switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._scriptEvents._onEvent]._weakto.Length)
+        switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._weakto.Length)
         {
             case 1:
                 if (_slimeType == _scriptMain._rightElementID[0])
@@ -129,7 +129,7 @@ public class SlimeController : MonoBehaviour
                 }
                 else
                 {
-                    switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._scriptEvents._onEvent]._eventClassification)
+                    switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventClassification)
                     {
                         case GameEvent.EventClassification.Normal:
                             _wrongParticle.Play();
@@ -203,7 +203,7 @@ public class SlimeController : MonoBehaviour
                 }
                 else
                 {
-                    switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._scriptEvents._onEvent]._eventClassification)
+                    switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventClassification)
                     {
                         case GameEvent.EventClassification.Normal:
                             _wrongParticle.Play();

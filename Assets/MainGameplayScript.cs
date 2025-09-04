@@ -1,4 +1,4 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine;
@@ -15,11 +15,37 @@ public class MainGameplayScript : MonoBehaviour
     public Image _snowImage;
     public Animator _wasp;
 
+
+    [System.Serializable]
+    public class TotalStages
+    {
+        public GameObject _SlimeIcon;
+        public int _total;
+        public int _onPos;
+        public List<float> _xPoses = new List<float>();
+    }
+    public TotalStages _totalStages;
+
+    public List<int> _GamesList = new List<int>();
+
+
     // Start is called before the first frame update
     void Start()
     {
-     
+        _totalStages._xPoses.Clear();
+
+        int n = Mathf.Max(1, _totalStages._total); // avoid divide-by-zero
+
+        for (int i = 0; i < n; i++)
+        {
+            float t = (n == 1) ? 0f : i / (n - 1f); // goes 0 → 1
+            float x = Mathf.Lerp(0f, 150f, t);      // goes 0 → 150
+            _totalStages._xPoses.Add(x);
+         
+        }
     }
+
+
 
     // Update is called once per frame
     void Update()
@@ -33,6 +59,9 @@ public class MainGameplayScript : MonoBehaviour
                 _snowImage.color = Color.Lerp(_snowImage.color, new Color(1, 1, 1, 0f), 2 * Time.deltaTime);
                 break;
         }
+
+        _totalStages._SlimeIcon.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_totalStages._SlimeIcon.GetComponent<RectTransform>().anchoredPosition,
+            new Vector2(_totalStages._xPoses[_totalStages._onPos], 4), 5 * Time.deltaTime);
     }
 
     public IEnumerator StartStageNumerator()

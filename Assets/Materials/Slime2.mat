@@ -1,0 +1,61 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: Slime2
+  m_Shader: {fileID: 4800000, guid: 59e641679f0531848bf5b807744c56c8, type: 3}
+  m_Parent: {fileID: 0}
+  m_ModifiedSerializedProperties: 0
+  m_ValidKeywords: []
+  m_InvalidKeywords: []
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_LockedProperties: 
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 0, y: 0}
+        m_Offset: {x: 0, y: 0}
+    - _MaskTex:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 60.81, y: 1}
+        m_Offset: {x: 13.02, y: 52.23}
+    m_Ints: []
+    m_Floats:
+    - _Cutoff: 1
+    - _FillAmount: 0.317
+    - _FillEdge: 0.2
+    - _FillHeightMax: 1
+    - _FillHeightMin: 0
+    - _FillSmooth: 0
+    - _MaskOpacity: 1
+    - _RimPower: 8
+    - _ShadowSteps: 5
+    - _Transparency: 0
+    m_Colors:
+    - _BaseColor: {r: 0.8679245, g: 0.8679245, b: 0.8679245, a: 1}
+    - _Color: {r: 0.7311321, g: 1, b: 0.9573655, a: 1}
+    - _Color2: {r: 0, g: 1, b: 0, a: 1}
+    - _Color3: {r: 1, g: 0, b: 0, a: 1}
+    - _ColorA: {r: 1, g: 0, b: 0.48557186, a: 1}
+    - _ColorB: {r: 0.4339623, g: 0.4339623, b: 0.4339623, a: 1}
+    - _FillColor: {r: 1, g: 0, b: 0, a: 1}
+    - _FillColor1: {r: 0.3018868, g: 0.3018868, b: 0.3018868, a: 0.8}
+    - _FillColor2: {r: 1, g: 0, b: 0, a: 0.5}
+    - _FillColorA: {r: 1, g: 1, b: 1, a: 1}
+    - _FillColorB: {r: 1, g: 1, b: 1, a: 1}
+    - _LightColor: {r: 1, g: 1, b: 1, a: 1}
+    - _LightPos: {r: 0, g: 1, b: 0, a: 1}
+    - _RimColor: {r: 0, g: 0, b: 0, a: 1}
+  m_BuildTextureStacks: []
