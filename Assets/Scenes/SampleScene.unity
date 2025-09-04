@@ -68408,7 +68408,6 @@ GameObject:
   m_Component:
   - component: {fileID: 950459687}
   - component: {fileID: 950459689}
-  - component: {fileID: 950459688}
   m_Layer: 3
   m_Name: SlimeCameraSecond
   m_TagString: MainCamera
@@ -68431,14 +68430,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 115764219}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!81 &950459688
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 950459686}
-  m_Enabled: 1
 --- !u!20 &950459689
 Camera:
   m_ObjectHideFlags: 0
@@ -68500,7 +68491,6 @@ GameObject:
   m_Component:
   - component: {fileID: 963194228}
   - component: {fileID: 963194227}
-  - component: {fileID: 963194226}
   m_Layer: 3
   m_Name: SlimeCamera
   m_TagString: MainCamera
@@ -68508,14 +68498,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!81 &963194226
-AudioListener:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 963194225}
-  m_Enabled: 1
 --- !u!20 &963194227
 Camera:
   m_ObjectHideFlags: 0
@@ -135200,6 +135182,7 @@ GameObject:
   - component: {fileID: 1746258741}
   - component: {fileID: 1746258740}
   - component: {fileID: 1746258739}
+  - component: {fileID: 1746258742}
   m_Layer: 3
   m_Name: FrontBorderCamera
   m_TagString: Untagged
@@ -135350,6 +135333,14 @@ Camera:
   m_OcclusionCulling: 1
   m_StereoConvergence: 10
   m_StereoSeparation: 0.022
+--- !u!81 &1746258742
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1746258737}
+  m_Enabled: 1
 --- !u!1 &1759559159
 GameObject:
   m_ObjectHideFlags: 0
