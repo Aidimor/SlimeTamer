@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 
 [CreateAssetMenu(menuName = "Events/NewEvent")]
 public class GameEvent : ScriptableObject
@@ -16,15 +15,15 @@ public class GameEvent : ScriptableObject
     [System.Serializable]
     public enum EventType
     {
-       Bridge,
-       Lagoon,
-       Well,
-       StrongAir,
-       FallingBridge,
-       Gears,
-       FightWasp,
-       FightSnail,
-       other
+        Bridge,
+        Lagoon,
+        Well,
+        StrongAir,
+        FallingBridge,
+        Gears,
+        FightWasp,
+        FightSnail,
+        other
     }
     public EventType _eventType;
 
@@ -41,7 +40,4 @@ public class GameEvent : ScriptableObject
     public WeakTo[] _weakto;
 
     public GameObject _eventPrefab;
-
-    
 }
-

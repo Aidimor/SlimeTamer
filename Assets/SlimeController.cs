@@ -136,12 +136,14 @@ public class SlimeController : MonoBehaviour
                             _slimeAnimator.SetTrigger("Wrong");
                             yield return new WaitForSeconds(2);
                             _scriptMain._scriptFusion.ActivatePanel();
+                            _scriptMain.LoseHeartVoid();
                             break;
                         case GameEvent.EventClassification.Fight:
                             _wrongParticle.Play();
                             _slimeAnimator.SetTrigger("Wrong");
                             yield return new WaitForSeconds(2);
                             _scriptMain._scriptFusion.ActivatePanel();
+                            _scriptMain.LoseHeartVoid();
                             break;
                         case GameEvent.EventClassification.Questionary:
                             break;
