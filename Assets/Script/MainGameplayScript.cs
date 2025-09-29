@@ -1,0 +1,253 @@
+﻿using System.Collections;
+using UnityEngine.UI;
+using System.Collections.Generic;
+using UnityEngine;
+using TMPro;
+
+public class MainGameplayScript : MonoBehaviour
+{
+    public MainController _scriptMain;
+    public GameObject _mainUI;
+    public int _OnStation;
+    public SlimeController _scriptSlime;
+    public FusionScript _scriptFusion;
+    public GameEventsScript _scriptEvents;
+    public RythmFusionScript _scriptRythm;
+    public int _onEventID;
+    public int[] _rightElementID;
+   
+    public bool _snowBool;
+    public Image _snowImage;
+    public Animator _wasp;
+
+    public ParticleSystem _fallParticle;
+
+
+    [System.Serializable]
+    public class TotalStages
+    {
+        public GameObject _SlimeIcon;
+        public int _total;     
+        public List<float> _xPoses = new List<float>();
+    }
+    public TotalStages _totalStages;
+
+    public List<int> _GamesList = new List<int>();
+
+    [System.Serializable]
+    public class HearthAssets
+    {
+        public GameObject _parent;
+        public Image[] _totalHearts;
+        public Color[] _heartColors;
+    }
+    public HearthAssets _heartAssets;
+    public int _totalLifes = 4;
+
+    [System.Serializable]
+    public class ItemGotPanel
+    {
+        public Animator _parent;
+        public GameObject[] _itemObject;
+        public TextMeshProUGUI _Message;
+
+    }
+    public ItemGotPanel _itemGotPanel;
+
+
+    [System.Serializable]
+    public class AllStageAssets
+    {
+        public GameObject _parentStage;
+        public GameObject _backStage;
+        public GameObject _frontStage;
+    }
+    public AllStageAssets[] _allStageAssets;
+  
+    
+
+
+    public GameObject _topOptions;
+    public bool _topOptionsOn;
+
+    public Animator _bossAnimator;
+
+    public bool _slimeFalling;
+    public ParticleSystem _fallingParticle;
+
+    public bool _firstStage;
+    public GameObject _stageParent;
+    
+    private void Awake()
+    {
+        _scriptMain = GameObject.Find("CanvasIndestructible/MainController").GetComponent<MainController>();
+    }
+
+    // Start is called before the first frame update
+    void Start()
+    {
+        _totalStages._xPoses.Clear();
+        StartNewWorld();
+        _allStageAssets[_scriptMain._onWorldGlobal]._parentStage.SetActive(true);      
+    }
+
+    public void StartNewWorld()
+    {
+        int n = Mathf.Max(1, _totalStages._total); // avoid divide-by-zero
+
+        for (int i = 0; i < n; i++)
+        {
+            float t = (n == 1) ? 0f : i / (n - 1f); // goes 0 → 1
+            float x = Mathf.Lerp(0f, 150f, t);      // goes 0 → 150
+            _totalStages._xPoses.Add(x);
+
+        }
+    }
+
+
+
+    // Update is called once per frame
+    void Update()
+    {
+        switch (_snowBool)
+        {
+            case true:
+                _snowImage.color = Color.Lerp(_snowImage.color, new Color(1, 1, 1, 0.5f), 2 * Time.deltaTime);
+                break;
+            case false:
+                _snowImage.color = Color.Lerp(_snowImage.color, new Color(1, 1, 1, 0f), 2 * Time.deltaTime);
+                break;
+        }
+
+        _totalStages._SlimeIcon.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_totalStages._SlimeIcon.GetComponent<RectTransform>().anchoredPosition,
+            new Vector2(_totalStages._xPoses[_scriptEvents._onEvent], 4), 5 * Time.deltaTime);
+
+        _topOptions.SetActive(_topOptionsOn);
+
+        for (int i = 0; i < _allStageAssets.Length; i++)
+        {
+            _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = Vector2.MoveTowards(_allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition,
+                new Vector2(0, 0), 30 * Time.deltaTime);
+        }
+
+        if (_slimeFalling)
+        {
+            _scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition
+          += Vector2.up * (-150 * Time.deltaTime);
+
+
+        }
+
+        _stageParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_stageParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(0, 0), 15 * Time.deltaTime);
+        _mainUI.transform.localScale = Vector2.Lerp(_mainUI.transform.localScale, new Vector2(1, 1), 5 * Time.deltaTime);
+
+    
+    }
+
+    public IEnumerator StartStageNumerator()
+    {
+        yield return new WaitForSeconds(1);
+        _scriptMain._bordersAnimator.SetBool("BorderOut", true);
+        yield return new WaitForSeconds(2);
+        StartCoroutine(_scriptRythm.RythmNumerator());
+        //StartCoroutine(_scriptFusion.ActivatePanel());
+    }
+
+    public IEnumerator StartStageQuestionary()
+    {
+        yield return new WaitForSeconds(1);
+        _scriptMain._bordersAnimator.SetBool("BorderOut", true);
+        yield return new WaitForSeconds(2);
+        Debug.Log("Questionario");
+        _scriptMain._bordersAnimator.SetBool("BorderOut", false);
+
+        yield return new WaitForSeconds(2);
+        _scriptSlime._WindBlocker.gameObject.SetActive(false);
+        Destroy(_scriptEvents._currentEventPrefab);
+        _scriptEvents._onEvent++;
+        StartCoroutine(_scriptEvents.StartLevelNumerator());
+
+        //_scriptFusion.ActivatePanel();
+    }
+
+    public IEnumerator StartsStageChest()
+    {  
+        yield return new WaitForSeconds(1);
+        _scriptEvents._currentEventPrefab.GetComponent<ChestEventScript>()._chestAnimator.SetTrigger("ChestOpen");
+        yield return new WaitForSeconds(2);
+        _scriptEvents._currentEventPrefab.GetComponent<ChestEventScript>().ItemGet();
+ 
+       _itemGotPanel._parent.SetTrigger("ItemGot");
+        StartCoroutine(ExitNumerator());
+
+    }
+
+    public IEnumerator IntroStageNumerator()
+    {  
+        for (int i = 0; i < _allStageAssets.Length; i++)
+        {
+            _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -600f);
+        }
+        _allStageAssets[_scriptMain._onWorldGlobal]._frontStage.SetActive(false);
+        _scriptMain._cinematicBorders.SetBool("FadeIn", true);  
+        _scriptSlime._slimeAnimator.SetBool("Falling", true);
+        _scriptEvents._currentEventPrefab.GetComponent<IntroEventScript>().StartIntroVoid();
+        _fallParticle.gameObject.SetActive(true);
+        _scriptMain._bordersAnimator.SetBool("BorderOut", true);
+        yield return new WaitForSeconds(2);
+        _bossAnimator.SetTrigger("Flies");
+        yield return new WaitForSeconds(2);
+        _slimeFalling = true;
+   
+        StartCoroutine(ExitNumerator());
+
+    }
+
+    public IEnumerator ExitNumerator()
+    {
+        yield return new WaitForSeconds(2);
+        _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
+        _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
+        _scriptSlime.fillAmount = 0;
+        _scriptMain._bordersAnimator.SetBool("BorderOut", false);
+
+        yield return new WaitForSeconds(2);
+        if(_scriptEvents._currentEventPrefab.name == "Intro(Clone)")
+        {
+            _scriptEvents._currentEventPrefab.GetComponent<IntroEventScript>().ExitIntroVoid();
+        }
+
+        _scriptSlime._WindBlocker.gameObject.SetActive(false);
+        _allStageAssets[_scriptMain._onWorldGlobal]._frontStage.SetActive(true);
+        _scriptMain._cinematicBorders.SetBool("FadeIn", false);
+        _scriptSlime._slimeAnimator.SetBool("Falling", false);
+        _fallParticle.gameObject.SetActive(false);
+        _slimeFalling = false;
+   
+
+        for (int i = 0; i < _allStageAssets.Length; i++)
+        {
+            _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+        }
+        _scriptEvents._onEvent++;
+        Destroy(_scriptEvents._currentEventPrefab);
+        StartCoroutine(_scriptEvents.StartLevelNumerator());
+    }
+
+    public void LoseHeartVoid()
+    {
+        _totalLifes--;
+        for(int i = 0; i < _heartAssets._totalHearts.Length; i++)
+        {
+            _heartAssets._totalHearts[i].color = _heartAssets._heartColors[1];
+        }
+
+        for (int i = 0; i < _totalLifes; i++)
+        {
+            _heartAssets._totalHearts[i].color = _heartAssets._heartColors[0];
+        }
+    }
+
+
+
+}
