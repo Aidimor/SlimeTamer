@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class FireEventScript : MonoBehaviour
 {
-    public ParticleSystem _fireParticle;
-    public GameObject[] _worlds;
+    public ParticleSystem[] _fireParticle;
+    public GameObject[] _worlds;  
     // Start is called before the first frame update
     void Start()
     {
@@ -20,6 +20,9 @@ public class FireEventScript : MonoBehaviour
 
     public void FireExtinguishVoid()
     {
-        _fireParticle.Stop();
+        for (int i = 0; i < _fireParticle.Length; i++)
+        {
+            _fireParticle[i].Stop();
+        }        
     }
 }

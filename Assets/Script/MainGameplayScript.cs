@@ -77,6 +77,8 @@ public class MainGameplayScript : MonoBehaviour
 
     public bool _firstStage;
     public GameObject _stageParent;
+
+    public ParticleSystem[] _flyingSlimeParticles;
     
     private void Awake()
     {
@@ -149,7 +151,14 @@ public class MainGameplayScript : MonoBehaviour
         yield return new WaitForSeconds(1);
         _scriptMain._bordersAnimator.SetBool("BorderOut", true);
         yield return new WaitForSeconds(2);
-        StartCoroutine(_scriptRythm.RythmNumerator());
+        switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._eventClassification)
+        {
+            case GameEvent.EventClassification.Normal:
+                StartCoroutine(_scriptRythm.RythmNumerator());
+                break;         
+        }
+
+
         //StartCoroutine(_scriptFusion.ActivatePanel());
     }
 
@@ -195,7 +204,7 @@ public class MainGameplayScript : MonoBehaviour
         _fallParticle.gameObject.SetActive(true);
         _scriptMain._bordersAnimator.SetBool("BorderOut", true);
         yield return new WaitForSeconds(2);
-        _bossAnimator.SetTrigger("Flies");
+        //_bossAnimator.SetTrigger("Flies");
         yield return new WaitForSeconds(2);
         _slimeFalling = true;
    

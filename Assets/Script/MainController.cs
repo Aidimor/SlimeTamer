@@ -1,8 +1,10 @@
 using UnityEngine;
+using System.Collections;
 using UnityEngine.SceneManagement; // Required for scene management
 
 public class MainController : MonoBehaviour
 {
+    public PortraitController _scriptPortrait;
     public Animator _bordersAnimator;
     public Animator _cinematicBorders;
     public AudioSource _bgmAS;
@@ -12,6 +14,7 @@ public class MainController : MonoBehaviour
     public SaveLoadValues _saveLoadValues;
 
     public int _onWorldGlobal;
+    public bool _introSpecial;
     // Start is called before the first frame update
 
         public void LoadSceneByName(string sceneName)
@@ -19,5 +22,5 @@ public class MainController : MonoBehaviour
             SceneManager.LoadScene(sceneName);
         }
     
-
+  
 }

@@ -52,9 +52,9 @@ public class GameEventsScript : MonoBehaviour
             case 0:
                 _scriptMain._GamesList.Add(11);
                 _scriptMain._GamesList.Add(10);
+                _scriptMain._GamesList.Add(2);
                 _scriptMain._GamesList.Add(12);
-                _scriptMain._GamesList.Add(8);
-                _scriptMain._GamesList.Add(2);      
+                _scriptMain._GamesList.Add(8);      
                 _scriptMain._GamesList.Add(13);
                 StartCoroutine(StartLevelNumerator()); 
                 break;
@@ -80,14 +80,16 @@ public class GameEventsScript : MonoBehaviour
                 StartCoroutine(StartLevelNumerator());
 
                 break;
-            case 3:
-                _scriptMain._GamesList.Add(11);
-                for (int i = 0; i < _scriptMain._totalStages._total; i++)
-                {
-                    var randomEvent = GetRandomEvent();
-                    // Guardamos el índice dentro del array original
-                    _scriptMain._GamesList.Add(System.Array.IndexOf(_specialEvents, randomEvent));
-                }
+            case 3:                  
+                _scriptMain._GamesList.Add(2);
+                _scriptMain._GamesList.Add(8);
+                _scriptMain._GamesList.Add(12);
+                //for (int i = 0; i < _scriptMain._totalStages._total; i++)
+                //{
+                //    var randomEvent = GetRandomEvent();
+                //    // Guardamos el índice dentro del array original
+                //    _scriptMain._GamesList.Add(System.Array.IndexOf(_specialEvents, randomEvent));
+                //}
                 StartCoroutine(StartLevelNumerator());
 
                 break;
@@ -209,8 +211,9 @@ public class GameEventsScript : MonoBehaviour
                             evento.GetComponent<FireEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                             break;
                         case GameEvent.EventType.BossFight1:
+                   
                             _scriptMain._onEventID = 10;
-                            _bossRender.gameObject.SetActive(true);
+                            StartCoroutine(evento.GetComponent<BossFightsScript>().StartBossNumerator());                   
                             break;
                     }
                     if (!_scriptMain._firstStage)

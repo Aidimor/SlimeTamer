@@ -9156,10 +9156,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a52e6b125792be5468e5229aba924186, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _scriptPortrait: {fileID: 1236963338}
   _bordersAnimator: {fileID: 1511142574}
   _cinematicBorders: {fileID: 588363696}
   _bgmAS: {fileID: 229199079}
   _onWorldGlobal: 0
+  _introSpecial: 0
 --- !u!224 &670792206
 RectTransform:
   m_ObjectHideFlags: 0
@@ -26347,6 +26349,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scriptMainController: {fileID: 670792205}
+  _falling: 0
+  _fallSpeed: 5
   _parent: {fileID: 826323416}
   _logo: {fileID: 907457680}
   _OnPos: 1
@@ -26360,15 +26364,19 @@ MonoBehaviour:
   - _worldParent: {fileID: 1354462681}
     _yPos: 0
     _backgroundColor: {r: 0.8, g: 0, b: 0.6392157, a: 0.39215687}
+    _unlocked: 1
   - _worldParent: {fileID: 688617768}
     _yPos: 450
     _backgroundColor: {r: 0, g: 1, b: 0.6605363, a: 0.39215687}
+    _unlocked: 0
   - _worldParent: {fileID: 1250268339}
     _yPos: 900
     _backgroundColor: {r: 0.5801887, g: 0.92045844, b: 1, a: 0.39215687}
+    _unlocked: 0
   - _worldParent: {fileID: 1441257189}
     _yPos: 1350
     _backgroundColor: {r: 1, g: 1, b: 0.6862745, a: 1}
+    _unlocked: 0
   _worldsParent: {fileID: 406574939}
   _worldBackgroundImage: {fileID: 1431100543}
   _onWorldPos: 0
@@ -26378,6 +26386,7 @@ MonoBehaviour:
   _explosionSlimeParticle: {fileID: 5769689746635681258}
   _fallingSlime: {fileID: 803853670}
   _slimeParent: {fileID: 1060342889}
+  _frontMap: {fileID: 1455949948}
 --- !u!4 &1236963339
 Transform:
   m_ObjectHideFlags: 0
@@ -60791,6 +60800,7 @@ MonoBehaviour:
   _scriptMain: {fileID: 0}
   _slimeType: 0
   _slimeAnimator: {fileID: 2082077613}
+  _slimeRawImage: {fileID: 0}
   _allParticles:
   - {fileID: 0}
   - {fileID: 0}

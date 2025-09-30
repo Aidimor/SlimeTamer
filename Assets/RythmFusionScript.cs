@@ -161,10 +161,11 @@ public class RythmFusionScript : MonoBehaviour
 
         ShuffleElements();
         yield return new WaitForSeconds(1);
-
+        int eventStance = 0;
         // Repeat until element is chosen
         while (!_elementChoosed)
         {
+   
             for (int step = 0; step < _order.Count; step++)
             {
                 int elementIndex = _order[step];
@@ -183,9 +184,9 @@ public class RythmFusionScript : MonoBehaviour
                 {
                     _scriptMain._mainUI.transform.localScale = new Vector2(1.01f, 1.01f);
                 }
-               
+       
                 yield return new WaitForSeconds(_timerInterval);
-
+         
                 if (_elementChoosed) // break out if chosen mid-loop
                     yield break;
             }
@@ -195,6 +196,18 @@ public class RythmFusionScript : MonoBehaviour
                 _elementsInfo[i]._imageColor.color = _halfColors[0];
             }
             _buttonPressed = false;
+
+            switch (_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent])
+            {
+                case 12:
+                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<FireEventScript>()._fireParticle[eventStance + 1].Play();
+                    break;
+            }
+            if (eventStance < 3)
+            {
+                eventStance++;
+            }
+
         }
 
         // When loop ends (_elementChoosed == true), reset

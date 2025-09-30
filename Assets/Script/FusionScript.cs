@@ -6,6 +6,7 @@ using UnityEngine.UI;
 public class FusionScript : MonoBehaviour
 {
     [SerializeField] private SlimeController _scriptSlime;
+    
     public GameObject _slimeRenderer;
     public Vector2[] _slimeStartPos;
     public bool _panelActive;

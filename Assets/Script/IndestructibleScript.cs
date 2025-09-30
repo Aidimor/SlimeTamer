@@ -1,14 +1,19 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public class IndestructibleScript : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    private static IndestructibleScript instance;
+
+    void Awake()
     {
-        DontDestroyOnLoad(this.gameObject);
+        if (instance == null)
+        {
+            instance = this;
+            DontDestroyOnLoad(gameObject); //  se mantiene entre escenas
+        }
+        else
+        {
+            Destroy(gameObject); //  destruye duplicados al volver a la escena
+        }
     }
-
-
 }

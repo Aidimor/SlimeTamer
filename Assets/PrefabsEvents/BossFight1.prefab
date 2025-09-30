@@ -50,7 +50,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c9be8733fbfeba043baa0bf939532937, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _bossRender: {fileID: 0}
+  _scriptMain: {fileID: 0}
+  _worlds: []
+  _slimeParticle:
+  - {fileID: 0}
+  - {fileID: 0}
 --- !u!1 &6048638428747918727
 GameObject:
   m_ObjectHideFlags: 0
