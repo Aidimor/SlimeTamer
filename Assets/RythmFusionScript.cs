@@ -17,7 +17,7 @@ public class RythmFusionScript : MonoBehaviour
         public Image _imageColor;
         public ParticleSystem _releaseParticles;
         public TextMeshProUGUI _elementText;
-        public bool _unlocked;
+        //public bool _unlocked;
         [Header("Idioma")]
         public string key; // 👈 clave que se buscará en el JSON (ej: "world1")
     }
@@ -67,6 +67,8 @@ public class RythmFusionScript : MonoBehaviour
                 _elementsInfo[i]._elementText.text = LanguageManager.Instance.GetText(_elementsInfo[i].key);
             }
         }
+
+        _scriptMain._choose2ElementsText.text = LanguageManager.Instance.GetText("choose");
     }
 
     void Update()
@@ -81,7 +83,7 @@ public class RythmFusionScript : MonoBehaviour
                     _elementsInfo[0]._imageColor.color = _halfColors[0];
                     break;
                 case 1:
-                    if (_elementsInfo[1]._unlocked)
+                    if (_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[1])
                     {
                         _elementsInfo[1]._imageColor.color = _halfColors[1];
                         ChooseElementVoid();
@@ -89,14 +91,14 @@ public class RythmFusionScript : MonoBehaviour
       
                     break;
                 case 2:
-                    if (_elementsInfo[2]._unlocked)
+                    if (_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[2])
                     {
                         _elementsInfo[2]._imageColor.color = _halfColors[2];
                         ChooseElementVoid();
                     }
                     break;
                 case 3:
-                    if (_elementsInfo[3]._unlocked)
+                    if (_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[3])
                     {
                         _elementsInfo[3]._imageColor.color = _halfColors[3];
                         ChooseElementVoid();
@@ -151,7 +153,7 @@ public class RythmFusionScript : MonoBehaviour
         for (int i = 0; i < n; i++)
         {
             _elementsInfo[i]._parent.SetActive(true);
-            _elementsInfo[i]._elementOrb.SetActive(_elementsInfo[i]._unlocked);
+            _elementsInfo[i]._elementOrb.SetActive(_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[i]);
          
         }
       

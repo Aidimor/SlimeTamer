@@ -81,11 +81,12 @@ public class MainGameplayScript : MonoBehaviour
     public GameObject _stageParent;
 
     public ParticleSystem[] _flyingSlimeParticles;
+    public TextMeshProUGUI _choose2ElementsText;
 
     private void Awake()
     {
-        _scriptMain = GameObject.Find("CanvasIndestructible/MainController").GetComponent<MainController>();
-        _scriptLanguage = GameObject.Find("CanvasIndestructible/LanguageManager").GetComponent<LanguageManager>();
+        _scriptMain = GameObject.Find("CanvasIndestructible/Main/MainController").GetComponent<MainController>();
+        _scriptLanguage = GameObject.Find("CanvasIndestructible/Main/LanguageManager").GetComponent<LanguageManager>();
     }
 
 
@@ -106,11 +107,19 @@ public class MainGameplayScript : MonoBehaviour
         {
             _scriptFusion._elementsOptions[i]._unlocked = _scriptMain._saveLoadValues._elementsUnlocked[i];
         }
-       
-        //_scriptMainController = GameObject.Find("CanvasIndestructible/MainController").GetComponent<MainController>();
-        //// Ejecutar CustomStart cada vez que se cargue una escena
-        //CustomStart();
-    }
+
+        switch (_scriptMain._onWorldGlobal)
+        {
+            case 0:
+                _topOptionsOn = false;
+                break;
+            case 1:
+            case 2:
+            case 3:
+                _topOptionsOn = true;
+                break;
+        }      
+        }
 
 
 

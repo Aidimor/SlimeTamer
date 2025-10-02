@@ -50,6 +50,7 @@ public class GameEventsScript : MonoBehaviour
         switch (_scriptMain._scriptMain._onWorldGlobal)
         {
             case 0:
+ 
                 _scriptMain._GamesList.Add(11);
                 _scriptMain._GamesList.Add(10);
                 _scriptMain._GamesList.Add(2);
@@ -59,6 +60,7 @@ public class GameEventsScript : MonoBehaviour
                 StartCoroutine(StartLevelNumerator()); 
                 break;
             case 1:
+          
                 _scriptMain._GamesList.Add(11);
                 for (int i = 0; i < _scriptMain._totalStages._total; i++)
                 {

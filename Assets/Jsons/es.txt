@@ -6,6 +6,7 @@
     { "key": "element3", "value": "TIERRA" },
     { "key": "description1", "value": "¡PARTÍCULA DE AGUA OBTENIDA!" },
     { "key": "description2", "value": "¡PARTÍCULA DE AIRE OBTENIDA!" },
-    { "key": "description3", "value": "¡PARTÍCULA DE TIERRA OBTENIDA!" }
+    { "key": "description3", "value": "¡PARTÍCULA DE TIERRA OBTENIDA!" },
+    { "key": "choose", "value": "ELIGE 2 ELEMENTOS" }
   ]
 }

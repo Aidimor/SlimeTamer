@@ -1,6 +1,8 @@
-using UnityEngine;
+﻿using UnityEngine;
 using System.Collections;
 using UnityEngine.SceneManagement; // Required for scene management
+using UnityEngine.UI;
+using TMPro;
 
 public class MainController : MonoBehaviour
 {
@@ -15,6 +17,8 @@ public class MainController : MonoBehaviour
         public bool[] _elementsUnlocked;
     }
     public SaveLoadValues _saveLoadValues;
+
+
 
     public int _onWorldGlobal;
     public bool _introSpecial;

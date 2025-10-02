@@ -57,7 +57,7 @@ public class PortraitController : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        _scriptMainController = GameObject.Find("CanvasIndestructible/MainController").GetComponent<MainController>();
+        _scriptMainController = GameObject.Find("CanvasIndestructible/Main/MainController").GetComponent<MainController>();
         // Ejecutar CustomStart cada vez que se cargue una escena
         CustomStart();
     }
