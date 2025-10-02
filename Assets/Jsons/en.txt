@@ -1,0 +1,11 @@
+{
+  "items": [
+    { "key": "world", "value": "World" },
+    { "key": "element1", "value": "WATER" },
+    { "key": "element2", "value": "AIR" },
+    { "key": "element3", "value": "EARTH" },
+    { "key": "description1", "value": "WATER PARTICLE OBTAINED!" },
+    { "key": "description2", "value": "AIR PARTICLE OBTAINED!" },
+    { "key": "description3", "value": "EARTH PARTICLE OBTAINED!" }
+  ]
+}

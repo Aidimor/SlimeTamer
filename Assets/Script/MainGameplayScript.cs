@@ -3,10 +3,12 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement; // 👈 Necesario para eventos de escena
 
 public class MainGameplayScript : MonoBehaviour
 {
     public MainController _scriptMain;
+    public LanguageManager _scriptLanguage;
     public GameObject _mainUI;
     public int _OnStation;
     public SlimeController _scriptSlime;
@@ -50,7 +52,7 @@ public class MainGameplayScript : MonoBehaviour
         public Animator _parent;
         public GameObject[] _itemObject;
         public TextMeshProUGUI _Message;
-
+        public string key;
     }
     public ItemGotPanel _itemGotPanel;
 
@@ -79,11 +81,38 @@ public class MainGameplayScript : MonoBehaviour
     public GameObject _stageParent;
 
     public ParticleSystem[] _flyingSlimeParticles;
-    
+
     private void Awake()
     {
         _scriptMain = GameObject.Find("CanvasIndestructible/MainController").GetComponent<MainController>();
+        _scriptLanguage = GameObject.Find("CanvasIndestructible/LanguageManager").GetComponent<LanguageManager>();
     }
+
+
+    void OnEnable()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    void OnDisable()
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        //UpdateWorldTexts();
+    }
+
+    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        for(int i = 0; i < 3; i++)
+        {
+            _scriptFusion._elementsOptions[i]._unlocked = _scriptMain._saveLoadValues._elementsUnlocked[i];
+        }
+       
+        //_scriptMainController = GameObject.Find("CanvasIndestructible/MainController").GetComponent<MainController>();
+        //// Ejecutar CustomStart cada vez que se cargue una escena
+        //CustomStart();
+    }
+
+
 
     // Start is called before the first frame update
     void Start()
@@ -150,6 +179,7 @@ public class MainGameplayScript : MonoBehaviour
     {
         yield return new WaitForSeconds(1);
         _scriptMain._bordersAnimator.SetBool("BorderOut", true);
+        _scriptMain._cinematicBorders.SetBool("FadeIn", false);
         yield return new WaitForSeconds(2);
         switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._eventClassification)
         {
@@ -257,6 +287,11 @@ public class MainGameplayScript : MonoBehaviour
         }
     }
 
-
-
+    //public void UpdateElementText()
+    //{     
+    //   if (_itemGotPanel._Message != null && !string.IsNullOrEmpty(_itemGotPanel.key))
+    //   {
+    //    _itemGotPanel._Message.text = LanguageManager.Instance.GetText(_elementsInfo[i].key);
+    //    }      
+    //}
 }

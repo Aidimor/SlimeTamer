@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class RythmFusionScript : MonoBehaviour
 {
@@ -15,7 +16,10 @@ public class RythmFusionScript : MonoBehaviour
         public GameObject _elementOrb;
         public Image _imageColor;
         public ParticleSystem _releaseParticles;
+        public TextMeshProUGUI _elementText;
         public bool _unlocked;
+        [Header("Idioma")]
+        public string key; // 👈 clave que se buscará en el JSON (ej: "world1")
     }
     public ElementsInfo[] _elementsInfo;
 
@@ -49,8 +53,20 @@ public class RythmFusionScript : MonoBehaviour
         //        _positions[i] = _elementsInfo[i]._parent.GetComponent<RectTransform>().anchoredPosition;
         //    }
         //}
+        UpdateWorldTexts();
 
-   
+
+    }
+
+    public void UpdateWorldTexts()
+    {
+        for (int i = 0; i < _elementsInfo.Length; i++)
+        {
+            if (_elementsInfo[i]._elementText != null && !string.IsNullOrEmpty(_elementsInfo[i].key + (i + 1).ToString()))
+            {
+                _elementsInfo[i]._elementText.text = LanguageManager.Instance.GetText(_elementsInfo[i].key);
+            }
+        }
     }
 
     void Update()

@@ -18,22 +18,33 @@ public class ChestEventScript : MonoBehaviour
             case GameEvent.ChestItems.Water:
                 _scriptMain._scriptFusion._elementsOptions[0]._unlocked = true;
                 _scriptMain._itemGotPanel._itemObject[0].SetActive(true);
-                _scriptMain._itemGotPanel._Message.text = "Water Particles Obtained";
-                _scriptMain._scriptRythm._elementsInfo[1]._unlocked = true;
+                _scriptMain._itemGotPanel.key = "description1";
+                _scriptMain._scriptMain._saveLoadValues._elementsUnlocked[1] = true;
                 break;
             case GameEvent.ChestItems.Air:
                 _scriptMain._scriptFusion._elementsOptions[1]._unlocked = true;
                 _scriptMain._itemGotPanel._itemObject[1].SetActive(true);
-                _scriptMain._itemGotPanel._Message.text = "Air Particles Obtained";
-                _scriptMain._scriptRythm._elementsInfo[2]._unlocked = true;
+                _scriptMain._itemGotPanel.key = "description2";
+                _scriptMain._scriptMain._saveLoadValues._elementsUnlocked[2] = true;
                 break;
             case GameEvent.ChestItems.Earth:
                 _scriptMain._scriptFusion._elementsOptions[2]._unlocked = true;
                 _scriptMain._itemGotPanel._itemObject[2].SetActive(true);
-                _scriptMain._itemGotPanel._Message.text = "Earth Particles Obtained";
-                _scriptMain._scriptRythm._elementsInfo[3]._unlocked = true;
+                _scriptMain._itemGotPanel.key = "description3";
+                _scriptMain._scriptMain._saveLoadValues._elementsUnlocked[3] = true;
                 break;
         }
+
+        if (_scriptMain._itemGotPanel._Message != null && !string.IsNullOrEmpty(_scriptMain._itemGotPanel.key))
+        {
+            // Obtener el valor traducido de la key (ej: "announce1")
+            string localizedText = LanguageManager.Instance.GetText(_scriptMain._itemGotPanel.key);
+
+            // Asignar el texto al panel de mensaje
+            _scriptMain._itemGotPanel._Message.text = localizedText;
+        }
+
+        _scriptMain._scriptRythm._elementsInfo[1]._unlocked = true;
 
     }
 }

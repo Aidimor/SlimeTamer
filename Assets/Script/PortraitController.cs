@@ -25,8 +25,11 @@ public class PortraitController : MonoBehaviour
         public float _yPos;
         public Color _backgroundColor;
         public bool _unlocked;
-    }
+        public TextMeshProUGUI _worldText;
 
+        [Header("Idioma")]
+        public string key; // 👈 clave que se buscará en el JSON (ej: "world1")
+    }
     public AllWorlds[] _allWorlds;
     public GameObject _worldsParent;
     public Image _worldBackgroundImage;
@@ -49,6 +52,7 @@ public class PortraitController : MonoBehaviour
     void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+        UpdateWorldTexts();
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -56,6 +60,18 @@ public class PortraitController : MonoBehaviour
         _scriptMainController = GameObject.Find("CanvasIndestructible/MainController").GetComponent<MainController>();
         // Ejecutar CustomStart cada vez que se cargue una escena
         CustomStart();
+    }
+
+    public void UpdateWorldTexts()
+    {
+        for (int i = 0; i < _allWorlds.Length; i++)
+        {
+            if (_allWorlds[i]._worldText != null && !string.IsNullOrEmpty(_allWorlds[i].key))
+            {
+                string text = LanguageManager.Instance.GetText(_allWorlds[i].key);         
+                _allWorlds[i]._worldText.text = text + " " + (i + 1).ToString("f0");
+            }
+        }
     }
 
     public void CustomStart()
@@ -72,6 +88,8 @@ public class PortraitController : MonoBehaviour
             _slimeParent.SetActive(false);            
             //_scriptMainController._onWorldGlobal = _onWorldPos;
         }
+        // 🔹 Aquí actualizamos los textos de los mundos según el idioma cargado
+        UpdateWorldTexts();
     }
 
     void Update()
