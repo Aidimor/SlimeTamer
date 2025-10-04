@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using LoL;
 
 public class ChestEventScript : MonoBehaviour
 {
@@ -38,7 +39,7 @@ public class ChestEventScript : MonoBehaviour
         if (_scriptMain._itemGotPanel._Message != null && !string.IsNullOrEmpty(_scriptMain._itemGotPanel.key))
         {
             // Obtener el valor traducido de la key (ej: "announce1")
-            string localizedText = LanguageManager.Instance.GetText(_scriptMain._itemGotPanel.key);
+            string localizedText = GameInitScript.Instance.GetText(_scriptMain._itemGotPanel.key);
 
             // Asignar el texto al panel de mensaje
             _scriptMain._itemGotPanel._Message.text = localizedText;

@@ -1,8 +1,9 @@
-using System.Collections;
+﻿using System.Collections;
 using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using LoLSDK;
 
 public class GameEventsScript : MonoBehaviour
 {
@@ -10,7 +11,7 @@ public class GameEventsScript : MonoBehaviour
     [Header("Lista de eventos")]
     public GameEvent[] _specialEvents;   // Ahora es directamente GameEvent[]
 
-    [Header("Chances por clasificaci�n (suman 1.0 aprox)")]
+    [Header("Chances por clasificación (suman 1.0 aprox)")]
     [Range(0f, 1f)] public float chanceNormal = 0.6f;
     [Range(0f, 1f)] public float chanceFight = 0.3f;
     [Range(0f, 1f)] public float chanceQuestionary = 0.1f;
@@ -65,7 +66,7 @@ public class GameEventsScript : MonoBehaviour
                 for (int i = 0; i < _scriptMain._totalStages._total; i++)
                 {
                     var randomEvent = GetRandomEvent();
-                    // Guardamos el �ndice dentro del array original
+                    // Guardamos el índice dentro del array original
                     _scriptMain._GamesList.Add(System.Array.IndexOf(_specialEvents, randomEvent));
                 }
                 StartCoroutine(StartLevelNumerator());
@@ -76,7 +77,7 @@ public class GameEventsScript : MonoBehaviour
                 for (int i = 0; i < _scriptMain._totalStages._total; i++)
                 {
                     var randomEvent = GetRandomEvent();
-                    // Guardamos el �ndice dentro del array original
+                    // Guardamos el índice dentro del array original
                     _scriptMain._GamesList.Add(System.Array.IndexOf(_specialEvents, randomEvent));
                 }
                 StartCoroutine(StartLevelNumerator());
@@ -89,7 +90,7 @@ public class GameEventsScript : MonoBehaviour
                 //for (int i = 0; i < _scriptMain._totalStages._total; i++)
                 //{
                 //    var randomEvent = GetRandomEvent();
-                //    // Guardamos el �ndice dentro del array original
+                //    // Guardamos el índice dentro del array original
                 //    _scriptMain._GamesList.Add(System.Array.IndexOf(_specialEvents, randomEvent));
                 //}
                 StartCoroutine(StartLevelNumerator());
@@ -114,7 +115,7 @@ public class GameEventsScript : MonoBehaviour
         else
             chosenType = GameEvent.EventClassification.Questionary;
 
-        // Filtrar solo los eventos de esa clasificaci�n
+        // Filtrar solo los eventos de esa clasificación
         var filtered = new List<GameEvent>();
         foreach (var ev in _specialEvents)
         {
@@ -234,6 +235,7 @@ public class GameEventsScript : MonoBehaviour
                     evento.GetComponent<QuestionaryScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                     _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(_scriptMain._firstStage);
                     _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);
+
                     if (!_scriptMain._firstStage)
                     {
                         yield return new WaitForSeconds(2);
@@ -242,7 +244,13 @@ public class GameEventsScript : MonoBehaviour
                         _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
                         _scriptMain._firstStage = true;
                     }
-                    StartCoroutine(_scriptMain.StartStageQuestionary());
+                    else
+                    {
+            
+                        yield return new WaitForSeconds(1);
+                        StartCoroutine(StartStageQuestionary());
+                    }
+                    //StartCoroutine(_scriptMain.StartStageQuestionary());
                     break;
                 case GameEvent.EventClassification.Chest:
                     evento.GetComponent<ChestEventScript>()._scriptMain = _scriptMain;
@@ -268,4 +276,37 @@ public class GameEventsScript : MonoBehaviour
             }
         }
     }
+
+    public IEnumerator StartStageQuestionary()
+    {
+        _scriptMain._scriptMain._scriptInit.ShowQuestion();
+
+        // Espera hasta que se reciba la respuesta
+        //yield return new WaitUntil(() => _scriptMain._scriptMain._scriptInit.respuestaRecibida);
+        yield return new WaitForSeconds(1);
+
+        // Reinicia la variable para la próxima pregunta
+        _scriptMain._scriptMain._scriptInit.respuestaRecibida = false;
+
+        // Ahora puedes continuar con el juego, usando lastAnswerCorrect, lastAnswer, etc.
+        if (_scriptMain._scriptMain._scriptInit.lastAnswerCorrect)
+        {
+            Debug.Log("✅ El jugador respondió correctamente!");
+        }
+        else
+        {
+            Debug.Log("❌ El jugador respondió incorrectamente.");
+        }
+
+        _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
+
+        yield return new WaitForSeconds(2);
+        _scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(false);
+        Destroy(_scriptMain._scriptEvents._currentEventPrefab);
+        _scriptMain._scriptEvents._onEvent++;
+        StartCoroutine(_scriptMain._scriptEvents.StartLevelNumerator());
+
+        //_scriptFusion.ActivatePanel();
+    }
+
 }

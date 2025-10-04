@@ -8,7 +8,7 @@ using UnityEngine.SceneManagement; // 👈 Necesario para eventos de escena
 public class MainGameplayScript : MonoBehaviour
 {
     public MainController _scriptMain;
-    public LanguageManager _scriptLanguage;
+   
     public GameObject _mainUI;
     public int _OnStation;
     public SlimeController _scriptSlime;
@@ -86,7 +86,7 @@ public class MainGameplayScript : MonoBehaviour
     private void Awake()
     {
         _scriptMain = GameObject.Find("CanvasIndestructible/Main/MainController").GetComponent<MainController>();
-        _scriptLanguage = GameObject.Find("CanvasIndestructible/Main/LanguageManager").GetComponent<LanguageManager>();
+        //_scriptLanguage = GameObject.Find("CanvasIndestructible/Main/LanguageManager").GetComponent<LanguageManager>();
     }
 
 
@@ -201,22 +201,22 @@ public class MainGameplayScript : MonoBehaviour
         //StartCoroutine(_scriptFusion.ActivatePanel());
     }
 
-    public IEnumerator StartStageQuestionary()
-    {
-        yield return new WaitForSeconds(1);
-        _scriptMain._bordersAnimator.SetBool("BorderOut", true);
-        yield return new WaitForSeconds(2);
-        Debug.Log("Questionario");
-        _scriptMain._bordersAnimator.SetBool("BorderOut", false);
+    //public IEnumerator StartStageQuestionary()
+    //{
+    //    yield return new WaitForSeconds(1);
+    //    _scriptMain._bordersAnimator.SetBool("BorderOut", true);
+    //    yield return new WaitForSeconds(2);
+    //    Debug.Log("Questionario");
+    //    _scriptMain._bordersAnimator.SetBool("BorderOut", false);
 
-        yield return new WaitForSeconds(2);
-        _scriptSlime._WindBlocker.gameObject.SetActive(false);
-        Destroy(_scriptEvents._currentEventPrefab);
-        _scriptEvents._onEvent++;
-        StartCoroutine(_scriptEvents.StartLevelNumerator());
+    //    yield return new WaitForSeconds(2);
+    //    _scriptSlime._WindBlocker.gameObject.SetActive(false);
+    //    Destroy(_scriptEvents._currentEventPrefab);
+    //    _scriptEvents._onEvent++;
+    //    StartCoroutine(_scriptEvents.StartLevelNumerator());
 
-        //_scriptFusion.ActivatePanel();
-    }
+    //    //_scriptFusion.ActivatePanel();
+    //}
 
     public IEnumerator StartsStageChest()
     {  

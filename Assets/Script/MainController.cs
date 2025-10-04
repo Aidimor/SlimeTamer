@@ -3,11 +3,13 @@ using System.Collections;
 using UnityEngine.SceneManagement; // Required for scene management
 using UnityEngine.UI;
 using TMPro;
+using LoL;  // <- necesario para GameInitScript
+
 
 public class MainController : MonoBehaviour
 {
-    public PortraitController _scriptPortrait;
-    public LanguageManager _scriptLanguage;
+    public PortraitController _scriptPortrait;   
+    public GameInitScript _scriptInit;
     public Animator _bordersAnimator;
     public Animator _cinematicBorders;
     public AudioSource _bgmAS;
@@ -28,6 +30,9 @@ public class MainController : MonoBehaviour
         {
             SceneManager.LoadScene(sceneName);
         }
-    
-  
+
+
+
+
+
 }

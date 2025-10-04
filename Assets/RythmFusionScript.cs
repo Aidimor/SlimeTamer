@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using LoL;
 
 public class RythmFusionScript : MonoBehaviour
 {
@@ -64,11 +65,11 @@ public class RythmFusionScript : MonoBehaviour
         {
             if (_elementsInfo[i]._elementText != null && !string.IsNullOrEmpty(_elementsInfo[i].key + (i + 1).ToString()))
             {
-                _elementsInfo[i]._elementText.text = LanguageManager.Instance.GetText(_elementsInfo[i].key);
+                _elementsInfo[i]._elementText.text = GameInitScript.Instance.GetText(_elementsInfo[i].key);
             }
         }
 
-        _scriptMain._choose2ElementsText.text = LanguageManager.Instance.GetText("choose");
+        _scriptMain._choose2ElementsText.text = GameInitScript.Instance.GetText("choose");
     }
 
     void Update()

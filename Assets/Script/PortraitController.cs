@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement; // 👈 Necesario para eventos de escena
+using LoL;
+
 
 public class PortraitController : MonoBehaviour
 {
@@ -47,12 +49,13 @@ public class PortraitController : MonoBehaviour
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        StartCoroutine(UpdateWorldTexts());
     }
 
     void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-        UpdateWorldTexts();
+    
     }
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
@@ -62,15 +65,19 @@ public class PortraitController : MonoBehaviour
         CustomStart();
     }
 
-    public void UpdateWorldTexts()
-    {
+    public IEnumerator UpdateWorldTexts()
+    { // ⏳ espera hasta que se haya cargado el idioma
+        yield return new WaitUntil(() => LoL.GameInitScript.Instance != null && LoL.GameInitScript.Instance.languageReady);
+
         for (int i = 0; i < _allWorlds.Length; i++)
         {
             if (_allWorlds[i]._worldText != null && !string.IsNullOrEmpty(_allWorlds[i].key))
             {
-                string text = LanguageManager.Instance.GetText(_allWorlds[i].key);         
-                _allWorlds[i]._worldText.text = text + " " + (i + 1).ToString("f0");
+                string text = GameInitScript.Instance.GetText(_allWorlds[i].key);
+                _allWorlds[i]._worldText.text = text + " " + (i + 1);
             }
+
+
         }
     }
 
