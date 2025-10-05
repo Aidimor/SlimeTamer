@@ -40,6 +40,7 @@ public class RythmFusionScript : MonoBehaviour
     public List<int> _elementsSelection = new List<int>();
     public bool _elementChoosed;
     public bool _buttonPressed;
+    public int customStep;
 
     void Start()
     {
@@ -188,6 +189,7 @@ public class RythmFusionScript : MonoBehaviour
             for (int step = 0; step < _order.Count; step++)
             {
                 int elementIndex = _order[step];
+                customStep = step;
                 _onElement = elementIndex;
 
                 _elementsInfo[elementIndex]._selector
@@ -254,9 +256,10 @@ public class RythmFusionScript : MonoBehaviour
         //particle2.startColor = _elementsInfo[_onElement]._releaseParticles.main.startColor;
 
 
-        if (_onElement != 0){
-            _elementsInfo[_onElement]._releaseParticles.Play();
-        }
+        //if (_onElement != 0){
+        _elementsInfo[customStep]._releaseParticles.startColor = _halfColors[_onElement];
+        _elementsInfo[customStep]._releaseParticles.Play();
+        //}
         //_elementsInfo[_onElement]._parent.transform.localScale = new Vector3(1f, 1f, 1);
         //_elementChoosed[_onElementChoosed]++;
         _elementsSelection.Add(_onElement);

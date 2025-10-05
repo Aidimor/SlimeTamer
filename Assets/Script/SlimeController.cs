@@ -132,7 +132,7 @@ public class SlimeController : MonoBehaviour
                     _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
 
                     yield return new WaitForSeconds(2);
-                    _scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(false);
+                    //_scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(false);
                     Destroy(_scriptMain._scriptEvents._currentEventPrefab);
                     _scriptMain._scriptEvents._onEvent++;
                     StartCoroutine(_scriptMain._scriptEvents.StartLevelNumerator());

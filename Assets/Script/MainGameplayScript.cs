@@ -149,40 +149,77 @@ public class MainGameplayScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        switch (_snowBool)
+        // 🔹 Actualizaciones del gameplay SOLO si no está pausado
+        if (!_scriptMain._pauseAssets._pause)
         {
-            case true:
-                _snowImage.color = Color.Lerp(_snowImage.color, new Color(1, 1, 1, 0.5f), 2 * Time.deltaTime);
-                break;
-            case false:
-                _snowImage.color = Color.Lerp(_snowImage.color, new Color(1, 1, 1, 0f), 2 * Time.deltaTime);
-                break;
+            // Nieve
+            Color targetSnow = _snowBool ? new Color(1, 1, 1, 0.5f) : new Color(1, 1, 1, 0f);
+            _snowImage.color = Color.Lerp(_snowImage.color, targetSnow, 2 * Time.deltaTime);
+
+            // Slime icon
+            _totalStages._SlimeIcon.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
+                _totalStages._SlimeIcon.GetComponent<RectTransform>().anchoredPosition,
+                new Vector2(_totalStages._xPoses[_scriptEvents._onEvent], 4), 5 * Time.deltaTime);
+
+            // Top options
+            _topOptions.SetActive(_topOptionsOn);
+
+            // Stage backgrounds
+            for (int i = 0; i < _allStageAssets.Length; i++)
+            {
+                _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = Vector2.MoveTowards(
+                    _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition,
+                    new Vector2(0, 0), 30 * Time.deltaTime);
+            }
+
+            // Slime cayendo
+            if (_slimeFalling)
+            {
+                _scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition += Vector2.up * (-150 * Time.deltaTime);
+            }
+
+            // Stage parent y UI principal
+            _stageParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
+                _stageParent.GetComponent<RectTransform>().anchoredPosition,
+                new Vector2(0, 0), 15 * Time.deltaTime);
+
+            _mainUI.transform.localScale = Vector2.Lerp(_mainUI.transform.localScale, new Vector2(1, 1), 5 * Time.deltaTime);
         }
 
-        _totalStages._SlimeIcon.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_totalStages._SlimeIcon.GetComponent<RectTransform>().anchoredPosition,
-            new Vector2(_totalStages._xPoses[_scriptEvents._onEvent], 4), 5 * Time.deltaTime);
-
-        _topOptions.SetActive(_topOptionsOn);
-
-        for (int i = 0; i < _allStageAssets.Length; i++)
+        // 🔹 Comprobar si se presionó el botón de pausa
+        if (Input.GetButtonDown("Pause"))
         {
-            _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = Vector2.MoveTowards(_allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition,
-                new Vector2(0, 0), 30 * Time.deltaTime);
+            _scriptMain.SetPause();
         }
 
-        if (_slimeFalling)
+        // 🔹 Actualizaciones de UI de pausa (si está pausado)
+        if (_scriptMain._pauseAssets._pause)
         {
-            _scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition
-          += Vector2.up * (-150 * Time.deltaTime);
+            float h = Input.GetAxisRaw("Horizontal");
+            if (h < 0) _scriptMain._pauseAssets._onPos = 0;
+            if (h > 0) _scriptMain._pauseAssets._onPos = 1;
 
+            // Mover puntero del menú de pausa
+            _scriptMain._pauseAssets._pointer.GetComponent<RectTransform>().anchoredPosition =
+                new Vector2(_scriptMain._pauseAssets._options[_scriptMain._pauseAssets._onPos].GetComponent<RectTransform>().anchoredPosition.x,
+                _scriptMain._pauseAssets._options[_scriptMain._pauseAssets._onPos].GetComponent<RectTransform>().anchoredPosition.y - 30f);
 
+            if (Input.GetButtonDown("Submit"))
+            {
+                switch (_scriptMain._pauseAssets._onPos)
+                {
+                    case 0:
+                        _scriptMain.SetPause();
+                        break;
+                    case 1:
+                        _scriptMain.SetPause();
+                        break;
+                }
+              
+            }
         }
-
-        _stageParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_stageParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(0, 0), 15 * Time.deltaTime);
-        _mainUI.transform.localScale = Vector2.Lerp(_mainUI.transform.localScale, new Vector2(1, 1), 5 * Time.deltaTime);
-
-    
     }
+
 
     public IEnumerator StartStageNumerator()
     {
@@ -265,7 +302,7 @@ public class MainGameplayScript : MonoBehaviour
             _scriptEvents._currentEventPrefab.GetComponent<IntroEventScript>().ExitIntroVoid();
         }
 
-        _scriptSlime._WindBlocker.gameObject.SetActive(false);
+       // _scriptSlime._WindBlocker.gameObject.SetActive(false);
         _allStageAssets[_scriptMain._onWorldGlobal]._frontStage.SetActive(true);
         _scriptMain._cinematicBorders.SetBool("FadeIn", false);
         _scriptSlime._slimeAnimator.SetBool("Falling", false);

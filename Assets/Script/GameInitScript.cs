@@ -10,17 +10,21 @@ namespace LoL
     {
         public static GameInitScript Instance;
 
-        public string _langCode;
+        public string _languageCode;
         private JSONNode _langNode;
         private Dictionary<string, string> _translations = new Dictionary<string, string>();
 
+        // Estado de preguntas
         public bool respuestaRecibida = false;
         public bool lastAnswerCorrect;
         public string lastQuestionId;
         public string lastAnswer;
 
+        public bool languageReady = false;
+
         void Awake()
         {
+            // Configurar Singleton
             if (Instance == null)
             {
                 Instance = this;
@@ -30,6 +34,9 @@ namespace LoL
             {
                 Destroy(gameObject);
             }
+
+            // WebGL pausa automática por foco
+            Application.runInBackground = false;
         }
 
         void Start()
@@ -44,26 +51,49 @@ namespace LoL
 
             LOLSDK.Init(sdk, "com.legends-of-learning.unity.sdk.v5.1.my-game");
 
+            // Registrar eventos
             LOLSDK.Instance.StartGameReceived += OnStartGame;
             LOLSDK.Instance.LanguageDefsReceived += OnLanguageDefs;
             LOLSDK.Instance.SaveResultReceived += OnSaveResult;
-            LOLSDK.Instance.GameStateChanged += state => Debug.Log("GameState: " + state);
-            LOLSDK.Instance.QuestionsReceived += q => Debug.Log("Questions: " + q);
+            LOLSDK.Instance.QuestionsReceived += q => Debug.Log("📥 Questions: " + q);
             LOLSDK.Instance.AnswerResultReceived += OnAnswerResult;
+
+            // Manejo de pausa / reanudar
+            LOLSDK.Instance.GameStateChanged += state =>
+            {
+                Debug.Log("📢 GameState cambiado a: " + state);
+
+                if (state == GameState.Paused)
+                {
+                    Debug.Log("⏸️ Juego pausado por el profesor");
+                    Time.timeScale = 0f;
+                }
+                else if (state == GameState.Resumed)
+                {
+                    Debug.Log("▶️ Juego reanudado por el profesor");
+                    Time.timeScale = 1f;
+                }
+            };
 
             LOLSDK.Instance.GameIsReady();
 
 #if UNITY_EDITOR
             LoadMockData();
 #endif
+
+            // Cargar estado automáticamente al inicio
+            LoadState();
         }
 
+        // 🔹 Mostrar pregunta
         public void ShowQuestion()
         {
             LOLSDK.Instance.ShowQuestion();
             respuestaRecibida = false;
+            Debug.Log("❓ Pregunta mostrada al jugador.");
         }
 
+        // 🔹 Callback de respuesta
         public void OnAnswerResult(string resultJSON)
         {
             var result = JSON.Parse(resultJSON);
@@ -73,24 +103,12 @@ namespace LoL
             lastAnswer = result["answer"] != null ? result["answer"] : "none";
 
             respuestaRecibida = true;
-
-            Debug.Log($"Pregunta: {lastQuestionId}, Respuesta: {lastAnswer}, Correcta: {lastAnswerCorrect}");
+            Debug.Log($"📊 Pregunta: {lastQuestionId}, Respuesta: {lastAnswer}, Correcta: {lastAnswerCorrect}");
 
             ContinueGameplayAfterQuestion();
         }
 
-        //void OnStartGame(string startGameJSON)
-        //{
-        //    if (string.IsNullOrEmpty(startGameJSON)) return;
-
-        //    var payload = JSON.Parse(startGameJSON);
-        //    _langCode = payload["languageCode"];
-        //    Debug.Log("✅ StartGame recibido. Idioma: " + _langCode);
-
-        //    if (GameInitScript.Instance != null)
-        //        GameInitScript.Instance.LoadLanguage(_langCode);
-        //}
-
+        // 🔹 Callback de inicio de juego
         void OnStartGame(string startGameJSON)
         {
             if (string.IsNullOrEmpty(startGameJSON)) return;
@@ -98,19 +116,15 @@ namespace LoL
             var payload = JSON.Parse(startGameJSON);
 
 #if UNITY_EDITOR
-            // En editor fuerza siempre "es"
-            //_langCode = "es";
+            //_languageCode = "es"; // Fuerza español en editor
 #else
-    // En WebGL o en producción usa lo que diga LoL
-    _langCode = payload["languageCode"];
+            _languageCode = payload["languageCode"];
 #endif
 
-            Debug.Log("✅ StartGame recibido. Idioma: " + _langCode);
+            Debug.Log("✅ StartGame recibido. Idioma: " + _languageCode);
 
-            if (GameInitScript.Instance != null)
-                GameInitScript.Instance.LoadLanguage(_langCode);
+            LoadLanguage(_languageCode);
         }
-
 
         void OnLanguageDefs(string langJSON)
         {
@@ -122,7 +136,7 @@ namespace LoL
 
         void OnSaveResult(bool success)
         {
-            Debug.Log(success ? "✅ Guardado exitoso" : "❌ Error al guardar");
+            Debug.Log(success ? "✅ Guardado exitoso en LoL" : "❌ Error al guardar en LoL");
         }
 
 #if UNITY_EDITOR
@@ -139,13 +153,13 @@ namespace LoL
             if (File.Exists(langFilePath))
             {
                 string langDataAsJson = File.ReadAllText(langFilePath);
-                var lang = JSON.Parse(langDataAsJson)?[_langCode];
+                var lang = JSON.Parse(langDataAsJson)?[_languageCode];
                 OnLanguageDefs(lang.ToString());
             }
         }
 #endif
 
-        // ✅ Obtener texto traducido desde diccionario
+        // 🔹 Obtener texto traducido
         public string GetText(string key)
         {
             if (_translations.ContainsKey(key))
@@ -156,16 +170,14 @@ namespace LoL
 
         void ContinueGameplayAfterQuestion()
         {
-            Debug.Log("✅ Continuando juego después de la pregunta...");
+            Debug.Log("▶️ Continuando juego después de responder la pregunta...");
         }
 
-        // ✅ Cargar archivo de idioma y llenar diccionario
-        public bool languageReady = false;
-
+        // 🔹 Cargar archivo de idioma
         public void LoadLanguage(string lang)
         {
             string path = Path.Combine(Application.dataPath, "Jsons", $"{lang}.txt");
-            Debug.Log("Buscando archivo de idioma en: " + path);
+            Debug.Log("📂 Buscando archivo de idioma en: " + path);
 
             if (File.Exists(path))
             {
@@ -182,16 +194,40 @@ namespace LoL
                         _translations.Add(key, value);
                 }
 
-                Debug.Log($"Idioma cargado: {lang}, entradas: {_translations.Count}");
-                languageReady = true; // ✅ ahora está listo
+                Debug.Log($"✅ Idioma cargado: {lang}, entradas: {_translations.Count}");
+                languageReady = true;
             }
             else
             {
-                Debug.LogError($"No se encontró archivo de idioma: {path}");
+                Debug.LogError($"❌ No se encontró archivo de idioma: {path}");
                 _translations.Clear();
                 languageReady = false;
             }
         }
 
+        // 🔹 Guardar estado
+        public void SaveGame(string dataJson)
+        {
+            var state = new State<string> { data = dataJson };
+            LOLSDK.Instance.SaveState(state);
+            Debug.Log("💾 Estado guardado: " + dataJson);
+        }
+
+        // 🔹 Cargar estado
+        public void LoadState()
+        {
+            LOLSDK.Instance.LoadState<string>(state =>
+            {
+                if (state != null && !string.IsNullOrEmpty(state.data))
+                {
+                    Debug.Log("📂 Estado cargado: " + state.data);
+                    // Aquí procesas tu JSON de estado
+                }
+                else
+                {
+                    Debug.Log("ℹ️ No se encontró estado previo, se iniciará un nuevo juego");
+                }
+            });
+        }
     }
 }
