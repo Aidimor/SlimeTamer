@@ -51,12 +51,12 @@ public class GameEventsScript : MonoBehaviour
         switch (_scriptMain._scriptMain._onWorldGlobal)
         {
             case 0:
- 
+
                 _scriptMain._GamesList.Add(11);
                 _scriptMain._GamesList.Add(10);
                 _scriptMain._GamesList.Add(2);
                 _scriptMain._GamesList.Add(12);
-                _scriptMain._GamesList.Add(8);      
+                _scriptMain._GamesList.Add(8);
                 _scriptMain._GamesList.Add(13);
                 StartCoroutine(StartLevelNumerator()); 
                 break;

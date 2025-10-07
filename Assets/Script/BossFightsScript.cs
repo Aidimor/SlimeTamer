@@ -26,11 +26,12 @@ public class BossFightsScript : MonoBehaviour
     {
   
         yield return new WaitForSeconds(1);
-        _scriptMain._bossAnimator.transform.gameObject.SetActive(true);
-        yield return new WaitForSeconds(1);
-        _scriptMain._bossAnimator.SetBool("Idle", true);
-        yield return new WaitForSeconds(4);       
+        _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
 
+        yield return new WaitForSeconds(3);
+        _scriptMain._bossAnimator.transform.gameObject.SetActive(true);
+        _scriptMain._bossAnimator.SetBool("Idle", true);
+        yield return new WaitForSeconds(2);
         _scriptMain._scriptMain._cinematicBorders.SetBool("FadeIn", true);
         yield return new WaitForSeconds(2);
         _scriptMain._bossAnimator.SetTrigger("Attack");
@@ -41,8 +42,10 @@ public class BossFightsScript : MonoBehaviour
         _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
         _scriptMain._scriptMain._introSpecial = true;
         yield return new WaitForSeconds(1);
+        _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
         _scriptMain._scriptMain._onWorldGlobal = 3;
         _scriptMain._bossAnimator.gameObject.SetActive(false);
+
         _scriptMain._scriptMain.LoadSceneByName("IntroScene");
   
 
