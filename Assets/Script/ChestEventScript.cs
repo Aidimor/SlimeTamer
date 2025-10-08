@@ -1,13 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEngine.UI;
 using UnityEngine;
 using LoL;
 
 public class ChestEventScript : MonoBehaviour
 {
     public MainGameplayScript _scriptMain;
-    public Animator _chestAnimator;
+    public Animator _princessAnim;
     public GameObject[] _worlds;
+
+
     // Start is called before the first frame update
 
 

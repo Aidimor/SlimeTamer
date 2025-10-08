@@ -1678,9 +1678,9 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: 875af768b86f1ba448b1800b26ee49ec, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 1
+  m_Volume: 0.5
   m_Pitch: 1
-  Loop: 0
+  Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
@@ -9277,6 +9277,11 @@ MonoBehaviour:
   _bordersAnimator: {fileID: 1511142574}
   _cinematicBorders: {fileID: 588363696}
   _bgmAS: {fileID: 229199079}
+  _allBGM:
+  - {fileID: 8300000, guid: da1e06c401dcba74f93321c5c06b0da5, type: 3}
+  - {fileID: 0}
+  - {fileID: 0}
+  - {fileID: 8300000, guid: da1e06c401dcba74f93321c5c06b0da5, type: 3}
   _saveLoadValues:
     _wordsUnlocked: 0
     _elementsUnlocked: 00000000

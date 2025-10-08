@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement; // 👈 Necesario para eventos de escena
+using LoL;  // <- necesario para GameInitScript
 
 public class MainGameplayScript : MonoBehaviour
 {
@@ -82,6 +83,21 @@ public class MainGameplayScript : MonoBehaviour
 
     public ParticleSystem[] _flyingSlimeParticles;
     public TextMeshProUGUI _choose2ElementsText;
+
+    [System.Serializable]
+    public class DialogeAssets
+    {
+        public string _linea;
+        public Animator _dialogePanel;
+        public TextMeshProUGUI _dialogeText;
+        public Image _princessImage;
+        public Sprite[] _allSprites;
+        public bool _startDialoge;
+        public bool _typing;
+        public Vector2 _dialogeSize;
+    }
+    public DialogeAssets _dialogeAssets;
+
 
     private void Awake()
     {
@@ -255,17 +271,7 @@ public class MainGameplayScript : MonoBehaviour
     //    //_scriptFusion.ActivatePanel();
     //}
 
-    public IEnumerator StartsStageChest()
-    {  
-        yield return new WaitForSeconds(1);
-        _scriptEvents._currentEventPrefab.GetComponent<ChestEventScript>()._chestAnimator.SetTrigger("ChestOpen");
-        yield return new WaitForSeconds(2);
-        _scriptEvents._currentEventPrefab.GetComponent<ChestEventScript>().ItemGet();
- 
-       _itemGotPanel._parent.SetTrigger("ItemGot");
-        StartCoroutine(ExitNumerator());
 
-    }
 
     public IEnumerator IntroStageNumerator()
     {  
@@ -333,11 +339,63 @@ public class MainGameplayScript : MonoBehaviour
         }
     }
 
-    //public void UpdateElementText()
-    //{     
-    //   if (_itemGotPanel._Message != null && !string.IsNullOrEmpty(_itemGotPanel.key))
-    //   {
-    //    _itemGotPanel._Message.text = LanguageManager.Instance.GetText(_elementsInfo[i].key);
-    //    }      
-    //}
+    public IEnumerator StartsStageChest()
+    {
+        yield return new WaitForSeconds(1);
+        _dialogeAssets._dialogePanel.SetBool("DialogeIn", true);
+        //_scriptEvents._currentEventPrefab.GetComponent<ChestEventScript>()._chestAnimator.SetTrigger("ChestOpen");
+        yield return new WaitForSeconds(2);
+
+        switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._eventClassification)
+        {
+            case GameEvent.EventClassification.Chest:
+                switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._chestItems[0])
+                {
+                    case GameEvent.ChestItems.Water:
+                        _dialogeAssets._dialogeSize = new Vector2(1, 3);
+                        break;
+                    case GameEvent.ChestItems.Air:
+                        break;
+                    case GameEvent.ChestItems.Earth:
+                        break;
+                    case GameEvent.ChestItems.Fire:
+                        break;
+                }
+                break;
+        }
+
+
+        for (int i = (int)_dialogeAssets._dialogeSize.x; i < (int)_dialogeAssets._dialogeSize.y; i++)
+        {
+            _dialogeAssets._linea = GameInitScript.Instance.GetText("dialoge" + i.ToString());
+            StartCoroutine(EscribirTexto(_dialogeAssets._linea, _dialogeAssets._dialogeText, 0.02f));
+            while (_dialogeAssets._typing)
+            {
+                yield return null;
+            }
+       
+            while (!Input.GetButtonDown("Submit"))
+            {
+                yield return null;
+            }
+        }
+        _dialogeAssets._dialogePanel.SetBool("DialogeIn", false);
+        _itemGotPanel._parent.SetTrigger("ItemGot");
+        _scriptEvents._currentEventPrefab.GetComponent<ChestEventScript>().ItemGet();
+        yield return new WaitForSeconds(1);
+        StartCoroutine(ExitNumerator());
+
+    }
+
+    public IEnumerator EscribirTexto(string linea, TMPro.TextMeshProUGUI textoUI, float velocidad)
+    {
+        _dialogeAssets._typing = true;
+        textoUI.text = "";
+        foreach (char letra in linea.ToCharArray())
+        {
+            textoUI.text += letra;
+            yield return new WaitForSeconds(velocidad);
+        }
+        _dialogeAssets._typing = false;
+    }
 }

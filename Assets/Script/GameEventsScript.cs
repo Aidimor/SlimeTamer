@@ -41,6 +41,7 @@ public class GameEventsScript : MonoBehaviour
    
     public bool _enter;
 
+
     void Start()
     {
         for(int i = 0; i < _enemiesGameObjects.Length; i++)
@@ -133,6 +134,9 @@ public class GameEventsScript : MonoBehaviour
 
     public IEnumerator StartLevelNumerator()
     {
+       
+
+
         _scriptMain._scriptFusion.UnlockElements();
         for (int i = 0; i < _enemiesGameObjects.Length; i++)
         {
@@ -152,7 +156,10 @@ public class GameEventsScript : MonoBehaviour
             evento.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
             evento.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 90);
             _currentEventPrefab = evento;
-           
+
+
+
+
 
             switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._eventClassification)
             {
@@ -274,6 +281,24 @@ public class GameEventsScript : MonoBehaviour
                     break;
           
             }
+        }
+
+        yield return new WaitForSeconds(1);
+        switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._eventClassification)
+        {
+            case GameEvent.EventClassification.Normal:
+                // Referencia al AudioSource
+                AudioSource bgm = _scriptMain._scriptMain._bgmAS;
+                Debug.Log(_specialEvents[_scriptMain._GamesList[_onEvent]]._eventType);
+                // Si no está reproduciendo, entonces asigna el clip y reproduce
+                if (!bgm.isPlaying)
+                {
+                    bgm.clip = _scriptMain._scriptMain._allBGM[_scriptMain._scriptMain._onWorldGlobal];
+                    bgm.Play();
+                }
+                break;
+
+
         }
     }
 

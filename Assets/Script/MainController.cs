@@ -14,6 +14,7 @@ public class MainController : MonoBehaviour
     public Animator _bordersAnimator;
     public Animator _cinematicBorders;
     public AudioSource _bgmAS;
+    public AudioClip[] _allBGM;
 
     [System.Serializable]
     public class SaveLoadValues

@@ -27,6 +27,7 @@ public class GameEvent : ScriptableObject
         FightSnail,
         Fire,
         BossFight1,
+        BossBattles,
         other
 
     }

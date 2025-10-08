@@ -6,6 +6,7 @@ public class BossFightsScript : MonoBehaviour
 {
     public MainGameplayScript _scriptMain;
     public GameObject[] _worlds;
+ 
 
 
     // Start is called before the first frame update

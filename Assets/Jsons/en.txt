@@ -7,6 +7,8 @@
     { "key": "description1", "value": "WATER PARTICLE OBTAINED!" },
     { "key": "description2", "value": "AIR PARTICLE OBTAINED!" },
     { "key": "description3", "value": "EARTH PARTICLE OBTAINED!" },
-    { "key": "choose", "value": "CHOOSE 2 ELEMENTS" }
+    { "key": "choose", "value": "CHOOSE 2 ELEMENTS" },
+    { "key": "dialoge1", "value": "Ayudanos a liberar el reino, por favor." },
+    { "key": "dialoge2", "value": "De ti dependemos." }   
   ]
 }
