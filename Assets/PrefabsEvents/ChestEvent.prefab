@@ -1619,7 +1619,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -77.1, y: -76.4}
+  m_AnchoredPosition: {x: -78.6, y: -92}
   m_SizeDelta: {x: 200, y: 300}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &7848249205975075185
@@ -1643,14 +1643,14 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 0.8627451}
+  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: -578262425, guid: d7f77fb459348e240aad56faeb3b83b9, type: 3}
+  m_Sprite: {fileID: 975375203, guid: d7f77fb459348e240aad56faeb3b83b9, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -2086,6 +2086,11 @@ MonoBehaviour:
   - {fileID: 9043153813662323514}
   - {fileID: 3634951584816521243}
   - {fileID: 2035202073583553634}
+  _allPrincessSprites:
+  - {fileID: 975375203, guid: d7f77fb459348e240aad56faeb3b83b9, type: 3}
+  - {fileID: -578262425, guid: d7f77fb459348e240aad56faeb3b83b9, type: 3}
+  - {fileID: -111326221, guid: d7f77fb459348e240aad56faeb3b83b9, type: 3}
+  - {fileID: -1203556919, guid: d7f77fb459348e240aad56faeb3b83b9, type: 3}
 --- !u!1 &9043153813662323514
 GameObject:
   m_ObjectHideFlags: 0

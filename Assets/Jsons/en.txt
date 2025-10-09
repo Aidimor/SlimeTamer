@@ -1,6 +1,6 @@
 {
   "items": [
-    { "key": "world", "value": "World" },,
+    { "key": "world", "value": "World" },
     { "key": "element1", "value": "WATER" },
     { "key": "element2", "value": "AIR" },
     { "key": "element3", "value": "EARTH" },
@@ -8,7 +8,8 @@
     { "key": "description2", "value": "AIR PARTICLE OBTAINED!" },
     { "key": "description3", "value": "EARTH PARTICLE OBTAINED!" },
     { "key": "choose", "value": "CHOOSE 2 ELEMENTS" },
-    { "key": "dialoge1", "value": "Ayudanos a liberar el reino, por favor." },
-    { "key": "dialoge2", "value": "De ti dependemos." }   
+    { "key": "dialoge1", "value": "Ayudanos a liberar el reino, por favor.", "id": 1 },
+    { "key": "dialoge2", "value": "De ti dependemos.", "id": 2 }
   ]
 }
+

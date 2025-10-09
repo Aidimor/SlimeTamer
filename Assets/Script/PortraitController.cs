@@ -187,11 +187,14 @@ public class PortraitController : MonoBehaviour
         _scriptMainController._cinematicBorders.SetBool("FadeIn", true);
         _parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -50f);
         _explosionSlimeParticle.Play();
+        _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._jump);
         _slimeParent.SetActive(false);
         _fallingSlime.Play();
         _gameStarts = true;
         _scriptMainController._onWorldGlobal = _onWorldPos;
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1);
+        _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._fall);
+        yield return new WaitForSeconds(2);
         _scriptMainController._bordersAnimator.SetBool("BorderOut", false);
         yield return new WaitForSeconds(1);
         _scriptMainController.LoadSceneByName("MainGame");

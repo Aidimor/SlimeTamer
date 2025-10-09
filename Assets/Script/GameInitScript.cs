@@ -6,13 +6,26 @@ using System.Collections.Generic;
 
 namespace LoL
 {
+    [System.Serializable]
+    public class LocalizedItem
+    {
+        public string key;
+        public string value;
+        public int id;
+    }
+
     public class GameInitScript : MonoBehaviour
     {
         public static GameInitScript Instance;
 
         public string _languageCode;
         private JSONNode _langNode;
+
+        // Diccionario solo con valores para compatibilidad
         private Dictionary<string, string> _translations = new Dictionary<string, string>();
+
+        // Diccionario con objetos completos para ID
+        private Dictionary<string, LocalizedItem> _localizedItems = new Dictionary<string, LocalizedItem>();
 
         // Estado de preguntas
         public bool respuestaRecibida = false;
@@ -24,7 +37,6 @@ namespace LoL
 
         void Awake()
         {
-            // Configurar Singleton
             if (Instance == null)
             {
                 Instance = this;
@@ -35,7 +47,6 @@ namespace LoL
                 Destroy(gameObject);
             }
 
-            // WebGL pausa automática por foco
             Application.runInBackground = false;
         }
 
@@ -51,28 +62,17 @@ namespace LoL
 
             LOLSDK.Init(sdk, "com.legends-of-learning.unity.sdk.v5.1.my-game");
 
-            // Registrar eventos
             LOLSDK.Instance.StartGameReceived += OnStartGame;
             LOLSDK.Instance.LanguageDefsReceived += OnLanguageDefs;
             LOLSDK.Instance.SaveResultReceived += OnSaveResult;
             LOLSDK.Instance.QuestionsReceived += q => Debug.Log("📥 Questions: " + q);
             LOLSDK.Instance.AnswerResultReceived += OnAnswerResult;
 
-            // Manejo de pausa / reanudar
             LOLSDK.Instance.GameStateChanged += state =>
             {
                 Debug.Log("📢 GameState cambiado a: " + state);
-
-                if (state == GameState.Paused)
-                {
-                    Debug.Log("⏸️ Juego pausado por el profesor");
-                    Time.timeScale = 0f;
-                }
-                else if (state == GameState.Resumed)
-                {
-                    Debug.Log("▶️ Juego reanudado por el profesor");
-                    Time.timeScale = 1f;
-                }
+                if (state == GameState.Paused) Time.timeScale = 0f;
+                else if (state == GameState.Resumed) Time.timeScale = 1f;
             };
 
             LOLSDK.Instance.GameIsReady();
@@ -81,11 +81,9 @@ namespace LoL
             LoadMockData();
 #endif
 
-            // Cargar estado automáticamente al inicio
             LoadState();
         }
 
-        // 🔹 Mostrar pregunta
         public void ShowQuestion()
         {
             LOLSDK.Instance.ShowQuestion();
@@ -93,7 +91,6 @@ namespace LoL
             Debug.Log("❓ Pregunta mostrada al jugador.");
         }
 
-        // 🔹 Callback de respuesta
         public void OnAnswerResult(string resultJSON)
         {
             var result = JSON.Parse(resultJSON);
@@ -108,7 +105,6 @@ namespace LoL
             ContinueGameplayAfterQuestion();
         }
 
-        // 🔹 Callback de inicio de juego
         void OnStartGame(string startGameJSON)
         {
             if (string.IsNullOrEmpty(startGameJSON)) return;
@@ -168,6 +164,15 @@ namespace LoL
             return $"[{key}]";
         }
 
+        // 🔹 Obtener ID del texto
+        public int GetTextID(string key)
+        {
+            if (_localizedItems.ContainsKey(key))
+                return _localizedItems[key].id;
+
+            return -1;
+        }
+
         void ContinueGameplayAfterQuestion()
         {
             Debug.Log("▶️ Continuando juego después de responder la pregunta...");
@@ -185,13 +190,20 @@ namespace LoL
                 var langData = JSON.Parse(json);
 
                 _translations.Clear();
+                _localizedItems.Clear();
+
                 var items = langData["items"];
                 foreach (var item in items)
                 {
                     string key = item.Value["key"];
                     string value = item.Value["value"];
+                    int id = item.Value["id"] != null ? item.Value["id"].AsInt : -1;
+
                     if (!_translations.ContainsKey(key))
                         _translations.Add(key, value);
+
+                    if (!_localizedItems.ContainsKey(key))
+                        _localizedItems.Add(key, new LocalizedItem { key = key, value = value, id = id });
                 }
 
                 Debug.Log($"✅ Idioma cargado: {lang}, entradas: {_translations.Count}");
@@ -201,6 +213,7 @@ namespace LoL
             {
                 Debug.LogError($"❌ No se encontró archivo de idioma: {path}");
                 _translations.Clear();
+                _localizedItems.Clear();
                 languageReady = false;
             }
         }
@@ -221,7 +234,6 @@ namespace LoL
                 if (state != null && !string.IsNullOrEmpty(state.data))
                 {
                     Debug.Log("📂 Estado cargado: " + state.data);
-                    // Aquí procesas tu JSON de estado
                 }
                 else
                 {

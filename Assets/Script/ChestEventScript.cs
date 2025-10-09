@@ -9,6 +9,7 @@ public class ChestEventScript : MonoBehaviour
     public MainGameplayScript _scriptMain;
     public Animator _princessAnim;
     public GameObject[] _worlds;
+    public Sprite[] _allPrincessSprites;
 
 
     // Start is called before the first frame update

@@ -274,7 +274,8 @@ public class MainGameplayScript : MonoBehaviour
 
 
     public IEnumerator IntroStageNumerator()
-    {  
+    {
+        _scriptMain._scriptSFX._windSetVolume = 1;
         for (int i = 0; i < _allStageAssets.Length; i++)
         {
             _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -600f);
@@ -314,7 +315,7 @@ public class MainGameplayScript : MonoBehaviour
         _scriptSlime._slimeAnimator.SetBool("Falling", false);
         _fallParticle.gameObject.SetActive(false);
         _slimeFalling = false;
-   
+        _scriptMain._scriptSFX._windSetVolume = 0;
 
         for (int i = 0; i < _allStageAssets.Length; i++)
         {
@@ -367,8 +368,12 @@ public class MainGameplayScript : MonoBehaviour
 
         for (int i = (int)_dialogeAssets._dialogeSize.x; i < (int)_dialogeAssets._dialogeSize.y; i++)
         {
-            _dialogeAssets._linea = GameInitScript.Instance.GetText("dialoge" + i.ToString());
-            StartCoroutine(EscribirTexto(_dialogeAssets._linea, _dialogeAssets._dialogeText, 0.02f));
+            string text = GameInitScript.Instance.GetText("dialoge" + i.ToString());
+            int id = GameInitScript.Instance.GetTextID("dialoge" + i.ToString());
+            StartCoroutine(EscribirTexto(text, _dialogeAssets._dialogeText, 0.02f));
+            var PrincessImage = _scriptEvents._currentEventPrefab.GetComponent<ChestEventScript>();
+            PrincessImage._princessAnim.GetComponent<Image>().sprite = PrincessImage._allPrincessSprites[id];
+
             while (_dialogeAssets._typing)
             {
                 yield return null;
@@ -378,6 +383,7 @@ public class MainGameplayScript : MonoBehaviour
             {
                 yield return null;
             }
+            _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._next);
         }
         _dialogeAssets._dialogePanel.SetBool("DialogeIn", false);
         _itemGotPanel._parent.SetTrigger("ItemGot");

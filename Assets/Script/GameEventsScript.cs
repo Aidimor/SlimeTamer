@@ -231,6 +231,7 @@ public class GameEventsScript : MonoBehaviour
                         yield return new WaitForSeconds(2);
                         _scriptMain._stageParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -10f);
                         _scriptMain._fallingParticle.Play();
+                        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._explosion);
                         _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
                         _scriptMain._firstStage = true;
                     }
@@ -248,6 +249,7 @@ public class GameEventsScript : MonoBehaviour
                         yield return new WaitForSeconds(2);
                         _scriptMain._stageParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -10f);
                         _scriptMain._fallingParticle.Play();
+                        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._explosion);
                         _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
                         _scriptMain._firstStage = true;
                     }
@@ -268,7 +270,20 @@ public class GameEventsScript : MonoBehaviour
                         yield return new WaitForSeconds(2);
                         _scriptMain._stageParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -10f);
                         _scriptMain._fallingParticle.Play();
+                        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._explosion);
                         _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
+                        switch (_scriptMain._scriptMain._onWorldGlobal)
+                        {
+                            case 0:
+                            case 1:
+                            case 2:
+                                _scriptMain._scriptSlime._slimeAnimator.Play("Fall1");
+                                break;                  
+                            case 3:
+                                _scriptMain._scriptSlime._slimeAnimator.Play("Fall2");
+                                break;
+                        }
+
                         _scriptMain._firstStage = true;
                     }            
                     StartCoroutine(_scriptMain.StartsStageChest());               
@@ -288,14 +303,14 @@ public class GameEventsScript : MonoBehaviour
         {
             case GameEvent.EventClassification.Normal:
                 // Referencia al AudioSource
-                AudioSource bgm = _scriptMain._scriptMain._bgmAS;
-                Debug.Log(_specialEvents[_scriptMain._GamesList[_onEvent]]._eventType);
-                // Si no está reproduciendo, entonces asigna el clip y reproduce
-                if (!bgm.isPlaying)
-                {
-                    bgm.clip = _scriptMain._scriptMain._allBGM[_scriptMain._scriptMain._onWorldGlobal];
-                    bgm.Play();
-                }
+                //AudioSource bgm = _scriptMain._scriptMain._bgmAS;
+                //Debug.Log(_specialEvents[_scriptMain._GamesList[_onEvent]]._eventType);
+                //// Si no está reproduciendo, entonces asigna el clip y reproduce
+                //if (!bgm.isPlaying)
+                //{
+                //    bgm.clip = _scriptMain._scriptMain._allBGM[_scriptMain._scriptMain._onWorldGlobal];
+                //    bgm.Play();
+                //}
                 break;
 
 

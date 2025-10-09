@@ -11,6 +11,7 @@ public class MainController : MonoBehaviour
 
     public PortraitController _scriptPortrait;
     public GameInitScript _scriptInit;
+    public SFXscript _scriptSFX;
     public Animator _bordersAnimator;
     public Animator _cinematicBorders;
     public AudioSource _bgmAS;

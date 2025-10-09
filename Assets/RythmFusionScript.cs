@@ -9,6 +9,7 @@ public class RythmFusionScript : MonoBehaviour
 {
     [SerializeField] private MainGameplayScript _scriptMain;
     [SerializeField] private SlimeController _scriptSlime;
+
     [System.Serializable]
     public class ElementsInfo
     {
@@ -18,46 +19,43 @@ public class RythmFusionScript : MonoBehaviour
         public Image _imageColor;
         public ParticleSystem _releaseParticles;
         public TextMeshProUGUI _elementText;
-        //public bool _unlocked;
         [Header("Idioma")]
-        public string key; // 👈 clave que se buscará en el JSON (ej: "world1")
+        public string key;
     }
-    public ElementsInfo[] _elementsInfo;
 
+    public ElementsInfo[] _elementsInfo;
     public Vector2[] _positions;
 
-    public float _timerInterval;
+    [Header("Rythm Settings")]
+    [Tooltip("Beats per minute (quarter notes). Example: 120.")]
+    public float _bpm = 120f;
+
+    [Tooltip("Subdivisions per quarter note. 1 = quarter, 2 = eighths, 4 = sixteenths.")]
+    public int _subdivisions = 1;
+
+    [HideInInspector] public float _timerInterval;
+
+    [Header("Press Settings")]
+    [Tooltip("Window to press the button per step in seconds.")]
+    public float _pressWindow = 0.3f;
+    [HideInInspector] public bool _canPress = false;
+
     public int _onElement;
     public int _onElementChoosed;
-
-    // store activation order as element indices (e.g. [2,0,3,1])
     public List<int> _order = new List<int>();
-
-    //public ParticleSystem[] _particleOnSlime;
-
-    //public int[] _elementChoosed;
     public Color[] _halfColors;
     public List<int> _elementsSelection = new List<int>();
     public bool _elementChoosed;
     public bool _buttonPressed;
     public int customStep;
 
+    [Header("Audio")]
+    public AudioSource _kickSound;
+    public AudioSource _chooseSound;
+
     void Start()
     {
-        //// initial shuffle (optional)
-        //ShuffleElements();
-        //// ensure positions array matches elements length; if not, capture current parents' positions
-        //if (_positions == null || _positions.Length != _elementsInfo.Length)
-        //{
-        //    _positions = new Vector2[_elementsInfo.Length];
-        //    for (int i = 0; i < _elementsInfo.Length; i++)
-        //    {
-        //        _positions[i] = _elementsInfo[i]._parent.GetComponent<RectTransform>().anchoredPosition;
-        //    }
-        //}
         UpdateWorldTexts();
-
-
     }
 
     public void UpdateWorldTexts()
@@ -69,15 +67,12 @@ public class RythmFusionScript : MonoBehaviour
                 _elementsInfo[i]._elementText.text = GameInitScript.Instance.GetText(_elementsInfo[i].key);
             }
         }
-
         _scriptMain._choose2ElementsText.text = GameInitScript.Instance.GetText("choose");
     }
 
     void Update()
     {
-
-
-        if (Input.GetButtonDown("Submit") && !_buttonPressed)
+        if (Input.GetButtonDown("Submit") && !_buttonPressed && _canPress)
         {
             switch (_onElement)
             {
@@ -90,7 +85,6 @@ public class RythmFusionScript : MonoBehaviour
                         _elementsInfo[1]._imageColor.color = _halfColors[1];
                         ChooseElementVoid();
                     }
-      
                     break;
                 case 2:
                     if (_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[2])
@@ -107,11 +101,10 @@ public class RythmFusionScript : MonoBehaviour
                     }
                     break;
             }
-
-        
+          
         }
 
-        for(int i = 0; i < _elementsInfo.Length; i++)
+        for (int i = 0; i < _elementsInfo.Length; i++)
         {
             _elementsInfo[i]._elementOrb.transform.localScale =
                 Vector2.Lerp(_elementsInfo[i]._elementOrb.transform.localScale, new Vector2(1, 1), 4 * Time.deltaTime);
@@ -121,8 +114,8 @@ public class RythmFusionScript : MonoBehaviour
     public void ShuffleElements()
     {
         _order.Clear();
-
         int n = _elementsInfo.Length;
+
         if (_positions == null || _positions.Length != n)
         {
             Debug.LogWarning("Positions length mismatch — rebuilding from parents.");
@@ -131,47 +124,30 @@ public class RythmFusionScript : MonoBehaviour
                 _positions[i] = _elementsInfo[i]._parent.GetComponent<RectTransform>().anchoredPosition;
         }
 
-        // pool of element indices not yet placed
         List<int> availableElements = new List<int>();
         for (int i = 0; i < n; i++) availableElements.Add(i);
 
-        // for each position slot j (0..n-1) pick a random element and place it there.
         for (int j = 0; j < n; j++)
         {
             int rand = Random.Range(0, availableElements.Count);
             int chosenElementIndex = availableElements[rand];
-
-            // assign position j to that element
             _elementsInfo[chosenElementIndex]._parent.GetComponent<RectTransform>().anchoredPosition = _positions[j];
-
-            // record that at activation step j we should activate 'chosenElementIndex'
             _order.Add(chosenElementIndex);
-
-            // remove chosen from available pool
             availableElements.RemoveAt(rand);
         }
 
-        // make sure parents are active
         for (int i = 0; i < n; i++)
         {
             _elementsInfo[i]._parent.SetActive(true);
             _elementsInfo[i]._elementOrb.SetActive(_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[i]);
-         
         }
-      
-
-        // debug print
-        string orderStr = "";
-        for (int i = 0; i < _order.Count; i++)
-            orderStr += _order[i] + (i < _order.Count - 1 ? "," : "");
-        //Debug.Log("Shuffle order (element indices): " + orderStr);
     }
 
     public IEnumerator RythmNumerator()
     {
         _elementChoosed = false;
         _buttonPressed = false;
-        // fallback: if _order not set, use sequential 0..n-1
+
         if (_order == null || _order.Count != _elementsInfo.Length)
         {
             _order.Clear();
@@ -181,61 +157,69 @@ public class RythmFusionScript : MonoBehaviour
 
         ShuffleElements();
         yield return new WaitForSeconds(1);
+
+        _timerInterval = (60f / _bpm) / Mathf.Max(1, _subdivisions);
+
         int eventStance = 0;
-        // Repeat until element is chosen
-        while (!_elementChoosed)
+        bool endLoopAfterSelection = false;
+
+        while (!endLoopAfterSelection)
         {
-   
             for (int step = 0; step < _order.Count; step++)
             {
                 int elementIndex = _order[step];
                 customStep = step;
                 _onElement = elementIndex;
 
-                _elementsInfo[elementIndex]._selector
-                    .GetComponent<Animator>()
-                    .SetTrigger("SelectorIn");
+                _elementsInfo[elementIndex]._selector.GetComponent<Animator>().SetTrigger("SelectorIn");
                 _scriptSlime._slimeRawImage.transform.localScale = new Vector2(3f, 3f);
                 _elementsInfo[elementIndex]._elementOrb.transform.localScale = new Vector2(1.25f, 1.25f);
-                if(step == 3)
+
+                _kickSound.pitch = step == 3 ? 1f : 0.9f;
+                _scriptMain._mainUI.transform.localScale = step == 3 ? new Vector2(1.05f, 1.05f) : new Vector2(1.01f, 1.01f);
+                _kickSound.Play();
+
+                _canPress = true;
+
+                float timer = 0f;
+                while (timer < _timerInterval)
                 {
-                    _scriptMain._mainUI.transform.localScale = new Vector2(1.05f, 1.05f);
+                    timer += Time.unscaledDeltaTime;
+                    yield return null;
                 }
-                else
+
+                _canPress = false;
+
+                // Cuando ya se eligieron 2 elementos, marcamos que terminaremos después del loop actual
+                if (_elementsSelection.Count == 2)
                 {
-                    _scriptMain._mainUI.transform.localScale = new Vector2(1.01f, 1.01f);
+                    endLoopAfterSelection = true;
                 }
-       
-                yield return new WaitForSeconds(_timerInterval);
-         
-                if (_elementChoosed) // break out if chosen mid-loop
-                    yield break;
             }
 
             for (int i = 0; i < 4; i++)
-            {
                 _elementsInfo[i]._imageColor.color = _halfColors[0];
-            }
+
             _buttonPressed = false;
 
             switch (_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent])
             {
                 case 12:
-                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<FireEventScript>()._fireParticle[eventStance + 1].Play();
+                    _scriptMain._scriptEvents._currentEventPrefab
+                        .GetComponent<FireEventScript>()._fireParticle[eventStance + 1].Play();
                     break;
             }
-            if (eventStance < 3)
-            {
-                eventStance++;
-            }
 
+            if (eventStance < 3) eventStance++;
         }
 
-        // When loop ends (_elementChoosed == true), reset
+        // Después de terminar el loop donde se eligió el segundo elemento
+        if (_elementsSelection.Count == 2)
+            StartCoroutine(FuseElements());
+
         _onElement = 0;
         yield return new WaitForSeconds(1);
 
-        // make sure parents are inactive
         for (int i = 0; i < 4; i++)
         {
             _elementsInfo[i]._parent.SetActive(false);
@@ -243,38 +227,16 @@ public class RythmFusionScript : MonoBehaviour
         }
     }
 
-
     public void ChooseElementVoid()
     {
         _buttonPressed = true;
         _scriptSlime._slimeRawImage.transform.localScale = new Vector2(4f, 4f);
         _elementsInfo[_onElement]._elementOrb.transform.localScale = new Vector2(2f, 2f);
-        //_particleOnSlime[0].gameObject.SetActive(true);
-        //var particle1 = _particleOnSlime[0].main;
-        //var particle2 = _particleOnSlime[1].main;
-        //particle1.startColor = _elementsInfo[_onElement]._releaseParticles.main.startColor;
-        //particle2.startColor = _elementsInfo[_onElement]._releaseParticles.main.startColor;
-
-
-        //if (_onElement != 0){
         _elementsInfo[customStep]._releaseParticles.startColor = _halfColors[_onElement];
         _elementsInfo[customStep]._releaseParticles.Play();
-        //}
-        //_elementsInfo[_onElement]._parent.transform.localScale = new Vector3(1f, 1f, 1);
-        //_elementChoosed[_onElementChoosed]++;
+        _chooseSound.Play();
         _elementsSelection.Add(_onElement);
         _scriptSlime._materialColors[_elementsSelection.Count] = _halfColors[_onElement];
-        //_buttonsAvailable = false;
-
-        //for (int i = 0; i < 3; i++)
-        //{
-        //    _elementsInfo[i]._parent.transform.localScale = new Vector3(0.6f, 0.6f, 1);
-        //}
-
-        if (_elementsSelection.Count == 2)
-        {
-           StartCoroutine(FuseElements());
-        }
     }
 
     public IEnumerator FuseElements()
@@ -283,42 +245,21 @@ public class RythmFusionScript : MonoBehaviour
         int e1 = _elementsSelection[0];
         int e2 = _elementsSelection[1];
 
-        // Same element → produce that element's slime
-        if (e1 == e2)
-        {
-            _scriptSlime._slimeType = e1;
-            _elementsSelection.Clear();
-            StartCoroutine(_scriptSlime.ActionSlimeNumerator());
-            _scriptSlime.ChangeSlime();
-        }
+        if (e1 == e2) _scriptSlime._slimeType = e1;
+        else if ((e1 == 3 && e2 == 2) || (e1 == 2 && e2 == 3)) _scriptSlime._slimeType = 4;
+        else if ((e1 == 2 && e2 == 1) || (e1 == 1 && e2 == 2)) _scriptSlime._slimeType = 5;
+        else if ((e1 == 3 && e2 == 1) || (e1 == 1 && e2 == 3)) _scriptSlime._slimeType = 6;
 
-        // Fusion combinations
-        if ((e1 == 3 && e2 == 2) || (e1 == 2 && e2 == 3))
-        {
-            _scriptSlime._slimeType = 4;
-            _elementsSelection.Clear();
-            StartCoroutine(_scriptSlime.ActionSlimeNumerator());
-            _scriptSlime.ChangeSlime();
-        }
-        else if ((e1 == 2 && e2 == 1) || (e1 == 1 && e2 == 2))
-        {
-            _scriptSlime._slimeType = 5;
-            _elementsSelection.Clear();
-            StartCoroutine(_scriptSlime.ActionSlimeNumerator());
-            _scriptSlime.ChangeSlime();
-        }
-        else if ((e1 == 3 && e2 == 1) || (e1 == 1 && e2 == 3))
-        {
-            _scriptSlime._slimeType = 6;
-            _elementsSelection.Clear();
-            StartCoroutine(_scriptSlime.ActionSlimeNumerator());
-            _scriptSlime.ChangeSlime();
-        }
+        _elementsSelection.Clear();
+        StartCoroutine(_scriptSlime.ActionSlimeNumerator());
+        _scriptSlime.ChangeSlime();
+
         yield return new WaitForSeconds(0.5f);
+
         for (int i = 0; i < 4; i++)
         {
-            _elementsInfo[i]._parent.gameObject.SetActive(false);
-            _elementsInfo[i]._selector.transform.localScale = new Vector2(0, 0);
+            _elementsInfo[i]._parent.SetActive(false);
+            _elementsInfo[i]._selector.transform.localScale = Vector2.zero;
             _elementsInfo[i]._imageColor.color = _halfColors[0];
         }
     }
