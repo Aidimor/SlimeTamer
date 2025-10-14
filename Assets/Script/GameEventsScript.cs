@@ -25,6 +25,7 @@ public class GameEventsScript : MonoBehaviour
 
     public Animator _stage1Animator;
     public GameObject _bossRender;
+    public bool _winRound;
 
     [System.Serializable]
     public class CenterDialogeAssets
@@ -36,10 +37,9 @@ public class GameEventsScript : MonoBehaviour
         public float typingSpeed = 0.05f; // Velocidad de escritura (segundos entre letras)
 
     }
-    public CenterDialogeAssets _centerDialogeAssets;
-
-   
+    public CenterDialogeAssets _centerDialogeAssets;   
     public bool _enter;
+    public ParticleSystem _rainParticle;
 
 
     void Start()
@@ -134,9 +134,9 @@ public class GameEventsScript : MonoBehaviour
 
     public IEnumerator StartLevelNumerator()
     {
-       
 
 
+        _scriptMain._scriptEvents._winRound = false;
         _scriptMain._scriptFusion.UnlockElements();
         for (int i = 0; i < _enemiesGameObjects.Length; i++)
         {
@@ -156,11 +156,9 @@ public class GameEventsScript : MonoBehaviour
             evento.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
             evento.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 90);
             _currentEventPrefab = evento;
+            _scriptMain._topOptionsOn = _scriptMain._firstStage;
 
-
-
-
-
+     
             switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._eventClassification)
             {
                 case GameEvent.EventClassification.Normal:
@@ -315,6 +313,11 @@ public class GameEventsScript : MonoBehaviour
 
 
         }
+    }
+
+    public IEnumerator RestartNumerator()
+    {
+        yield return null;
     }
 
     public IEnumerator StartStageQuestionary()

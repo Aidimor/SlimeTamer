@@ -7,9 +7,11 @@
     { "key": "description1", "value": "WATER PARTICLE OBTAINED!" },
     { "key": "description2", "value": "AIR PARTICLE OBTAINED!" },
     { "key": "description3", "value": "EARTH PARTICLE OBTAINED!" },
-    { "key": "choose", "value": "CHOOSE 2 ELEMENTS" },
-    { "key": "dialoge1", "value": "Ayudanos a liberar el reino, por favor.", "id": 1 },
-    { "key": "dialoge2", "value": "De ti dependemos.", "id": 2 }
+    { "key": "choose", "value": "CHOOSE 2 ELEMENTS" },,
+    { "key": "choose2", "value": "Space" },
+    { "key": "dialoge1", "value": "Help us save the kingdom.", "id": 1 },
+    { "key": "dialoge2", "value": "We depend of you.", "id": 2 }
+
   ]
 }
 

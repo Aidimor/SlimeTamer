@@ -85,7 +85,7 @@ public class PortraitController : MonoBehaviour
     {
         if (_scriptMainController._introSpecial)
         {
-        
+            _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._falling);
             _scriptMainController._bordersAnimator.SetBool("BorderOut", true);
             _frontMap.SetActive(false);
             _logo.gameObject.SetActive(false);
@@ -173,6 +173,7 @@ public class PortraitController : MonoBehaviour
         _scriptMainController._cinematicBorders.SetBool("FadeIn", true);
         _parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -50f);
         _slimeParent.SetActive(false);
+    
         //_scriptMainController._onWorldGlobal = _onWorldPos;
         yield return new WaitForSeconds(3);
         _scriptMainController._bordersAnimator.SetBool("BorderOut", false);

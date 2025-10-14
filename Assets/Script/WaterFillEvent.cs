@@ -23,7 +23,7 @@ public class WaterFillEvent : MonoBehaviour
                 _water.transform.localPosition = Vector2.Lerp(_water.transform.localPosition, new Vector2(_water.transform.localPosition.x, -100), 2 * Time.deltaTime);
                 break;
             case true:
-                _water.transform.localPosition = Vector2.Lerp(_water.transform.localPosition, new Vector2(_water.transform.localPosition.x, -50), 2 * Time.deltaTime);
+                _water.transform.localPosition = Vector2.Lerp(_water.transform.localPosition, new Vector2(_water.transform.localPosition.x, -50), 0.5f * Time.deltaTime);
                 break;
         }
     }

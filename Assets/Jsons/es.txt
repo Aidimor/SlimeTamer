@@ -8,7 +8,8 @@
     { "key": "description2", "value": "¡PARTÍCULA DE AIRE OBTENIDA!" },
     { "key": "description3", "value": "¡PARTÍCULA DE TIERRA OBTENIDA!" },
     { "key": "choose", "value": "ELIGE 2 ELEMENTOS" },
-    { "key": "dialoge1", "value": "Help us save the kingdom.", "id": 1 },
-    { "key": "dialoge2", "value": "We depend of you.", "id": 2 }
+    { "key": "choose2", "value": "Espacio" },
+    { "key": "dialoge1", "value": "Ayudanos a liberar el reino, por favor.", "id": 1 },
+    { "key": "dialoge2", "value": "De ti dependemos.", "id": 2 }
   ]
 }

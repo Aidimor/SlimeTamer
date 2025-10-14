@@ -83,6 +83,9 @@ public class MainGameplayScript : MonoBehaviour
 
     public ParticleSystem[] _flyingSlimeParticles;
     public TextMeshProUGUI _choose2ElementsText;
+    public GameObject _spaceParent;
+    public TextMeshProUGUI _spaceText;
+
 
     [System.Serializable]
     public class DialogeAssets
@@ -98,7 +101,19 @@ public class MainGameplayScript : MonoBehaviour
     }
     public DialogeAssets _dialogeAssets;
 
+    public Image _darkener;
+    public Light _slimeLight;
 
+    public GameObject _slimeParent;
+    public ParticleSystem _shineParticle;
+
+    public bool _slimeChanging;
+    public bool _lightChanging;
+    public bool _darkenerChanging;
+
+    public GameObject _shadow;
+    public ParticleSystem _slimeExplosion;
+    public bool _dead;
     private void Awake()
     {
         _scriptMain = GameObject.Find("CanvasIndestructible/Main/MainController").GetComponent<MainController>();
@@ -234,11 +249,51 @@ public class MainGameplayScript : MonoBehaviour
               
             }
         }
+
+        if(_GamesList[_scriptEvents._onEvent] != 11)
+        {
+            if (_slimeChanging)
+            {
+           
+                _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
+                   _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(50, -50), 5 * Time.deltaTime);
+            }
+            else
+            {
+   
+                _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
+             _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, -190), 5 * Time.deltaTime);
+            }
+
+            if (_lightChanging)
+            {
+                
+                _slimeLight.intensity = Mathf.Lerp(_slimeLight.intensity, 150, 5 * Time.deltaTime);
+            }
+            else
+            {
+         
+                _slimeLight.intensity = Mathf.Lerp(_slimeLight.intensity, 5, 5 * Time.deltaTime);
+            }
+
+            if (_darkenerChanging)
+            {
+                _darkener.color = Color.Lerp(_darkener.color, new Color(0, 0, 0, 1), 4 * Time.deltaTime);
+            }
+            else
+            {
+                _darkener.color = Color.Lerp(_darkener.color, new Color(0, 0, 0, 0), 4 * Time.deltaTime);
+            }
+        }
+
+
+
     }
 
 
     public IEnumerator StartStageNumerator()
     {
+        _shadow.gameObject.SetActive(true);
         yield return new WaitForSeconds(1);
         _scriptMain._bordersAnimator.SetBool("BorderOut", true);
         _scriptMain._cinematicBorders.SetBool("FadeIn", false);
@@ -248,33 +303,15 @@ public class MainGameplayScript : MonoBehaviour
             case GameEvent.EventClassification.Normal:
                 StartCoroutine(_scriptRythm.RythmNumerator());
                 break;         
-        }
-
-
-        //StartCoroutine(_scriptFusion.ActivatePanel());
+        }   
     }
 
-    //public IEnumerator StartStageQuestionary()
-    //{
-    //    yield return new WaitForSeconds(1);
-    //    _scriptMain._bordersAnimator.SetBool("BorderOut", true);
-    //    yield return new WaitForSeconds(2);
-    //    Debug.Log("Questionario");
-    //    _scriptMain._bordersAnimator.SetBool("BorderOut", false);
-
-    //    yield return new WaitForSeconds(2);
-    //    _scriptSlime._WindBlocker.gameObject.SetActive(false);
-    //    Destroy(_scriptEvents._currentEventPrefab);
-    //    _scriptEvents._onEvent++;
-    //    StartCoroutine(_scriptEvents.StartLevelNumerator());
-
-    //    //_scriptFusion.ActivatePanel();
-    //}
 
 
 
     public IEnumerator IntroStageNumerator()
     {
+        _shadow.gameObject.SetActive(false);
         _scriptMain._scriptSFX._windSetVolume = 1;
         for (int i = 0; i < _allStageAssets.Length; i++)
         {
@@ -284,47 +321,19 @@ public class MainGameplayScript : MonoBehaviour
         _scriptMain._cinematicBorders.SetBool("FadeIn", true);  
         _scriptSlime._slimeAnimator.SetBool("Falling", true);
         _scriptEvents._currentEventPrefab.GetComponent<IntroEventScript>().StartIntroVoid();
+        //_scriptEvents._onEvent++;
         _fallParticle.gameObject.SetActive(true);
         _scriptMain._bordersAnimator.SetBool("BorderOut", true);
         yield return new WaitForSeconds(2);
         //_bossAnimator.SetTrigger("Flies");
         yield return new WaitForSeconds(2);
         _slimeFalling = true;
-   
+        _scriptEvents._winRound = true;
         StartCoroutine(ExitNumerator());
 
     }
 
-    public IEnumerator ExitNumerator()
-    {
-        yield return new WaitForSeconds(2);
-        _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
-        _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
-        _scriptSlime.fillAmount = 0;
-        _scriptMain._bordersAnimator.SetBool("BorderOut", false);
 
-        yield return new WaitForSeconds(2);
-        if(_scriptEvents._currentEventPrefab.name == "Intro(Clone)")
-        {
-            _scriptEvents._currentEventPrefab.GetComponent<IntroEventScript>().ExitIntroVoid();
-        }
-
-       // _scriptSlime._WindBlocker.gameObject.SetActive(false);
-        _allStageAssets[_scriptMain._onWorldGlobal]._frontStage.SetActive(true);
-        _scriptMain._cinematicBorders.SetBool("FadeIn", false);
-        _scriptSlime._slimeAnimator.SetBool("Falling", false);
-        _fallParticle.gameObject.SetActive(false);
-        _slimeFalling = false;
-        _scriptMain._scriptSFX._windSetVolume = 0;
-
-        for (int i = 0; i < _allStageAssets.Length; i++)
-        {
-            _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-        }
-        _scriptEvents._onEvent++;
-        Destroy(_scriptEvents._currentEventPrefab);
-        StartCoroutine(_scriptEvents.StartLevelNumerator());
-    }
 
     public void LoseHeartVoid()
     {
@@ -342,6 +351,7 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator StartsStageChest()
     {
+        _shadow.gameObject.SetActive(true);
         yield return new WaitForSeconds(1);
         _dialogeAssets._dialogePanel.SetBool("DialogeIn", true);
         //_scriptEvents._currentEventPrefab.GetComponent<ChestEventScript>()._chestAnimator.SetTrigger("ChestOpen");
@@ -385,11 +395,114 @@ public class MainGameplayScript : MonoBehaviour
             }
             _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._next);
         }
+        //_scriptEvents._onEvent++;
         _dialogeAssets._dialogePanel.SetBool("DialogeIn", false);
         _itemGotPanel._parent.SetTrigger("ItemGot");
         _scriptEvents._currentEventPrefab.GetComponent<ChestEventScript>().ItemGet();
         yield return new WaitForSeconds(1);
+        _scriptEvents._winRound = true;
         StartCoroutine(ExitNumerator());
+
+    }
+
+    public IEnumerator LoseLifeNumerator()
+    {
+        _dead = true;
+        LoseHeartVoid();
+        _slimeExplosion.Play();
+        _scriptSlime._slimeRawImage.gameObject.SetActive(false);
+        yield return new WaitForSeconds(1);
+        _scriptEvents._winRound = false;
+
+
+
+
+        _scriptSlime._slimeAnimator.SetBool("Scared", false);
+        _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
+        _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
+        _scriptSlime.fillAmount = 0;
+        _scriptMain._bordersAnimator.SetBool("BorderOut", false);
+
+        yield return new WaitForSeconds(2);
+        //if (_scriptEvents._currentEventPrefab != null)
+        //{
+        //    if (_scriptEvents._currentEventPrefab.name == "Intro(Clone)")
+        //    {
+        //        _scriptEvents._currentEventPrefab.GetComponent<IntroEventScript>().ExitIntroVoid();
+        //        //_scriptEvents._onEvent++;
+        //    }
+        //}
+        if(_scriptEvents._currentEventPrefab.name == "FirePrefab(Clone)")
+        {
+            _scriptEvents._currentEventPrefab.GetComponent<FireEventScript>().FireExtinguishVoid();
+        }
+      
+        _allStageAssets[_scriptMain._onWorldGlobal]._frontStage.SetActive(true);
+        _scriptMain._cinematicBorders.SetBool("FadeIn", false);
+        _scriptSlime._slimeAnimator.SetBool("Falling", false);
+        _fallParticle.gameObject.SetActive(false);
+        _slimeFalling = false;
+        _scriptMain._scriptSFX._windSetVolume = 0;
+
+        for (int i = 0; i < _allStageAssets.Length; i++)
+        {
+            _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+        }
+        _scriptSlime._slimeRawImage.gameObject.SetActive(true);
+        StartCoroutine(_scriptEvents.StartLevelNumerator());
+        _dead = false;
+    }
+
+
+    public IEnumerator ExitNumerator()
+    {
+        yield return new WaitForSeconds(2);
+        _scriptSlime._slimeAnimator.SetBool("Scared", false);
+        _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
+        _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
+        _scriptSlime.fillAmount = 0;
+        _scriptMain._bordersAnimator.SetBool("BorderOut", false);
+
+        yield return new WaitForSeconds(2);
+        if(_scriptEvents._currentEventPrefab != null)
+        {
+            if (_scriptEvents._currentEventPrefab.name == "Intro(Clone)")
+            {
+                _scriptEvents._currentEventPrefab.GetComponent<IntroEventScript>().ExitIntroVoid();
+                //_scriptEvents._onEvent++;
+            }
+        }
+    
+
+        // _scriptSlime._WindBlocker.gameObject.SetActive(false);
+        _allStageAssets[_scriptMain._onWorldGlobal]._frontStage.SetActive(true);
+        _scriptMain._cinematicBorders.SetBool("FadeIn", false);
+        _scriptSlime._slimeAnimator.SetBool("Falling", false);
+        _fallParticle.gameObject.SetActive(false);
+        _slimeFalling = false;
+        _scriptMain._scriptSFX._windSetVolume = 0;
+
+        for (int i = 0; i < _allStageAssets.Length; i++)
+        {
+            _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+        }
+
+        //if (_scriptEvents._onEvent)
+
+        switch (_scriptEvents._winRound)
+        {
+            case false:
+                Debug.Log("pierde");
+                Destroy(_scriptEvents._currentEventPrefab);
+                StartCoroutine(LoseLifeNumerator());
+                break;
+            case true:
+                Debug.Log("gana");
+                _scriptEvents._onEvent++;
+                Destroy(_scriptEvents._currentEventPrefab);
+                StartCoroutine(_scriptEvents.StartLevelNumerator());
+                break;
+        }
 
     }
 

@@ -18,6 +18,7 @@ public class ChestEventScript : MonoBehaviour
 
     public void ItemGet()
     {
+
         switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._chestItems[0])
         {
             case GameEvent.ChestItems.Water:

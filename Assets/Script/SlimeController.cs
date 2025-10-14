@@ -27,6 +27,7 @@ public class SlimeController : MonoBehaviour
 
     public float fillAmount;
     public ParticleSystem _wrongParticle;
+    public ParticleSystem _alarmParticle;
     public GameObject _WindBlocker;
     public GameObject _slimeMainBody;
 
@@ -82,63 +83,106 @@ public class SlimeController : MonoBehaviour
       
     }
 
+    public void DeactivateElementsInfo()
+    {
+        for (int i = 0; i < 4; i++)
+        {
+            _scriptMain._scriptRythm._elementsInfo[i]._parent.SetActive(false);
+            _scriptMain._scriptRythm._elementsInfo[i]._selector.transform.localScale = Vector2.zero;
+            _scriptMain._scriptRythm._elementsInfo[i]._imageColor.color = _scriptMain._scriptRythm._halfColors[0];
+        }
+    }
+
     public IEnumerator ActionSlimeNumerator()
     {
-        yield return new WaitForSeconds(0.5f);
+ 
+
+        yield return new WaitForSeconds(1f);
+        ChangeSlime();
+        _scriptMain._lightChanging = false;
+        _scriptMain._shineParticle.Stop();
+     
+
 
         switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._weakto.Length)
         {
             case 1:
                 if (_slimeType == _scriptMain._rightElementID[0])
                 {
-             
+                    _scriptMain._scriptMain.newSlimePanel._backgroundImage.color = _scriptMain._scriptSlime._slimeAssets[_slimeType]._mainColor;
+                    _scriptMain._scriptMain.newSlimePanel._slimeNameText.text = _scriptMain._scriptSlime._slimeAssets[_slimeType].name;
+                    _scriptMain._scriptMain.newSlimePanel._parent.SetBool("AnnounceIn", true);
+           
+
+
+                    yield return new WaitForSeconds(1);                 
+                    _scriptMain._snowBool = false;       
+                    yield return new WaitForSeconds(0.5f);
+                    _scriptMain._scriptMain.newSlimePanel._parent.SetBool("AnnounceIn", false);                
                     yield return new WaitForSeconds(1);
+                    _scriptMain._slimeChanging = false;
+                    yield return new WaitForSeconds(1);
+                    _scriptMain._scriptSlime._slimeAnimator.SetTrigger("Action");
+                  
+                    _scriptMain._scriptEvents._winRound = true;
                     switch (_scriptMain._onEventID)
                     {
                         case 1:
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BridgeEvent>()._activateBridge = true;
-                            yield return new WaitForSeconds(2);
                             break;
                         case 2:
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFallEvent>().ActivateFreeze();
-                            yield return new WaitForSeconds(5);
+
                             break;
                         case 3:
+                            _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
+                            _scriptMain._scriptEvents._rainParticle.Play();
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFillEvent>()._fillBool = true;
-                            yield return new WaitForSeconds(5);
+                       
                             break;
                         case 4:
                             _scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(true);
-                            yield return new WaitForSeconds(5);
+
                             break;
                         case 5:
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<SandCutEventScript>().StartCuttingVoid();
-                            yield return new WaitForSeconds(5);
+
                             break;
                         case 6:
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._Stopped = true;
-                            yield return new WaitForSeconds(5);
+
                             break;
                         case 7:
-                            StartCoroutine(_scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaspFightScript>().DeadNumerator());
-                            Debug.Log("Wasp Destroyed");
-                            yield return new WaitForSeconds(3);
+                            StartCoroutine(_scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaspFightScript>().DeadNumerator());                
+
                             break;
                         case 9:
+                            _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
+                            _scriptMain._scriptEvents._rainParticle.Play();
+                            yield return new WaitForSeconds(1);
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<FireEventScript>().FireExtinguishVoid();
-                            yield return new WaitForSeconds(3);
+
                             break;
                     }
-                    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
 
-                    yield return new WaitForSeconds(2);
-                    //_scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(false);
+
+                 
+                    _scriptMain._darkenerChanging = false;
+                    //yield return new WaitForSeconds(2);   
+                    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
+                    //yield return new WaitForSeconds(2);
+                    _slimeType = 0;
+                    ChangeSlime();
+                    _scriptMain._scriptEvents._rainParticle.Stop();
+                    _scriptMain._scriptMain._scriptSFX._rainSetVolume = 0;
                     Destroy(_scriptMain._scriptEvents._currentEventPrefab);
-                    _scriptMain._scriptEvents._onEvent++;
-                    StartCoroutine(_scriptMain._scriptEvents.StartLevelNumerator());
+
+                    StartCoroutine(_scriptMain.ExitNumerator());
+                    //StartCoroutine(_scriptMain._scriptEvents.StartLevelNumerator());
                 }
                 else
                 {
+                    _scriptMain._scriptEvents._winRound = false;
                     switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventClassification)
                     {
                         case GameEvent.EventClassification.Normal:
@@ -185,42 +229,49 @@ public class SlimeController : MonoBehaviour
                     {
                         case 1:
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BridgeEvent>()._activateBridge = true;
-                            yield return new WaitForSeconds(2);
+              
                             break;
                         case 2:
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFallEvent>().ActivateFreeze();
-                            yield return new WaitForSeconds(5);
+                   
                             break;
                         case 3:
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFillEvent>()._fillBool = true;
-                            yield return new WaitForSeconds(5);
+                
                             break;
                         case 4:
                             _scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(true);
-                            yield return new WaitForSeconds(5);
+                        
                             break;
                         case 5:
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<SandCutEventScript>().StartCuttingVoid();
-                            yield return new WaitForSeconds(5);
+                 
                             break;
                         case 6:
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._Stopped = true;
-                            yield return new WaitForSeconds(5);
+               
                             break;
                         case 7:
                             StartCoroutine(_scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaspFightScript>().DeadNumerator());
                             Debug.Log("Wasp Destroyed");
-                            yield return new WaitForSeconds(3);
+               
                             break;
             
                     }
-                    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
 
-                    yield return new WaitForSeconds(2);
-                    _scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(false);
-                    Destroy(_scriptMain._scriptEvents._currentEventPrefab);
-                    _scriptMain._scriptEvents._onEvent++;             
-                    StartCoroutine(_scriptMain._scriptEvents.StartLevelNumerator());
+                    //_scriptMain._snowBool = false;
+                    //_slimeType = 0;
+                    //ChangeSlime();
+                    //_scriptMain._slimeChanging = false;
+                    //_scriptMain._darkenerChanging = false;
+                    //yield return new WaitForSeconds(3);
+                    //_scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
+
+                    //yield return new WaitForSeconds(2);
+                    //_scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(false);
+                    //Destroy(_scriptMain._scriptEvents._currentEventPrefab);
+                    //_scriptMain._scriptEvents._onEvent++;             
+                    //StartCoroutine(_scriptMain._scriptEvents.StartLevelNumerator());
                 }
                 else
                 {
@@ -247,8 +298,6 @@ public class SlimeController : MonoBehaviour
         }
      
 
-        _scriptMain._snowBool = false;
-        _slimeType = 0;
-        ChangeSlime();
+
     }
 }

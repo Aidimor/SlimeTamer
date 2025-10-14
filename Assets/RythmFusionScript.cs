@@ -67,7 +67,9 @@ public class RythmFusionScript : MonoBehaviour
                 _elementsInfo[i]._elementText.text = GameInitScript.Instance.GetText(_elementsInfo[i].key);
             }
         }
-        _scriptMain._choose2ElementsText.text = GameInitScript.Instance.GetText("choose");
+        _scriptMain._choose2ElementsText.text = GameInitScript.Instance.GetText("choose");     
+        _scriptMain._spaceText.text = GameInitScript.Instance.GetText("choose2");
+
     }
 
     void Update()
@@ -109,6 +111,12 @@ public class RythmFusionScript : MonoBehaviour
             _elementsInfo[i]._elementOrb.transform.localScale =
                 Vector2.Lerp(_elementsInfo[i]._elementOrb.transform.localScale, new Vector2(1, 1), 4 * Time.deltaTime);
         }
+
+         _scriptMain._spaceParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(_elementsInfo[_onElement]._parent.GetComponent<RectTransform>().anchoredPosition.x - 100,
+             _scriptMain._spaceParent.transform.localPosition.y);
+
+
+
     }
 
     public void ShuffleElements()
@@ -158,6 +166,7 @@ public class RythmFusionScript : MonoBehaviour
         ShuffleElements();
         yield return new WaitForSeconds(1);
 
+        _scriptMain._spaceParent.gameObject.SetActive(true);
         _timerInterval = (60f / _bpm) / Mathf.Max(1, _subdivisions);
 
         int eventStance = 0;
@@ -182,6 +191,8 @@ public class RythmFusionScript : MonoBehaviour
                 _canPress = true;
 
                 float timer = 0f;
+           
+
                 while (timer < _timerInterval)
                 {
                     timer += Time.unscaledDeltaTime;
@@ -205,13 +216,27 @@ public class RythmFusionScript : MonoBehaviour
             switch (_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent])
             {
                 case 12:
+                    int _real = eventStance + 1;
                     _scriptMain._scriptEvents._currentEventPrefab
-                        .GetComponent<FireEventScript>()._fireParticle[eventStance + 1].Play();
+                        .GetComponent<FireEventScript>()._fireParticle[_real].Play();
+                    if(_real == 3)
+                    {
+                        _scriptSlime._slimeAnimator.SetBool("Scared", true);
+                    }else if(_real == 4)
+                    {
+                        if (!_scriptMain._dead)
+                        {
+                            StartCoroutine(_scriptMain.LoseLifeNumerator());
+                            endLoopAfterSelection = true;
+                        }
+                        
+                    }
                     break;
             }
 
             if (eventStance < 3) eventStance++;
         }
+        _scriptMain._spaceParent.gameObject.SetActive(false);
 
         // Después de terminar el loop donde se eligió el segundo elemento
         if (_elementsSelection.Count == 2)
@@ -225,6 +250,8 @@ public class RythmFusionScript : MonoBehaviour
             _elementsInfo[i]._parent.SetActive(false);
             _elementsInfo[i]._imageColor.color = _halfColors[0];
         }
+     
+
     }
 
     public void ChooseElementVoid()
@@ -241,6 +268,9 @@ public class RythmFusionScript : MonoBehaviour
 
     public IEnumerator FuseElements()
     {
+        _scriptMain._slimeChanging = true;
+        _scriptMain._lightChanging = true;
+        _scriptMain._darkenerChanging = true;
         _elementChoosed = true;
         int e1 = _elementsSelection[0];
         int e2 = _elementsSelection[1];
@@ -251,16 +281,9 @@ public class RythmFusionScript : MonoBehaviour
         else if ((e1 == 3 && e2 == 1) || (e1 == 1 && e2 == 3)) _scriptSlime._slimeType = 6;
 
         _elementsSelection.Clear();
-        StartCoroutine(_scriptSlime.ActionSlimeNumerator());
-        _scriptSlime.ChangeSlime();
-
-        yield return new WaitForSeconds(0.5f);
-
-        for (int i = 0; i < 4; i++)
-        {
-            _elementsInfo[i]._parent.SetActive(false);
-            _elementsInfo[i]._selector.transform.localScale = Vector2.zero;
-            _elementsInfo[i]._imageColor.color = _halfColors[0];
-        }
+        _scriptSlime.DeactivateElementsInfo();
+        yield return new WaitForSeconds(1f);
+        _scriptMain._shineParticle.Play();     
+        StartCoroutine(_scriptSlime.ActionSlimeNumerator()); 
     }
 }

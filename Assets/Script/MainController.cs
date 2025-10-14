@@ -39,6 +39,16 @@ public class MainController : MonoBehaviour
     public int _onWorldGlobal;
     public bool _introSpecial;
 
+
+    [System.Serializable]
+    public class NewSlimePanel
+    {
+        public Animator _parent;
+        public Image _backgroundImage;
+        public TextMeshProUGUI _slimeNameText;
+    }
+    public NewSlimePanel newSlimePanel;
+
     private void Awake()
     {
         // Singleton para fácil acceso
