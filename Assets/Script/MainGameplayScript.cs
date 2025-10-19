@@ -107,6 +107,7 @@ public class MainGameplayScript : MonoBehaviour
     public GameObject _slimeParent;
     public ParticleSystem _shineParticle;
 
+    public bool _eventOn;
     public bool _slimeChanging;
     public bool _lightChanging;
     public bool _darkenerChanging;
@@ -180,45 +181,11 @@ public class MainGameplayScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        // 🔹 Actualizaciones del gameplay SOLO si no está pausado
-        if (!_scriptMain._pauseAssets._pause)
-        {
-            // Nieve
-            Color targetSnow = _snowBool ? new Color(1, 1, 1, 0.5f) : new Color(1, 1, 1, 0f);
-            _snowImage.color = Color.Lerp(_snowImage.color, targetSnow, 2 * Time.deltaTime);
 
-            // Slime icon
-            _totalStages._SlimeIcon.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
-                _totalStages._SlimeIcon.GetComponent<RectTransform>().anchoredPosition,
-                new Vector2(_totalStages._xPoses[_scriptEvents._onEvent], 4), 5 * Time.deltaTime);
-
-            // Top options
-            _topOptions.SetActive(_topOptionsOn);
-
-            // Stage backgrounds
-            for (int i = 0; i < _allStageAssets.Length; i++)
-            {
-                _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = Vector2.MoveTowards(
-                    _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition,
-                    new Vector2(0, 0), 30 * Time.deltaTime);
-            }
-
-            // Slime cayendo
-            if (_slimeFalling)
-            {
-                _scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition += Vector2.up * (-150 * Time.deltaTime);
-            }
-
-            // Stage parent y UI principal
-            _stageParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
-                _stageParent.GetComponent<RectTransform>().anchoredPosition,
-                new Vector2(0, 0), 15 * Time.deltaTime);
-
-            _mainUI.transform.localScale = Vector2.Lerp(_mainUI.transform.localScale, new Vector2(1, 1), 5 * Time.deltaTime);
-        }
+ 
 
         // 🔹 Comprobar si se presionó el botón de pausa
-        if (Input.GetButtonDown("Pause"))
+        if (Input.GetButtonDown("Pause") && !_scriptMain._gameOverAssets._onGameOver)
         {
             _scriptMain.SetPause();
         }
@@ -250,8 +217,41 @@ public class MainGameplayScript : MonoBehaviour
             }
         }
 
-        if(_GamesList[_scriptEvents._onEvent] != 11)
+        // 🔹 Actualizaciones del gameplay SOLO si no está pausado
+        if (!_scriptMain._gameOverAssets._onGameOver)
         {
+            PauseGameOverFrozenAssets();
+        }
+
+        // 🔹 Actualizaciones de UI de pausa (si está pausado)v
+        if (_scriptMain._gameOverAssets._onGameOver || !_scriptMain._pauseAssets._pause)
+        {
+            float h = Input.GetAxisRaw("Vertical");
+            if (h < 0) _scriptMain._gameOverAssets._onPos = 0;
+            if (h > 0) _scriptMain._gameOverAssets._onPos = 1;
+
+            // Mover puntero del menú de pausa
+            _scriptMain._gameOverAssets._pointer.GetComponent<RectTransform>().anchoredPosition =
+                new Vector2(_scriptMain._gameOverAssets._options[_scriptMain._gameOverAssets._onPos].GetComponent<RectTransform>().anchoredPosition.x,
+                _scriptMain._gameOverAssets._options[_scriptMain._gameOverAssets._onPos].GetComponent<RectTransform>().anchoredPosition.y - 30f);
+
+            if (Input.GetButtonDown("Submit"))
+            {
+                switch (_scriptMain._gameOverAssets._onPos)
+                {
+                    case 0:
+                        //_scriptMain.SetPause();
+                        break;
+                    case 1:
+                        //_scriptMain.SetPause();
+                        break;
+                }
+
+            }
+        }
+
+        if (_GamesList[_scriptEvents._onEvent] != 11 && _eventOn)
+        {  
             if (_slimeChanging)
             {
            
@@ -293,11 +293,19 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator StartStageNumerator()
     {
+        _scriptSlime._slimeAnimator.SetBool("Moving", false);
+        _darkenerChanging = false;
+        _slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-450, _slimeParent.GetComponent<RectTransform>().anchoredPosition.y);
         _shadow.gameObject.SetActive(true);
         yield return new WaitForSeconds(1);
+        _scriptSlime._slimeAnimator.SetBool("Moving", true);
         _scriptMain._bordersAnimator.SetBool("BorderOut", true);
         _scriptMain._cinematicBorders.SetBool("FadeIn", false);
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1);
+        _scriptSlime._slimeAnimator.SetBool("Moving", false);
+
+        yield return new WaitForSeconds(1);
+     
         switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._eventClassification)
         {
             case GameEvent.EventClassification.Normal:
@@ -307,7 +315,41 @@ public class MainGameplayScript : MonoBehaviour
     }
 
 
+    public void PauseGameOverFrozenAssets()
+    {
+        // Nieve
+        Color targetSnow = _snowBool ? new Color(1, 1, 1, 0.5f) : new Color(1, 1, 1, 0f);
+        _snowImage.color = Color.Lerp(_snowImage.color, targetSnow, 2 * Time.deltaTime);
 
+        // Slime icon
+        _totalStages._SlimeIcon.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
+            _totalStages._SlimeIcon.GetComponent<RectTransform>().anchoredPosition,
+            new Vector2(_totalStages._xPoses[_scriptEvents._onEvent], 4), 5 * Time.deltaTime);
+
+        // Top options
+        _topOptions.SetActive(_topOptionsOn);
+
+        // Stage backgrounds
+        for (int i = 0; i < _allStageAssets.Length; i++)
+        {
+            _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = Vector2.MoveTowards(
+                _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition,
+                new Vector2(0, 0), 30 * Time.deltaTime);
+        }
+
+        // Slime cayendo
+        if (_slimeFalling)
+        {
+            _scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition += Vector2.up * (-150 * Time.deltaTime);
+        }
+
+        // Stage parent y UI principal
+        _stageParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
+            _stageParent.GetComponent<RectTransform>().anchoredPosition,
+            new Vector2(0, 0), 15 * Time.deltaTime);
+
+        _mainUI.transform.localScale = Vector2.Lerp(_mainUI.transform.localScale, new Vector2(1, 1), 5 * Time.deltaTime);
+    }
 
     public IEnumerator IntroStageNumerator()
     {
@@ -337,7 +379,7 @@ public class MainGameplayScript : MonoBehaviour
 
     public void LoseHeartVoid()
     {
-        _totalLifes--;
+    
         for(int i = 0; i < _heartAssets._totalHearts.Length; i++)
         {
             _heartAssets._totalHearts[i].color = _heartAssets._heartColors[1];
@@ -351,6 +393,7 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator StartsStageChest()
     {
+        
         _shadow.gameObject.SetActive(true);
         yield return new WaitForSeconds(1);
         _dialogeAssets._dialogePanel.SetBool("DialogeIn", true);
@@ -407,6 +450,9 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator LoseLifeNumerator()
     {
+        _totalLifes--;
+        Debug.Log("MUERE");
+        _scriptRythm._elementsSelection.Clear();
         _dead = true;
         LoseHeartVoid();
         _slimeExplosion.Play();
@@ -424,14 +470,7 @@ public class MainGameplayScript : MonoBehaviour
         _scriptMain._bordersAnimator.SetBool("BorderOut", false);
 
         yield return new WaitForSeconds(2);
-        //if (_scriptEvents._currentEventPrefab != null)
-        //{
-        //    if (_scriptEvents._currentEventPrefab.name == "Intro(Clone)")
-        //    {
-        //        _scriptEvents._currentEventPrefab.GetComponent<IntroEventScript>().ExitIntroVoid();
-        //        //_scriptEvents._onEvent++;
-        //    }
-        //}
+
         if(_scriptEvents._currentEventPrefab.name == "FirePrefab(Clone)")
         {
             _scriptEvents._currentEventPrefab.GetComponent<FireEventScript>().FireExtinguishVoid();
@@ -449,22 +488,70 @@ public class MainGameplayScript : MonoBehaviour
             _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
         }
         _scriptSlime._slimeRawImage.gameObject.SetActive(true);
-        StartCoroutine(_scriptEvents.StartLevelNumerator());
-        _dead = false;
+        if(_totalLifes > 0)
+        {
+            StartCoroutine(_scriptEvents.StartLevelNumerator());
+            _dead = false;
+        }
+        else
+        {
+            StartCoroutine(GameOverNumerator());
+        }
+ 
     }
 
+    public IEnumerator GameOverNumerator()
+    {
+        _scriptMain._gameOverAssets._onGameOver = true;
+        _scriptMain._gameOverAssets._parent.GetComponent<Animator>().SetBool("GameOver", true);
+        Debug.Log("GAME OVER");
+        yield return new WaitForSeconds(1);
+        while (!Input.GetButtonDown("Submit"))
+        {
+            yield return null;
+        }
+        _scriptMain._gameOverAssets._onGameOver = false;
+        _scriptMain._gameOverAssets._parent.GetComponent<Animator>().SetBool("GameOver", false);
+        yield return new WaitForSeconds(1);
+        switch (_scriptMain._gameOverAssets._onPos)
+        {
+            case 0:
+
+                _scriptMain.LoadSceneByName("IntroScene");
+                break;
+            case 1:
+                _totalLifes++;
+                LoseHeartVoid();
+                StartCoroutine(_scriptEvents.StartStageQuestionary());
+        
+                break;
+        }
+    }
 
     public IEnumerator ExitNumerator()
     {
+
+        if (_scriptEvents._currentEventPrefab.name != "Intro(Clone)")
+        {
+       
+            _scriptSlime._slimeAnimator.SetBool("Moving", true);
+        }
+   
         yield return new WaitForSeconds(2);
+
+        _scriptEvents._rainParticle.Stop();
+        _scriptMain._scriptSFX._rainSetVolume = 0;
+    
+
         _scriptSlime._slimeAnimator.SetBool("Scared", false);
         _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime.fillAmount = 0;
         _scriptMain._bordersAnimator.SetBool("BorderOut", false);
 
-        yield return new WaitForSeconds(2);
-        if(_scriptEvents._currentEventPrefab != null)
+        yield return new WaitForSeconds(1);
+        Destroy(_scriptEvents._currentEventPrefab);
+        if (_scriptEvents._currentEventPrefab != null)
         {
             if (_scriptEvents._currentEventPrefab.name == "Intro(Clone)")
             {
@@ -481,7 +568,8 @@ public class MainGameplayScript : MonoBehaviour
         _fallParticle.gameObject.SetActive(false);
         _slimeFalling = false;
         _scriptMain._scriptSFX._windSetVolume = 0;
-
+        _scriptSlime._slimeType = 0;
+        _scriptSlime.ChangeSlime();
         for (int i = 0; i < _allStageAssets.Length; i++)
         {
             _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
@@ -492,12 +580,12 @@ public class MainGameplayScript : MonoBehaviour
         switch (_scriptEvents._winRound)
         {
             case false:
-                Debug.Log("pierde");
+        
                 Destroy(_scriptEvents._currentEventPrefab);
                 StartCoroutine(LoseLifeNumerator());
                 break;
             case true:
-                Debug.Log("gana");
+             
                 _scriptEvents._onEvent++;
                 Destroy(_scriptEvents._currentEventPrefab);
                 StartCoroutine(_scriptEvents.StartLevelNumerator());

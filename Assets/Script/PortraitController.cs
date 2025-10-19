@@ -6,7 +6,6 @@ using TMPro;
 using UnityEngine.SceneManagement; // 👈 Necesario para eventos de escena
 using LoL;
 
-
 public class PortraitController : MonoBehaviour
 {
     [SerializeField] MainController _scriptMainController;
@@ -32,6 +31,7 @@ public class PortraitController : MonoBehaviour
         [Header("Idioma")]
         public string key; // 👈 clave que se buscará en el JSON (ej: "world1")
     }
+
     public AllWorlds[] _allWorlds;
     public GameObject _worldsParent;
     public Image _worldBackgroundImage;
@@ -45,28 +45,48 @@ public class PortraitController : MonoBehaviour
     public GameObject _slimeParent;
     public GameObject _frontMap;
 
-    // Suscribirse al evento de carga de escena
+    // 👇 Se llama cuando el objeto se activa
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+
+        // 🔹 Si ya estamos dentro de una escena cargada, forzamos la llamada manual
+        if (SceneManager.GetActiveScene().isLoaded)
+        {
+            OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
+        }
+
         StartCoroutine(UpdateWorldTexts());
     }
 
     void OnDisable()
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
-    
     }
 
+    // 👇 Este método se ejecuta SIEMPRE que se carga una escena
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        _scriptMainController = GameObject.Find("CanvasIndestructible/Main/MainController").GetComponent<MainController>();
-        // Ejecutar CustomStart cada vez que se cargue una escena
-        CustomStart();
+        var mainControllerObj = GameObject.Find("CanvasIndestructible/Main/MainController");
+        if (mainControllerObj != null)
+        {
+            _scriptMainController = mainControllerObj.GetComponent<MainController>();
+
+            if (_scriptMainController != null)
+            {
+                _scriptMainController._bordersAnimator.SetBool("BorderOut", true);
+                CustomStart();
+            }
+        }
+        else
+        {
+            Debug.LogWarning("⚠️ No se encontró 'CanvasIndestructible/Main/MainController' en la jerarquía.");
+        }
     }
 
     public IEnumerator UpdateWorldTexts()
-    { // ⏳ espera hasta que se haya cargado el idioma
+    {
+        // ⏳ espera hasta que se haya cargado el idioma
         yield return new WaitUntil(() => LoL.GameInitScript.Instance != null && LoL.GameInitScript.Instance.languageReady);
 
         for (int i = 0; i < _allWorlds.Length; i++)
@@ -76,13 +96,12 @@ public class PortraitController : MonoBehaviour
                 string text = GameInitScript.Instance.GetText(_allWorlds[i].key);
                 _allWorlds[i]._worldText.text = text + " " + (i + 1);
             }
-
-
         }
     }
 
     public void CustomStart()
     {
+      
         if (_scriptMainController._introSpecial)
         {
             _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._falling);
@@ -92,12 +111,15 @@ public class PortraitController : MonoBehaviour
             _scriptMainController._cinematicBorders.SetBool("FadeIn", true);
             _parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -50f);
             _falling = true;
-            _slimeParent.SetActive(false);            
-            //_scriptMainController._onWorldGlobal = _onWorldPos;
+            _slimeParent.SetActive(false);
         }
-        // 🔹 Aquí actualizamos los textos de los mundos según el idioma cargado
+
+
+        // 🔹 Actualiza los textos de los mundos según el idioma cargado
         UpdateWorldTexts();
     }
+
+
 
     void Update()
     {
@@ -173,8 +195,7 @@ public class PortraitController : MonoBehaviour
         _scriptMainController._cinematicBorders.SetBool("FadeIn", true);
         _parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -50f);
         _slimeParent.SetActive(false);
-    
-        //_scriptMainController._onWorldGlobal = _onWorldPos;
+
         yield return new WaitForSeconds(3);
         _scriptMainController._bordersAnimator.SetBool("BorderOut", false);
         _scriptMainController._introSpecial = false;
@@ -201,3 +222,4 @@ public class PortraitController : MonoBehaviour
         _scriptMainController.LoadSceneByName("MainGame");
     }
 }
+

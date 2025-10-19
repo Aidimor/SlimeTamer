@@ -135,7 +135,7 @@ public class GameEventsScript : MonoBehaviour
     public IEnumerator StartLevelNumerator()
     {
 
-
+        Debug.Log("COMIENZA");
         _scriptMain._scriptEvents._winRound = false;
         _scriptMain._scriptFusion.UnlockElements();
         for (int i = 0; i < _enemiesGameObjects.Length; i++)
@@ -156,9 +156,8 @@ public class GameEventsScript : MonoBehaviour
             evento.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
             evento.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 90);
             _currentEventPrefab = evento;
-            _scriptMain._topOptionsOn = _scriptMain._firstStage;
+            _scriptMain._topOptionsOn = _scriptMain._firstStage;     
 
-     
             switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._eventClassification)
             {
                 case GameEvent.EventClassification.Normal:
@@ -217,11 +216,13 @@ public class GameEventsScript : MonoBehaviour
                         case GameEvent.EventType.Fire:
                             _scriptMain._onEventID = 9;
                             evento.GetComponent<FireEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
+                         
                             break;
                         case GameEvent.EventType.BossFight1:
                    
                             _scriptMain._onEventID = 10;
-                            StartCoroutine(evento.GetComponent<BossFightsScript>().StartBossNumerator());                   
+                            //StartCoroutine(evento.GetComponent<BossFightsScript>().StartBossNumerator());
+                            StartCoroutine(StartBossNumerator());
                             break;
                     }
                     if (!_scriptMain._firstStage)
@@ -230,6 +231,7 @@ public class GameEventsScript : MonoBehaviour
                         _scriptMain._stageParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -10f);
                         _scriptMain._fallingParticle.Play();
                         _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._explosion);
+                        _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -200);
                         _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
                         _scriptMain._firstStage = true;
                     }
@@ -241,13 +243,14 @@ public class GameEventsScript : MonoBehaviour
                     evento.GetComponent<QuestionaryScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                     _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(_scriptMain._firstStage);
                     _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);
-
+                    _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -200);
                     if (!_scriptMain._firstStage)
                     {
                         yield return new WaitForSeconds(2);
                         _scriptMain._stageParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -10f);
                         _scriptMain._fallingParticle.Play();
                         _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._explosion);
+                        _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -200);
                         _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
                         _scriptMain._firstStage = true;
                     }
@@ -255,6 +258,7 @@ public class GameEventsScript : MonoBehaviour
                     {
             
                         yield return new WaitForSeconds(1);
+                        _scriptMain._scriptSlime._slimeAnimator.SetBool("Moving", false);
                         StartCoroutine(StartStageQuestionary());
                     }
                     //StartCoroutine(_scriptMain.StartStageQuestionary());
@@ -269,6 +273,9 @@ public class GameEventsScript : MonoBehaviour
                         _scriptMain._stageParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -10f);
                         _scriptMain._fallingParticle.Play();
                         _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._explosion);
+
+                        _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -200);
+
                         _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
                         switch (_scriptMain._scriptMain._onWorldGlobal)
                         {
@@ -297,6 +304,7 @@ public class GameEventsScript : MonoBehaviour
         }
 
         yield return new WaitForSeconds(1);
+
         switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._eventClassification)
         {
             case GameEvent.EventClassification.Normal:
@@ -317,13 +325,14 @@ public class GameEventsScript : MonoBehaviour
 
     public IEnumerator RestartNumerator()
     {
-        yield return null;
+ 
+       yield return null;
     }
 
     public IEnumerator StartStageQuestionary()
     {
         _scriptMain._scriptMain._scriptInit.ShowQuestion();
-
+        _winRound = true;
         // Espera hasta que se reciba la respuesta
         //yield return new WaitUntil(() => _scriptMain._scriptMain._scriptInit.respuestaRecibida);
         yield return new WaitForSeconds(1);
@@ -346,10 +355,53 @@ public class GameEventsScript : MonoBehaviour
         yield return new WaitForSeconds(2);
         //_scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(false);
         Destroy(_scriptMain._scriptEvents._currentEventPrefab);
-        _scriptMain._scriptEvents._onEvent++;
-        StartCoroutine(_scriptMain._scriptEvents.StartLevelNumerator());
+        //_scriptMain._scriptEvents._onEvent++;
+        StartCoroutine(_scriptMain.ExitNumerator());
+       // StartCoroutine(_scriptMain.StartStageNumerator());
 
         //_scriptFusion.ActivatePanel();
+    }
+
+    public IEnumerator StartBossNumerator()
+    {
+
+        yield return new WaitForSeconds(1);
+        _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
+
+        yield return new WaitForSeconds(3);
+        _scriptMain._bossAnimator.transform.gameObject.SetActive(true);
+        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._roar);
+        _scriptMain._bossAnimator.SetBool("Idle", true);
+        _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
+        _scriptMain._scriptSlime._alarmParticle.Play();
+        yield return new WaitForSeconds(2);
+        _scriptMain._scriptMain._cinematicBorders.SetBool("FadeIn", true);
+        yield return new WaitForSeconds(2f);
+        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._whip);
+
+
+        _scriptMain._bossAnimator.SetTrigger("Attack");
+        _scriptMain._flyingSlimeParticles[0].Play();
+        yield return new WaitForSeconds(0.5f);
+        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._scream);
+        yield return new WaitForSeconds(1.5f);
+
+        _scriptMain._flyingSlimeParticles[1].Play();
+        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._ding);
+        yield return new WaitForSeconds(2);
+        _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
+        _scriptMain._scriptMain._introSpecial = true;
+        yield return new WaitForSeconds(1);
+        _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
+        _scriptMain._scriptMain._onWorldGlobal = 3;
+        _scriptMain._bossAnimator.gameObject.SetActive(false);
+        _scriptMain._scriptMain._saveLoadValues._worldsUnlocked[3] = true;
+        //_scriptMain._scriptMain._scriptInit.SaveGame();
+        _scriptMain._scriptMain.SaveProgress();
+
+        _scriptMain._scriptMain.LoadSceneByName("IntroScene");
+
+
     }
 
 }

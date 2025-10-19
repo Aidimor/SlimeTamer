@@ -50,7 +50,7 @@ public class ChestEventScript : MonoBehaviour
             _scriptMain._itemGotPanel._Message.text = localizedText;
         }
 
-        _scriptMain._scriptMain._saveLoadValues._elementsUnlocked[1] = true;
+        //_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[1] = true;
 
     }
 }

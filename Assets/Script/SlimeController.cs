@@ -32,6 +32,7 @@ public class SlimeController : MonoBehaviour
     public GameObject _slimeMainBody;
 
     public int _fightChances;
+    public float _slimeSpeed;
 
     void Start()
     {
@@ -60,6 +61,14 @@ public class SlimeController : MonoBehaviour
         _slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_FillAmount", fillAmount);
         _slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_FillColorA", _materialColors[1]);
         _slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_FillColorB", _materialColors[2]);
+
+        if (_slimeAnimator.GetBool("Moving"))
+        {
+
+            RectTransform rt = _scriptMain._slimeParent.GetComponent<RectTransform>();
+            rt.anchoredPosition += Vector2.right * _slimeSpeed * Time.deltaTime;
+
+        }
     }
 
     public void ChangeSlime()
@@ -95,8 +104,9 @@ public class SlimeController : MonoBehaviour
 
     public IEnumerator ActionSlimeNumerator()
     {
- 
+        _scriptMain._eventOn = true;
 
+        _slimeAnimator.SetBool("Scared", false);
         yield return new WaitForSeconds(1f);
         ChangeSlime();
         _scriptMain._lightChanging = false;
@@ -112,19 +122,21 @@ public class SlimeController : MonoBehaviour
                     _scriptMain._scriptMain.newSlimePanel._backgroundImage.color = _scriptMain._scriptSlime._slimeAssets[_slimeType]._mainColor;
                     _scriptMain._scriptMain.newSlimePanel._slimeNameText.text = _scriptMain._scriptSlime._slimeAssets[_slimeType].name;
                     _scriptMain._scriptMain.newSlimePanel._parent.SetBool("AnnounceIn", true);
-           
 
 
-                    yield return new WaitForSeconds(1);                 
+                    
+                    yield return new WaitForSeconds(0.5F);                 
                     _scriptMain._snowBool = false;       
-                    yield return new WaitForSeconds(0.5f);
+                    yield return new WaitForSeconds(0.25f);
                     _scriptMain._scriptMain.newSlimePanel._parent.SetBool("AnnounceIn", false);                
-                    yield return new WaitForSeconds(1);
+                    yield return new WaitForSeconds(0.5F);
                     _scriptMain._slimeChanging = false;
-                    yield return new WaitForSeconds(1);
+                    yield return new WaitForSeconds(0.5F);
                     _scriptMain._scriptSlime._slimeAnimator.SetTrigger("Action");
-                  
+                    _scriptMain._darkenerChanging = false;
                     _scriptMain._scriptEvents._winRound = true;
+
+
                     switch (_scriptMain._onEventID)
                     {
                         case 1:
@@ -138,7 +150,7 @@ public class SlimeController : MonoBehaviour
                             _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
                             _scriptMain._scriptEvents._rainParticle.Play();
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFillEvent>()._fillBool = true;
-                       
+                            yield return new WaitForSeconds(2);
                             break;
                         case 4:
                             _scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(true);
@@ -161,24 +173,13 @@ public class SlimeController : MonoBehaviour
                             _scriptMain._scriptEvents._rainParticle.Play();
                             yield return new WaitForSeconds(1);
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<FireEventScript>().FireExtinguishVoid();
+                            yield return new WaitForSeconds(2);
 
                             break;
                     }
-
-
-                 
-                    _scriptMain._darkenerChanging = false;
-                    //yield return new WaitForSeconds(2);   
-                    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
-                    //yield return new WaitForSeconds(2);
-                    _slimeType = 0;
-                    ChangeSlime();
-                    _scriptMain._scriptEvents._rainParticle.Stop();
-                    _scriptMain._scriptMain._scriptSFX._rainSetVolume = 0;
-                    Destroy(_scriptMain._scriptEvents._currentEventPrefab);
-
-                    StartCoroutine(_scriptMain.ExitNumerator());
-                    //StartCoroutine(_scriptMain._scriptEvents.StartLevelNumerator());
+                    _scriptMain._darkenerChanging = false;            
+                    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);        
+                    StartCoroutine(_scriptMain.ExitNumerator());                
                 }
                 else
                 {
@@ -296,8 +297,8 @@ public class SlimeController : MonoBehaviour
                 }
                 break;
         }
-     
 
+        _scriptMain._eventOn = false;
 
     }
 }

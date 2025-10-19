@@ -27,16 +27,11 @@ public class RythmFusionScript : MonoBehaviour
     public Vector2[] _positions;
 
     [Header("Rythm Settings")]
-    [Tooltip("Beats per minute (quarter notes). Example: 120.")]
     public float _bpm = 120f;
-
-    [Tooltip("Subdivisions per quarter note. 1 = quarter, 2 = eighths, 4 = sixteenths.")]
     public int _subdivisions = 1;
-
     [HideInInspector] public float _timerInterval;
 
     [Header("Press Settings")]
-    [Tooltip("Window to press the button per step in seconds.")]
     public float _pressWindow = 0.3f;
     [HideInInspector] public bool _canPress = false;
 
@@ -52,6 +47,7 @@ public class RythmFusionScript : MonoBehaviour
     [Header("Audio")]
     public AudioSource _kickSound;
     public AudioSource _chooseSound;
+    public Animator _movingSelector;
 
     void Start()
     {
@@ -62,14 +58,14 @@ public class RythmFusionScript : MonoBehaviour
     {
         for (int i = 0; i < _elementsInfo.Length; i++)
         {
-            if (_elementsInfo[i]._elementText != null && !string.IsNullOrEmpty(_elementsInfo[i].key + (i + 1).ToString()))
+            if (_elementsInfo[i]._elementText != null && !string.IsNullOrEmpty(_elementsInfo[i].key))
             {
                 _elementsInfo[i]._elementText.text = GameInitScript.Instance.GetText(_elementsInfo[i].key);
             }
         }
-        _scriptMain._choose2ElementsText.text = GameInitScript.Instance.GetText("choose");     
-        _scriptMain._spaceText.text = GameInitScript.Instance.GetText("choose2");
 
+        _scriptMain._choose2ElementsText.text = GameInitScript.Instance.GetText("choose");
+        _scriptMain._spaceText.text = GameInitScript.Instance.GetText("choose2");
     }
 
     void Update()
@@ -103,7 +99,6 @@ public class RythmFusionScript : MonoBehaviour
                     }
                     break;
             }
-          
         }
 
         for (int i = 0; i < _elementsInfo.Length; i++)
@@ -112,11 +107,9 @@ public class RythmFusionScript : MonoBehaviour
                 Vector2.Lerp(_elementsInfo[i]._elementOrb.transform.localScale, new Vector2(1, 1), 4 * Time.deltaTime);
         }
 
-         _scriptMain._spaceParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(_elementsInfo[_onElement]._parent.GetComponent<RectTransform>().anchoredPosition.x - 100,
-             _scriptMain._spaceParent.transform.localPosition.y);
-
-
-
+        _scriptMain._spaceParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(
+            _elementsInfo[_onElement]._parent.GetComponent<RectTransform>().anchoredPosition.x - 100,
+            _scriptMain._spaceParent.transform.localPosition.y);
     }
 
     public void ShuffleElements()
@@ -126,7 +119,6 @@ public class RythmFusionScript : MonoBehaviour
 
         if (_positions == null || _positions.Length != n)
         {
-            Debug.LogWarning("Positions length mismatch — rebuilding from parents.");
             _positions = new Vector2[n];
             for (int i = 0; i < n; i++)
                 _positions[i] = _elementsInfo[i]._parent.GetComponent<RectTransform>().anchoredPosition;
@@ -151,6 +143,9 @@ public class RythmFusionScript : MonoBehaviour
         }
     }
 
+    // =====================================================
+    // CORRUTINA PRINCIPAL CON SOPORTE DE PAUSA
+    // =====================================================
     public IEnumerator RythmNumerator()
     {
         _elementChoosed = false;
@@ -174,8 +169,16 @@ public class RythmFusionScript : MonoBehaviour
 
         while (!endLoopAfterSelection)
         {
+            // Esperar si el juego está en pausa
+            while (MainController.Instance != null && MainController.Instance._pauseAssets._pause)
+                yield return null;
+
             for (int step = 0; step < _order.Count; step++)
             {
+                // Esperar si el juego está en pausa (por seguridad)
+                while (MainController.Instance != null && MainController.Instance._pauseAssets._pause)
+                    yield return null;
+
                 int elementIndex = _order[step];
                 customStep = step;
                 _onElement = elementIndex;
@@ -183,29 +186,38 @@ public class RythmFusionScript : MonoBehaviour
                 _elementsInfo[elementIndex]._selector.GetComponent<Animator>().SetTrigger("SelectorIn");
                 _scriptSlime._slimeRawImage.transform.localScale = new Vector2(3f, 3f);
                 _elementsInfo[elementIndex]._elementOrb.transform.localScale = new Vector2(1.25f, 1.25f);
-
+                _movingSelector.GetComponent<RectTransform>().anchoredPosition =
+                    _elementsInfo[_onElement]._parent.GetComponent<RectTransform>().anchoredPosition;
+                _movingSelector.GetComponent<Image>().color = _halfColors[_onElement];
                 _kickSound.pitch = step == 3 ? 1f : 0.9f;
-                _scriptMain._mainUI.transform.localScale = step == 3 ? new Vector2(1.05f, 1.05f) : new Vector2(1.01f, 1.01f);
+                _scriptMain._mainUI.transform.localScale = step == 3 ?
+                    new Vector2(1.05f, 1.05f) : new Vector2(1.01f, 1.01f);
                 _kickSound.Play();
 
                 _canPress = true;
-
                 float timer = 0f;
-           
 
                 while (timer < _timerInterval)
                 {
-                    timer += Time.unscaledDeltaTime;
+                    // Si el juego se pausa, congelar el tiempo del ritmo
+                    if (MainController.Instance != null && MainController.Instance._pauseAssets._pause)
+                    {
+                        yield return null;
+                        continue;
+                    }
+
+                    timer += Time.deltaTime;
+
+                    if (timer >= _timerInterval * 0.5f && _canPress)
+                        _canPress = false;
+
                     yield return null;
                 }
 
                 _canPress = false;
 
-                // Cuando ya se eligieron 2 elementos, marcamos que terminaremos después del loop actual
                 if (_elementsSelection.Count == 2)
-                {
                     endLoopAfterSelection = true;
-                }
             }
 
             for (int i = 0; i < 4; i++)
@@ -216,29 +228,33 @@ public class RythmFusionScript : MonoBehaviour
             switch (_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent])
             {
                 case 12:
-                    int _real = eventStance + 1;
-                    _scriptMain._scriptEvents._currentEventPrefab
-                        .GetComponent<FireEventScript>()._fireParticle[_real].Play();
-                    if(_real == 3)
+                    if (!_scriptMain._scriptEvents._winRound)
                     {
-                        _scriptSlime._slimeAnimator.SetBool("Scared", true);
-                    }else if(_real == 4)
-                    {
-                        if (!_scriptMain._dead)
+                        int _real = eventStance + 1;
+                        _scriptMain._scriptEvents._currentEventPrefab
+                            .GetComponent<FireEventScript>()._fireParticle[_real].Play();
+
+                        if (_real == 3)
                         {
-                            StartCoroutine(_scriptMain.LoseLifeNumerator());
-                            endLoopAfterSelection = true;
+                            _scriptSlime._slimeAnimator.SetBool("Scared", true);
                         }
-                        
+                        else if (_real == 4)
+                        {
+                            if (!_scriptMain._dead)
+                            {
+                                StartCoroutine(_scriptMain.LoseLifeNumerator());
+                                endLoopAfterSelection = true;
+                            }
+                        }
                     }
                     break;
             }
 
             if (eventStance < 3) eventStance++;
         }
+
         _scriptMain._spaceParent.gameObject.SetActive(false);
 
-        // Después de terminar el loop donde se eligió el segundo elemento
         if (_elementsSelection.Count == 2)
             StartCoroutine(FuseElements());
 
@@ -250,13 +266,14 @@ public class RythmFusionScript : MonoBehaviour
             _elementsInfo[i]._parent.SetActive(false);
             _elementsInfo[i]._imageColor.color = _halfColors[0];
         }
-     
-
     }
+
+    // =====================================================
 
     public void ChooseElementVoid()
     {
         _buttonPressed = true;
+        _movingSelector.Play("MovingSelectorOn");
         _scriptSlime._slimeRawImage.transform.localScale = new Vector2(4f, 4f);
         _elementsInfo[_onElement]._elementOrb.transform.localScale = new Vector2(2f, 2f);
         _elementsInfo[customStep]._releaseParticles.startColor = _halfColors[_onElement];
@@ -264,6 +281,8 @@ public class RythmFusionScript : MonoBehaviour
         _chooseSound.Play();
         _elementsSelection.Add(_onElement);
         _scriptSlime._materialColors[_elementsSelection.Count] = _halfColors[_onElement];
+        if (_elementsSelection.Count > 1)
+            _scriptMain._scriptEvents._winRound = true;
     }
 
     public IEnumerator FuseElements()
@@ -283,7 +302,7 @@ public class RythmFusionScript : MonoBehaviour
         _elementsSelection.Clear();
         _scriptSlime.DeactivateElementsInfo();
         yield return new WaitForSeconds(1f);
-        _scriptMain._shineParticle.Play();     
-        StartCoroutine(_scriptSlime.ActionSlimeNumerator()); 
+        _scriptMain._shineParticle.Play();
+        StartCoroutine(_scriptSlime.ActionSlimeNumerator());
     }
 }
