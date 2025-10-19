@@ -309,6 +309,7 @@ public class MainGameplayScript : MonoBehaviour
         switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._eventClassification)
         {
             case GameEvent.EventClassification.Normal:
+                Debug.Log("APARA");
                 StartCoroutine(_scriptRythm.RythmNumerator());
                 break;         
         }   
@@ -371,6 +372,7 @@ public class MainGameplayScript : MonoBehaviour
         yield return new WaitForSeconds(2);
         _slimeFalling = true;
         _scriptEvents._winRound = true;
+        _firstStage = true;
         StartCoroutine(ExitNumerator());
 
     }

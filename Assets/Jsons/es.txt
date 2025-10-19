@@ -10,6 +10,8 @@
     { "key": "choose", "value": "ELIGE 2 ELEMENTOS" },
     { "key": "choose2", "value": "Espacio" },
     { "key": "dialoge1", "value": "Ayudanos a liberar el reino, por favor.", "id": 1 },
-    { "key": "dialoge2", "value": "De ti dependemos.", "id": 2 }
+    { "key": "dialoge2", "value": "De ti dependemos.", "id": 2 },
+    { "key": "locked", "value": "BLOQUEADO" }
+
   ]
 }

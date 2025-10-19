@@ -84,7 +84,8 @@ public class GameEventsScript : MonoBehaviour
                 StartCoroutine(StartLevelNumerator());
 
                 break;
-            case 3:                  
+            case 3:
+                _scriptMain._GamesList.Add(11);
                 _scriptMain._GamesList.Add(2);
                 _scriptMain._GamesList.Add(8);
                 _scriptMain._GamesList.Add(12);
@@ -135,7 +136,7 @@ public class GameEventsScript : MonoBehaviour
     public IEnumerator StartLevelNumerator()
     {
 
-        Debug.Log("COMIENZA");
+      
         _scriptMain._scriptEvents._winRound = false;
         _scriptMain._scriptFusion.UnlockElements();
         for (int i = 0; i < _enemiesGameObjects.Length; i++)
@@ -162,6 +163,7 @@ public class GameEventsScript : MonoBehaviour
             {
                 case GameEvent.EventClassification.Normal:
                 case GameEvent.EventClassification.Fight:
+                 
                     switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._weakto.Length)
                     {
                         case 1:
@@ -190,16 +192,25 @@ public class GameEventsScript : MonoBehaviour
                             }
                             break;
                     }
-                    _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
+                    _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(_scriptMain._firstStage);
+                    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);
+           
+                    _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -200);
                     switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._eventType)
                     {
-                        case GameEvent.EventType.Bridge: _scriptMain._onEventID = 1; evento.GetComponent<BridgeEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); break;
+                        case GameEvent.EventType.Bridge:
+                            evento.GetComponent<ChestEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); _scriptMain._onEventID = 1; evento.GetComponent<BridgeEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); break;
                         case GameEvent.EventType.Lagoon:
                             _scriptMain._onEventID = 2;
                             evento.GetComponent<WaterFallEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                             evento.GetComponent<WaterFallEvent>()._scriptMain = _scriptMain;
                             break;
-                        case GameEvent.EventType.Well: _scriptMain._onEventID = 3; evento.GetComponent<WaterFillEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); break;
+                        case GameEvent.EventType.Well:
+                            _scriptMain._onEventID = 3;
+                            evento.GetComponent<WaterFillEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
+                  
+
+                            break;
                         case GameEvent.EventType.StrongAir: _scriptMain._onEventID = 4; evento.GetComponent<StrongAirEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); break;
                         case GameEvent.EventType.FallingBridge: _scriptMain._onEventID = 5; evento.GetComponent<SandCutEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); break;
                         case GameEvent.EventType.Gears: _scriptMain._onEventID = 6; evento.GetComponent<GearsPrefabEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); break;
@@ -216,27 +227,17 @@ public class GameEventsScript : MonoBehaviour
                         case GameEvent.EventType.Fire:
                             _scriptMain._onEventID = 9;
                             evento.GetComponent<FireEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
-                         
+
                             break;
                         case GameEvent.EventType.BossFight1:
-                   
+
                             _scriptMain._onEventID = 10;
                             //StartCoroutine(evento.GetComponent<BossFightsScript>().StartBossNumerator());
                             StartCoroutine(StartBossNumerator());
                             break;
                     }
-                    if (!_scriptMain._firstStage)
-                    {
-                        yield return new WaitForSeconds(2);
-                        _scriptMain._stageParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -10f);
-                        _scriptMain._fallingParticle.Play();
-                        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._explosion);
-                        _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -200);
-                        _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
-                        _scriptMain._firstStage = true;
-                    }
-
                     StartCoroutine(_scriptMain.StartStageNumerator());
+
                     break;
 
                 case GameEvent.EventClassification.Questionary:
@@ -244,53 +245,17 @@ public class GameEventsScript : MonoBehaviour
                     _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(_scriptMain._firstStage);
                     _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);
                     _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -200);
-                    if (!_scriptMain._firstStage)
-                    {
-                        yield return new WaitForSeconds(2);
-                        _scriptMain._stageParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -10f);
-                        _scriptMain._fallingParticle.Play();
-                        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._explosion);
-                        _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -200);
-                        _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
-                        _scriptMain._firstStage = true;
-                    }
-                    else
-                    {
-            
+        
                         yield return new WaitForSeconds(1);
                         _scriptMain._scriptSlime._slimeAnimator.SetBool("Moving", false);
                         StartCoroutine(StartStageQuestionary());
-                    }
-                    //StartCoroutine(_scriptMain.StartStageQuestionary());
+        
                     break;
                 case GameEvent.EventClassification.Chest:
                     evento.GetComponent<ChestEventScript>()._scriptMain = _scriptMain;
                     evento.GetComponent<ChestEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                     _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(_scriptMain._firstStage);
-                    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);
-                    if (!_scriptMain._firstStage){                 
-                        yield return new WaitForSeconds(2);
-                        _scriptMain._stageParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -10f);
-                        _scriptMain._fallingParticle.Play();
-                        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._explosion);
-
-                        _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -200);
-
-                        _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
-                        switch (_scriptMain._scriptMain._onWorldGlobal)
-                        {
-                            case 0:
-                            case 1:
-                            case 2:
-                                _scriptMain._scriptSlime._slimeAnimator.Play("Fall1");
-                                break;                  
-                            case 3:
-                                _scriptMain._scriptSlime._slimeAnimator.Play("Fall2");
-                                break;
-                        }
-
-                        _scriptMain._firstStage = true;
-                    }            
+                    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);       
                     StartCoroutine(_scriptMain.StartsStageChest());               
                     break;
                 case GameEvent.EventClassification.Intro:
@@ -391,11 +356,16 @@ public class GameEventsScript : MonoBehaviour
         yield return new WaitForSeconds(2);
         _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
         _scriptMain._scriptMain._introSpecial = true;
+
+        _scriptMain._scriptMain._saveLoadValues._worldsUnlocked[0] = false;
+        _scriptMain._scriptMain._saveLoadValues._worldsUnlocked[3] = true;
+
         yield return new WaitForSeconds(1);
         _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
         _scriptMain._scriptMain._onWorldGlobal = 3;
         _scriptMain._bossAnimator.gameObject.SetActive(false);
-        _scriptMain._scriptMain._saveLoadValues._worldsUnlocked[3] = true;
+        //_scriptMain._firstStage = true;
+
         //_scriptMain._scriptMain._scriptInit.SaveGame();
         _scriptMain._scriptMain.SaveProgress();
 

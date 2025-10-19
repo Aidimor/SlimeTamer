@@ -25,9 +25,11 @@ public class PortraitController : MonoBehaviour
         public GameObject _worldParent;
         public float _yPos;
         public Color _backgroundColor;
-        public bool _unlocked;
+        //public bool _unlocked;
         public TextMeshProUGUI _worldText;
-
+        public GameObject _spaceButton;
+        public GameObject _lockedParemt;
+        public TextMeshProUGUI _lockedText;
         [Header("Idioma")]
         public string key; // 👈 clave que se buscará en el JSON (ej: "world1")
     }
@@ -82,28 +84,55 @@ public class PortraitController : MonoBehaviour
         {
             Debug.LogWarning("⚠️ No se encontró 'CanvasIndestructible/Main/MainController' en la jerarquía.");
         }
+
+
     }
 
     public IEnumerator UpdateWorldTexts()
     {
-        // ⏳ espera hasta que se haya cargado el idioma
-        yield return new WaitUntil(() => LoL.GameInitScript.Instance != null && LoL.GameInitScript.Instance.languageReady);
+        // Espera a que el idioma esté listo
+        yield return new WaitUntil(() =>
+            LoL.GameInitScript.Instance != null &&
+            LoL.GameInitScript.Instance.languageReady
+        );
 
+        var gi = GameInitScript.Instance;
+
+        // Recorre todos los mundos
         for (int i = 0; i < _allWorlds.Length; i++)
         {
-            if (_allWorlds[i]._worldText != null && !string.IsNullOrEmpty(_allWorlds[i].key))
+            var world = _allWorlds[i];
+
+            // 🟦 Actualiza el texto del mundo
+            if (world._worldText != null && !string.IsNullOrEmpty(world.key))
             {
-                string text = GameInitScript.Instance.GetText(_allWorlds[i].key);
-                _allWorlds[i]._worldText.text = text + " " + (i + 1);
+                string text = gi.GetText(world.key);
+                world._worldText.text = text + " " + (i + 1);
+            }
+
+            // 🔒 Actualiza el texto de "locked"
+            if (world._lockedText != null)
+            {
+                string lockedText = gi.GetText("locked"); // clave exacta del JSON
+                world._lockedText.text = lockedText;
             }
         }
     }
+
+
 
     public void CustomStart()
     {
       
         if (_scriptMainController._introSpecial)
         {
+            for(int i = 0; i < _scriptMainController._saveLoadValues._worldsUnlocked.Length; i++)
+            {
+                _allWorlds[i]._worldText.gameObject.SetActive(false);
+                _allWorlds[i]._lockedParemt.gameObject.SetActive(false);
+                _allWorlds[i]._spaceButton.gameObject.SetActive(false);
+            }
+
             _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._falling);
             _scriptMainController._bordersAnimator.SetBool("BorderOut", true);
             _frontMap.SetActive(false);
@@ -149,7 +178,8 @@ public class PortraitController : MonoBehaviour
 
             if (!_gameStarts)
             {
-                if (Input.GetAxisRaw("Vertical") < 0 && !_worldPressed && _onWorldPos < _allWorlds.Length - 1 && _allWorlds[_onWorldPos + 1]._unlocked)
+                if (Input.GetAxisRaw("Vertical") < 0 && !_worldPressed && _onWorldPos < _allWorlds.Length - 1)
+               
                 {
                     _onWorldPos++;
                     _worldPressed = true;
@@ -161,7 +191,7 @@ public class PortraitController : MonoBehaviour
                     _worldPressed = true;
                 }
 
-                if (Input.GetButton("Submit"))
+                if (Input.GetButton("Submit") && _scriptMainController._saveLoadValues._worldsUnlocked[_onWorldPos])
                 {
                     StartCoroutine(StartGame());
                 }
@@ -185,6 +215,15 @@ public class PortraitController : MonoBehaviour
                 }
             }
         }
+        if (!_scriptMainController._introSpecial)
+        {
+            for (int i = 0; i < _scriptMainController._saveLoadValues._worldsUnlocked.Length; i++)
+            {
+                _allWorlds[i]._lockedParemt.gameObject.SetActive(!_scriptMainController._saveLoadValues._worldsUnlocked[i]);
+                _allWorlds[i]._spaceButton.gameObject.SetActive(_scriptMainController._saveLoadValues._worldsUnlocked[i]);
+            }
+        }
+
     }
 
     public IEnumerator StartGameSpecial()
