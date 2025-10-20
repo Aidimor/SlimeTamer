@@ -104,13 +104,15 @@ public class SlimeController : MonoBehaviour
 
     public IEnumerator ActionSlimeNumerator()
     {
+
+
         _scriptMain._eventOn = true;
 
         _slimeAnimator.SetBool("Scared", false);
-        yield return new WaitForSeconds(1f);
-        ChangeSlime();
-        _scriptMain._lightChanging = false;
-        _scriptMain._shineParticle.Stop();
+        //yield return new WaitForSeconds(1f);
+       
+        //_scriptMain._lightChanging = false;
+        //_scriptMain._shineParticle.Stop();
      
 
 
@@ -119,24 +121,38 @@ public class SlimeController : MonoBehaviour
             case 1:
                 if (_slimeType == _scriptMain._rightElementID[0])
                 {
+                    Debug.Log("correcto");
+
+                    _scriptMain._slimeChanging = true;
+                    _scriptMain._lightChanging = true;
+                    _scriptMain._darkenerChanging = true;
+                    _scriptMain._scriptRythm._elementChoosed = true;
+                    _scriptMain._shineParticle.Play();
+               
+
                     _scriptMain._scriptMain.newSlimePanel._backgroundImage.color = _scriptMain._scriptSlime._slimeAssets[_slimeType]._mainColor;
                     _scriptMain._scriptMain.newSlimePanel._slimeNameText.text = _scriptMain._scriptSlime._slimeAssets[_slimeType].name;
                     _scriptMain._scriptMain.newSlimePanel._parent.SetBool("AnnounceIn", true);
 
 
                     
-                    yield return new WaitForSeconds(0.5F);                 
-                    _scriptMain._snowBool = false;       
+                    yield return new WaitForSeconds(1F);
+                    ChangeSlime();
+                    _scriptMain._snowBool = false;
+                    _scriptMain._shineParticle.Stop();
                     yield return new WaitForSeconds(0.25f);
                     _scriptMain._scriptMain.newSlimePanel._parent.SetBool("AnnounceIn", false);                
                     yield return new WaitForSeconds(0.5F);
                     _scriptMain._slimeChanging = false;
+                
                     yield return new WaitForSeconds(0.5F);
-                    _scriptMain._scriptSlime._slimeAnimator.SetTrigger("Action");
+               
                     _scriptMain._darkenerChanging = false;
                     _scriptMain._scriptEvents._winRound = true;
-
-
+                 
+                    _scriptMain._lightChanging = false;
+                    yield return new WaitForSeconds(1);
+                    _scriptMain._scriptSlime._slimeAnimator.SetTrigger("Action");
                     switch (_scriptMain._onEventID)
                     {
                         case 1:
@@ -153,8 +169,10 @@ public class SlimeController : MonoBehaviour
                             yield return new WaitForSeconds(2);
                             break;
                         case 4:
-                            _scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(true);
-
+                            //_scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(true);
+                            _scriptMain._windBlocker.GetComponent<ParticleSystem>().Play();
+                            _scriptMain._scriptMain._windParticle.GetComponent<ForceField2D>().fuerza = 1250;
+                            yield return new WaitForSeconds(2);
                             break;
                         case 5:
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<SandCutEventScript>().StartCuttingVoid();
@@ -183,6 +201,7 @@ public class SlimeController : MonoBehaviour
                 }
                 else
                 {
+                    Debug.Log("INcorrecto");
                     _scriptMain._scriptEvents._winRound = false;
                     switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventClassification)
                     {
@@ -214,88 +233,88 @@ public class SlimeController : MonoBehaviour
 
                 }
                 break;
-            case 2:
-                bool _solved = false;
-                for(int i = 0; i < 2; i++)
-                {
-                    if (_slimeType == _scriptMain._rightElementID[i]){
-                        _solved = true;
-                    }
-                }
-                if (_solved)
-                {
-                    Debug.Log("Correcto");
-                    yield return new WaitForSeconds(1);
-                    switch (_scriptMain._onEventID)
-                    {
-                        case 1:
-                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BridgeEvent>()._activateBridge = true;
+            //case 2:
+            //    bool _solved = false;
+            //    for(int i = 0; i < 2; i++)
+            //    {
+            //        if (_slimeType == _scriptMain._rightElementID[i]){
+            //            _solved = true;
+            //        }
+            //    }
+            //    if (_solved)
+            //    {
+            //        Debug.Log("Correcto");
+            //        yield return new WaitForSeconds(1);
+            //        switch (_scriptMain._onEventID)
+            //        {
+            //            case 1:
+            //                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BridgeEvent>()._activateBridge = true;
               
-                            break;
-                        case 2:
-                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFallEvent>().ActivateFreeze();
+            //                break;
+            //            case 2:
+            //                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFallEvent>().ActivateFreeze();
                    
-                            break;
-                        case 3:
-                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFillEvent>()._fillBool = true;
+            //                break;
+            //            case 3:
+            //                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFillEvent>()._fillBool = true;
                 
-                            break;
-                        case 4:
-                            _scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(true);
+            //                break;
+            //            case 4:
+            //                _scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(true);
                         
-                            break;
-                        case 5:
-                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<SandCutEventScript>().StartCuttingVoid();
+            //                break;
+            //            case 5:
+            //                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<SandCutEventScript>().StartCuttingVoid();
                  
-                            break;
-                        case 6:
-                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._Stopped = true;
+            //                break;
+            //            case 6:
+            //                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._Stopped = true;
                
-                            break;
-                        case 7:
-                            StartCoroutine(_scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaspFightScript>().DeadNumerator());
-                            Debug.Log("Wasp Destroyed");
+            //                break;
+            //            case 7:
+            //                StartCoroutine(_scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaspFightScript>().DeadNumerator());
+            //                Debug.Log("Wasp Destroyed");
                
-                            break;
+            //                break;
             
-                    }
+            //        }
 
-                    //_scriptMain._snowBool = false;
-                    //_slimeType = 0;
-                    //ChangeSlime();
-                    //_scriptMain._slimeChanging = false;
-                    //_scriptMain._darkenerChanging = false;
-                    //yield return new WaitForSeconds(3);
-                    //_scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
+            //        //_scriptMain._snowBool = false;
+            //        //_slimeType = 0;
+            //        //ChangeSlime();
+            //        //_scriptMain._slimeChanging = false;
+            //        //_scriptMain._darkenerChanging = false;
+            //        //yield return new WaitForSeconds(3);
+            //        //_scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
 
-                    //yield return new WaitForSeconds(2);
-                    //_scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(false);
-                    //Destroy(_scriptMain._scriptEvents._currentEventPrefab);
-                    //_scriptMain._scriptEvents._onEvent++;             
-                    //StartCoroutine(_scriptMain._scriptEvents.StartLevelNumerator());
-                }
-                else
-                {
-                    switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventClassification)
-                    {
-                        case GameEvent.EventClassification.Normal:
-                            _wrongParticle.Play();
-                            _slimeAnimator.SetTrigger("Wrong");
-                            yield return new WaitForSeconds(2);
-                            _scriptMain._scriptFusion.ActivatePanel();
-                            break;
-                        case GameEvent.EventClassification.Fight:
-                            _wrongParticle.Play();
-                            _slimeAnimator.SetTrigger("Wrong");
-                            yield return new WaitForSeconds(2);
-                            _scriptMain._scriptFusion.ActivatePanel();
-                            break;
-                        case GameEvent.EventClassification.Questionary:
-                            break;
-                    }
+            //        //yield return new WaitForSeconds(2);
+            //        //_scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(false);
+            //        //Destroy(_scriptMain._scriptEvents._currentEventPrefab);
+            //        //_scriptMain._scriptEvents._onEvent++;             
+            //        //StartCoroutine(_scriptMain._scriptEvents.StartLevelNumerator());
+            //    }
+            //    else
+            //    {
+            //        switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventClassification)
+            //        {
+            //            case GameEvent.EventClassification.Normal:
+            //                _wrongParticle.Play();
+            //                _slimeAnimator.SetTrigger("Wrong");
+            //                yield return new WaitForSeconds(2);
+            //                _scriptMain._scriptFusion.ActivatePanel();
+            //                break;
+            //            case GameEvent.EventClassification.Fight:
+            //                _wrongParticle.Play();
+            //                _slimeAnimator.SetTrigger("Wrong");
+            //                yield return new WaitForSeconds(2);
+            //                _scriptMain._scriptFusion.ActivatePanel();
+            //                break;
+            //            case GameEvent.EventClassification.Questionary:
+            //                break;
+            //        }
 
-                }
-                break;
+            //    }
+            //    break;
         }
 
         _scriptMain._eventOn = false;

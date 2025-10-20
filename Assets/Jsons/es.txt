@@ -9,8 +9,14 @@
     { "key": "description3", "value": "¡PARTÍCULA DE TIERRA OBTENIDA!" },
     { "key": "choose", "value": "ELIGE 2 ELEMENTOS" },
     { "key": "choose2", "value": "Espacio" },
+
     { "key": "dialoge1", "value": "Ayudanos a liberar el reino, por favor.", "id": 1 },
     { "key": "dialoge2", "value": "De ti dependemos.", "id": 2 },
+        
+    { "key": "dialoge3", "value": "Perfecto. Todavia te puedes mover", "id": 1 },
+    { "key": "dialoge4", "value": "Toma esto, y por favor ayudanos.", "id": 2 },
+    { "key": "dialoge5", "value": "El tiempo apremia.", "id": 0},
+
     { "key": "locked", "value": "BLOQUEADO" }
 
   ]

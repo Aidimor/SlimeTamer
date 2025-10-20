@@ -13,7 +13,7 @@ MonoBehaviour:
   m_Name: Event10
   m_EditorClassIdentifier: 
   _eventClassification: 3
-  _eventType: 8
+  _eventType: 11
   _weakto: 
   _eventPrefab: {fileID: 8423800845335085555, guid: bab88de72b7773040b552530858f1a9c, type: 3}
   _chestItems: 02000000

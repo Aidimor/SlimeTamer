@@ -59,6 +59,8 @@ public class MainController : MonoBehaviour
     }
     public NewSlimePanel newSlimePanel;
 
+    public ParticleSystem _windParticle;
+
     private void Awake()
     {
         if (Instance == null) Instance = this;

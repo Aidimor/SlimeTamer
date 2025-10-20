@@ -115,6 +115,7 @@ public class MainGameplayScript : MonoBehaviour
     public GameObject _shadow;
     public ParticleSystem _slimeExplosion;
     public bool _dead;
+    public GameObject _windBlocker;
     private void Awake()
     {
         _scriptMain = GameObject.Find("CanvasIndestructible/Main/MainController").GetComponent<MainController>();
@@ -309,7 +310,7 @@ public class MainGameplayScript : MonoBehaviour
         switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._eventClassification)
         {
             case GameEvent.EventClassification.Normal:
-                Debug.Log("APARA");
+                //Debug.Log("APARA");
                 StartCoroutine(_scriptRythm.RythmNumerator());
                 break;         
         }   
@@ -410,10 +411,12 @@ public class MainGameplayScript : MonoBehaviour
                     case GameEvent.ChestItems.Water:
                         _dialogeAssets._dialogeSize = new Vector2(1, 3);
                         break;
+                    case GameEvent.ChestItems.Earth:
+                        _dialogeAssets._dialogeSize = new Vector2(3, 6);
+                        break;
                     case GameEvent.ChestItems.Air:
                         break;
-                    case GameEvent.ChestItems.Earth:
-                        break;
+          
                     case GameEvent.ChestItems.Fire:
                         break;
                 }
@@ -543,8 +546,8 @@ public class MainGameplayScript : MonoBehaviour
 
         _scriptEvents._rainParticle.Stop();
         _scriptMain._scriptSFX._rainSetVolume = 0;
-    
-
+        _scriptMain._windParticle.GetComponent<ForceField2D>().fuerza = 5;
+        _scriptMain._windParticle.Stop();
         _scriptSlime._slimeAnimator.SetBool("Scared", false);
         _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
@@ -572,6 +575,7 @@ public class MainGameplayScript : MonoBehaviour
         _scriptMain._scriptSFX._windSetVolume = 0;
         _scriptSlime._slimeType = 0;
         _scriptSlime.ChangeSlime();
+        _windBlocker.GetComponent<ParticleSystem>().Stop();
         for (int i = 0; i < _allStageAssets.Length; i++)
         {
             _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);

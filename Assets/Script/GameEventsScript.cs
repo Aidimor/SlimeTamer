@@ -86,9 +86,11 @@ public class GameEventsScript : MonoBehaviour
                 break;
             case 3:
                 _scriptMain._GamesList.Add(11);
+                //_scriptMain._GamesList.Add(2);
+                //_scriptMain._GamesList.Add(8);
+                _scriptMain._GamesList.Add(9);
+                _scriptMain._GamesList.Add(3);
                 _scriptMain._GamesList.Add(2);
-                _scriptMain._GamesList.Add(8);
-                _scriptMain._GamesList.Add(12);
                 //for (int i = 0; i < _scriptMain._totalStages._total; i++)
                 //{
                 //    var randomEvent = GetRandomEvent();
@@ -211,7 +213,7 @@ public class GameEventsScript : MonoBehaviour
                   
 
                             break;
-                        case GameEvent.EventType.StrongAir: _scriptMain._onEventID = 4; evento.GetComponent<StrongAirEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); break;
+                        case GameEvent.EventType.StrongAir: _scriptMain._onEventID = 4; evento.GetComponent<StrongAirEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); _scriptMain._scriptMain._windParticle.Play(); break;
                         case GameEvent.EventType.FallingBridge: _scriptMain._onEventID = 5; evento.GetComponent<SandCutEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); break;
                         case GameEvent.EventType.Gears: _scriptMain._onEventID = 6; evento.GetComponent<GearsPrefabEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); break;
                         case GameEvent.EventType.FightWasp:

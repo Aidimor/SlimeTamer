@@ -256,7 +256,7 @@ public class RythmFusionScript : MonoBehaviour
         _scriptMain._spaceParent.gameObject.SetActive(false);
 
         if (_elementsSelection.Count == 2)
-            StartCoroutine(FuseElements());
+           FuseElements();
 
         _onElement = 0;
         yield return new WaitForSeconds(1);
@@ -285,12 +285,8 @@ public class RythmFusionScript : MonoBehaviour
             _scriptMain._scriptEvents._winRound = true;
     }
 
-    public IEnumerator FuseElements()
-    {
-        _scriptMain._slimeChanging = true;
-        _scriptMain._lightChanging = true;
-        _scriptMain._darkenerChanging = true;
-        _elementChoosed = true;
+    public void FuseElements()
+    { 
         int e1 = _elementsSelection[0];
         int e2 = _elementsSelection[1];
 
@@ -301,8 +297,8 @@ public class RythmFusionScript : MonoBehaviour
 
         _elementsSelection.Clear();
         _scriptSlime.DeactivateElementsInfo();
-        yield return new WaitForSeconds(1f);
-        _scriptMain._shineParticle.Play();
+        //yield return new WaitForSeconds(1f);
+ 
         StartCoroutine(_scriptSlime.ActionSlimeNumerator());
     }
 }

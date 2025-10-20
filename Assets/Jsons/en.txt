@@ -9,8 +9,14 @@
     { "key": "description3", "value": "EARTH PARTICLE OBTAINED!" },
     { "key": "choose", "value": "CHOOSE 2 ELEMENTS" },,
     { "key": "choose2", "value": "Space" },
+
     { "key": "dialoge1", "value": "Help us save the kingdom.", "id": 1 },
     { "key": "dialoge2", "value": "We depend of you.", "id": 2 },
+
+    { "key": "dialoge3", "value": "Perfect. You are still can move.", "id": 1 },
+    { "key": "dialoge4", "value": "Take this and please help us.", "id": 2 },
+    { "key": "dialoge5", "value": "There is no time.", "id": 0},
+
     { "key": "locked", "value": "BLOCKED" }
 
 

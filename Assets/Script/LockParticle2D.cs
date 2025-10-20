@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(ParticleSystem))]
 public class ForceField2D : MonoBehaviour
 {
-    public Transform objeto;   // El objeto alrededor del cual se repelen
+    public MainGameplayScript _scriptMain;
     public float fuerza = 5f;
 
     private ParticleSystem ps;
@@ -12,11 +13,52 @@ public class ForceField2D : MonoBehaviour
     void Start()
     {
         ps = GetComponent<ParticleSystem>();
-        objeto = GameObject.Find("World/SlimeBase").GetComponent<SlimeController>()._WindBlocker.transform;
+
+        // 🔹 Intentar una vez al inicio
+        TryAssignMainScript(SceneManager.GetActiveScene());
+
+        // 🔹 Suscribirse al evento para detectar cambios de escena
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    private void OnDestroy()
+    {
+        // 🔹 Evitar duplicar suscripciones si el objeto se destruye
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        TryAssignMainScript(scene);
+    }
+
+    private void TryAssignMainScript(Scene scene)
+    {
+        // Solo buscar si estamos en la escena "MainGame"
+        if (scene.name == "MainGame")
+        {
+            GameObject go = GameObject.Find("MainGameplayScript");
+            if (go != null)
+            {
+                _scriptMain = go.GetComponent<MainGameplayScript>();
+                Debug.Log("✅ ForceField2D: MainGameplayScript encontrado en escena " + scene.name);
+            }
+            else
+            {
+                Debug.LogWarning("⚠️ ForceField2D: No se encontró 'MainGamePlayScript' en escena " + scene.name);
+            }
+        }
+        else
+        {
+            _scriptMain = null;
+        }
     }
 
     void LateUpdate()
     {
+        if (_scriptMain == null)
+            return;
+
         if (particles == null || particles.Length < ps.main.maxParticles)
             particles = new ParticleSystem.Particle[ps.main.maxParticles];
 
@@ -24,14 +66,9 @@ public class ForceField2D : MonoBehaviour
 
         for (int i = 0; i < count; i++)
         {
-            // Calcular dirección desde el objeto hasta la partícula
-            Vector3 dir = (particles[i].position - objeto.position).normalized;
-            dir.z = 0; // 🔹 Forzar que solo actúe en XY
-
-            // Aplicar fuerza (como velocidad)
+            Vector3 dir = (particles[i].position - _scriptMain._windBlocker.transform.position).normalized;
+            dir.z = 0;
             particles[i].velocity += dir * fuerza * Time.deltaTime;
-
-            // Mantener en el plano Z=0
             particles[i].position = new Vector3(particles[i].position.x, particles[i].position.y, 0);
         }
 
