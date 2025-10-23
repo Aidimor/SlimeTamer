@@ -24,13 +24,13 @@ public class MainGameplayScript : MonoBehaviour
     public Animator _wasp;
 
     public ParticleSystem _fallParticle;
-
+    public ParticleSystem _slimeArriveParticle;
 
     [System.Serializable]
     public class TotalStages
     {
         public GameObject _SlimeIcon;
-        public int _total;     
+        //public int _total;     
         public List<float> _xPoses = new List<float>();
     }
     public TotalStages _totalStages;
@@ -76,7 +76,7 @@ public class MainGameplayScript : MonoBehaviour
     public Animator _bossAnimator;
 
     public bool _slimeFalling;
-    public ParticleSystem _fallingParticle;
+    //public ParticleSystem _fallingParticle;
 
     public bool _firstStage;
     public GameObject _stageParent;
@@ -116,6 +116,18 @@ public class MainGameplayScript : MonoBehaviour
     public ParticleSystem _slimeExplosion;
     public bool _dead;
     public GameObject _windBlocker;
+    public ParticleSystem _airPushParticle;
+    public ParticleSystem _windBlockPalanca;
+    public ParticleSystem _snowParticle;
+    public ParticleSystem[] _cutParticles;
+    public ParticleSystem _windParticle;
+
+    public Color[] _cascadeColor;
+    public ParticleSystem[] _Cascade;
+    public bool _cascadeFrozen;
+
+    public ParticleSystem _chargingAttackEnemy;
+    public ParticleSystem _AttackEnemy;
     private void Awake()
     {
         _scriptMain = GameObject.Find("CanvasIndestructible/Main/MainController").GetComponent<MainController>();
@@ -144,14 +156,16 @@ public class MainGameplayScript : MonoBehaviour
         switch (_scriptMain._onWorldGlobal)
         {
             case 0:
-                _topOptionsOn = false;
+                //_topOptionsOn = false;
                 break;
             case 1:
             case 2:
             case 3:
-                _topOptionsOn = true;
+                //_topOptionsOn = true;
                 break;
-        }      
+        }
+
+        //_totalStages._total = _GamesList.Count;
         }
 
 
@@ -166,7 +180,7 @@ public class MainGameplayScript : MonoBehaviour
 
     public void StartNewWorld()
     {
-        int n = Mathf.Max(1, _totalStages._total); // avoid divide-by-zero
+        int n = Mathf.Max(1, _GamesList.Count); // avoid divide-by-zero
 
         for (int i = 0; i < n; i++)
         {
@@ -287,6 +301,36 @@ public class MainGameplayScript : MonoBehaviour
             }
         }
 
+        var ps = _Cascade[0];
+
+        if (_cascadeFrozen)
+        {
+            // Cambia color de las partículas ya vivas
+            ParticleSystem.Particle[] particles = new ParticleSystem.Particle[ps.particleCount];
+            int count = ps.GetParticles(particles);
+
+            for (int i = 0; i < count; i++)
+                particles[i].startColor = _cascadeColor[0]; 
+
+            ps.SetParticles(particles, count);
+
+            // Pausa y cambia color para las nuevas
+            var main = ps.main;
+            main.startColor = _cascadeColor[0];
+
+            var emission = ps.emission;
+            emission.enabled = false;
+            ps.Pause();
+        }
+        else
+        {
+            var main = ps.main;
+            main.startColor = _cascadeColor[1];
+            var emission = ps.emission;
+            emission.enabled = true;
+            ps.Play();
+        }
+
 
 
     }
@@ -294,16 +338,61 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator StartStageNumerator()
     {
+        _slimeParent.gameObject.SetActive(false);
+        LoseHeartVoid();
+        if(_scriptEvents._currentEventPrefab.name == "ChestEvent(Clone)" || _scriptEvents._currentEventPrefab.name == "Intro(Clone)")
+        {
+            _topOptionsOn = false;
+        }
+        else
+        {
+            _topOptionsOn = true;
+        }
         _scriptSlime._slimeAnimator.SetBool("Moving", false);
         _darkenerChanging = false;
-        _slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-450, _slimeParent.GetComponent<RectTransform>().anchoredPosition.y);
+ 
         _shadow.gameObject.SetActive(true);
         yield return new WaitForSeconds(1);
-        _scriptSlime._slimeAnimator.SetBool("Moving", true);
-        _scriptMain._bordersAnimator.SetBool("BorderOut", true);
-        _scriptMain._cinematicBorders.SetBool("FadeIn", false);
-        yield return new WaitForSeconds(1);
-        _scriptSlime._slimeAnimator.SetBool("Moving", false);
+
+        if(_scriptEvents._onEvent == 1)
+        {
+            _slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-255, _slimeParent.GetComponent<RectTransform>().anchoredPosition.y);
+        
+            yield return new WaitForSeconds(0.25f);
+            if(_scriptMain._onWorldGlobal == 3)
+            {
+             
+                _scriptSlime._slimeAnimator.Play("Fall2");
+                yield return new WaitForSeconds(1);
+                _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -30);
+                _slimeArriveParticle.Play();
+                _slimeParent.gameObject.SetActive(true);
+                yield return new WaitForSeconds(1);
+            }
+            else
+            {
+                _scriptSlime._slimeAnimator.Play("Fall1");
+                yield return new WaitForSeconds(1);
+                _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -30);
+                _slimeArriveParticle.Play();
+                _slimeParent.gameObject.SetActive(true);
+            }
+         
+  
+      
+        }
+        else
+        {
+            _slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-500, _slimeParent.GetComponent<RectTransform>().anchoredPosition.y);
+            _slimeParent.gameObject.SetActive(true);
+            _scriptSlime._slimeAnimator.SetBool("Moving", true);
+            _scriptMain._bordersAnimator.SetBool("BorderOut", true);
+            _scriptMain._cinematicBorders.SetBool("FadeIn", false);
+            yield return new WaitForSeconds(1.25f);
+            _scriptSlime._slimeAnimator.SetBool("Moving", false);
+        }
+
+
 
         yield return new WaitForSeconds(1);
      
@@ -396,12 +485,55 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator StartsStageChest()
     {
-        
+        _slimeParent.gameObject.SetActive(false);
+        LoseHeartVoid();
+        _topOptionsOn = false;
+        _scriptSlime._slimeAnimator.SetBool("Moving", false);
+        _darkenerChanging = false;
+
+        _shadow.gameObject.SetActive(true);
+        yield return new WaitForSeconds(1);
+
+        if(_scriptEvents._onEvent == 1)
+        {
+            if (_scriptMain._onWorldGlobal == 3)
+            {
+
+
+                yield return new WaitForSeconds(1);
+                _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -30);
+                _slimeArriveParticle.Play();
+                _slimeParent.gameObject.SetActive(true);
+                _scriptSlime._slimeAnimator.Play("Fall2");
+                yield return new WaitForSeconds(1);
+            }
+            else
+            {
+
+                yield return new WaitForSeconds(1);
+                _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -30);
+                _slimeArriveParticle.Play();
+                _slimeParent.gameObject.SetActive(true);
+                _scriptSlime._slimeAnimator.Play("Fall1");
+            }
+        }
+        else
+        {
+            _slimeParent.gameObject.SetActive(true);
+            _slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-500, _slimeParent.GetComponent<RectTransform>().anchoredPosition.y);
+            _scriptSlime._slimeAnimator.SetBool("Moving", true);
+            _scriptMain._bordersAnimator.SetBool("BorderOut", true);
+            _scriptMain._cinematicBorders.SetBool("FadeIn", false);
+            yield return new WaitForSeconds(1.25f);
+            _scriptSlime._slimeAnimator.SetBool("Moving", false);
+        }
+
+
         _shadow.gameObject.SetActive(true);
         yield return new WaitForSeconds(1);
         _dialogeAssets._dialogePanel.SetBool("DialogeIn", true);
         //_scriptEvents._currentEventPrefab.GetComponent<ChestEventScript>()._chestAnimator.SetTrigger("ChestOpen");
-        yield return new WaitForSeconds(2);
+      
 
         switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._eventClassification)
         {
@@ -541,13 +673,15 @@ public class MainGameplayScript : MonoBehaviour
        
             _scriptSlime._slimeAnimator.SetBool("Moving", true);
         }
-   
-        yield return new WaitForSeconds(2);
+        _Cascade[0].Stop();
 
+        yield return new WaitForSeconds(0.5f);
+        _scriptMain._bordersAnimator.SetBool("BorderOut", false);
         _scriptEvents._rainParticle.Stop();
         _scriptMain._scriptSFX._rainSetVolume = 0;
         _scriptMain._windParticle.GetComponent<ForceField2D>().fuerza = 5;
         _scriptMain._windParticle.Stop();
+        _snowParticle.Stop();
         _scriptSlime._slimeAnimator.SetBool("Scared", false);
         _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;

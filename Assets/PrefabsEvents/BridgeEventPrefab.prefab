@@ -2062,7 +2062,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _lever: {fileID: 868551673473093825}
-  _bridge: {fileID: 2157076845483410899}
+  _bridge: {fileID: 8353207411109842243}
   _activateBridge: 0
   _bridgeYpos:
   - -1000
@@ -3187,7 +3187,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &3745802357988857557
 RectTransform:
   m_ObjectHideFlags: 0

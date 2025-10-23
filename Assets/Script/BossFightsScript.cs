@@ -6,13 +6,15 @@ public class BossFightsScript : MonoBehaviour
 {
     public MainGameplayScript _scriptMain;
     public GameObject[] _worlds;
- 
+    public GameObject[] _events;
+    public ParticleSystem[] _fire;
 
 
     // Start is called before the first frame update
     void Start()
     {
         _scriptMain = GameObject.Find("MainGameplayScript").GetComponent<MainGameplayScript>();
+        _worlds[_scriptMain._scriptMain._onWorldGlobal].gameObject.SetActive(true);
     }
 
 
@@ -23,44 +25,89 @@ public class BossFightsScript : MonoBehaviour
         GetComponent<Animator>().SetTrigger("Flies");
     }
 
-    //public IEnumerator StartBossNumerator()
-    //{
+    public void StartBossVoid()
+    {
+        StartCoroutine(StartBossNumerator());
+    }
 
-    //    yield return new WaitForSeconds(1);
-    //    _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
+    public IEnumerator StartBossNumerator()
+    {
 
-    //    yield return new WaitForSeconds(3);
-    //    _scriptMain._bossAnimator.transform.gameObject.SetActive(true);
-    //    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._roar);
-    //    _scriptMain._bossAnimator.SetBool("Idle", true);
-    //    _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
-    //    _scriptMain._scriptSlime._alarmParticle.Play();
-    //    yield return new WaitForSeconds(2);
-    //    _scriptMain._scriptMain._cinematicBorders.SetBool("FadeIn", true);
-    //    yield return new WaitForSeconds(2f);
-    //    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._whip);
-   
+        yield return new WaitForSeconds(1);
+        _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
 
-    //    _scriptMain._bossAnimator.SetTrigger("Attack");
-    //    _scriptMain._flyingSlimeParticles[0].Play();
-    //    yield return new WaitForSeconds(0.5f);
-    //    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._scream);
-    //    yield return new WaitForSeconds(1.5f);
+        yield return new WaitForSeconds(3);
+        _scriptMain._bossAnimator.transform.gameObject.SetActive(true);
+        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._roar);
+        _scriptMain._bossAnimator.SetBool("Idle", true);
+        _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
+        _scriptMain._scriptSlime._alarmParticle.Play();
+        yield return new WaitForSeconds(2);
+        Debug.Log(_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType);
+        switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType)
+        {
+            case GameEvent.EventType.BossFight0:
+                StartCoroutine(ExitNumerator());
+                break;
+            case GameEvent.EventType.BossFight4:
+                _events[0].gameObject.SetActive(true);
+                _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
+                _scriptMain._bossAnimator.SetTrigger("AttackFire");
+                yield return new WaitForSeconds(1);
+                StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
+                break;
+            case GameEvent.EventType.BossFight3:
+                _scriptMain._windParticle.Play();
+                _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
+                //_events[1].gameObject.SetActive(true);
+                //_scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
+                //_scriptMain._bossAnimator.SetTrigger("AttackFire");
+                yield return new WaitForSeconds(1);
+                StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
+                break;
+            case GameEvent.EventType.BossFight2:
+                _events[2].gameObject.SetActive(true);  
+                _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
+                //_events[1].gameObject.SetActive(true);
+                //_scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
+                //_scriptMain._bossAnimator.SetTrigger("AttackFire");
+                yield return new WaitForSeconds(1);
+                StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
+                break;
+            case GameEvent.EventType.BossFight5:
+                //StartCoroutine(ExitNumerator());
+                break;
+        }
 
-    //    _scriptMain._flyingSlimeParticles[1].Play();
-    //    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._ding);
-    //    yield return new WaitForSeconds(2);
-    //    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
-    //    _scriptMain._scriptMain._introSpecial = true;
-    //    yield return new WaitForSeconds(1);
-    //    _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
-    //    _scriptMain._scriptMain._onWorldGlobal = 3;
-    //    _scriptMain._bossAnimator.gameObject.SetActive(false);
-
-    //    _scriptMain._scriptMain.LoadSceneByName("IntroScene");
   
+     
 
-    //}
+
+    }
+
+    public IEnumerator ExitNumerator()
+    {
+        _scriptMain._scriptMain._cinematicBorders.SetBool("FadeIn", true);
+        yield return new WaitForSeconds(2f);
+        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._whip);
+        _scriptMain._bossAnimator.SetTrigger("Attack");
+        _scriptMain._flyingSlimeParticles[0].Play();
+        yield return new WaitForSeconds(0.5f);
+        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._scream);
+        yield return new WaitForSeconds(1.5f);
+
+        _scriptMain._flyingSlimeParticles[1].Play();
+        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._ding);
+        yield return new WaitForSeconds(2);
+        _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
+        _scriptMain._scriptMain._introSpecial = true;
+        yield return new WaitForSeconds(1);
+        _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
+        _scriptMain._scriptMain._onWorldGlobal = 3;
+        _scriptMain._bossAnimator.gameObject.SetActive(false);
+        _scriptMain._scriptMain.LoadSceneByName("IntroScene");
+
+    }
 
 
 }

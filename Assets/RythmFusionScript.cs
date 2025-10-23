@@ -24,6 +24,9 @@ public class RythmFusionScript : MonoBehaviour
     }
 
     public ElementsInfo[] _elementsInfo;
+
+    public GameObject _background;
+    public bool _backgroundOn;
     public Vector2[] _positions;
 
     [Header("Rythm Settings")]
@@ -52,6 +55,21 @@ public class RythmFusionScript : MonoBehaviour
     void Start()
     {
         UpdateWorldTexts();
+        switch (_scriptMain._scriptMain._onWorldGlobal)
+        {
+            case 0:
+                _bpm = 100;
+                break;
+            case 1:
+                _bpm = 120;
+                break;
+            case 2:
+                _bpm = 120;
+                break;
+            case 3:
+                _bpm = 150;
+                break;
+        }
     }
 
     public void UpdateWorldTexts()
@@ -110,6 +128,16 @@ public class RythmFusionScript : MonoBehaviour
         _scriptMain._spaceParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(
             _elementsInfo[_onElement]._parent.GetComponent<RectTransform>().anchoredPosition.x - 100,
             _scriptMain._spaceParent.transform.localPosition.y);
+
+        switch (_backgroundOn)
+        {
+            case true:
+                _background.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_background.GetComponent<RectTransform>().anchoredPosition, new Vector2(0, 0), 15 * Time.deltaTime);
+                break;
+            case false:
+                _background.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_background.GetComponent<RectTransform>().anchoredPosition, new Vector2(550, 0), 15 * Time.deltaTime);
+                break;
+        }
     }
 
     public void ShuffleElements()
@@ -141,6 +169,7 @@ public class RythmFusionScript : MonoBehaviour
             _elementsInfo[i]._parent.SetActive(true);
             _elementsInfo[i]._elementOrb.SetActive(_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[i]);
         }
+     
     }
 
     // =====================================================
@@ -158,9 +187,9 @@ public class RythmFusionScript : MonoBehaviour
                 _order.Add(i);
         }
 
-        ShuffleElements();
+        _backgroundOn = true;
         yield return new WaitForSeconds(1);
-
+        ShuffleElements();
         _scriptMain._spaceParent.gameObject.SetActive(true);
         _timerInterval = (60f / _bpm) / Mathf.Max(1, _subdivisions);
 
@@ -225,14 +254,35 @@ public class RythmFusionScript : MonoBehaviour
 
             _buttonPressed = false;
 
-            switch (_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent])
+            switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType)
             {
-                case 12:
+                case GameEvent.EventType.Fire:
                     if (!_scriptMain._scriptEvents._winRound)
                     {
                         int _real = eventStance + 1;
                         _scriptMain._scriptEvents._currentEventPrefab
                             .GetComponent<FireEventScript>()._fireParticle[_real].Play();
+
+                        if (_real == 3)
+                        {
+                            _scriptSlime._slimeAnimator.SetBool("Scared", true);
+                        }
+                        else if (_real == 4)
+                        {
+                            if (!_scriptMain._dead)
+                            {
+                                StartCoroutine(_scriptMain.LoseLifeNumerator());
+                                endLoopAfterSelection = true;
+                            }
+                        }
+                    }
+                    break;
+                case GameEvent.EventType.BossFight4:
+                    if (!_scriptMain._scriptEvents._winRound)
+                    {
+                        int _real = eventStance + 1;
+                        _scriptMain._scriptEvents._currentEventPrefab
+                            .GetComponent<BossFightsScript>()._fire[_real].Play();
 
                         if (_real == 3)
                         {
@@ -259,6 +309,7 @@ public class RythmFusionScript : MonoBehaviour
            FuseElements();
 
         _onElement = 0;
+        _backgroundOn = false;
         yield return new WaitForSeconds(1);
 
         for (int i = 0; i < 4; i++)
@@ -266,6 +317,7 @@ public class RythmFusionScript : MonoBehaviour
             _elementsInfo[i]._parent.SetActive(false);
             _elementsInfo[i]._imageColor.color = _halfColors[0];
         }
+      
     }
 
     // =====================================================

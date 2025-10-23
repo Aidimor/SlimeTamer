@@ -156,11 +156,19 @@ public class SlimeController : MonoBehaviour
                     switch (_scriptMain._onEventID)
                     {
                         case 1:
+                            _scriptMain._airPushParticle.Play();
+                            yield return new WaitForSeconds(0.5f);
+                            _scriptMain._windBlockPalanca.Play();
+                            yield return new WaitForSeconds(0.5f);
+                            _scriptMain._airPushParticle.Stop();
+                            _scriptMain._windBlockPalanca.Stop();
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BridgeEvent>()._activateBridge = true;
+                            yield return new WaitForSeconds(2);
                             break;
                         case 2:
+                            _scriptMain._snowParticle.Play();
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFallEvent>().ActivateFreeze();
-
+                            yield return new WaitForSeconds(4);
                             break;
                         case 3:
                             _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
@@ -175,12 +183,17 @@ public class SlimeController : MonoBehaviour
                             yield return new WaitForSeconds(2);
                             break;
                         case 5:
+                            _scriptMain._cutParticles[0].Play();
+                            yield return new WaitForSeconds(0.5f);
+                            _scriptMain._cutParticles[1].Play();
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<SandCutEventScript>().StartCuttingVoid();
-
+                            yield return new WaitForSeconds(2);
                             break;
                         case 6:
+                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._stainsAnimator.SetTrigger("Splash");
+                            yield return new WaitForSeconds(0.5f);
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._Stopped = true;
-
+                            yield return new WaitForSeconds(2);
                             break;
                         case 7:
                             StartCoroutine(_scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaspFightScript>().DeadNumerator());                
@@ -196,7 +209,7 @@ public class SlimeController : MonoBehaviour
                             break;
                     }
                     _scriptMain._darkenerChanging = false;            
-                    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);        
+      
                     StartCoroutine(_scriptMain.ExitNumerator());                
                 }
                 else
@@ -211,7 +224,7 @@ public class SlimeController : MonoBehaviour
                             yield return new WaitForSeconds(2);
                             _scriptMain._scriptFusion.ActivatePanel();
                             _scriptMain.LoseHeartVoid();
-                            yield return new WaitForSeconds(2);
+                            //yield return new WaitForSeconds(2);
                             StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
                             //_scriptMain._scriptFusion._buttonsAvailable = true;
                   

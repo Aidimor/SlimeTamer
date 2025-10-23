@@ -64,7 +64,7 @@ public class GameEventsScript : MonoBehaviour
             case 1:
           
                 _scriptMain._GamesList.Add(11);
-                for (int i = 0; i < _scriptMain._totalStages._total; i++)
+                for (int i = 0; i < _scriptMain._GamesList.Count; i++)
                 {
                     var randomEvent = GetRandomEvent();
                     // Guardamos el índice dentro del array original
@@ -75,7 +75,7 @@ public class GameEventsScript : MonoBehaviour
                 break;
             case 2:
                 _scriptMain._GamesList.Add(11);
-                for (int i = 0; i < _scriptMain._totalStages._total; i++)
+                for (int i = 0; i < _scriptMain._GamesList.Count; i++)
                 {
                     var randomEvent = GetRandomEvent();
                     // Guardamos el índice dentro del array original
@@ -86,11 +86,13 @@ public class GameEventsScript : MonoBehaviour
                 break;
             case 3:
                 _scriptMain._GamesList.Add(11);
+                _scriptMain._GamesList.Add(18);
                 //_scriptMain._GamesList.Add(2);
                 //_scriptMain._GamesList.Add(8);
-                _scriptMain._GamesList.Add(9);
-                _scriptMain._GamesList.Add(3);
-                _scriptMain._GamesList.Add(2);
+                //_scriptMain._GamesList.Add(9);
+                //_scriptMain._GamesList.Add(3);
+                //_scriptMain._GamesList.Add(2);
+                //_scriptMain._GamesList.Add(5);
                 //for (int i = 0; i < _scriptMain._totalStages._total; i++)
                 //{
                 //    var randomEvent = GetRandomEvent();
@@ -159,7 +161,7 @@ public class GameEventsScript : MonoBehaviour
             evento.GetComponent<RectTransform>().anchoredPosition = Vector3.zero;
             evento.GetComponent<RectTransform>().rotation = Quaternion.Euler(0, 0, 90);
             _currentEventPrefab = evento;
-            _scriptMain._topOptionsOn = _scriptMain._firstStage;     
+            //_scriptMain._topOptionsOn = _scriptMain._firstStage;     
 
             switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._eventClassification)
             {
@@ -201,7 +203,10 @@ public class GameEventsScript : MonoBehaviour
                     switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._eventType)
                     {
                         case GameEvent.EventType.Bridge:
-                            evento.GetComponent<ChestEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); _scriptMain._onEventID = 1; evento.GetComponent<BridgeEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); break;
+                            evento.GetComponent<BridgeEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
+                            _scriptMain._onEventID = 1; 
+                            //evento.GetComponent<BridgeEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
+                            break;
                         case GameEvent.EventType.Lagoon:
                             _scriptMain._onEventID = 2;
                             evento.GetComponent<WaterFallEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
@@ -231,11 +236,30 @@ public class GameEventsScript : MonoBehaviour
                             evento.GetComponent<FireEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
 
                             break;
-                        case GameEvent.EventType.BossFight1:
-
+                        case GameEvent.EventType.BossFight0:                   
                             _scriptMain._onEventID = 10;
+                            evento.GetComponent<BossFightsScript>().StartBossVoid();
                             //StartCoroutine(evento.GetComponent<BossFightsScript>().StartBossNumerator());
-                            StartCoroutine(StartBossNumerator());
+                            //StartCoroutine(StartBossNumerator());
+                            break;
+                        case GameEvent.EventType.BossFight1:
+                            _scriptMain._onEventID = 11;
+                            _scriptMain._Cascade[0].gameObject.SetActive(true);
+                            _scriptMain._Cascade[0].Play();
+                            evento.GetComponent<BossFightsScript>().StartBossVoid();
+                            break;
+                        case GameEvent.EventType.BossFight2:
+                            _scriptMain._onEventID = 11;
+                            evento.GetComponent<BossFightsScript>().StartBossVoid();
+                      
+                            break;
+                        case GameEvent.EventType.BossFight3:
+                            _scriptMain._onEventID = 11;
+                            evento.GetComponent<BossFightsScript>().StartBossVoid();
+                            break;
+                        case GameEvent.EventType.BossFight4:
+                            _scriptMain._onEventID = 11;
+                            evento.GetComponent<BossFightsScript>().StartBossVoid();
                             break;
                     }
                     StartCoroutine(_scriptMain.StartStageNumerator());
@@ -329,51 +353,52 @@ public class GameEventsScript : MonoBehaviour
         //_scriptFusion.ActivatePanel();
     }
 
-    public IEnumerator StartBossNumerator()
-    {
+    //public IEnumerator StartBossNumerator()
+    //{
 
-        yield return new WaitForSeconds(1);
-        _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
+    //    yield return new WaitForSeconds(1);
+    //    _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
 
-        yield return new WaitForSeconds(3);
-        _scriptMain._bossAnimator.transform.gameObject.SetActive(true);
-        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._roar);
-        _scriptMain._bossAnimator.SetBool("Idle", true);
-        _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
-        _scriptMain._scriptSlime._alarmParticle.Play();
-        yield return new WaitForSeconds(2);
-        _scriptMain._scriptMain._cinematicBorders.SetBool("FadeIn", true);
-        yield return new WaitForSeconds(2f);
-        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._whip);
+    //    yield return new WaitForSeconds(2);  
 
-
-        _scriptMain._bossAnimator.SetTrigger("Attack");
-        _scriptMain._flyingSlimeParticles[0].Play();
-        yield return new WaitForSeconds(0.5f);
-        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._scream);
-        yield return new WaitForSeconds(1.5f);
-
-        _scriptMain._flyingSlimeParticles[1].Play();
-        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._ding);
-        yield return new WaitForSeconds(2);
-        _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
-        _scriptMain._scriptMain._introSpecial = true;
-
-        _scriptMain._scriptMain._saveLoadValues._worldsUnlocked[0] = false;
-        _scriptMain._scriptMain._saveLoadValues._worldsUnlocked[3] = true;
-
-        yield return new WaitForSeconds(1);
-        _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
-        _scriptMain._scriptMain._onWorldGlobal = 3;
-        _scriptMain._bossAnimator.gameObject.SetActive(false);
-        //_scriptMain._firstStage = true;
-
-        //_scriptMain._scriptMain._scriptInit.SaveGame();
-        _scriptMain._scriptMain.SaveProgress();
-
-        _scriptMain._scriptMain.LoadSceneByName("IntroScene");
+    //    _scriptMain._bossAnimator.transform.gameObject.SetActive(true);
+    //    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._roar);
+    //    _scriptMain._bossAnimator.SetBool("Idle", true);
+    //    _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
+    //    _scriptMain._scriptSlime._alarmParticle.Play();
+    //    yield return new WaitForSeconds(2);
+    //    _scriptMain._scriptMain._cinematicBorders.SetBool("FadeIn", true);
+    //    yield return new WaitForSeconds(2f);
+    //    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._whip);
 
 
-    }
+    //    _scriptMain._bossAnimator.SetTrigger("Attack");
+    //    _scriptMain._flyingSlimeParticles[0].Play();
+    //    yield return new WaitForSeconds(0.5f);
+    //    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._scream);
+    //    yield return new WaitForSeconds(1.5f);
+
+    //    _scriptMain._flyingSlimeParticles[1].Play();
+    //    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._ding);
+    //    yield return new WaitForSeconds(2);
+    //    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
+    //    _scriptMain._scriptMain._introSpecial = true;
+
+    //    _scriptMain._scriptMain._saveLoadValues._worldsUnlocked[0] = false;
+    //    _scriptMain._scriptMain._saveLoadValues._worldsUnlocked[3] = true;
+
+    //    yield return new WaitForSeconds(1);
+    //    _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
+    //    _scriptMain._scriptMain._onWorldGlobal = 3;
+    //    _scriptMain._bossAnimator.gameObject.SetActive(false);
+    //    //_scriptMain._firstStage = true;
+
+    //    //_scriptMain._scriptMain._scriptInit.SaveGame();
+    //    _scriptMain._scriptMain.SaveProgress();
+
+    //    _scriptMain._scriptMain.LoadSceneByName("IntroScene");
+
+
+    //}
 
 }

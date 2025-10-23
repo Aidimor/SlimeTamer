@@ -13,6 +13,7 @@ public class GearsPrefabEventScript : MonoBehaviour
     public float[] _yPos;
     public float timer;
     public GameObject[] _worlds;
+    public Animator _stainsAnimator;
     // Start is called before the first frame update
     void Start()
     {

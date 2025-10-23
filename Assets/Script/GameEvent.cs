@@ -26,9 +26,12 @@ public class GameEvent : ScriptableObject
         FightWasp,
         FightSnail,
         Fire,
+        BossFight0,
         BossFight1,
-        BossBattles,
-        other
+        BossFight2,
+        BossFight3,
+        BossFight4,
+        BossFight5
 
     }
     public EventType _eventType;

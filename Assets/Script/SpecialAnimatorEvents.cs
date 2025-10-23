@@ -29,4 +29,21 @@ public class SpecialAnimatorEvents : MonoBehaviour
     {
         _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._stoneClose);
     }
+
+    public void ChargingVoid()
+    {
+        _scriptMain._chargingAttackEnemy.Play();
+    }
+
+    public void LaserShootVoid()
+    {
+        _scriptMain._chargingAttackEnemy.Stop();
+        _scriptMain._AttackEnemy.Play();
+    }
+
+    public void LaserStopVoid()
+    {
+        _scriptMain._chargingAttackEnemy.Stop();
+        _scriptMain._AttackEnemy.Stop();
+    }
 }
