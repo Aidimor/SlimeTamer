@@ -14,6 +14,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _eventClassification: 1
   _eventType: 10
-  _weakto: 02000000
+  _weakto: 04000000
   _eventPrefab: {fileID: 5248544132973583, guid: 547d63ff211e90c44b76cf294d09822a, type: 3}
   _chestItems: 

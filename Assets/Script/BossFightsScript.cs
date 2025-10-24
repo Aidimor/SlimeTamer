@@ -49,28 +49,35 @@ public class BossFightsScript : MonoBehaviour
             case GameEvent.EventType.BossFight0:
                 StartCoroutine(ExitNumerator());
                 break;
-            case GameEvent.EventType.BossFight4:
-                _events[0].gameObject.SetActive(true);
+            case GameEvent.EventType.BossFight1:
                 _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
-                _scriptMain._bossAnimator.SetTrigger("AttackFire");
                 yield return new WaitForSeconds(1);
                 StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
-                break;
-            case GameEvent.EventType.BossFight3:
-                _scriptMain._windParticle.Play();
-                _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
-                //_events[1].gameObject.SetActive(true);
-                //_scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
-                //_scriptMain._bossAnimator.SetTrigger("AttackFire");
-                yield return new WaitForSeconds(1);
-                StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
-                break;
+                break;  
+
             case GameEvent.EventType.BossFight2:
                 _events[2].gameObject.SetActive(true);  
                 _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
                 //_events[1].gameObject.SetActive(true);
                 //_scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
                 //_scriptMain._bossAnimator.SetTrigger("AttackFire");
+                yield return new WaitForSeconds(1);
+                StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
+                break;
+            case GameEvent.EventType.BossFight3:
+                _scriptMain._frontWindParticle.Play();
+                _scriptMain._bossAnimator.SetBool("Ventilator", true);
+                _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
+                //_events[1].gameObject.SetActive(true);
+                //_scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
+                //_scriptMain._bossAnimator.SetTrigger("AttackFire");
+                yield return new WaitForSeconds(1);
+                StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
+                break;
+            case GameEvent.EventType.BossFight4:
+                _events[0].gameObject.SetActive(true);
+                _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
+                _scriptMain._bossAnimator.SetTrigger("AttackFire");
                 yield return new WaitForSeconds(1);
                 StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
                 break;
@@ -107,6 +114,14 @@ public class BossFightsScript : MonoBehaviour
         _scriptMain._bossAnimator.gameObject.SetActive(false);
         _scriptMain._scriptMain.LoadSceneByName("IntroScene");
 
+    }
+
+    public void FireExtinguish()
+    {
+        for (int i = 0; i < _fire.Length; i++)
+        {
+            _fire[i].Stop();
+        }
     }
 
 

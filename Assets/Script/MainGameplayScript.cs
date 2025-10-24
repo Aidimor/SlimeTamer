@@ -128,6 +128,9 @@ public class MainGameplayScript : MonoBehaviour
 
     public ParticleSystem _chargingAttackEnemy;
     public ParticleSystem _AttackEnemy;
+
+    public ParticleSystem[] _bossCutParticles;
+    public ParticleSystem _frontWindParticle;
     private void Awake()
     {
         _scriptMain = GameObject.Find("CanvasIndestructible/Main/MainController").GetComponent<MainController>();
@@ -588,13 +591,33 @@ public class MainGameplayScript : MonoBehaviour
     public IEnumerator LoseLifeNumerator()
     {
         _totalLifes--;
-        Debug.Log("MUERE");
+        for(int i = 0; i < 4M; i++)
+        {
+            _scriptRythm._elementsInfo[i]._parent.SetActive(false);
+        }
         _scriptRythm._elementsSelection.Clear();
         _dead = true;
         LoseHeartVoid();
         _slimeExplosion.Play();
         _scriptSlime._slimeRawImage.gameObject.SetActive(false);
+        _scriptRythm._OnPhase = 0;
         yield return new WaitForSeconds(1);
+
+
+        switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._eventType)
+        {
+            case GameEvent.EventType.Fire:
+                _scriptEvents._currentEventPrefab.GetComponent<FireEventScript>().FireExtinguishVoid();
+                break;
+            case GameEvent.EventType.BossFight3:
+                _frontWindParticle.Stop();
+                break;
+            case GameEvent.EventType.BossFight4:
+                _scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>().FireExtinguish();
+                break;
+        }
+
+
         _scriptEvents._winRound = false;
 
 
@@ -608,10 +631,9 @@ public class MainGameplayScript : MonoBehaviour
 
         yield return new WaitForSeconds(2);
 
-        if(_scriptEvents._currentEventPrefab.name == "FirePrefab(Clone)")
-        {
-            _scriptEvents._currentEventPrefab.GetComponent<FireEventScript>().FireExtinguishVoid();
-        }
+
+
+        _bossAnimator.gameObject.SetActive(false);
       
         _allStageAssets[_scriptMain._onWorldGlobal]._frontStage.SetActive(true);
         _scriptMain._cinematicBorders.SetBool("FadeIn", false);

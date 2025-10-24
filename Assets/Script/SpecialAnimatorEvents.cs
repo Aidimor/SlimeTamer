@@ -5,8 +5,8 @@ using UnityEngine;
 public class SpecialAnimatorEvents : MonoBehaviour
 {
     public ParticleSystem _chestParticle;
-    [SerializeField] private MainGameplayScript _scriptMain;
-    [SerializeField] private MainController _scriptMainController;
+    public MainGameplayScript _scriptMain;
+    public MainController _scriptMainController;
     public void ChestParticleVoid()
     {
         _chestParticle.Play();
@@ -45,5 +45,15 @@ public class SpecialAnimatorEvents : MonoBehaviour
     {
         _scriptMain._chargingAttackEnemy.Stop();
         _scriptMain._AttackEnemy.Stop();
+    }
+
+    public void BossCutRope()
+    {
+        _scriptMain._bossCutParticles[0].Play();
+    }
+    public void BossShineRope()
+    {
+        _scriptMain._bossCutParticles[1].Play();
+        _scriptMain._bossCutParticles[2].Play();
     }
 }

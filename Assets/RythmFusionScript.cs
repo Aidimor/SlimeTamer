@@ -27,6 +27,7 @@ public class RythmFusionScript : MonoBehaviour
 
     public GameObject _background;
     public bool _backgroundOn;
+    public Vector2[] _backgroundPoses;
     public Vector2[] _positions;
 
     [Header("Rythm Settings")]
@@ -52,6 +53,8 @@ public class RythmFusionScript : MonoBehaviour
     public AudioSource _chooseSound;
     public Animator _movingSelector;
 
+    public int _OnPhase;
+
     void Start()
     {
         UpdateWorldTexts();
@@ -69,6 +72,11 @@ public class RythmFusionScript : MonoBehaviour
             case 3:
                 _bpm = 150;
                 break;
+        }
+
+        for(int i = 0; i < 4; i++)
+        {
+            _positions[i] = _elementsInfo[i]._parent.GetComponent<RectTransform>().anchoredPosition;
         }
     }
 
@@ -132,10 +140,10 @@ public class RythmFusionScript : MonoBehaviour
         switch (_backgroundOn)
         {
             case true:
-                _background.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_background.GetComponent<RectTransform>().anchoredPosition, new Vector2(0, 0), 15 * Time.deltaTime);
+                _background.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_background.GetComponent<RectTransform>().anchoredPosition, _backgroundPoses[0], 15 * Time.deltaTime);
                 break;
             case false:
-                _background.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_background.GetComponent<RectTransform>().anchoredPosition, new Vector2(550, 0), 15 * Time.deltaTime);
+                _background.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_background.GetComponent<RectTransform>().anchoredPosition, _backgroundPoses[1], 15 * Time.deltaTime);
                 break;
         }
     }
@@ -215,8 +223,7 @@ public class RythmFusionScript : MonoBehaviour
                 _elementsInfo[elementIndex]._selector.GetComponent<Animator>().SetTrigger("SelectorIn");
                 _scriptSlime._slimeRawImage.transform.localScale = new Vector2(3f, 3f);
                 _elementsInfo[elementIndex]._elementOrb.transform.localScale = new Vector2(1.25f, 1.25f);
-                _movingSelector.GetComponent<RectTransform>().anchoredPosition =
-                    _elementsInfo[_onElement]._parent.GetComponent<RectTransform>().anchoredPosition;
+                _movingSelector.GetComponent<RectTransform>().anchoredPosition =  new Vector2(_elementsInfo[_onElement]._parent.GetComponent<RectTransform>().anchoredPosition.x, _movingSelector.GetComponent<RectTransform>().anchoredPosition.y);
                 _movingSelector.GetComponent<Image>().color = _halfColors[_onElement];
                 _kickSound.pitch = step == 3 ? 1f : 0.9f;
                 _scriptMain._mainUI.transform.localScale = step == 3 ?
@@ -259,46 +266,140 @@ public class RythmFusionScript : MonoBehaviour
                 case GameEvent.EventType.Fire:
                     if (!_scriptMain._scriptEvents._winRound)
                     {
-                        int _real = eventStance + 1;
-                        _scriptMain._scriptEvents._currentEventPrefab
-                            .GetComponent<FireEventScript>()._fireParticle[_real].Play();
 
-                        if (_real == 3)
+                        switch (_OnPhase)
                         {
-                            _scriptSlime._slimeAnimator.SetBool("Scared", true);
+                            case 0:
+                                _scriptMain._scriptEvents._currentEventPrefab
+               .GetComponent<FireEventScript>()._fireParticle[0].Play();
+                                break;
+                            case 2:
+                                _scriptMain._scriptEvents._currentEventPrefab
+.GetComponent<FireEventScript>()._fireParticle[1].Play();
+                                break;
+                            case 4:
+                                _scriptSlime._slimeAnimator.SetBool("Scared", true);
+                                _scriptMain._scriptEvents._currentEventPrefab
+.GetComponent<FireEventScript>()._fireParticle[2].Play();
+                                break;
+                            case 6:
+                                _scriptMain._scriptEvents._currentEventPrefab
+.GetComponent<FireEventScript>()._fireParticle[4].Play();
+                                if (!_scriptMain._dead)
+                                {
+                                    StartCoroutine(_scriptMain.LoseLifeNumerator());
+                                    endLoopAfterSelection = true;
+                                }
+                                break;
                         }
-                        else if (_real == 4)
+                    }
+                    break;
+                case GameEvent.EventType.BossFight1:
+                case GameEvent.EventType.BossFight2:
+                    if (!_scriptMain._scriptEvents._winRound)
+                    {
+
+
+
+
+                        switch (_OnPhase)
                         {
-                            if (!_scriptMain._dead)
-                            {
-                                StartCoroutine(_scriptMain.LoseLifeNumerator());
-                                endLoopAfterSelection = true;
-                            }
+                            case 0:
+                                _scriptMain._bossAnimator.SetBool("SideShoot", true);
+                                break;
+                            case 2:
+                                _scriptMain._bossAnimator.SetTrigger("Action");
+                                break;
+                            case 4:
+                                _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
+                                _scriptMain._bossAnimator.SetTrigger("Action");
+                                break;
+                            case 6:
+                                _scriptMain._bossAnimator.SetTrigger("Action");
+                                yield return new WaitForSeconds(0.25f);
+                                if (!_scriptMain._dead)
+                                {
+
+                                    StartCoroutine(_scriptMain.LoseLifeNumerator());
+                                    endLoopAfterSelection = true;
+                                }
+                                break;
+
                         }
+
+                    }
+                    break;
+                case GameEvent.EventType.BossFight3:
+                    if (!_scriptMain._scriptEvents._winRound)
+                    {
+                        switch (_OnPhase)
+                        {
+                            case 0:
+                                _scriptSlime._slimeAnimator.SetBool("WindPush", true);                   
+                                break;
+          
+                            case 2:
+                                _scriptSlime._slimeAnimator.SetTrigger("Action");                 
+                                break;
+                            case 4:
+
+                                _scriptSlime._slimeAnimator.SetTrigger("Action");
+                                break;
+                            case 5:
+                                _scriptSlime._slimeAnimator.SetTrigger("Action");
+                                break;
+                            case 6:
+                                _scriptSlime._slimeAnimator.SetTrigger("Action");
+                                yield return new WaitForSeconds(0.25f);
+                                if (!_scriptMain._dead)
+                                {
+                                    StartCoroutine(_scriptMain.LoseLifeNumerator());
+                                    endLoopAfterSelection = true;
+                                }
+                                break;
+
+                        }
+
                     }
                     break;
                 case GameEvent.EventType.BossFight4:
                     if (!_scriptMain._scriptEvents._winRound)
                     {
-                        int _real = eventStance + 1;
-                        _scriptMain._scriptEvents._currentEventPrefab
-                            .GetComponent<BossFightsScript>()._fire[_real].Play();
+  
 
-                        if (_real == 3)
+
+                        switch (_OnPhase)
                         {
-                            _scriptSlime._slimeAnimator.SetBool("Scared", true);
-                        }
-                        else if (_real == 4)
-                        {
-                            if (!_scriptMain._dead)
-                            {
-                                StartCoroutine(_scriptMain.LoseLifeNumerator());
-                                endLoopAfterSelection = true;
-                            }
+                            case 0:
+                                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._fire[0].Play();
+                                break;
+                            case 1:
+                                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._fire[1].Play();
+                                break;
+                            case 3:
+                
+                                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._fire[2].Play();
+                                break;
+                            case 5:
+                                _scriptSlime._slimeAnimator.SetBool("Scared", true);
+                                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._fire[3].Play();
+                     
+                                break;
+                            case 7:
+                                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._fire[4].Play();
+                                if (!_scriptMain._dead)
+                                {
+                                    StartCoroutine(_scriptMain.LoseLifeNumerator());
+                                    endLoopAfterSelection = true;
+                                }
+                                break;
                         }
                     }
+            
                     break;
+
             }
+            _OnPhase++;
 
             if (eventStance < 3) eventStance++;
         }

@@ -153,9 +153,11 @@ public class SlimeController : MonoBehaviour
                     _scriptMain._lightChanging = false;
                     yield return new WaitForSeconds(1);
                     _scriptMain._scriptSlime._slimeAnimator.SetTrigger("Action");
-                    switch (_scriptMain._onEventID)
+
+
+                    switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType)
                     {
-                        case 1:
+                        case GameEvent.EventType.Bridge:
                             _scriptMain._airPushParticle.Play();
                             yield return new WaitForSeconds(0.5f);
                             _scriptMain._windBlockPalanca.Play();
@@ -165,49 +167,66 @@ public class SlimeController : MonoBehaviour
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BridgeEvent>()._activateBridge = true;
                             yield return new WaitForSeconds(2);
                             break;
-                        case 2:
+                        case GameEvent.EventType.Lagoon:
                             _scriptMain._snowParticle.Play();
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFallEvent>().ActivateFreeze();
                             yield return new WaitForSeconds(4);
                             break;
-                        case 3:
+                        case GameEvent.EventType.Well:
                             _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
                             _scriptMain._scriptEvents._rainParticle.Play();
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFillEvent>()._fillBool = true;
                             yield return new WaitForSeconds(2);
                             break;
-                        case 4:
-                            //_scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(true);
+                        case GameEvent.EventType.StrongAir:
                             _scriptMain._windBlocker.GetComponent<ParticleSystem>().Play();
                             _scriptMain._scriptMain._windParticle.GetComponent<ForceField2D>().fuerza = 1250;
                             yield return new WaitForSeconds(2);
                             break;
-                        case 5:
+                        case GameEvent.EventType.FallingBridge:
                             _scriptMain._cutParticles[0].Play();
                             yield return new WaitForSeconds(0.5f);
                             _scriptMain._cutParticles[1].Play();
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<SandCutEventScript>().StartCuttingVoid();
                             yield return new WaitForSeconds(2);
                             break;
-                        case 6:
+                        case GameEvent.EventType.Gears:
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._stainsAnimator.SetTrigger("Splash");
                             yield return new WaitForSeconds(0.5f);
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._Stopped = true;
                             yield return new WaitForSeconds(2);
                             break;
-                        case 7:
-                            StartCoroutine(_scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaspFightScript>().DeadNumerator());                
-
-                            break;
-                        case 9:
+                        case GameEvent.EventType.Fire:
                             _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
                             _scriptMain._scriptEvents._rainParticle.Play();
                             yield return new WaitForSeconds(1);
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<FireEventScript>().FireExtinguishVoid();
                             yield return new WaitForSeconds(2);
-
+                            break;
+                        case GameEvent.EventType.BossFight0:
+                            break;
+                        case GameEvent.EventType.BossFight1:
+                            _scriptMain._cascadeFrozen = true;
+                            yield return new WaitForSeconds(2);
+                            break;
+                        case GameEvent.EventType.BossFight2:
+                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._events[2].GetComponent<Animator>().SetBool("Cut", true);
+                            Debug.Log("aqui es");
+                            yield return new WaitForSeconds(2);
+                            break;
+                        case GameEvent.EventType.BossFight3:
+                            break;
+                        case GameEvent.EventType.BossFight4:
+                            _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
+                            _scriptMain._scriptEvents._rainParticle.Play();
+                            yield return new WaitForSeconds(1);
+                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>().FireExtinguish();                         
+                            yield return new WaitForSeconds(1);
+                            break;
+                        case GameEvent.EventType.BossFight5:
                             break;
                     }
+      
                     _scriptMain._darkenerChanging = false;            
       
                     StartCoroutine(_scriptMain.ExitNumerator());                
@@ -219,8 +238,13 @@ public class SlimeController : MonoBehaviour
                     switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventClassification)
                     {
                         case GameEvent.EventClassification.Normal:
+                            if(_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType != GameEvent.EventType.BossFight3 ||
+                               _scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType != GameEvent.EventType.StrongAir)
+                            {
+                                _slimeAnimator.SetTrigger("Wrong");
+                            }
                             _wrongParticle.Play();
-                            _slimeAnimator.SetTrigger("Wrong");
+                        
                             yield return new WaitForSeconds(2);
                             _scriptMain._scriptFusion.ActivatePanel();
                             _scriptMain.LoseHeartVoid();

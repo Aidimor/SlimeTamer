@@ -86,13 +86,14 @@ public class GameEventsScript : MonoBehaviour
                 break;
             case 3:
                 _scriptMain._GamesList.Add(11);
-                _scriptMain._GamesList.Add(18);
                 //_scriptMain._GamesList.Add(2);
                 //_scriptMain._GamesList.Add(8);
                 //_scriptMain._GamesList.Add(9);
                 //_scriptMain._GamesList.Add(3);
                 //_scriptMain._GamesList.Add(2);
                 //_scriptMain._GamesList.Add(5);
+                //_scriptMain._GamesList.Add(17);
+                _scriptMain._GamesList.Add(14);
                 //for (int i = 0; i < _scriptMain._totalStages._total; i++)
                 //{
                 //    var randomEvent = GetRandomEvent();
@@ -250,11 +251,13 @@ public class GameEventsScript : MonoBehaviour
                             break;
                         case GameEvent.EventType.BossFight2:
                             _scriptMain._onEventID = 11;
+                            evento.GetComponent<BossFightsScript>()._events[2].GetComponent<SpecialAnimatorEvents>()._scriptMain = _scriptMain;
                             evento.GetComponent<BossFightsScript>().StartBossVoid();
                       
                             break;
                         case GameEvent.EventType.BossFight3:
                             _scriptMain._onEventID = 11;
+                   
                             evento.GetComponent<BossFightsScript>().StartBossVoid();
                             break;
                         case GameEvent.EventType.BossFight4:
