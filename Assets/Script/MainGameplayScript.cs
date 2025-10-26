@@ -402,7 +402,7 @@ public class MainGameplayScript : MonoBehaviour
         switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._eventClassification)
         {
             case GameEvent.EventClassification.Normal:
-                //Debug.Log("APARA");
+                _scriptRythm._OnPhase = 0;
                 StartCoroutine(_scriptRythm.RythmNumerator());
                 break;         
         }   

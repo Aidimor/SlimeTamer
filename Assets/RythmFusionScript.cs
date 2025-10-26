@@ -54,6 +54,7 @@ public class RythmFusionScript : MonoBehaviour
     public Animator _movingSelector;
 
     public int _OnPhase;
+    public TextMeshProUGUI _pressSpaceText;
 
     void Start()
     {
@@ -91,7 +92,7 @@ public class RythmFusionScript : MonoBehaviour
         }
 
         _scriptMain._choose2ElementsText.text = GameInitScript.Instance.GetText("choose");
-        _scriptMain._spaceText.text = GameInitScript.Instance.GetText("choose2");
+        //_scriptMain._spaceText.text = GameInitScript.Instance.GetText("choose2");
     }
 
     void Update()
@@ -133,9 +134,9 @@ public class RythmFusionScript : MonoBehaviour
                 Vector2.Lerp(_elementsInfo[i]._elementOrb.transform.localScale, new Vector2(1, 1), 4 * Time.deltaTime);
         }
 
-        _scriptMain._spaceParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(
-            _elementsInfo[_onElement]._parent.GetComponent<RectTransform>().anchoredPosition.x - 100,
-            _scriptMain._spaceParent.transform.localPosition.y);
+        //_scriptMain._spaceParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(
+        //    _elementsInfo[_onElement]._parent.GetComponent<RectTransform>().anchoredPosition.x - 100,
+        //    _scriptMain._spaceParent.transform.localPosition.y);
 
         switch (_backgroundOn)
         {
@@ -146,6 +147,7 @@ public class RythmFusionScript : MonoBehaviour
                 _background.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_background.GetComponent<RectTransform>().anchoredPosition, _backgroundPoses[1], 15 * Time.deltaTime);
                 break;
         }
+
     }
 
     public void ShuffleElements()
@@ -198,7 +200,7 @@ public class RythmFusionScript : MonoBehaviour
         _backgroundOn = true;
         yield return new WaitForSeconds(1);
         ShuffleElements();
-        _scriptMain._spaceParent.gameObject.SetActive(true);
+        //_scriptMain._spaceParent.gameObject.SetActive(true);
         _timerInterval = (60f / _bpm) / Mathf.Max(1, _subdivisions);
 
         int eventStance = 0;
@@ -264,35 +266,35 @@ public class RythmFusionScript : MonoBehaviour
             switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType)
             {
                 case GameEvent.EventType.Fire:
-                    if (!_scriptMain._scriptEvents._winRound)
-                    {
+//                    if (!_scriptMain._scriptEvents._winRound)
+//                    {
 
-                        switch (_OnPhase)
-                        {
-                            case 0:
-                                _scriptMain._scriptEvents._currentEventPrefab
-               .GetComponent<FireEventScript>()._fireParticle[0].Play();
-                                break;
-                            case 2:
-                                _scriptMain._scriptEvents._currentEventPrefab
-.GetComponent<FireEventScript>()._fireParticle[1].Play();
-                                break;
-                            case 4:
-                                _scriptSlime._slimeAnimator.SetBool("Scared", true);
-                                _scriptMain._scriptEvents._currentEventPrefab
-.GetComponent<FireEventScript>()._fireParticle[2].Play();
-                                break;
-                            case 6:
-                                _scriptMain._scriptEvents._currentEventPrefab
-.GetComponent<FireEventScript>()._fireParticle[4].Play();
-                                if (!_scriptMain._dead)
-                                {
-                                    StartCoroutine(_scriptMain.LoseLifeNumerator());
-                                    endLoopAfterSelection = true;
-                                }
-                                break;
-                        }
-                    }
+//                        switch (_OnPhase)
+//                        {
+//                            case 0:
+//                                _scriptMain._scriptEvents._currentEventPrefab
+//               .GetComponent<FireEventScript>()._fireParticle[0].Play();
+//                                break;
+//                            case 2:
+//                                _scriptMain._scriptEvents._currentEventPrefab
+//.GetComponent<FireEventScript>()._fireParticle[1].Play();
+//                                break;
+//                            case 4:
+//                                _scriptSlime._slimeAnimator.SetBool("Scared", true);
+//                                _scriptMain._scriptEvents._currentEventPrefab
+//.GetComponent<FireEventScript>()._fireParticle[2].Play();
+//                                break;
+//                            case 6:
+//                                _scriptMain._scriptEvents._currentEventPrefab
+//.GetComponent<FireEventScript>()._fireParticle[4].Play();
+//                                if (!_scriptMain._dead)
+//                                {
+//                                    StartCoroutine(_scriptMain.LoseLifeNumerator());
+//                                    endLoopAfterSelection = true;
+//                                }
+//                                break;
+//                        }
+//                    }
                     break;
                 case GameEvent.EventType.BossFight1:
                 case GameEvent.EventType.BossFight2:
@@ -365,8 +367,8 @@ public class RythmFusionScript : MonoBehaviour
                 case GameEvent.EventType.BossFight4:
                     if (!_scriptMain._scriptEvents._winRound)
                     {
-  
 
+                  
 
                         switch (_OnPhase)
                         {
@@ -404,7 +406,7 @@ public class RythmFusionScript : MonoBehaviour
             if (eventStance < 3) eventStance++;
         }
 
-        _scriptMain._spaceParent.gameObject.SetActive(false);
+        //_scriptMain._spaceParent.gameObject.SetActive(false);
 
         if (_elementsSelection.Count == 2)
            FuseElements();
