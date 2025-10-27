@@ -10,7 +10,8 @@ public class GameEvent : ScriptableObject
         Fight,
         Questionary,
         Chest,
-        Intro
+        Intro,
+        Shop
     }
     public EventClassification _eventClassification;
 

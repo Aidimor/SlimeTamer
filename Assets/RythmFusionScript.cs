@@ -92,6 +92,7 @@ public class RythmFusionScript : MonoBehaviour
         }
 
         _scriptMain._choose2ElementsText.text = GameInitScript.Instance.GetText("choose");
+        _pressSpaceText.text = GameInitScript.Instance.GetText("press");
         //_scriptMain._spaceText.text = GameInitScript.Instance.GetText("choose2");
     }
 

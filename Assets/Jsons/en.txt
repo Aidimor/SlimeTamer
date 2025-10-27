@@ -10,6 +10,18 @@
     { "key": "choose", "value": "CHOOSE 2 ELEMENTS" },,
     { "key": "choose2", "value": "Space" },
 
+        { "key": "Slime1", "value": "WATER SLIME" },
+        { "key": "Slime2", "value": "AIR WATER" },
+        { "key": "Slime3", "value": "EARTH SLIME" },
+        { "key": "Slime4", "value": "CUTTING SAND SLIME" },
+        { "key": "Slime5", "value": "SNOW SLIME" },
+        { "key": "Slime6", "value": "STICKY MUND SLIME" },
+
+    { "key": "coin1", "value": "EXTRA LIFE COIN" },
+      { "key": "coin2", "value": "HINT COIN" },
+
+    { "key": "press", "value": "PRESS SPACE" },
+
     { "key": "dialoge1", "value": "Help us save the kingdom.", "id": 1 },
     { "key": "dialoge2", "value": "We depend of you.", "id": 2 },
 

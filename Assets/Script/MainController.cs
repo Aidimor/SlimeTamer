@@ -22,6 +22,8 @@ public class MainController : MonoBehaviour
     {
         public bool[] _worldsUnlocked;
         public bool[] _elementsUnlocked;
+        public int _healthCoins;
+        public int _hintCoins;
     }
     public SaveLoadValues _saveLoadValues;
 
@@ -35,6 +37,16 @@ public class MainController : MonoBehaviour
         public bool _pause;
     }
     public PauseAssets _pauseAssets;
+
+    [System.Serializable]
+    public class CurrencyAssets
+    {
+        public GameObject _parent;
+        public TextMeshProUGUI _quantityText;
+        public Image _icon;
+        public bool _available;
+    }
+    public CurrencyAssets[] _currencyAssets;
 
     [System.Serializable]
     public class GameOverAssets
@@ -122,6 +134,12 @@ public class MainController : MonoBehaviour
         if (_scriptInit == null) { Debug.LogWarning("⚠️ GameInitScript no asignado"); return; }
         _scriptInit.SaveGame();
         Debug.Log("💾 Guardado solicitado desde MainController");
+    }
+
+    public void Update()
+    {
+        _currencyAssets[0]._quantityText.text = _saveLoadValues._healthCoins.ToString();
+        _currencyAssets[1]._quantityText.text = _saveLoadValues._hintCoins.ToString();
     }
 
     // ---------------------------

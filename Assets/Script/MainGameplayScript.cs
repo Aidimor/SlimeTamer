@@ -92,14 +92,29 @@ public class MainGameplayScript : MonoBehaviour
     {
         public string _linea;
         public Animator _dialogePanel;
-        public TextMeshProUGUI _dialogeText;
-        public Image _princessImage;
+        public TextMeshProUGUI _dialogeText;        
         public Sprite[] _allSprites;
+        public GameObject _nextParent;
+        public GameObject _nextCircle;
         public bool _startDialoge;
         public bool _typing;
         public Vector2 _dialogeSize;
     }
     public DialogeAssets _dialogeAssets;
+
+
+    [System.Serializable]
+    public class ShopAssets
+    {
+        public Animator _parent;
+        public Image[] _background;
+        public Image[] _coinSprite;
+        public TextMeshProUGUI[] _nameText;
+        public int _onOption;
+        public bool _onShop;
+        public Color[] _colors;
+    }
+    public ShopAssets _shopAssets;
 
     public Image _darkener;
     public Light _slimeLight;
@@ -178,7 +193,10 @@ public class MainGameplayScript : MonoBehaviour
     {
         _totalStages._xPoses.Clear();
         StartNewWorld();
-        _allStageAssets[_scriptMain._onWorldGlobal]._parentStage.SetActive(true);      
+        _allStageAssets[_scriptMain._onWorldGlobal]._parentStage.SetActive(true);
+
+        _shopAssets._nameText[0].text = GameInitScript.Instance.GetText("coin1");
+        _shopAssets._nameText[1].text = GameInitScript.Instance.GetText("coin2");
     }
 
     public void StartNewWorld()
@@ -200,7 +218,7 @@ public class MainGameplayScript : MonoBehaviour
     void Update()
     {
 
- 
+
 
         // 🔹 Comprobar si se presionó el botón de pausa
         if (Input.GetButtonDown("Pause") && !_scriptMain._gameOverAssets._onGameOver)
@@ -231,7 +249,7 @@ public class MainGameplayScript : MonoBehaviour
                         _scriptMain.SetPause();
                         break;
                 }
-              
+
             }
         }
 
@@ -269,28 +287,28 @@ public class MainGameplayScript : MonoBehaviour
         }
 
         if (_GamesList[_scriptEvents._onEvent] != 11 && _eventOn)
-        {  
+        {
             if (_slimeChanging)
             {
-           
+
                 _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
                    _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(50, -50), 5 * Time.deltaTime);
             }
             else
             {
-   
+
                 _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
              _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, -190), 5 * Time.deltaTime);
             }
 
             if (_lightChanging)
             {
-                
+
                 _slimeLight.intensity = Mathf.Lerp(_slimeLight.intensity, 150, 5 * Time.deltaTime);
             }
             else
             {
-         
+
                 _slimeLight.intensity = Mathf.Lerp(_slimeLight.intensity, 5, 5 * Time.deltaTime);
             }
 
@@ -313,7 +331,7 @@ public class MainGameplayScript : MonoBehaviour
             int count = ps.GetParticles(particles);
 
             for (int i = 0; i < count; i++)
-                particles[i].startColor = _cascadeColor[0]; 
+                particles[i].startColor = _cascadeColor[0];
 
             ps.SetParticles(particles, count);
 
@@ -334,8 +352,47 @@ public class MainGameplayScript : MonoBehaviour
             ps.Play();
         }
 
+        if (_shopAssets._onShop)
+        {
+            if (Input.GetAxisRaw("Horizontal") < 0)
+            {
+                _shopAssets._onOption = 0;
+            }
+            if (Input.GetAxisRaw("Horizontal") > 0)
+            {
+                _shopAssets._onOption = 1;
+            }
+            if (Input.GetButtonDown("Submit"))
+            {
+          
+                _shopAssets._onShop = false;
+              
+            }
 
+            for (int i = 0; i < 2; i++)
+            {
+                _shopAssets._background[i].color = _shopAssets._colors[0];
 
+            }
+
+          
+
+            switch (_shopAssets._onOption)
+            {
+                case 0:
+                    _shopAssets._coinSprite[0].transform.localScale = Vector2.Lerp(_shopAssets._coinSprite[0].transform.localScale, new Vector2(1.25f, 1.25f), 5 * Time.deltaTime);
+                    _shopAssets._coinSprite[1].transform.localScale = Vector2.Lerp(_shopAssets._coinSprite[1].transform.localScale, new Vector2(1f, 1f), 5 * Time.deltaTime);
+                    _shopAssets._background[0].color = _shopAssets._colors[1];
+                    break;
+                case 1:
+                    _shopAssets._coinSprite[1].transform.localScale = Vector2.Lerp(_shopAssets._coinSprite[1].transform.localScale, new Vector2(1.25f, 1.25f), 5 * Time.deltaTime);
+                    _shopAssets._coinSprite[0].transform.localScale = Vector2.Lerp(_shopAssets._coinSprite[0].transform.localScale, new Vector2(1f, 1f), 5 * Time.deltaTime);
+                    _shopAssets._background[1].color = _shopAssets._colors[2];
+                    break;
+            }
+      
+
+        }
     }
 
 
@@ -398,7 +455,12 @@ public class MainGameplayScript : MonoBehaviour
 
 
         yield return new WaitForSeconds(1);
+        if (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._eventType == GameEvent.EventType.StrongAir || _scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._eventType == GameEvent.EventType.BossFight3)
+        {
+            _scriptSlime._slimeAnimator.SetBool("WindPush", true);
+        }
      
+
         switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._eventClassification)
         {
             case GameEvent.EventClassification.Normal:
@@ -488,6 +550,9 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator StartsStageChest()
     {
+
+        _dialogeAssets._nextParent.SetActive(false);
+        _dialogeAssets._nextCircle.SetActive(false);
         _slimeParent.gameObject.SetActive(false);
         LoseHeartVoid();
         _topOptionsOn = false;
@@ -571,18 +636,69 @@ public class MainGameplayScript : MonoBehaviour
             {
                 yield return null;
             }
+            _dialogeAssets._nextParent.SetActive(true);
+
+
+          
+
+ 
+            if (i == (int)_dialogeAssets._dialogeSize.y - 1)
+            {
+                _dialogeAssets._nextCircle.SetActive(true);
+            }
+        
+      
        
             while (!Input.GetButtonDown("Submit"))
             {
                 yield return null;
             }
             _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._next);
+            _dialogeAssets._nextParent.SetActive(false);
+            _dialogeAssets._nextCircle.SetActive(false);
         }
         //_scriptEvents._onEvent++;
         _dialogeAssets._dialogePanel.SetBool("DialogeIn", false);
         _itemGotPanel._parent.SetTrigger("ItemGot");
         _scriptEvents._currentEventPrefab.GetComponent<ChestEventScript>().ItemGet();
         yield return new WaitForSeconds(1);
+        _scriptEvents._winRound = true;
+        StartCoroutine(ExitNumerator());
+
+    }
+
+    public IEnumerator StartsShopNumerator()
+    {
+
+        _dialogeAssets._nextParent.SetActive(false);
+        _dialogeAssets._nextCircle.SetActive(false);
+        //_slimeParent.gameObject.SetActive(false);
+        LoseHeartVoid();
+        _topOptionsOn = false;
+        _scriptSlime._slimeAnimator.SetBool("Moving", false);
+        _darkenerChanging = false;
+
+       
+        yield return new WaitForSeconds(2);
+        _shopAssets._parent.SetBool("ShopIn", true);
+        yield return new WaitForSeconds(1);
+        _shopAssets._onShop = true;
+        while (_shopAssets._onShop)
+        {
+            yield return null;
+        }
+        switch (_shopAssets._onOption)
+        {
+            case 0:
+                _scriptMain._saveLoadValues._healthCoins++;
+                break;
+            case 1:
+                _scriptMain._saveLoadValues._hintCoins++;
+                break;
+        }
+        _shopAssets._parent.SetBool("ShopIn", false);
+        yield return new WaitForSeconds(1);
+ 
         _scriptEvents._winRound = true;
         StartCoroutine(ExitNumerator());
 
@@ -649,6 +765,7 @@ public class MainGameplayScript : MonoBehaviour
         _scriptSlime._slimeRawImage.gameObject.SetActive(true);
         if(_totalLifes > 0)
         {
+
             StartCoroutine(_scriptEvents.StartLevelNumerator());
             _dead = false;
         }
@@ -661,6 +778,7 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator GameOverNumerator()
     {
+        _scriptMain._windParticle.Stop();
         _scriptMain._gameOverAssets._onGameOver = true;
         _scriptMain._gameOverAssets._parent.GetComponent<Animator>().SetBool("GameOver", true);
         Debug.Log("GAME OVER");
@@ -709,6 +827,9 @@ public class MainGameplayScript : MonoBehaviour
         _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime.fillAmount = 0;
         _scriptMain._bordersAnimator.SetBool("BorderOut", false);
+
+        _dialogeAssets._nextParent.SetActive(false);
+        _dialogeAssets._nextCircle.SetActive(false);
 
         yield return new WaitForSeconds(1);
         Destroy(_scriptEvents._currentEventPrefab);

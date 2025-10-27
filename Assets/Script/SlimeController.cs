@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using LoL;
 
 public class SlimeController : MonoBehaviour
 {
@@ -131,7 +132,9 @@ public class SlimeController : MonoBehaviour
                
 
                     _scriptMain._scriptMain.newSlimePanel._backgroundImage.color = _scriptMain._scriptSlime._slimeAssets[_slimeType]._mainColor;
-                    _scriptMain._scriptMain.newSlimePanel._slimeNameText.text = _scriptMain._scriptSlime._slimeAssets[_slimeType].name;
+
+                    _scriptMain._scriptMain.newSlimePanel._slimeNameText.text = GameInitScript.Instance.GetText("Slime" + _slimeType.ToString("f0"));
+                    //_scriptMain._scriptMain.newSlimePanel._slimeNameText.text = _scriptMain._scriptSlime._slimeAssets[_slimeType].name
                     _scriptMain._scriptMain.newSlimePanel._parent.SetBool("AnnounceIn", true);
 
 
@@ -247,22 +250,32 @@ public class SlimeController : MonoBehaviour
                         
                             yield return new WaitForSeconds(2);
                             _scriptMain._scriptFusion.ActivatePanel();
-                            _scriptMain.LoseHeartVoid();
+                            if (_scriptMain._totalLifes > 1)
+                            {
+                                _scriptMain._totalLifes--;
+                                _scriptMain.LoseHeartVoid();
+                            }
+                            else
+                            {
+                                StartCoroutine(_scriptMain.LoseLifeNumerator());
+                            }
+
+                            //StartCoroutine(_scriptMain.LoseLifeNumerator());
                             //yield return new WaitForSeconds(2);
                             StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
                             //_scriptMain._scriptFusion._buttonsAvailable = true;
                   
                             break;
                         case GameEvent.EventClassification.Fight:
-                            _wrongParticle.Play();
-                            _slimeAnimator.SetTrigger("Wrong");
-                            yield return new WaitForSeconds(2);
-                            _scriptMain._scriptFusion.ActivatePanel();
-                            _scriptMain.LoseHeartVoid();
-                            yield return new WaitForSeconds(2);
-                            StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
-                            //yield return new WaitForSeconds(1);
-                            //_scriptMain._scriptFusion._buttonsAvailable = true;
+                            //_wrongParticle.Play();
+                            //_slimeAnimator.SetTrigger("Wrong");
+                            //yield return new WaitForSeconds(2);
+                            //_scriptMain._scriptFusion.ActivatePanel();
+                            //_scriptMain.LoseHeartVoid();
+                            //yield return new WaitForSeconds(2);
+                            //StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
+                            ////yield return new WaitForSeconds(1);
+                            ////_scriptMain._scriptFusion._buttonsAvailable = true;
                             break;
                         case GameEvent.EventClassification.Questionary:
                             break;

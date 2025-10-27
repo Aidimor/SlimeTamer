@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using LoLSDK;
+using LoL;
 
 public class GameEventsScript : MonoBehaviour
 {
@@ -57,8 +58,9 @@ public class GameEventsScript : MonoBehaviour
                 _scriptMain._GamesList.Add(10);
                 _scriptMain._GamesList.Add(2);
                 _scriptMain._GamesList.Add(12);
-                _scriptMain._GamesList.Add(8);
                 _scriptMain._GamesList.Add(13);
+                _scriptMain._GamesList.Add(8);
+          
                 StartCoroutine(StartLevelNumerator()); 
                 break;
             case 1:
@@ -87,13 +89,15 @@ public class GameEventsScript : MonoBehaviour
             case 3:
                 _scriptMain._GamesList.Add(11);
                 _scriptMain._GamesList.Add(2);
-                _scriptMain._GamesList.Add(8);
-                _scriptMain._GamesList.Add(9);
-                _scriptMain._GamesList.Add(3);
-                _scriptMain._GamesList.Add(2);
-                _scriptMain._GamesList.Add(5);
-                _scriptMain._GamesList.Add(17);
-                _scriptMain._GamesList.Add(8);
+                _scriptMain._GamesList.Add(19);
+                //_scriptMain._GamesList.Add(2);
+                //_scriptMain._GamesList.Add(8);
+                //_scriptMain._GamesList.Add(9);
+                //_scriptMain._GamesList.Add(3);
+                //_scriptMain._GamesList.Add(2);
+                //_scriptMain._GamesList.Add(5);
+                //_scriptMain._GamesList.Add(17);
+                //_scriptMain._GamesList.Add(8);
                 //for (int i = 0; i < _scriptMain._totalStages._total; i++)
                 //{
                 //    var randomEvent = GetRandomEvent();
@@ -141,9 +145,10 @@ public class GameEventsScript : MonoBehaviour
     public IEnumerator StartLevelNumerator()
     {
 
-      
+        _scriptMain._scriptSlime._slimeAnimator.SetBool("WindPush", false);
         _scriptMain._scriptEvents._winRound = false;
         _scriptMain._scriptFusion.UnlockElements();
+ 
         for (int i = 0; i < _enemiesGameObjects.Length; i++)
         {
             _enemiesGameObjects[i].gameObject.SetActive(false);
@@ -219,7 +224,12 @@ public class GameEventsScript : MonoBehaviour
                   
 
                             break;
-                        case GameEvent.EventType.StrongAir: _scriptMain._onEventID = 4; evento.GetComponent<StrongAirEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); _scriptMain._scriptMain._windParticle.Play(); break;
+                        case GameEvent.EventType.StrongAir:
+                            //_scriptMain._scriptSlime._slimeAnimator.SetBool("WindPush", true);
+                            _scriptMain._onEventID = 4;
+                            evento.GetComponent<StrongAirEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); 
+                            _scriptMain._scriptMain._windParticle.Play();
+                            break;
                         case GameEvent.EventType.FallingBridge: _scriptMain._onEventID = 5; evento.GetComponent<SandCutEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); break;
                         case GameEvent.EventType.Gears: _scriptMain._onEventID = 6; evento.GetComponent<GearsPrefabEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); break;
                         case GameEvent.EventType.FightWasp:
@@ -264,6 +274,7 @@ public class GameEventsScript : MonoBehaviour
                             _scriptMain._onEventID = 11;
                             evento.GetComponent<BossFightsScript>().StartBossVoid();
                             break;
+                         
                     }
                     StartCoroutine(_scriptMain.StartStageNumerator());
 
@@ -292,6 +303,17 @@ public class GameEventsScript : MonoBehaviour
                     _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
                     _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);       
                     StartCoroutine(_scriptMain.IntroStageNumerator());
+                    break;
+                case GameEvent.EventClassification.Shop:
+                    //evento.GetComponent<QuestionaryScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
+                    _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
+                    //_scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(_scriptMain._firstStage);
+                    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);
+                    _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -200);
+
+                    yield return new WaitForSeconds(1);
+                    _scriptMain._scriptSlime._slimeAnimator.SetBool("Moving", false);
+                    StartCoroutine(_scriptMain.StartsShopNumerator());
                     break;
           
             }

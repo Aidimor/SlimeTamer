@@ -10,6 +10,19 @@
     { "key": "choose", "value": "ELIGE 2 ELEMENTOS" },
     { "key": "choose2", "value": "Espacio" },
 
+        { "key": "Slime1", "value": "SLIME DE AGUA" },
+        { "key": "Slime2", "value": "SLIME DE AIRE" },
+        { "key": "Slime3", "value": "SLIME DE TIERRA" },
+        { "key": "Slime4", "value": "SLIME DE ARENA CORTANTE" },
+        { "key": "Slime5", "value": "SLIME DE NIEVE" },
+        { "key": "Slime6", "value": "SLIME DE LODO PEGAJOSO" },
+
+            { "key": "coin1", "value": "MONEDA DE VIDA EXTRA" },
+      { "key": "coin2", "value": "MONEDA DE PISTA" },
+
+    { "key": "press", "value": "PRESIONA ESPACIO" },
+                 
+
     { "key": "dialoge1", "value": "Ayudanos a liberar el reino, por favor.", "id": 1 },
     { "key": "dialoge2", "value": "De ti dependemos.", "id": 2 },
         
