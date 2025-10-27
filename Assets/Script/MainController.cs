@@ -32,9 +32,13 @@ public class MainController : MonoBehaviour
     {
         public GameObject _parent;
         public GameObject[] _options;
+        public TextMeshProUGUI[] _optionsText;
         public Image _pointer;
         public int _onPos;
         public bool _pause;
+        public bool _moved;
+        public bool _hintAvailable;
+        public TextMeshProUGUI _hintText;
     }
     public PauseAssets _pauseAssets;
 
@@ -91,19 +95,30 @@ public class MainController : MonoBehaviour
     // ---------------------------
     public void SetPause()
     {
+        Animator pauseAnimator = _pauseAssets._parent?.GetComponent<Animator>();
+
+        // Asegurar que el animador de pausa use tiempo no escalado
+        if (pauseAnimator != null)
+            pauseAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
+
+    
+
         if (!_pauseAssets._pause)
         {
+            // Pausar el juego
             Time.timeScale = 0f;
-            _pauseAssets._parent?.GetComponent<Animator>().SetBool("PauseIn", true);
             _pauseAssets._pause = true;
+            pauseAnimator?.SetBool("PauseIn", true);
         }
         else
         {
+            // Reanudar el juego
             Time.timeScale = 1f;
-            _pauseAssets._parent?.GetComponent<Animator>().SetBool("PauseIn", false);
             _pauseAssets._pause = false;
+            pauseAnimator?.SetBool("PauseIn", false);
         }
     }
+
 
     // ---------------------------
     // GAME OVER

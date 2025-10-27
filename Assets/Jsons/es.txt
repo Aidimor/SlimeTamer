@@ -20,8 +20,23 @@
             { "key": "coin1", "value": "MONEDA DE VIDA EXTRA" },
       { "key": "coin2", "value": "MONEDA DE PISTA" },
 
-    { "key": "press", "value": "PRESIONA ESPACIO" },
-                 
+      { "key": "hint1", "value": "El viento parece moverla." }, 
+      { "key": "hint2", "value": "Debe existir una forma de caminar sobre el agua." }, 
+      { "key": "hint3", "value": "Parece haber algo al fondo del pozo." }, 
+      { "key": "hint4", "value": "Eres demasiado ligero, no puedes avanzar." }, 
+      { "key": "hint5", "value": "Si pudieras cortar esas cuerdas que sostienen el puente." }, 
+      { "key": "hint6", "value": "Hay que detener los engranes." }, 
+      { "key": "hint7", "value": "Apaga las llamas para continuar." }, 
+      { "key": "hint8", "value": "Aprovecha la cascada en su contra." }, 
+      { "key": "hint9", "value": "Golpéalo con algo." }, 
+      { "key": "hint10", "value": "Tienes que ganar masa o te mandará lejos." },
+      { "key": "hint11", "value": "Apaga las allamas o llegaran a ti." },
+
+    { "key": "pause1", "value": "Continuar" },
+    { "key": "pause2", "value": "Usar Pista" },
+    { "key": "pause3", "value": "Salir" },
+
+    { "key": "press", "value": "PRESIONA ESPACIO" },                 
 
     { "key": "dialoge1", "value": "Ayudanos a liberar el reino, por favor.", "id": 1 },
     { "key": "dialoge2", "value": "De ti dependemos.", "id": 2 },

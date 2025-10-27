@@ -20,6 +20,24 @@
     { "key": "coin1", "value": "EXTRA LIFE COIN" },
       { "key": "coin2", "value": "HINT COIN" },
 
+
+  { "key": "hint1", "value": "The wind seems to move it." },
+  { "key": "hint2", "value": "There must be a way to walk on water." },
+  { "key": "hint3", "value": "There seems to be something at the bottom of the well." },
+  { "key": "hint4", "value": "You're too light; you can't move forward." },
+  { "key": "hint5", "value": "If you could cut those ropes holding the bridge." },
+  { "key": "hint6", "value": "You need to stop the gears." },
+  { "key": "hint7", "value": "Put out the flames to continue." },
+  { "key": "hint8", "value": "Use the waterfall against it." },
+  { "key": "hint9", "value": "Hit it with something." },
+  { "key": "hint10", "value": "You must gain weight, or it will blow you away." },
+  { "key": "hint11", "value": "Stop the flames or they will come to you." },
+
+      
+    { "key": "pause1", "value": "Continue" },
+    { "key": "pause2", "value": "Use Hint" },
+    { "key": "pause3", "value": "Exit" },
+
     { "key": "press", "value": "PRESS SPACE" },
 
     { "key": "dialoge1", "value": "Help us save the kingdom.", "id": 1 },

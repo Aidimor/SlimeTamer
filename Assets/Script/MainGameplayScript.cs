@@ -146,6 +146,8 @@ public class MainGameplayScript : MonoBehaviour
 
     public ParticleSystem[] _bossCutParticles;
     public ParticleSystem _frontWindParticle;
+
+  
     private void Awake()
     {
         _scriptMain = GameObject.Find("CanvasIndestructible/Main/MainController").GetComponent<MainController>();
@@ -197,6 +199,10 @@ public class MainGameplayScript : MonoBehaviour
 
         _shopAssets._nameText[0].text = GameInitScript.Instance.GetText("coin1");
         _shopAssets._nameText[1].text = GameInitScript.Instance.GetText("coin2");
+
+        _scriptMain._pauseAssets._optionsText[0].text = GameInitScript.Instance.GetText("pause1");
+        _scriptMain._pauseAssets._optionsText[1].text = GameInitScript.Instance.GetText("pause2");
+        _scriptMain._pauseAssets._optionsText[2].text = GameInitScript.Instance.GetText("pause3");
     }
 
     public void StartNewWorld()
@@ -230,28 +236,52 @@ public class MainGameplayScript : MonoBehaviour
         if (_scriptMain._pauseAssets._pause)
         {
             float h = Input.GetAxisRaw("Horizontal");
-            if (h < 0) _scriptMain._pauseAssets._onPos = 0;
-            if (h > 0) _scriptMain._pauseAssets._onPos = 1;
 
-            // Mover puntero del menú de pausa
-            _scriptMain._pauseAssets._pointer.GetComponent<RectTransform>().anchoredPosition =
-                new Vector2(_scriptMain._pauseAssets._options[_scriptMain._pauseAssets._onPos].GetComponent<RectTransform>().anchoredPosition.x,
-                _scriptMain._pauseAssets._options[_scriptMain._pauseAssets._onPos].GetComponent<RectTransform>().anchoredPosition.y - 30f);
+            // 🔸 Movimiento a la izquierda
+            if (h < 0 && _scriptMain._pauseAssets._onPos > 0 && !_scriptMain._pauseAssets._moved)
+            {
+                _scriptMain._pauseAssets._onPos--;
+                _scriptMain._pauseAssets._moved = true;
+            }
 
+            // 🔸 Movimiento a la derecha
+            if (h > 0 && _scriptMain._pauseAssets._onPos < _scriptMain._pauseAssets._options.Length - 1 && !_scriptMain._pauseAssets._moved)
+            {
+                _scriptMain._pauseAssets._onPos++;
+                _scriptMain._pauseAssets._moved = true;
+            }
+
+            // 🔸 Resetear cuando se suelta el eje
+            if (h == 0)
+                _scriptMain._pauseAssets._moved = false;
+
+            // 🔸 Mover puntero del menú de pausa
+            RectTransform pointerRect = _scriptMain._pauseAssets._pointer.GetComponent<RectTransform>();
+            RectTransform targetRect = _scriptMain._pauseAssets._options[_scriptMain._pauseAssets._onPos].GetComponent<RectTransform>();
+
+            pointerRect.anchoredPosition = new Vector2(
+                targetRect.anchoredPosition.x,
+                targetRect.anchoredPosition.y - 30f
+            );
+
+            // 🔸 Confirmar selección
             if (Input.GetButtonDown("Submit"))
             {
                 switch (_scriptMain._pauseAssets._onPos)
                 {
                     case 0:
-                        _scriptMain.SetPause();
+                        _scriptMain.SetPause(); // Reanudar
                         break;
                     case 1:
-                        _scriptMain.SetPause();
+                        // Otra acción (reiniciar, menú, etc.)
+                        break;
+                    case 2:
+                        _scriptMain.SetPause(); // Salir o continuar
                         break;
                 }
-
             }
         }
+
 
         // 🔹 Actualizaciones del gameplay SOLO si no está pausado
         if (!_scriptMain._gameOverAssets._onGameOver)
@@ -398,6 +428,9 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator StartStageNumerator()
     {
+
+       _scriptMain._pauseAssets._hintText.text = GameInitScript.Instance.GetText("hint" + _scriptEvents._onEvent.ToString("f0"));
+
         _slimeParent.gameObject.SetActive(false);
         LoseHeartVoid();
         if(_scriptEvents._currentEventPrefab.name == "ChestEvent(Clone)" || _scriptEvents._currentEventPrefab.name == "Intro(Clone)")

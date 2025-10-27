@@ -89,7 +89,8 @@ public class GameEventsScript : MonoBehaviour
             case 3:
                 _scriptMain._GamesList.Add(11);
                 _scriptMain._GamesList.Add(2);
-                _scriptMain._GamesList.Add(19);
+                _scriptMain._GamesList.Add(0);
+          
                 //_scriptMain._GamesList.Add(2);
                 //_scriptMain._GamesList.Add(8);
                 //_scriptMain._GamesList.Add(9);
