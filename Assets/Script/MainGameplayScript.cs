@@ -37,15 +37,15 @@ public class MainGameplayScript : MonoBehaviour
 
     public List<int> _GamesList = new List<int>();
 
-    [System.Serializable]
-    public class HearthAssets
-    {
-        public GameObject _parent;
-        public Image[] _totalHearts;
-        public Color[] _heartColors;
-    }
-    public HearthAssets _heartAssets;
-    public int _totalLifes = 4;
+    //[System.Serializable]
+    //public class HearthAssets
+    //{
+    //    public GameObject _parent;
+    //    public Image[] _totalHearts;
+    //    public Color[] _heartColors;
+    //}
+    //public HearthAssets _heartAssets;
+    //public int _totalLifes = 4;
 
     [System.Serializable]
     public class ItemGotPanel
@@ -273,6 +273,11 @@ public class MainGameplayScript : MonoBehaviour
                         _scriptMain.SetPause(); // Reanudar
                         break;
                     case 1:
+                        if (!_scriptMain._pauseAssets._hintBought && _scriptMain._pauseAssets._hintAvailable)
+                        {
+                            HintVoid();
+                        }
+     
                         // Otra acción (reiniciar, menú, etc.)
                         break;
                     case 2:
@@ -420,19 +425,29 @@ public class MainGameplayScript : MonoBehaviour
                     _shopAssets._background[1].color = _shopAssets._colors[2];
                     break;
             }
-      
+            //if(_scriptMain._pauseAssets._hintAvailable)
+
+
+
 
         }
+        _scriptMain._pauseAssets._hintText.gameObject.SetActive(_scriptMain._pauseAssets._hintBought);
     }
 
-
+    public void HintVoid()
+    {
+        _scriptMain._pauseAssets._hintBought = true;        
+      
+        _scriptMain._saveLoadValues._hintCoins--;
+        _scriptMain._pauseAssets._hintAvailable = false;
+    }
     public IEnumerator StartStageNumerator()
     {
 
-       _scriptMain._pauseAssets._hintText.text = GameInitScript.Instance.GetText("hint" + _scriptEvents._onEvent.ToString("f0"));
+       _scriptMain._pauseAssets._hintText.text = GameInitScript.Instance.GetText("hint" + _onEventID.ToString("f0"));
 
         _slimeParent.gameObject.SetActive(false);
-        LoseHeartVoid();
+        //LoseHeartVoid();
         if(_scriptEvents._currentEventPrefab.name == "ChestEvent(Clone)" || _scriptEvents._currentEventPrefab.name == "Intro(Clone)")
         {
             _topOptionsOn = false;
@@ -567,19 +582,19 @@ public class MainGameplayScript : MonoBehaviour
 
 
 
-    public void LoseHeartVoid()
-    {
+    //public void LoseHeartVoid()
+    //{
     
-        for(int i = 0; i < _heartAssets._totalHearts.Length; i++)
-        {
-            _heartAssets._totalHearts[i].color = _heartAssets._heartColors[1];
-        }
+    //    for(int i = 0; i < _heartAssets._totalHearts.Length; i++)
+    //    {
+    //        _heartAssets._totalHearts[i].color = _heartAssets._heartColors[1];
+    //    }
 
-        for (int i = 0; i < _totalLifes; i++)
-        {
-            _heartAssets._totalHearts[i].color = _heartAssets._heartColors[0];
-        }
-    }
+    //    for (int i = 0; i < _totalLifes; i++)
+    //    {
+    //        _heartAssets._totalHearts[i].color = _heartAssets._heartColors[0];
+    //    }
+    //}
 
     public IEnumerator StartsStageChest()
     {
@@ -587,7 +602,7 @@ public class MainGameplayScript : MonoBehaviour
         _dialogeAssets._nextParent.SetActive(false);
         _dialogeAssets._nextCircle.SetActive(false);
         _slimeParent.gameObject.SetActive(false);
-        LoseHeartVoid();
+        //LoseHeartVoid();
         _topOptionsOn = false;
         _scriptSlime._slimeAnimator.SetBool("Moving", false);
         _darkenerChanging = false;
@@ -706,7 +721,7 @@ public class MainGameplayScript : MonoBehaviour
         _dialogeAssets._nextParent.SetActive(false);
         _dialogeAssets._nextCircle.SetActive(false);
         //_slimeParent.gameObject.SetActive(false);
-        LoseHeartVoid();
+        //LoseHeartVoid();
         _topOptionsOn = false;
         _scriptSlime._slimeAnimator.SetBool("Moving", false);
         _darkenerChanging = false;
@@ -739,14 +754,14 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator LoseLifeNumerator()
     {
-        _totalLifes--;
+        _scriptMain._saveLoadValues._healthCoins--;
         for(int i = 0; i < 4M; i++)
         {
             _scriptRythm._elementsInfo[i]._parent.SetActive(false);
         }
         _scriptRythm._elementsSelection.Clear();
         _dead = true;
-        LoseHeartVoid();
+        //LoseHeartVoid();
         _slimeExplosion.Play();
         _scriptSlime._slimeRawImage.gameObject.SetActive(false);
         _scriptRythm._OnPhase = 0;
@@ -796,7 +811,7 @@ public class MainGameplayScript : MonoBehaviour
             _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
         }
         _scriptSlime._slimeRawImage.gameObject.SetActive(true);
-        if(_totalLifes > 0)
+        if(_scriptMain._saveLoadValues._healthCoins > 0)
         {
 
             StartCoroutine(_scriptEvents.StartLevelNumerator());
@@ -830,8 +845,8 @@ public class MainGameplayScript : MonoBehaviour
                 _scriptMain.LoadSceneByName("IntroScene");
                 break;
             case 1:
-                _totalLifes++;
-                LoseHeartVoid();
+                _scriptMain._saveLoadValues._healthCoins++;
+             
                 StartCoroutine(_scriptEvents.StartStageQuestionary());
         
                 break;
@@ -860,12 +875,14 @@ public class MainGameplayScript : MonoBehaviour
         _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime.fillAmount = 0;
         _scriptMain._bordersAnimator.SetBool("BorderOut", false);
-
+        _snowBool = false;
         _dialogeAssets._nextParent.SetActive(false);
         _dialogeAssets._nextCircle.SetActive(false);
 
         yield return new WaitForSeconds(1);
         Destroy(_scriptEvents._currentEventPrefab);
+        _scriptMain._pauseAssets._hintAvailable = false;
+        _scriptMain._pauseAssets._hintBought = false;
         if (_scriptEvents._currentEventPrefab != null)
         {
             if (_scriptEvents._currentEventPrefab.name == "Intro(Clone)")

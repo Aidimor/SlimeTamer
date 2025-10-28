@@ -15123,7 +15123,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 252.43918, y: 200}
+  m_AnchoredPosition: {x: -250, y: 200}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &651191999
@@ -15403,8 +15403,8 @@ MonoBehaviour:
   _saveLoadValues:
     _worldsUnlocked: 01000001
     _elementsUnlocked: 01010101
-    _healthCoins: 0
-    _hintCoins: 0
+    _healthCoins: 4
+    _hintCoins: 10
   _pauseAssets:
     _parent: {fileID: 1523089174}
     _options:
@@ -15420,7 +15420,8 @@ MonoBehaviour:
     _pause: 0
     _moved: 0
     _hintAvailable: 0
-    _hintText: {fileID: 0}
+    _hintBought: 0
+    _hintText: {fileID: 1088227471}
   _currencyAssets:
   - _parent: {fileID: 1704319319}
     _quantityText: {fileID: 1371570796}
@@ -26569,14 +26570,14 @@ RectTransform:
   m_GameObject: {fileID: 907457678}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.79671, y: 0.79671, z: 0.79671}
+  m_LocalScale: {x: 0.8450636, y: 0.8450636, z: 0.8450636}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1455949949}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -105, y: 91}
+  m_AnchoredPosition: {x: -112, y: 21}
   m_SizeDelta: {x: 407, y: 220}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &907457680
@@ -26592,7 +26593,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 0.7058824}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -41306,11 +41307,11 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 907457679}
   - {fileID: 1587836827}
   - {fileID: 786353266}
   - {fileID: 233338054}
   - {fileID: 1060342890}
+  - {fileID: 907457679}
   m_Father: {fileID: 826323417}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}

@@ -28,10 +28,10 @@
   { "key": "hint5", "value": "If you could cut those ropes holding the bridge." },
   { "key": "hint6", "value": "You need to stop the gears." },
   { "key": "hint7", "value": "Put out the flames to continue." },
-  { "key": "hint8", "value": "Use the waterfall against it." },
-  { "key": "hint9", "value": "Hit it with something." },
-  { "key": "hint10", "value": "You must gain weight, or it will blow you away." },
-  { "key": "hint11", "value": "Stop the flames or they will come to you." },
+  { "key": "hint11", "value": "Use the waterfall against it." },
+  { "key": "hint12", "value": "Hit it with something." },
+  { "key": "hint13", "value": "You must gain weight, or it will blow you away." },
+  { "key": "hint14", "value": "Stop the flames or they will come to you." },
 
       
     { "key": "pause1", "value": "Continue" },

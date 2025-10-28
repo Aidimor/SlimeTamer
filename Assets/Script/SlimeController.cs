@@ -250,10 +250,10 @@ public class SlimeController : MonoBehaviour
                         
                             yield return new WaitForSeconds(2);
                             _scriptMain._scriptFusion.ActivatePanel();
-                            if (_scriptMain._totalLifes > 1)
+                            if (_scriptMain._scriptMain._saveLoadValues._healthCoins > 1)                            
                             {
-                                _scriptMain._totalLifes--;
-                                _scriptMain.LoseHeartVoid();
+                                _scriptMain._scriptMain._saveLoadValues._healthCoins--;
+                                //_scriptMain.LoseHeartVoid();
                             }
                             else
                             {

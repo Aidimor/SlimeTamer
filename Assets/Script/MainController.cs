@@ -38,6 +38,7 @@ public class MainController : MonoBehaviour
         public bool _pause;
         public bool _moved;
         public bool _hintAvailable;
+        public bool _hintBought;
         public TextMeshProUGUI _hintText;
     }
     public PauseAssets _pauseAssets;
@@ -101,7 +102,14 @@ public class MainController : MonoBehaviour
         if (pauseAnimator != null)
             pauseAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
 
-    
+        if (_pauseAssets._hintAvailable && _saveLoadValues._hintCoins > 0)
+        {
+            _pauseAssets._optionsText[1].color = Color.white;
+        }
+        else
+        {
+            _pauseAssets._optionsText[1].color = Color.gray;
+        }
 
         if (!_pauseAssets._pause)
         {

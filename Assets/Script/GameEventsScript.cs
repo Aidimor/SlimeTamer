@@ -89,16 +89,13 @@ public class GameEventsScript : MonoBehaviour
             case 3:
                 _scriptMain._GamesList.Add(11);
                 _scriptMain._GamesList.Add(2);
-                _scriptMain._GamesList.Add(0);
-          
-                //_scriptMain._GamesList.Add(2);
-                //_scriptMain._GamesList.Add(8);
-                //_scriptMain._GamesList.Add(9);
-                //_scriptMain._GamesList.Add(3);
-                //_scriptMain._GamesList.Add(2);
-                //_scriptMain._GamesList.Add(5);
-                //_scriptMain._GamesList.Add(17);
-                //_scriptMain._GamesList.Add(8);
+                _scriptMain._GamesList.Add(8);
+                _scriptMain._GamesList.Add(9);
+                _scriptMain._GamesList.Add(3);
+                _scriptMain._GamesList.Add(2);
+                _scriptMain._GamesList.Add(5);
+                _scriptMain._GamesList.Add(17);
+                _scriptMain._GamesList.Add(8);
                 //for (int i = 0; i < _scriptMain._totalStages._total; i++)
                 //{
                 //    var randomEvent = GetRandomEvent();
@@ -174,7 +171,7 @@ public class GameEventsScript : MonoBehaviour
             {
                 case GameEvent.EventClassification.Normal:
                 case GameEvent.EventClassification.Fight:
-                 
+                    _scriptMain._scriptMain._pauseAssets._hintAvailable = true;
                     switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._weakto.Length)
                     {
                         case 1:
