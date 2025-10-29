@@ -25,6 +25,7 @@ public class MainGameplayScript : MonoBehaviour
 
     public ParticleSystem _fallParticle;
     public ParticleSystem _slimeArriveParticle;
+    public ParticleSystem _teleportParticle;
 
     [System.Serializable]
     public class TotalStages
@@ -141,11 +142,13 @@ public class MainGameplayScript : MonoBehaviour
     public ParticleSystem[] _Cascade;
     public bool _cascadeFrozen;
 
-    public ParticleSystem _chargingAttackEnemy;
+    public ParticleSystem[] _proyectileCharge;
     public ParticleSystem _AttackEnemy;
 
     public ParticleSystem[] _bossCutParticles;
     public ParticleSystem _frontWindParticle;
+
+    public Vector3[] _bossStartPos;
 
   
     private void Awake()
@@ -443,8 +446,9 @@ public class MainGameplayScript : MonoBehaviour
     }
     public IEnumerator StartStageNumerator()
     {
+        _scriptRythm._OnPhase = 0;
 
-       _scriptMain._pauseAssets._hintText.text = GameInitScript.Instance.GetText("hint" + _onEventID.ToString("f0"));
+        _scriptMain._pauseAssets._hintText.text = GameInitScript.Instance.GetText("hint" + _onEventID.ToString("f0"));
 
         _slimeParent.gameObject.SetActive(false);
         //LoseHeartVoid();
@@ -512,7 +516,7 @@ public class MainGameplayScript : MonoBehaviour
         switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._eventClassification)
         {
             case GameEvent.EventClassification.Normal:
-                _scriptRythm._OnPhase = 0;
+            
                 StartCoroutine(_scriptRythm.RythmNumerator());
                 break;         
         }   
@@ -752,6 +756,24 @@ public class MainGameplayScript : MonoBehaviour
 
     }
 
+    public IEnumerator StartsTeleporterAnimator()
+    {
+        _scriptEvents._currentEventPrefab.GetComponent<TeleporterScript>()._scriptMain = this.GetComponent<MainGameplayScript>();
+        var _teleportScript = _scriptEvents._currentEventPrefab.GetComponent<TeleporterScript>();
+        _topOptionsOn = false;
+        _scriptSlime._slimeAnimator.SetBool("Moving", false);
+        _darkenerChanging = false;
+
+
+        yield return new WaitForSeconds(2);
+
+        yield return new WaitForSeconds(1);
+
+        _scriptEvents._winRound = true;
+       _teleportScript.TeleportVoid();
+
+    }
+
     public IEnumerator LoseLifeNumerator()
     {
         _scriptMain._saveLoadValues._healthCoins--;
@@ -794,7 +816,7 @@ public class MainGameplayScript : MonoBehaviour
         _scriptMain._bordersAnimator.SetBool("BorderOut", false);
 
         yield return new WaitForSeconds(2);
-
+        Destroy(_scriptEvents._currentEventPrefab);
 
 
         _bossAnimator.gameObject.SetActive(false);
@@ -879,7 +901,11 @@ public class MainGameplayScript : MonoBehaviour
         _dialogeAssets._nextParent.SetActive(false);
         _dialogeAssets._nextCircle.SetActive(false);
 
+
         yield return new WaitForSeconds(1);
+        _bossAnimator.gameObject.SetActive(false);
+        _frontWindParticle.Stop();
+        _bossAnimator.SetBool("Damaged", false);
         Destroy(_scriptEvents._currentEventPrefab);
         _scriptMain._pauseAssets._hintAvailable = false;
         _scriptMain._pauseAssets._hintBought = false;

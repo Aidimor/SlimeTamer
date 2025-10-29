@@ -15401,7 +15401,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 8300000, guid: da1e06c401dcba74f93321c5c06b0da5, type: 3}
   _saveLoadValues:
-    _worldsUnlocked: 01000001
+    _worldsUnlocked: 01010101
     _elementsUnlocked: 01010101
     _healthCoins: 4
     _hintCoins: 10
@@ -33617,7 +33617,7 @@ MonoBehaviour:
   _speed: 10
   _pressed: 0
   _allWorlds:
-  - _worldParent: {fileID: 1354462681}
+  - _worldParent: {fileID: 0}
     _yPos: 0
     _backgroundColor: {r: 0.8, g: 0, b: 0.6392157, a: 0.39215687}
     _worldText: {fileID: 1003820943}
@@ -33625,7 +33625,7 @@ MonoBehaviour:
     _lockedParemt: {fileID: 505627003}
     _lockedText: {fileID: 1499113739}
     key: world
-  - _worldParent: {fileID: 688617768}
+  - _worldParent: {fileID: 0}
     _yPos: 450
     _backgroundColor: {r: 0, g: 1, b: 0.6605363, a: 0.39215687}
     _worldText: {fileID: 1386357976}
@@ -33633,7 +33633,7 @@ MonoBehaviour:
     _lockedParemt: {fileID: 306028756}
     _lockedText: {fileID: 368799746}
     key: world
-  - _worldParent: {fileID: 1250268339}
+  - _worldParent: {fileID: 0}
     _yPos: 900
     _backgroundColor: {r: 0.5801887, g: 0.92045844, b: 1, a: 0.39215687}
     _worldText: {fileID: 530721933}
@@ -33641,7 +33641,7 @@ MonoBehaviour:
     _lockedParemt: {fileID: 1544073253}
     _lockedText: {fileID: 404385172}
     key: world
-  - _worldParent: {fileID: 1441257189}
+  - _worldParent: {fileID: 0}
     _yPos: 1350
     _backgroundColor: {r: 1, g: 1, b: 0.6862745, a: 1}
     _worldText: {fileID: 471945392}

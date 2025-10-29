@@ -11,7 +11,8 @@ public class GameEvent : ScriptableObject
         Questionary,
         Chest,
         Intro,
-        Shop
+        Shop,
+        Teleporter
     }
     public EventClassification _eventClassification;
 

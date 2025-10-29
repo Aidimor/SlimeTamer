@@ -207,9 +207,9 @@ public class PortraitController : MonoBehaviour
             {
                 _worldsParent.GetComponent<RectTransform>().anchoredPosition =
                     Vector2.MoveTowards(_worldsParent.GetComponent<RectTransform>().anchoredPosition,
-                    new Vector2(0, _allWorlds[3]._yPos + 60), 250f * Time.deltaTime);
+                    new Vector2(0, _allWorlds[_scriptMainController._onWorldGlobal]._yPos + 60), 250f * Time.deltaTime);
 
-                if (_worldsParent.GetComponent<RectTransform>().anchoredPosition.y == _allWorlds[3]._yPos + 60 && !_gameStarts)
+                if (_worldsParent.GetComponent<RectTransform>().anchoredPosition.y == _allWorlds[_scriptMainController._onWorldGlobal]._yPos + 60 && !_gameStarts)
                 {
                     StartCoroutine(StartGameSpecial());
                 }

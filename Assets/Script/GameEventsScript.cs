@@ -77,31 +77,32 @@ public class GameEventsScript : MonoBehaviour
                 break;
             case 2:
                 _scriptMain._GamesList.Add(11);
-                for (int i = 0; i < _scriptMain._GamesList.Count; i++)
-                {
-                    var randomEvent = GetRandomEvent();
-                    // Guardamos el índice dentro del array original
-                    _scriptMain._GamesList.Add(System.Array.IndexOf(_specialEvents, randomEvent));
-                }
-                StartCoroutine(StartLevelNumerator());
-
-                break;
-            case 3:
-                _scriptMain._GamesList.Add(11);
                 _scriptMain._GamesList.Add(2);
-                _scriptMain._GamesList.Add(8);
-                _scriptMain._GamesList.Add(9);
-                _scriptMain._GamesList.Add(3);
-                _scriptMain._GamesList.Add(2);
-                _scriptMain._GamesList.Add(5);
-                _scriptMain._GamesList.Add(17);
-                _scriptMain._GamesList.Add(8);
-                //for (int i = 0; i < _scriptMain._totalStages._total; i++)
+                //for (int i = 0; i < _scriptMain._GamesList.Count; i++)
                 //{
                 //    var randomEvent = GetRandomEvent();
                 //    // Guardamos el índice dentro del array original
                 //    _scriptMain._GamesList.Add(System.Array.IndexOf(_specialEvents, randomEvent));
                 //}
+                StartCoroutine(StartLevelNumerator());
+
+                break;
+            case 3:
+                _scriptMain._GamesList.Add(11);
+                //_scriptMain._GamesList.Add(2);
+                //_scriptMain._GamesList.Add(8);
+                //_scriptMain._GamesList.Add(9);
+                //_scriptMain._GamesList.Add(3);
+                //_scriptMain._GamesList.Add(2);
+                //_scriptMain._GamesList.Add(5);
+                _scriptMain._GamesList.Add(15);
+                _scriptMain._GamesList.Add(17);
+                _scriptMain._GamesList.Add(16);
+         
+                _scriptMain._GamesList.Add(14);
+
+                //_scriptMain._GamesList.Add(8);
+                _scriptMain._GamesList.Add(20);     
                 StartCoroutine(StartLevelNumerator());
 
                 break;
@@ -142,7 +143,7 @@ public class GameEventsScript : MonoBehaviour
 
     public IEnumerator StartLevelNumerator()
     {
-
+        Debug.Log("ADSFFGDSFGFDSHG");
         _scriptMain._scriptSlime._slimeAnimator.SetBool("WindPush", false);
         _scriptMain._scriptEvents._winRound = false;
         _scriptMain._scriptFusion.UnlockElements();
@@ -313,28 +314,35 @@ public class GameEventsScript : MonoBehaviour
                     _scriptMain._scriptSlime._slimeAnimator.SetBool("Moving", false);
                     StartCoroutine(_scriptMain.StartsShopNumerator());
                     break;
+                case GameEvent.EventClassification.Teleporter:
+                    yield return new WaitForSeconds(1);
+                    _scriptMain._scriptSlime._slimeAnimator.SetBool("Moving", false);
+                    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);
+                    StartCoroutine(_scriptMain.StartsTeleporterAnimator());
+       
+                    break;
           
             }
         }
 
-        yield return new WaitForSeconds(1);
+        //yield return new WaitForSeconds(1);
 
-        switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._eventClassification)
-        {
-            case GameEvent.EventClassification.Normal:
-                // Referencia al AudioSource
-                //AudioSource bgm = _scriptMain._scriptMain._bgmAS;
-                //Debug.Log(_specialEvents[_scriptMain._GamesList[_onEvent]]._eventType);
-                //// Si no está reproduciendo, entonces asigna el clip y reproduce
-                //if (!bgm.isPlaying)
-                //{
-                //    bgm.clip = _scriptMain._scriptMain._allBGM[_scriptMain._scriptMain._onWorldGlobal];
-                //    bgm.Play();
-                //}
-                break;
+        //switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._eventClassification)
+        //{
+        //    case GameEvent.EventClassification.Normal:
+        //        // Referencia al AudioSource
+        //        //AudioSource bgm = _scriptMain._scriptMain._bgmAS;
+        //        //Debug.Log(_specialEvents[_scriptMain._GamesList[_onEvent]]._eventType);
+        //        //// Si no está reproduciendo, entonces asigna el clip y reproduce
+        //        //if (!bgm.isPlaying)
+        //        //{
+        //        //    bgm.clip = _scriptMain._scriptMain._allBGM[_scriptMain._scriptMain._onWorldGlobal];
+        //        //    bgm.Play();
+        //        //}
+        //        break;
 
 
-        }
+        //}
     }
 
     public IEnumerator RestartNumerator()

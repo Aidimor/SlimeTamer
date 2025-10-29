@@ -32,11 +32,33 @@ public class BossFightsScript : MonoBehaviour
 
     public IEnumerator StartBossNumerator()
     {
-
+        Debug.Log("PELEAAAA");
         yield return new WaitForSeconds(1);
         _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
 
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(1);
+        switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType)
+        {
+            case GameEvent.EventType.BossFight0:
+                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossStartPos[0];
+       
+                break;
+            case GameEvent.EventType.BossFight1:
+                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossStartPos[0];
+                break;
+            case GameEvent.EventType.BossFight2:
+                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossStartPos[0];
+                break;
+            case GameEvent.EventType.BossFight3:
+                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossStartPos[1];
+                break;
+            case GameEvent.EventType.BossFight4:
+                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossStartPos[0];        
+                break;
+            case GameEvent.EventType.BossFight5:
+                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossStartPos[0];
+                break;
+        }
         _scriptMain._bossAnimator.transform.gameObject.SetActive(true);
         _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._roar);
         _scriptMain._bossAnimator.SetBool("Idle", true);
@@ -51,7 +73,7 @@ public class BossFightsScript : MonoBehaviour
                 break;
             case GameEvent.EventType.BossFight1:
                 _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
-                yield return new WaitForSeconds(1);
+                yield return new WaitForSeconds(3);
                 StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
                 break;  
 
@@ -78,7 +100,9 @@ public class BossFightsScript : MonoBehaviour
                 _events[0].gameObject.SetActive(true);
                 _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
                 _scriptMain._bossAnimator.SetTrigger("AttackFire");
-                yield return new WaitForSeconds(1);
+             
+                yield return new WaitForSeconds(1.5f);
+                _fire[0].Play();
                 StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
                 break;
             case GameEvent.EventType.BossFight5:
