@@ -82,7 +82,7 @@ public class GameEventsScript : MonoBehaviour
                 break;
             case 2:
                 _scriptMain._GamesList.Add(11);
-                _scriptMain._GamesList.Add(2);
+                _scriptMain._GamesList.Add(15);
                 //for (int i = 0; i < _scriptMain._GamesList.Count; i++)
                 //{
                 //    var randomEvent = GetRandomEvent();

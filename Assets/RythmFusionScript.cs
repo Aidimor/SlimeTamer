@@ -292,16 +292,25 @@ public class RythmFusionScript : MonoBehaviour
                         switch (_OnPhase)
                         {
                             case 0:
+                                _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.5f;
+                                _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 1;
+                              
+                         
                                 _scriptMain._bossAnimator.SetBool("SideShoot", true);
                                 break;
                             case 2:
+                                _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
                                 _scriptMain._bossAnimator.SetTrigger("Action");
                                 break;
                             case 4:
+                                _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 1f;
                                 _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
                                 _scriptMain._bossAnimator.SetTrigger("Action");
                                 break;
                             case 6:
+                                _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
+                                _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
+                                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._bossAttack);
                                 _scriptMain._bossAnimator.SetTrigger("Action");
                                 yield return new WaitForSeconds(0.25f);
                                 if (!_scriptMain._dead)
