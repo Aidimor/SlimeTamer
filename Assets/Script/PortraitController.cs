@@ -57,7 +57,8 @@ public class PortraitController : MonoBehaviour
         {
             OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
         }
-
+        _scriptMainController._scriptMusic._audioBGM.clip = _scriptMainController._scriptMusic._allThemes[0];
+        _scriptMainController._scriptMusic._audioBGM.Play();
         StartCoroutine(UpdateWorldTexts());
     }
 

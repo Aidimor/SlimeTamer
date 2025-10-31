@@ -32,31 +32,39 @@ public class BossFightsScript : MonoBehaviour
 
     public IEnumerator StartBossNumerator()
     {
-        Debug.Log("PELEAAAA");
+
         yield return new WaitForSeconds(1);
+        _scriptMain._scriptMain._scriptMusic.gameObject.GetComponent<AudioSource>().clip = _scriptMain._scriptMain._scriptMusic._allThemes[5];
+        _scriptMain._scriptMain._scriptMusic._audioBGM.Play();
         _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(1);
         switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType)
         {
             case GameEvent.EventType.BossFight0:
-                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossStartPos[0];
-       
+                _scriptMain._bossAnimator.transform.localEulerAngles = _scriptMain._bossPoses[0]._bossStartRot;
+                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossPoses[0]._bossStartPos;
                 break;
             case GameEvent.EventType.BossFight1:
-                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossStartPos[0];
+                Debug.Log("falla1");
+                _scriptMain._bossAnimator.transform.localEulerAngles = _scriptMain._bossPoses[0]._bossStartRot;
+                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossPoses[0]._bossStartPos;
                 break;
             case GameEvent.EventType.BossFight2:
-                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossStartPos[0];
+                _scriptMain._bossAnimator.transform.localEulerAngles = _scriptMain._bossPoses[0]._bossStartRot;
+                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossPoses[0]._bossStartPos;
                 break;
             case GameEvent.EventType.BossFight3:
-                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossStartPos[1];
+                _scriptMain._bossAnimator.transform.localEulerAngles = _scriptMain._bossPoses[1]._bossStartRot;
+                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossPoses[1]._bossStartPos;
                 break;
             case GameEvent.EventType.BossFight4:
-                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossStartPos[0];        
+                _scriptMain._bossAnimator.transform.localEulerAngles = _scriptMain._bossPoses[0]._bossStartRot;
+                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossPoses[0]._bossStartPos;
                 break;
             case GameEvent.EventType.BossFight5:
-                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossStartPos[0];
+                _scriptMain._bossAnimator.transform.localEulerAngles = _scriptMain._bossPoses[0]._bossStartRot;
+                _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossPoses[0]._bossStartPos;
                 break;
         }
         _scriptMain._bossAnimator.transform.gameObject.SetActive(true);
@@ -73,7 +81,7 @@ public class BossFightsScript : MonoBehaviour
                 break;
             case GameEvent.EventType.BossFight1:
                 _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
-                yield return new WaitForSeconds(3);
+                yield return new WaitForSeconds(1);
                 StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
                 break;  
 
@@ -87,22 +95,26 @@ public class BossFightsScript : MonoBehaviour
                 StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
                 break;
             case GameEvent.EventType.BossFight3:
-                _scriptMain._frontWindParticle.Play();
+      
                 _scriptMain._bossAnimator.SetBool("Ventilator", true);
+                _scriptMain._scriptMain._scriptSFX._windSetVolume = 1;
                 _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
                 //_events[1].gameObject.SetActive(true);
                 //_scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
                 //_scriptMain._bossAnimator.SetTrigger("AttackFire");
-                yield return new WaitForSeconds(1);
+                yield return new WaitForSeconds(0.5f);
+                _scriptMain._frontWindParticle.Play();
+                yield return new WaitForSeconds(0.5f);
                 StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
                 break;
             case GameEvent.EventType.BossFight4:
                 _events[0].gameObject.SetActive(true);
                 _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
                 _scriptMain._bossAnimator.SetTrigger("AttackFire");
-             
+                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._flameOn);
                 yield return new WaitForSeconds(1.5f);
                 _fire[0].Play();
+                yield return new WaitForSeconds(1);
                 StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
                 break;
             case GameEvent.EventType.BossFight5:
@@ -120,15 +132,19 @@ public class BossFightsScript : MonoBehaviour
     {
         _scriptMain._scriptMain._cinematicBorders.SetBool("FadeIn", true);
         yield return new WaitForSeconds(2f);
+      
         _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._whip);
         _scriptMain._bossAnimator.SetTrigger("Attack");
-        _scriptMain._flyingSlimeParticles[0].Play();
+  
         yield return new WaitForSeconds(0.5f);
+        _scriptMain._slimeExplosion.Play();
         _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._scream);
+        _scriptMain._flyingSlimeParticles[0].Play();
         yield return new WaitForSeconds(1.5f);
 
-        _scriptMain._flyingSlimeParticles[1].Play();
+
         _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._ding);
+        _scriptMain._flyingSlimeParticles[1].Play();
         yield return new WaitForSeconds(2);
         _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
         _scriptMain._scriptMain._introSpecial = true;

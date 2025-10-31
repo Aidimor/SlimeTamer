@@ -68,4 +68,11 @@ public class SpecialAnimatorEvents : MonoBehaviour
         _scriptMain._bossCutParticles[1].Play();
         _scriptMain._bossCutParticles[2].Play();
     }
+
+    public void StickyMudSound()
+    {
+        _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._stickyMudSound);
+    }
+
+
 }

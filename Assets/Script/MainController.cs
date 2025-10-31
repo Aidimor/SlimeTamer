@@ -12,6 +12,8 @@ public class MainController : MonoBehaviour
     public PortraitController _scriptPortrait;
     public GameInitScript _scriptInit;
     public SFXscript _scriptSFX;
+    public MusicController _scriptMusic;
+
     public Animator _bordersAnimator;
     public Animator _cinematicBorders;
     public AudioSource _bgmAS;
@@ -76,7 +78,7 @@ public class MainController : MonoBehaviour
     }
     public NewSlimePanel newSlimePanel;
 
-    public ParticleSystem _windParticle;
+    public Animator _currencyAnimator;
 
     private void Awake()
     {

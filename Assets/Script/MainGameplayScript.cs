@@ -114,6 +114,7 @@ public class MainGameplayScript : MonoBehaviour
         public int _onOption;
         public bool _onShop;
         public Color[] _colors;
+        public bool _moved;
     }
     public ShopAssets _shopAssets;
 
@@ -148,7 +149,24 @@ public class MainGameplayScript : MonoBehaviour
     public ParticleSystem[] _bossCutParticles;
     public ParticleSystem _frontWindParticle;
 
-    public Vector3[] _bossStartPos;
+
+    [System.Serializable]
+    public class BossPoses
+    {
+        public Vector3 _bossStartPos;
+        public Vector3 _bossStartRot;
+    }
+    public BossPoses[] _bossPoses;
+
+    [System.Serializable]
+   public class SuccessAssets
+    {
+        public Animator _parent;
+        public TextMeshProUGUI _text;
+        public Image _background;
+        public Color[] _colors;
+    }
+    public SuccessAssets _successAssets;
 
   
     private void Awake()
@@ -392,17 +410,28 @@ public class MainGameplayScript : MonoBehaviour
 
         if (_shopAssets._onShop)
         {
-            if (Input.GetAxisRaw("Horizontal") < 0)
+            if (Input.GetAxisRaw("Horizontal") < 0 && !_shopAssets._moved)
             {
                 _shopAssets._onOption = 0;
+                _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._next);
+                _shopAssets._moved = true;
+
+
             }
-            if (Input.GetAxisRaw("Horizontal") > 0)
+            if (Input.GetAxisRaw("Horizontal") > 0 && !_shopAssets._moved)
             {
                 _shopAssets._onOption = 1;
+                _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._next);
+                _shopAssets._moved = true;
+            }
+
+            if (Input.GetAxisRaw("Horizontal") == 0)
+            {
+                _shopAssets._moved = false;
             }
             if (Input.GetButtonDown("Submit"))
             {
-          
+                _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._chooseElement);
                 _shopAssets._onShop = false;
               
             }
@@ -473,11 +502,12 @@ public class MainGameplayScript : MonoBehaviour
             yield return new WaitForSeconds(0.25f);
             if(_scriptMain._onWorldGlobal == 3)
             {
-             
+  
                 _scriptSlime._slimeAnimator.Play("Fall2");
                 yield return new WaitForSeconds(1);
                 _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -30);
                 _slimeArriveParticle.Play();
+                _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._explosion);
                 _slimeParent.gameObject.SetActive(true);
                 yield return new WaitForSeconds(1);
             }
@@ -487,6 +517,8 @@ public class MainGameplayScript : MonoBehaviour
                 yield return new WaitForSeconds(1);
                 _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -30);
                 _slimeArriveParticle.Play();
+                _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._explosion);
+
                 _slimeParent.gameObject.SetActive(true);
             }
          
@@ -561,6 +593,11 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator IntroStageNumerator()
     {
+        _scriptMain._scriptMusic._audioBGM.clip = _scriptMain._scriptMusic._allThemes[_scriptMain._onWorldGlobal + 1];
+        _scriptMain._scriptMusic._audioBGM.Play();
+        _scriptSlime._fallingSlimeParticle.Play();
+        _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
+        _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
         _shadow.gameObject.SetActive(false);
         _scriptMain._scriptSFX._windSetVolume = 1;
         for (int i = 0; i < _allStageAssets.Length; i++)
@@ -580,25 +617,11 @@ public class MainGameplayScript : MonoBehaviour
         _slimeFalling = true;
         _scriptEvents._winRound = true;
         _firstStage = true;
+
         StartCoroutine(ExitNumerator());
 
     }
 
-
-
-    //public void LoseHeartVoid()
-    //{
-    
-    //    for(int i = 0; i < _heartAssets._totalHearts.Length; i++)
-    //    {
-    //        _heartAssets._totalHearts[i].color = _heartAssets._heartColors[1];
-    //    }
-
-    //    for (int i = 0; i < _totalLifes; i++)
-    //    {
-    //        _heartAssets._totalHearts[i].color = _heartAssets._heartColors[0];
-    //    }
-    //}
 
     public IEnumerator StartsStageChest()
     {
@@ -623,6 +646,7 @@ public class MainGameplayScript : MonoBehaviour
                 yield return new WaitForSeconds(1);
                 _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -30);
                 _slimeArriveParticle.Play();
+                _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._explosion);
                 _slimeParent.gameObject.SetActive(true);
                 _scriptSlime._slimeAnimator.Play("Fall2");
                 yield return new WaitForSeconds(1);
@@ -633,6 +657,7 @@ public class MainGameplayScript : MonoBehaviour
                 yield return new WaitForSeconds(1);
                 _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -30);
                 _slimeArriveParticle.Play();
+                _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._explosion);
                 _slimeParent.gameObject.SetActive(true);
                 _scriptSlime._slimeAnimator.Play("Fall1");
             }
@@ -733,6 +758,7 @@ public class MainGameplayScript : MonoBehaviour
        
         yield return new WaitForSeconds(2);
         _shopAssets._parent.SetBool("ShopIn", true);
+        _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._shopEnter);
         yield return new WaitForSeconds(1);
         _shopAssets._onShop = true;
         while (_shopAssets._onShop)
@@ -776,8 +802,14 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator LoseLifeNumerator()
     {
+
+        _scriptMain._currencyAnimator.SetTrigger("LoseLife");
+        _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._slimeDead);
+        yield return new WaitForSeconds(0.2f);
+        _scriptMain._scriptSFX._fireSetVolume = 0;
         _scriptMain._saveLoadValues._healthCoins--;
-        for(int i = 0; i < 4M; i++)
+        //_loseLifeParticle.Play();
+        for (int i = 0; i < 4M; i++)
         {
             _scriptRythm._elementsInfo[i]._parent.SetActive(false);
         }
@@ -848,7 +880,7 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator GameOverNumerator()
     {
-        _scriptMain._windParticle.Stop();
+        _windParticle.Stop();
         _scriptMain._gameOverAssets._onGameOver = true;
         _scriptMain._gameOverAssets._parent.GetComponent<Animator>().SetBool("GameOver", true);
         Debug.Log("GAME OVER");
@@ -883,15 +915,17 @@ public class MainGameplayScript : MonoBehaviour
        
             _scriptSlime._slimeAnimator.SetBool("Moving", true);
         }
+        _scriptSlime._fallingSlimeParticle.Stop();
         _Cascade[0].Stop();
 
         yield return new WaitForSeconds(0.5f);
         _scriptMain._bordersAnimator.SetBool("BorderOut", false);
         _scriptEvents._rainParticle.Stop();
         _scriptMain._scriptSFX._rainSetVolume = 0;
-        _scriptMain._windParticle.GetComponent<ForceField2D>().fuerza = 5;
-        _scriptMain._windParticle.Stop();
+        //_scriptMain._windParticle.GetComponent<ForceField2D>().fuerza = 5;
+        _windParticle.Stop();
         _snowParticle.Stop();
+        _scriptMain._scriptSFX._fireSetVolume = 0;
         _scriptSlime._slimeAnimator.SetBool("Scared", false);
         _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
@@ -906,6 +940,8 @@ public class MainGameplayScript : MonoBehaviour
         _bossAnimator.gameObject.SetActive(false);
         _frontWindParticle.Stop();
         _bossAnimator.SetBool("Damaged", false);
+        _bossAnimator.SetBool("Frozen", false);
+        _Cascade[0].gameObject.SetActive(false);
         Destroy(_scriptEvents._currentEventPrefab);
         _scriptMain._pauseAssets._hintAvailable = false;
         _scriptMain._pauseAssets._hintBought = false;

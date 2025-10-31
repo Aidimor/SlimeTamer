@@ -19,6 +19,7 @@ public class RythmFusionScript : MonoBehaviour
         public Image _imageColor;
         public ParticleSystem _releaseParticles;
         public TextMeshProUGUI _elementText;
+        public Image _blocker;
         [Header("Idioma")]
         public string key;
     }
@@ -31,7 +32,7 @@ public class RythmFusionScript : MonoBehaviour
     public Vector2[] _positions;
 
     [Header("Rythm Settings")]
-    public float _bpm = 120f;
+    public float _bpm;
     public int _subdivisions = 1;
     [HideInInspector] public float _timerInterval;
 
@@ -59,21 +60,21 @@ public class RythmFusionScript : MonoBehaviour
     void Start()
     {
         UpdateWorldTexts();
-        switch (_scriptMain._scriptMain._onWorldGlobal)
-        {
-            case 0:
-                _bpm = 100;
-                break;
-            case 1:
-                _bpm = 120;
-                break;
-            case 2:
-                _bpm = 120;
-                break;
-            case 3:
-                _bpm = 150;
-                break;
-        }
+        //switch (_scriptMain._scriptMain._onWorldGlobal)
+        //{
+        //    case 0:
+        //        _bpm = 100;
+        //        break;
+        //    case 1:
+        //        _bpm = 120;
+        //        break;
+        //    case 2:
+        //        _bpm = 120;
+        //        break;
+        //    case 3:
+        //        _bpm = 150;
+        //        break;
+        //}
 
         for(int i = 0; i < 4; i++)
         {
@@ -98,7 +99,7 @@ public class RythmFusionScript : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Submit") && !_buttonPressed && _canPress)
+        if (Input.GetButtonDown("Submit") && !_buttonPressed && _canPress && !_scriptMain._scriptMain._pauseAssets._pause)
         {
             switch (_onElement)
             {
@@ -149,6 +150,9 @@ public class RythmFusionScript : MonoBehaviour
                 break;
         }
 
+        //_scriptMain._spaceParent.gameObject.SetActive(true);
+        _timerInterval = (60f / _bpm) / Mathf.Max(1, _subdivisions);
+
     }
 
     public void ShuffleElements()
@@ -188,6 +192,7 @@ public class RythmFusionScript : MonoBehaviour
     // =====================================================
     public IEnumerator RythmNumerator()
     {
+
         _elementChoosed = false;
         _buttonPressed = false;
 
@@ -202,19 +207,27 @@ public class RythmFusionScript : MonoBehaviour
         yield return new WaitForSeconds(1);
         ShuffleElements();
         //_scriptMain._spaceParent.gameObject.SetActive(true);
-        _timerInterval = (60f / _bpm) / Mathf.Max(1, _subdivisions);
+        //_timerInterval = (60f / _bpm) / Mathf.Max(1, _subdivisions);
 
         int eventStance = 0;
         bool endLoopAfterSelection = false;
-
+        _scriptMain._scriptMain._scriptMusic.PlayMusic();
         while (!endLoopAfterSelection)
         {
+
+
             // Esperar si el juego está en pausa
             while (MainController.Instance != null && MainController.Instance._pauseAssets._pause)
                 yield return null;
 
             for (int step = 0; step < _order.Count; step++)
             {
+
+                if (step == 0)
+                {
+                    for (int i = 0; i < 4; i++)
+                        _elementsInfo[i]._blocker.gameObject.SetActive(false);
+                }
                 // Esperar si el juego está en pausa (por seguridad)
                 while (MainController.Instance != null && MainController.Instance._pauseAssets._pause)
                     yield return null;
@@ -267,35 +280,6 @@ public class RythmFusionScript : MonoBehaviour
             switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType)
             {
                 case GameEvent.EventType.Fire:
-//                    if (!_scriptMain._scriptEvents._winRound)
-//                    {
-
-//                        switch (_OnPhase)
-//                        {
-//                            case 0:
-//                                _scriptMain._scriptEvents._currentEventPrefab
-//               .GetComponent<FireEventScript>()._fireParticle[0].Play();
-//                                break;
-//                            case 2:
-//                                _scriptMain._scriptEvents._currentEventPrefab
-//.GetComponent<FireEventScript>()._fireParticle[1].Play();
-//                                break;
-//                            case 4:
-//                                _scriptSlime._slimeAnimator.SetBool("Scared", true);
-//                                _scriptMain._scriptEvents._currentEventPrefab
-//.GetComponent<FireEventScript>()._fireParticle[2].Play();
-//                                break;
-//                            case 6:
-//                                _scriptMain._scriptEvents._currentEventPrefab
-//.GetComponent<FireEventScript>()._fireParticle[4].Play();
-//                                if (!_scriptMain._dead)
-//                                {
-//                                    StartCoroutine(_scriptMain.LoseLifeNumerator());
-//                                    endLoopAfterSelection = true;
-//                                }
-//                                break;
-//                        }
-//                    }
                     break;
                 case GameEvent.EventType.BossFight1:
                 case GameEvent.EventType.BossFight2:
@@ -374,22 +358,28 @@ public class RythmFusionScript : MonoBehaviour
                         switch (_OnPhase)
                         {
                             case 0:
+                                _scriptMain._scriptMain._scriptSFX._fireSetVolume = 1;
                                 _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._fire[0].Play();
+                                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._flameOn);
                                 break;
                             case 1:
                                 _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._fire[1].Play();
+                                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._flameOn);
                                 break;
                             case 3:
                 
                                 _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._fire[2].Play();
+                                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._flameOn);
                                 break;
                             case 5:
                                 _scriptSlime._slimeAnimator.SetBool("Scared", true);
                                 _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._fire[3].Play();
-                     
+                                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._flameOn);
+
                                 break;
                             case 7:
                                 _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._fire[4].Play();
+                                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._flameOn);
                                 if (!_scriptMain._dead)
                                 {
                                     StartCoroutine(_scriptMain.LoseLifeNumerator());
@@ -419,7 +409,7 @@ public class RythmFusionScript : MonoBehaviour
         for (int i = 0; i < 4; i++)
         {
             _elementsInfo[i]._parent.SetActive(false);
-            _elementsInfo[i]._imageColor.color = _halfColors[0];
+            _elementsInfo[i]._imageColor.color = _halfColors[0];     
         }
       
     }
@@ -429,6 +419,7 @@ public class RythmFusionScript : MonoBehaviour
     public void ChooseElementVoid()
     {
         _buttonPressed = true;
+        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._chooseElement);
         _movingSelector.Play("MovingSelectorOn");
         _scriptSlime._slimeRawImage.transform.localScale = new Vector2(4f, 4f);
         _elementsInfo[_onElement]._elementOrb.transform.localScale = new Vector2(2f, 2f);
@@ -437,6 +428,11 @@ public class RythmFusionScript : MonoBehaviour
         _chooseSound.Play();
         _elementsSelection.Add(_onElement);
         _scriptSlime._materialColors[_elementsSelection.Count] = _halfColors[_onElement];
+
+        for (int i = 0; i < 4; i++)
+        {
+            _elementsInfo[i]._blocker.gameObject.SetActive(true);
+        }
         if (_elementsSelection.Count > 1)
             _scriptMain._scriptEvents._winRound = true;
     }
