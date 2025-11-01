@@ -142,6 +142,7 @@ public class MainGameplayScript : MonoBehaviour
     public Color[] _cascadeColor;
     public ParticleSystem[] _Cascade;
     public bool _cascadeFrozen;
+    public GameObject[] _cascadeWorlds;
 
     public ParticleSystem[] _proyectileCharge;
     public ParticleSystem _AttackEnemy;
@@ -167,6 +168,16 @@ public class MainGameplayScript : MonoBehaviour
         public Color[] _colors;
     }
     public SuccessAssets _successAssets;
+
+    [System.Serializable]
+    public class WorldNameAssets
+    {
+        public Animator _parent;
+        public TextMeshProUGUI _worldNameText;
+        public Color[] _backgroundColor;
+        public Image _background;
+    }
+    public WorldNameAssets _worldNameAssets;
 
   
     private void Awake()
@@ -474,7 +485,7 @@ public class MainGameplayScript : MonoBehaviour
     {
         _scriptRythm._OnPhase = 0;
 
-        _scriptMain._pauseAssets._hintText.text = GameInitScript.Instance.GetText("hint" + _onEventID.ToString("f0"));
+        _scriptMain._pauseAssets._hintText.text = GameInitScript.Instance.GetText("hint" + _GamesList[_scriptEvents._onEvent].ToString("f0"));
 
         _slimeParent.gameObject.SetActive(false);
         //LoseHeartVoid();
@@ -608,7 +619,11 @@ public class MainGameplayScript : MonoBehaviour
         //_scriptEvents._onEvent++;
         _fallParticle.gameObject.SetActive(true);
         _scriptMain._bordersAnimator.SetBool("BorderOut", true);
+        _worldNameAssets._worldNameText.text = GameInitScript.Instance.GetText("WorldName" + (_scriptMain._onWorldGlobal + 1).ToString("F0"));
+        _worldNameAssets._background.color = _worldNameAssets._backgroundColor[_scriptMain._onWorldGlobal];
         yield return new WaitForSeconds(2);
+        _worldNameAssets._parent.SetTrigger("WorldNameIn");
+        yield return new WaitForSeconds(1);
         //_bossAnimator.SetTrigger("Flies");
         yield return new WaitForSeconds(2);
         _slimeFalling = true;
@@ -684,14 +699,15 @@ public class MainGameplayScript : MonoBehaviour
                 switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._chestItems[0])
                 {
                     case GameEvent.ChestItems.Water:
-                        _dialogeAssets._dialogeSize = new Vector2(1, 3);
+                        _dialogeAssets._dialogeSize = new Vector2(1, 4);
                         break;
                     case GameEvent.ChestItems.Earth:
-                        _dialogeAssets._dialogeSize = new Vector2(3, 6);
+                        _dialogeAssets._dialogeSize = new Vector2(4, 6);
                         break;
                     case GameEvent.ChestItems.Air:
+                        _dialogeAssets._dialogeSize = new Vector2(6, 9);
                         break;
-          
+    
                     case GameEvent.ChestItems.Fire:
                         break;
                 }
@@ -792,9 +808,9 @@ public class MainGameplayScript : MonoBehaviour
         _darkenerChanging = false;
 
 
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(3);
 
-        yield return new WaitForSeconds(1);
+ 
 
         _scriptEvents._winRound = true;
        _teleportScript.TeleportVoid();
@@ -881,6 +897,7 @@ public class MainGameplayScript : MonoBehaviour
     public IEnumerator ExitPauseNumerator()
     {
         _scriptMain._bordersAnimator.SetBool("BorderOut", false);
+        _scriptMain._cinematicBorders.SetBool("FadeIn", false);
         _windParticle.Stop();
         _scriptMain._scriptSFX._strongWindSetVolume = 0;
         _scriptMain._scriptSFX._windSetVolume = 0;
@@ -892,8 +909,8 @@ public class MainGameplayScript : MonoBehaviour
         //_scriptMain._gameOverAssets._onGameOver = false;
         //_scriptMain._gameOverAssets._parent.GetComponent<Animator>().SetBool("GameOver", false);
         yield return new WaitForSeconds(2);
-  
-                _scriptMain._scriptMusic.PlayMusic(0);
+        _scriptMain._scriptInit.SaveGame();
+        _scriptMain._scriptMusic.PlayMusic(0);
                 _scriptMain._saveLoadValues._healthCoins = 1;
                 _scriptMain.LoadSceneByName("IntroScene");
              
@@ -927,6 +944,7 @@ public class MainGameplayScript : MonoBehaviour
         switch (_scriptMain._gameOverAssets._onPos)
         {
             case 0:
+                _scriptMain._scriptInit.SaveGame();
                 _scriptMain._scriptMusic.PlayMusic(0);
                 _scriptMain._saveLoadValues._healthCoins = 1;
                 _scriptMain.LoadSceneByName("IntroScene");

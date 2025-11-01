@@ -32,6 +32,7 @@ public class SFXscript : MonoBehaviour
     public AudioClip _bossAttack;
     public AudioClip _frozen;
     public AudioClip _cut;
+    public AudioClip _newElement;
     public AudioClip _boosDamaged;
     public AudioSource _windBFX;
     public float _windSetVolume;

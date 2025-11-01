@@ -51,6 +51,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _scriptMain: {fileID: 0}
+  _worlds:
+  - {fileID: 7637001699385195700}
+  - {fileID: 6048638428747918727}
+  - {fileID: 554470078570791205}
+  - {fileID: 2900963902012194921}
 --- !u!1 &554470078570791205
 GameObject:
   m_ObjectHideFlags: 0
@@ -367,7 +372,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2382703174990504203
 RectTransform:
   m_ObjectHideFlags: 0

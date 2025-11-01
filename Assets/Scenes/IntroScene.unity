@@ -17347,11 +17347,12 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 8300000, guid: da1e06c401dcba74f93321c5c06b0da5, type: 3}
   _saveLoadValues:
-    _worldsUnlocked: 01010101
-    _elementsUnlocked: 01010101
-    _healthCoins: 1
-    _hintCoins: 1
+    _worldsUnlocked: 00000000
+    _elementsUnlocked: 00000000
+    _healthCoins: 0
+    _hintCoins: 0
     _slimeUnlocked: 00000000000000
+    _finalWorldUnlocked: 0
   _pauseAssets:
     _parent: {fileID: 1523089174}
     _options:
@@ -65429,6 +65430,7 @@ MonoBehaviour:
   _bossAttack: {fileID: 8300000, guid: 0aa4eb36d137e1c47b9f57509965c299, type: 3}
   _frozen: {fileID: 8300000, guid: 1248b925a6ed1e34aab7fdc51e12af6d, type: 3}
   _cut: {fileID: 8300000, guid: 170c39f3dadfde64d8d663a1df865407, type: 3}
+  _newElement: {fileID: 8300000, guid: 77a90a2db0b2409448ba3316358510ef, type: 3}
   _boosDamaged: {fileID: 8300000, guid: 173e217cfdaf1954197813086373e260, type: 3}
   _windBFX: {fileID: 627268185}
   _windSetVolume: 0

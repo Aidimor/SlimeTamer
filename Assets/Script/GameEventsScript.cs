@@ -53,33 +53,48 @@ public class GameEventsScript : MonoBehaviour
         switch (_scriptMain._scriptMain._onWorldGlobal)
         {
             case 0:
+                switch (_scriptMain._scriptMain._saveLoadValues._finalWorldUnlocked)
+                {
+                    case false:
+                        _scriptMain._GamesList.Add(0);
+                        _scriptMain._GamesList.Add(11);
+                        _scriptMain._GamesList.Add(10);
+                        _scriptMain._GamesList.Add(6);
+                        _scriptMain._GamesList.Add(3);
+                        _scriptMain._GamesList.Add(1);
+                        _scriptMain._GamesList.Add(13);
+                        break;
+                    case true:
+                        _scriptMain._GamesList.Add(0);
+                        List<int> posiblesNumeros0 = new List<int> { 1, 4, 5, 7, 15, 17, 18 };
+                        for (int i = 0; i < 10; i++)
+                        {
+                            int randomIndex = Random.Range(0, posiblesNumeros0.Count);
+                            _scriptMain._GamesList.Add(posiblesNumeros0[randomIndex]);
+                        }
+                        _scriptMain._GamesList.Add(16);
+                        break;
+                }
 
-                _scriptMain._GamesList.Add(0);
-                _scriptMain._GamesList.Add(11);
-                _scriptMain._GamesList.Add(10);
-                _scriptMain._GamesList.Add(6);
-                _scriptMain._GamesList.Add(3);
-                _scriptMain._GamesList.Add(1);
-                _scriptMain._GamesList.Add(13);
                 StartCoroutine(StartLevelNumerator()); 
                 break;
-            case 1:
-          
+            case 1:        
          
                 _scriptMain._GamesList.Add(0);
                 _scriptMain._GamesList.Add(1);
-                _scriptMain._GamesList.Add(2);
+             
                 _scriptMain._GamesList.Add(3);
                 _scriptMain._GamesList.Add(4);
                 _scriptMain._GamesList.Add(5);
                 _scriptMain._GamesList.Add(6);
                 _scriptMain._GamesList.Add(7);
-                for (int i = 0; i < _scriptMain._GamesList.Count; i++)
+                List<int> posiblesNumeros1 = new List<int> { 1, 3, 4, 5, 6, 7, 8, 9, 10, 15, 17, 18 };
+                for (int i = 0; i < 6; i++)
                 {
-                    var randomEvent = GetRandomEvent();
-                    // Guardamos el índice dentro del array original
-                    _scriptMain._GamesList.Add(System.Array.IndexOf(_specialEvents, randomEvent));
+                    int randomIndex = Random.Range(0, posiblesNumeros1.Count);
+                    _scriptMain._GamesList.Add(posiblesNumeros1[randomIndex]);
                 }
+                _scriptMain._GamesList.Add(2);
                 StartCoroutine(StartLevelNumerator());
 
                 break;
@@ -93,13 +108,14 @@ public class GameEventsScript : MonoBehaviour
                 _scriptMain._GamesList.Add(19);
                 _scriptMain._GamesList.Add(4);
                 _scriptMain._GamesList.Add(8);
+                _scriptMain._GamesList.Add(3);
                 _scriptMain._GamesList.Add(15);
                 // Aleatorios de un conjunto
-                List<int> posiblesNumeros = new List<int> { 1, 4, 7, 8, 9, 15 };
+                List<int> posiblesNumeros3 = new List<int> { 1, 3, 4, 7, 8, 9, 15 };
                 for (int i = 0; i < 4; i++)
                 {
-                    int randomIndex = Random.Range(0, posiblesNumeros.Count);
-                    _scriptMain._GamesList.Add(posiblesNumeros[randomIndex]);
+                    int randomIndex = Random.Range(0, posiblesNumeros3.Count);
+                    _scriptMain._GamesList.Add(posiblesNumeros3[randomIndex]);
                 }
                 _scriptMain._GamesList.Add(2);
                 StartCoroutine(StartLevelNumerator());
@@ -111,10 +127,14 @@ public class GameEventsScript : MonoBehaviour
                 _scriptMain._GamesList.Add(1);
                 _scriptMain._GamesList.Add(3);
                 _scriptMain._GamesList.Add(18);
+                _scriptMain._GamesList.Add(1);
                 _scriptMain._GamesList.Add(12);
                 _scriptMain._GamesList.Add(9);
+                _scriptMain._GamesList.Add(3);
                 _scriptMain._GamesList.Add(1);
                 _scriptMain._GamesList.Add(10);
+                _scriptMain._GamesList.Add(3);
+                _scriptMain._GamesList.Add(1);
                 _scriptMain._GamesList.Add(7);
                 _scriptMain._GamesList.Add(2);
                 StartCoroutine(StartLevelNumerator());
@@ -279,14 +299,18 @@ public class GameEventsScript : MonoBehaviour
                             _scriptMain._scriptMain._scriptMusic.PlayMusic(5);
                             _scriptMain._onEventID = 10;
                             evento.GetComponent<BossFightsScript>().StartBossVoid();
-                            //StartCoroutine(evento.GetComponent<BossFightsScript>().StartBossNumerator());
-                            //StartCoroutine(StartBossNumerator());
+              
                             break;
                         case GameEvent.EventType.BossFight1:
                             _scriptMain._scriptMain._scriptMusic.PlayMusic(5);
                             _scriptMain._onEventID = 11;
                             _scriptMain._Cascade[0].gameObject.SetActive(true);
                             _scriptMain._Cascade[0].Play();
+                            for(int i = 0; i < 4; i++)
+                            {
+                                _scriptMain._cascadeWorlds[i].SetActive(false);
+                            }
+                            _scriptMain._cascadeWorlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                             evento.GetComponent<BossFightsScript>().StartBossVoid();
                             break;
                         case GameEvent.EventType.BossFight2:
@@ -340,6 +364,7 @@ public class GameEventsScript : MonoBehaviour
                     StartCoroutine(_scriptMain.IntroStageNumerator());
                     break;
                 case GameEvent.EventClassification.Shop:
+                    evento.GetComponent<ShopScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                     //evento.GetComponent<QuestionaryScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                     _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
                     //_scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(_scriptMain._firstStage);
@@ -351,6 +376,7 @@ public class GameEventsScript : MonoBehaviour
                     StartCoroutine(_scriptMain.StartsShopNumerator());
                     break;
                 case GameEvent.EventClassification.Teleporter:
+                    evento.GetComponent<TeleporterScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                     _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-100, -200);
                     yield return new WaitForSeconds(1);
                     _scriptMain._scriptSlime._slimeAnimator.SetBool("Moving", false);
@@ -362,24 +388,7 @@ public class GameEventsScript : MonoBehaviour
             }
         }
 
-        //yield return new WaitForSeconds(1);
 
-        //switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._eventClassification)
-        //{
-        //    case GameEvent.EventClassification.Normal:
-        //        // Referencia al AudioSource
-        //        //AudioSource bgm = _scriptMain._scriptMain._bgmAS;
-        //        //Debug.Log(_specialEvents[_scriptMain._GamesList[_onEvent]]._eventType);
-        //        //// Si no está reproduciendo, entonces asigna el clip y reproduce
-        //        //if (!bgm.isPlaying)
-        //        //{
-        //        //    bgm.clip = _scriptMain._scriptMain._allBGM[_scriptMain._scriptMain._onWorldGlobal];
-        //        //    bgm.Play();
-        //        //}
-        //        break;
-
-
-        //}
     }
 
     public IEnumerator RestartNumerator()
@@ -412,61 +421,12 @@ public class GameEventsScript : MonoBehaviour
         _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
 
         yield return new WaitForSeconds(2);
-        //_scriptMain._scriptSlime._WindBlocker.gameObject.SetActive(false);
+  
         Destroy(_scriptMain._scriptEvents._currentEventPrefab);
-        //_scriptMain._scriptEvents._onEvent++;
-        StartCoroutine(_scriptMain.ExitNumerator());
-       // StartCoroutine(_scriptMain.StartStageNumerator());
 
-        //_scriptFusion.ActivatePanel();
+        StartCoroutine(_scriptMain.ExitNumerator());
+   
     }
 
-    //public IEnumerator StartBossNumerator()
-    //{
-
-    //    yield return new WaitForSeconds(1);
-    //    _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
-
-    //    yield return new WaitForSeconds(2);  
-
-    //    _scriptMain._bossAnimator.transform.gameObject.SetActive(true);
-    //    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._roar);
-    //    _scriptMain._bossAnimator.SetBool("Idle", true);
-    //    _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
-    //    _scriptMain._scriptSlime._alarmParticle.Play();
-    //    yield return new WaitForSeconds(2);
-    //    _scriptMain._scriptMain._cinematicBorders.SetBool("FadeIn", true);
-    //    yield return new WaitForSeconds(2f);
-    //    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._whip);
-
-
-    //    _scriptMain._bossAnimator.SetTrigger("Attack");
-    //    _scriptMain._flyingSlimeParticles[0].Play();
-    //    yield return new WaitForSeconds(0.5f);
-    //    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._scream);
-    //    yield return new WaitForSeconds(1.5f);
-
-    //    _scriptMain._flyingSlimeParticles[1].Play();
-    //    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._ding);
-    //    yield return new WaitForSeconds(2);
-    //    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
-    //    _scriptMain._scriptMain._introSpecial = true;
-
-    //    _scriptMain._scriptMain._saveLoadValues._worldsUnlocked[0] = false;
-    //    _scriptMain._scriptMain._saveLoadValues._worldsUnlocked[3] = true;
-
-    //    yield return new WaitForSeconds(1);
-    //    _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
-    //    _scriptMain._scriptMain._onWorldGlobal = 3;
-    //    _scriptMain._bossAnimator.gameObject.SetActive(false);
-    //    //_scriptMain._firstStage = true;
-
-    //    //_scriptMain._scriptMain._scriptInit.SaveGame();
-    //    _scriptMain._scriptMain.SaveProgress();
-
-    //    _scriptMain._scriptMain.LoadSceneByName("IntroScene");
-
-
-    //}
 
 }

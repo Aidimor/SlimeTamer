@@ -40,6 +40,7 @@ public class ChestEventScript : MonoBehaviour
                 _scriptMain._scriptMain._saveLoadValues._elementsUnlocked[3] = true;
                 break;
         }
+        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._newElement);
 
         if (_scriptMain._itemGotPanel._Message != null && !string.IsNullOrEmpty(_scriptMain._itemGotPanel.key))
         {

@@ -27,6 +27,7 @@ public class MainController : MonoBehaviour
         public int _healthCoins;
         public int _hintCoins;
         public bool[] _slimeUnlocked;
+        public bool _finalWorldUnlocked;
     }
     public SaveLoadValues _saveLoadValues;
 
@@ -84,14 +85,16 @@ public class MainController : MonoBehaviour
 
     private void Awake()
     {
-        if (Instance == null) Instance = this;
-        else Destroy(gameObject);
+        if (Instance == null)
+        {
+            Instance = this;
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
     }
-
-    //private void Start()
-    //{
-    //    LoadProgressFromSDK();
-    //}
 
     public void LoadSceneByName(string sceneName) => SceneManager.LoadScene(sceneName);
 
@@ -101,51 +104,41 @@ public class MainController : MonoBehaviour
     public void SetPause()
     {
         Animator pauseAnimator = _pauseAssets._parent?.GetComponent<Animator>();
-
-        // Asegurar que el animador de pausa use tiempo no escalado
         if (pauseAnimator != null)
             pauseAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
 
         if (_pauseAssets._hintAvailable && _saveLoadValues._hintCoins > 0)
-        {
             _pauseAssets._optionsText[1].color = Color.white;
-        }
         else
-        {
             _pauseAssets._optionsText[1].color = Color.gray;
-        }
 
         if (!_pauseAssets._pause)
         {
-            // Pausar el juego
+            // Pausar
             Time.timeScale = 0f;
             _pauseAssets._pause = true;
             pauseAnimator?.SetBool("PauseIn", true);
 
+            for (int i = 0; i < _pauseAssets._allSlimeText.Length; i++)
+                _pauseAssets._allSlimeText[i].gameObject.SetActive(false);
 
             for (int i = 0; i < _pauseAssets._allSlimeText.Length; i++)
             {
-             
-                    _pauseAssets._allSlimeText[i].gameObject.SetActive(false);
-               
-            }
-            for (int i = 0; i < _pauseAssets._allSlimeText.Length; i++)
-            {
-                if (_saveLoadValues._slimeUnlocked[i + 1])
+                if (_saveLoadValues._slimeUnlocked != null && i + 1 < _saveLoadValues._slimeUnlocked.Length)
                 {
-                    _pauseAssets._allSlimeText[i].gameObject.SetActive(true);
+                    if (_saveLoadValues._slimeUnlocked[i + 1])
+                        _pauseAssets._allSlimeText[i].gameObject.SetActive(true);
                 }
             }
         }
         else
         {
-            // Reanudar el juego
+            // Reanudar
             Time.timeScale = 1f;
             _pauseAssets._pause = false;
             pauseAnimator?.SetBool("PauseIn", false);
         }
     }
-
 
     // ---------------------------
     // GAME OVER
@@ -173,23 +166,22 @@ public class MainController : MonoBehaviour
     // ---------------------------
     public void SaveProgress()
     {
-        if (_scriptInit == null) { Debug.LogWarning("⚠️ GameInitScript no asignado"); return; }
+        if (_scriptInit == null)
+        {
+            Debug.LogWarning("⚠️ GameInitScript no asignado");
+            return;
+        }
+
         _scriptInit.SaveGame();
         Debug.Log("💾 Guardado solicitado desde MainController");
     }
 
     public void Update()
     {
-        _currencyAssets[0]._quantityText.text = _saveLoadValues._healthCoins.ToString();
-        _currencyAssets[1]._quantityText.text = _saveLoadValues._hintCoins.ToString();
+        if (_currencyAssets != null && _currencyAssets.Length >= 2)
+        {
+            _currencyAssets[0]._quantityText.text = _saveLoadValues._healthCoins.ToString();
+            _currencyAssets[1]._quantityText.text = _saveLoadValues._hintCoins.ToString();
+        }
     }
-
-    // ---------------------------
-    // CARGA
-    // ---------------------------
-    //public void LoadProgressFromSDK()
-    //{
-    //    if (_scriptInit == null) { Debug.LogWarning("⚠️ GameInitScript no asignado"); return; }
-    //    _scriptInit.LoadState();
-    //}
 }
