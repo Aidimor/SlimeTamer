@@ -261,6 +261,7 @@ public class MainGameplayScript : MonoBehaviour
             // 🔸 Movimiento a la izquierda
             if (h < 0 && _scriptMain._pauseAssets._onPos > 0 && !_scriptMain._pauseAssets._moved)
             {
+                _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._next);
                 _scriptMain._pauseAssets._onPos--;
                 _scriptMain._pauseAssets._moved = true;
             }
@@ -268,6 +269,7 @@ public class MainGameplayScript : MonoBehaviour
             // 🔸 Movimiento a la derecha
             if (h > 0 && _scriptMain._pauseAssets._onPos < _scriptMain._pauseAssets._options.Length - 1 && !_scriptMain._pauseAssets._moved)
             {
+                _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._next);
                 _scriptMain._pauseAssets._onPos++;
                 _scriptMain._pauseAssets._moved = true;
             }
@@ -288,21 +290,28 @@ public class MainGameplayScript : MonoBehaviour
             // 🔸 Confirmar selección
             if (Input.GetButtonDown("Submit"))
             {
+   
                 switch (_scriptMain._pauseAssets._onPos)
                 {
                     case 0:
+                        _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._chooseElement);
                         _scriptMain.SetPause(); // Reanudar
                         break;
                     case 1:
-                        if (!_scriptMain._pauseAssets._hintBought && _scriptMain._pauseAssets._hintAvailable)
+                        if (!_scriptMain._pauseAssets._hintBought && _scriptMain._pauseAssets._hintAvailable && _scriptMain._saveLoadValues._hintCoins > 0)
                         {
+                            _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._chooseElement);
                             HintVoid();
                         }
      
                         // Otra acción (reiniciar, menú, etc.)
                         break;
                     case 2:
-                        _scriptMain.SetPause(); // Salir o continuar
+                        _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._chooseElement);
+                        _scriptMain.SetPause();
+                        StartCoroutine(ExitPauseNumerator());
+
+                       // Salir o continuar
                         break;
                 }
             }
@@ -318,28 +327,16 @@ public class MainGameplayScript : MonoBehaviour
         // 🔹 Actualizaciones de UI de pausa (si está pausado)v
         if (_scriptMain._gameOverAssets._onGameOver || !_scriptMain._pauseAssets._pause)
         {
-            float h = Input.GetAxisRaw("Vertical");
-            if (h < 0) _scriptMain._gameOverAssets._onPos = 0;
-            if (h > 0) _scriptMain._gameOverAssets._onPos = 1;
+            //float h = Input.GetAxisRaw("Vertical");
+            //if (h < 0) _scriptMain._gameOverAssets._onPos = 0;
+            //if (h > 0) _scriptMain._gameOverAssets._onPos = 1;
 
             // Mover puntero del menú de pausa
             _scriptMain._gameOverAssets._pointer.GetComponent<RectTransform>().anchoredPosition =
-                new Vector2(_scriptMain._gameOverAssets._options[_scriptMain._gameOverAssets._onPos].GetComponent<RectTransform>().anchoredPosition.x,
-                _scriptMain._gameOverAssets._options[_scriptMain._gameOverAssets._onPos].GetComponent<RectTransform>().anchoredPosition.y - 30f);
+                new Vector2(_scriptMain._gameOverAssets._options[0].GetComponent<RectTransform>().anchoredPosition.x,
+                _scriptMain._gameOverAssets._options[0].GetComponent<RectTransform>().anchoredPosition.y - 30f);
 
-            if (Input.GetButtonDown("Submit"))
-            {
-                switch (_scriptMain._gameOverAssets._onPos)
-                {
-                    case 0:
-                        //_scriptMain.SetPause();
-                        break;
-                    case 1:
-                        //_scriptMain.SetPause();
-                        break;
-                }
 
-            }
         }
 
         if (_GamesList[_scriptEvents._onEvent] != 11 && _eventOn)
@@ -593,8 +590,8 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator IntroStageNumerator()
     {
-        _scriptMain._scriptMusic._audioBGM.clip = _scriptMain._scriptMusic._allThemes[_scriptMain._onWorldGlobal + 1];
-        _scriptMain._scriptMusic._audioBGM.Play();
+       _scriptMain._scriptMusic.PlayMusic(_scriptMain._onWorldGlobal + 1);
+  
         _scriptSlime._fallingSlimeParticle.Play();
         _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
@@ -625,7 +622,8 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator StartsStageChest()
     {
-
+        _scriptMain._scriptMusic._audioBGM.clip = _scriptMain._scriptMusic._allThemes[_scriptMain._onWorldGlobal + 1];
+        _scriptMain._scriptMusic._audioBGM.Play();
         _dialogeAssets._nextParent.SetActive(false);
         _dialogeAssets._nextCircle.SetActive(false);
         _slimeParent.gameObject.SetActive(false);
@@ -746,7 +744,8 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator StartsShopNumerator()
     {
-
+        _scriptMain._scriptMusic._audioBGM.clip = _scriptMain._scriptMusic._allThemes[_scriptMain._onWorldGlobal + 1];
+        _scriptMain._scriptMusic._audioBGM.Play();
         _dialogeAssets._nextParent.SetActive(false);
         _dialogeAssets._nextCircle.SetActive(false);
         //_slimeParent.gameObject.SetActive(false);
@@ -758,7 +757,7 @@ public class MainGameplayScript : MonoBehaviour
        
         yield return new WaitForSeconds(2);
         _shopAssets._parent.SetBool("ShopIn", true);
-        _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._shopEnter);
+        _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._chooseElement);
         yield return new WaitForSeconds(1);
         _shopAssets._onShop = true;
         while (_shopAssets._onShop)
@@ -784,6 +783,8 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator StartsTeleporterAnimator()
     {
+        _scriptMain._scriptMusic._audioBGM.clip = _scriptMain._scriptMusic._allThemes[_scriptMain._onWorldGlobal + 1];
+        _scriptMain._scriptMusic._audioBGM.Play();
         _scriptEvents._currentEventPrefab.GetComponent<TeleporterScript>()._scriptMain = this.GetComponent<MainGameplayScript>();
         var _teleportScript = _scriptEvents._currentEventPrefab.GetComponent<TeleporterScript>();
         _topOptionsOn = false;
@@ -877,10 +878,41 @@ public class MainGameplayScript : MonoBehaviour
         }
  
     }
+    public IEnumerator ExitPauseNumerator()
+    {
+        _scriptMain._bordersAnimator.SetBool("BorderOut", false);
+        _windParticle.Stop();
+        _scriptMain._scriptSFX._strongWindSetVolume = 0;
+        _scriptMain._scriptSFX._windSetVolume = 0;
+        _scriptMain._scriptSFX._rainSetVolume = 0;
+        _scriptMain._scriptSFX._fireSetVolume = 0;
+        _scriptMain._scriptSFX._chargeAttackVolume = 0;
+
+   
+        //_scriptMain._gameOverAssets._onGameOver = false;
+        //_scriptMain._gameOverAssets._parent.GetComponent<Animator>().SetBool("GameOver", false);
+        yield return new WaitForSeconds(2);
+  
+                _scriptMain._scriptMusic.PlayMusic(0);
+                _scriptMain._saveLoadValues._healthCoins = 1;
+                _scriptMain.LoadSceneByName("IntroScene");
+             
+                //case 1:
+                //    _scriptMain._saveLoadValues._healthCoins++;
+
+                //    StartCoroutine(_scriptEvents.StartStageQuestionary());
+
+                //    break;
+        }    
 
     public IEnumerator GameOverNumerator()
     {
         _windParticle.Stop();
+        _scriptMain._scriptSFX._strongWindSetVolume = 0;
+        _scriptMain._scriptSFX._windSetVolume = 0;
+        _scriptMain._scriptSFX._rainSetVolume = 0;
+        _scriptMain._scriptSFX._fireSetVolume = 0;
+        _scriptMain._scriptSFX._chargeAttackVolume = 0;
         _scriptMain._gameOverAssets._onGameOver = true;
         _scriptMain._gameOverAssets._parent.GetComponent<Animator>().SetBool("GameOver", true);
         Debug.Log("GAME OVER");
@@ -895,15 +927,16 @@ public class MainGameplayScript : MonoBehaviour
         switch (_scriptMain._gameOverAssets._onPos)
         {
             case 0:
-
+                _scriptMain._scriptMusic.PlayMusic(0);
+                _scriptMain._saveLoadValues._healthCoins = 1;
                 _scriptMain.LoadSceneByName("IntroScene");
                 break;
-            case 1:
-                _scriptMain._saveLoadValues._healthCoins++;
+            //case 1:
+            //    _scriptMain._saveLoadValues._healthCoins++;
              
-                StartCoroutine(_scriptEvents.StartStageQuestionary());
+            //    StartCoroutine(_scriptEvents.StartStageQuestionary());
         
-                break;
+            //    break;
         }
     }
 
@@ -921,11 +954,15 @@ public class MainGameplayScript : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         _scriptMain._bordersAnimator.SetBool("BorderOut", false);
         _scriptEvents._rainParticle.Stop();
-        _scriptMain._scriptSFX._rainSetVolume = 0;
+     
         //_scriptMain._windParticle.GetComponent<ForceField2D>().fuerza = 5;
         _windParticle.Stop();
         _snowParticle.Stop();
+        _scriptMain._scriptSFX._strongWindSetVolume = 0;
+        _scriptMain._scriptSFX._windSetVolume = 0;
+        _scriptMain._scriptSFX._rainSetVolume = 0;
         _scriptMain._scriptSFX._fireSetVolume = 0;
+        _scriptMain._scriptSFX._chargeAttackVolume = 0;
         _scriptSlime._slimeAnimator.SetBool("Scared", false);
         _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
@@ -977,7 +1014,7 @@ public class MainGameplayScript : MonoBehaviour
             case false:
         
                 Destroy(_scriptEvents._currentEventPrefab);
-                StartCoroutine(LoseLifeNumerator());
+                //StartCoroutine(LoseLifeNumerator());
                 break;
             case true:
              

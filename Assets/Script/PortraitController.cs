@@ -57,6 +57,7 @@ public class PortraitController : MonoBehaviour
         {
             OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
         }
+
         _scriptMainController._scriptMusic._audioBGM.clip = _scriptMainController._scriptMusic._allThemes[0];
         _scriptMainController._scriptMusic._audioBGM.Play();
         StartCoroutine(UpdateWorldTexts());
@@ -182,12 +183,14 @@ public class PortraitController : MonoBehaviour
                 if (Input.GetAxisRaw("Vertical") < 0 && !_worldPressed && _onWorldPos < _allWorlds.Length - 1)
                
                 {
+                    _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._next);
                     _onWorldPos++;
                     _worldPressed = true;
                 }
 
                 if (Input.GetAxisRaw("Vertical") > 0 && !_worldPressed && _onWorldPos > 0)
                 {
+                    _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._next);
                     _onWorldPos--;
                     _worldPressed = true;
                 }

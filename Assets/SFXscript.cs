@@ -30,8 +30,13 @@ public class SFXscript : MonoBehaviour
     public AudioClip _rockSlimeMoving;
     public AudioClip _stickyMudSound;
     public AudioClip _bossAttack;
+    public AudioClip _frozen;
+    public AudioClip _cut;
+    public AudioClip _boosDamaged;
     public AudioSource _windBFX;
     public float _windSetVolume;
+    public AudioSource _strongWind;
+    public float _strongWindSetVolume;
     public AudioSource _rainBFX;
     public float _rainSetVolume;
     public AudioSource _fireBFX;
@@ -62,6 +67,7 @@ public class SFXscript : MonoBehaviour
         _windBFX.volume = Mathf.Lerp(_windBFX.volume, _windSetVolume, 2 * Time.deltaTime);
         _rainBFX.volume = Mathf.Lerp(_rainBFX.volume, _rainSetVolume, 2 * Time.deltaTime);
         _fireBFX.volume = Mathf.Lerp(_fireBFX.volume, _fireSetVolume, 2 * Time.deltaTime);
+        _strongWind.volume = Mathf.Lerp(_strongWind.volume, _strongWindSetVolume, 2 * Time.deltaTime);
         _chargeAttack.volume = Mathf.Lerp(_chargeAttack.volume, _chargeAttackVolume, 2 * Time.deltaTime);
         _chargeAttack.pitch = Mathf.Lerp(_chargeAttack.pitch, _chargeAttackPitch, 2 * Time.deltaTime);
     }

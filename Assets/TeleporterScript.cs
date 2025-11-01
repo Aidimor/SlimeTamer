@@ -28,7 +28,7 @@ public class TeleporterScript : MonoBehaviour
         _scriptMain._scriptMain._cinematicBorders.SetBool("FadeIn", true);
         yield return new WaitForSeconds(2f);
         _scriptMain._teleportParticle.Play();
-
+        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._slimeArrives);
 
         yield return new WaitForSeconds(2);
         _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);

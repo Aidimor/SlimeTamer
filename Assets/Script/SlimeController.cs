@@ -88,6 +88,7 @@ public class SlimeController : MonoBehaviour
 
         // Cambiar animación
         _slimeAnimator.SetInteger("ID", _slimeType);
+        _scriptMain._scriptMain._saveLoadValues._slimeUnlocked[_slimeType] = true;
 
         // Cambiar color en la instancia del material
         _slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_BaseColor", _slimeAssets[_slimeType]._mainColor);
@@ -226,14 +227,21 @@ public class SlimeController : MonoBehaviour
 
                             _scriptMain._bossAnimator.Play("Frozen");
                             _scriptMain._bossAnimator.SetBool("Frozen", true);
+                            _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._frozen);
                             _scriptMain._proyectileCharge[0].Stop();
                             _scriptMain._proyectileCharge[1].Stop();
                             _scriptMain._proyectileCharge[2].Stop();
+                            _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
+                            _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
                             yield return new WaitForSeconds(2);
                             break;
                         case GameEvent.EventType.BossFight2:
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._events[2].GetComponent<Animator>().SetBool("Cut", true);
+                            _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._cut);
                             yield return new WaitForSeconds(0.5f);
+                            _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._boosDamaged);
+                            _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
+                            _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
                             _scriptMain._proyectileCharge[0].Stop();
                             _scriptMain._proyectileCharge[1].Stop();
                             _scriptMain._proyectileCharge[2].Stop();
@@ -288,7 +296,9 @@ public class SlimeController : MonoBehaviour
                                     break;
                                 case GameEvent.EventType.BossFight1:
                                 case GameEvent.EventType.BossFight2:
-                        
+                                    _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
+                                    _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
+                                    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._bossAttack);
                                     _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
                                     yield return new WaitForSeconds(0.5f);
                                     _scriptMain._bossAnimator.Play("SideFinalAttack");
@@ -315,15 +325,15 @@ public class SlimeController : MonoBehaviour
 
 
                                     _scriptMain._scriptFusion.ActivatePanel();
-                                    if (_scriptMain._scriptMain._saveLoadValues._healthCoins > 1)
-                                    {
-                                        _scriptMain._scriptMain._saveLoadValues._healthCoins--;
+                                    //if (_scriptMain._scriptMain._saveLoadValues._healthCoins > 1)
+                                    //{
+                                    //    _scriptMain._scriptMain._saveLoadValues._healthCoins--;
 
-                                    }
-                                    else
-                                    {
-                                        StartCoroutine(_scriptMain.LoseLifeNumerator());
-                                    }
+                                    //}
+                                    //else
+                                    //{
+                                    //    StartCoroutine(_scriptMain.LoseLifeNumerator());
+                                    //}
 
 
                                     StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());

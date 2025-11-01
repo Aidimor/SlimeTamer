@@ -65,12 +65,15 @@ public class GameEventsScript : MonoBehaviour
                 break;
             case 1:
           
-                _scriptMain._GamesList.Add(11);
-                _scriptMain._GamesList.Add(6);
+         
+                _scriptMain._GamesList.Add(0);
                 _scriptMain._GamesList.Add(1);
+                _scriptMain._GamesList.Add(2);
                 _scriptMain._GamesList.Add(3);
-                _scriptMain._GamesList.Add(18);
-                _scriptMain._GamesList.Add(12);
+                _scriptMain._GamesList.Add(4);
+                _scriptMain._GamesList.Add(5);
+                _scriptMain._GamesList.Add(6);
+                _scriptMain._GamesList.Add(7);
                 for (int i = 0; i < _scriptMain._GamesList.Count; i++)
                 {
                     var randomEvent = GetRandomEvent();
@@ -81,14 +84,24 @@ public class GameEventsScript : MonoBehaviour
 
                 break;
             case 2:
-                _scriptMain._GamesList.Add(11);
+                _scriptMain._GamesList.Add(0);
+                _scriptMain._GamesList.Add(9);
+                _scriptMain._GamesList.Add(1);
+                _scriptMain._GamesList.Add(3);
+          
+                _scriptMain._GamesList.Add(1);
+                _scriptMain._GamesList.Add(19);
+                _scriptMain._GamesList.Add(4);
+                _scriptMain._GamesList.Add(8);
                 _scriptMain._GamesList.Add(15);
-                //for (int i = 0; i < _scriptMain._GamesList.Count; i++)
-                //{
-                //    var randomEvent = GetRandomEvent();
-                //    // Guardamos el índice dentro del array original
-                //    _scriptMain._GamesList.Add(System.Array.IndexOf(_specialEvents, randomEvent));
-                //}
+                // Aleatorios de un conjunto
+                List<int> posiblesNumeros = new List<int> { 1, 4, 7, 8, 9, 15 };
+                for (int i = 0; i < 4; i++)
+                {
+                    int randomIndex = Random.Range(0, posiblesNumeros.Count);
+                    _scriptMain._GamesList.Add(posiblesNumeros[randomIndex]);
+                }
+                _scriptMain._GamesList.Add(2);
                 StartCoroutine(StartLevelNumerator());
 
                 break;
@@ -103,6 +116,7 @@ public class GameEventsScript : MonoBehaviour
                 _scriptMain._GamesList.Add(1);
                 _scriptMain._GamesList.Add(10);
                 _scriptMain._GamesList.Add(7);
+                _scriptMain._GamesList.Add(2);
                 StartCoroutine(StartLevelNumerator());
 
                 break;
@@ -208,73 +222,89 @@ public class GameEventsScript : MonoBehaviour
                     switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._eventType)
                     {
                         case GameEvent.EventType.Bridge:
+                            _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                             evento.GetComponent<BridgeEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                             _scriptMain._onEventID = 1;                          
                             break;
                         case GameEvent.EventType.Lagoon:
+                            _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                             _scriptMain._onEventID = 2;
                             evento.GetComponent<WaterFallEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                             evento.GetComponent<WaterFallEvent>()._scriptMain = _scriptMain;
                             break;
                         case GameEvent.EventType.Well:
+                            _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                             _scriptMain._onEventID = 3;
                             evento.GetComponent<WaterFillEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                   
 
                             break;
                         case GameEvent.EventType.StrongAir:
-                            _scriptMain._scriptMain._scriptSFX._windSetVolume = 1;
+                            _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
+                            _scriptMain._scriptMain._scriptSFX._strongWindSetVolume = 0.25f;
                             //_scriptMain._scriptSlime._slimeAnimator.SetBool("WindPush", true);
                             _scriptMain._onEventID = 4;
                             evento.GetComponent<StrongAirEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);                 
                             _scriptMain._windParticle.Play();
                             break;
-                        case GameEvent.EventType.FallingBridge: _scriptMain._onEventID = 5; evento.GetComponent<SandCutEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); break;
-                        case GameEvent.EventType.Gears: 
+                        case GameEvent.EventType.FallingBridge:
+                            _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1); _scriptMain._onEventID = 5; evento.GetComponent<SandCutEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); break;
+                        case GameEvent.EventType.Gears:
+                            _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                             _scriptMain._onEventID = 6;
                             evento.GetComponent<GearsPrefabEventScript>()._stainsAnimator.GetComponent<SpecialAnimatorEvents>()._scriptMainController = _scriptMain._scriptMain;
                             evento.GetComponent<GearsPrefabEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); 
                             break;
                         case GameEvent.EventType.FightWasp:
+                            _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                             _enemiesGameObjects[0].gameObject.SetActive(true);
                             evento.GetComponent<WaspFightScript>()._waspAnimator = _enemiesGameObjects[0].GetComponent<Animator>();
                             _scriptMain._onEventID = 7;
                             break;
                         case GameEvent.EventType.FightSnail:
+                            _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                             _enemiesGameObjects[1].gameObject.SetActive(true);
                             evento.GetComponent<SnailFightScript>()._snailAnimator = _enemiesGameObjects[1].GetComponent<Animator>();
                             _scriptMain._onEventID = 8;
                             break;
                         case GameEvent.EventType.Fire:
+                            _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
+
                             _scriptMain._scriptMain._scriptSFX._fireSetVolume = 1;
                             _scriptMain._onEventID = 9;
                             evento.GetComponent<FireEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
 
                             break;
-                        case GameEvent.EventType.BossFight0:                   
+                        case GameEvent.EventType.BossFight0:
+                            _scriptMain._scriptMain._scriptMusic.PlayMusic(5);
                             _scriptMain._onEventID = 10;
                             evento.GetComponent<BossFightsScript>().StartBossVoid();
                             //StartCoroutine(evento.GetComponent<BossFightsScript>().StartBossNumerator());
                             //StartCoroutine(StartBossNumerator());
                             break;
                         case GameEvent.EventType.BossFight1:
+                            _scriptMain._scriptMain._scriptMusic.PlayMusic(5);
                             _scriptMain._onEventID = 11;
                             _scriptMain._Cascade[0].gameObject.SetActive(true);
                             _scriptMain._Cascade[0].Play();
                             evento.GetComponent<BossFightsScript>().StartBossVoid();
                             break;
                         case GameEvent.EventType.BossFight2:
+                            _scriptMain._scriptMain._scriptMusic.PlayMusic(5);
                             _scriptMain._onEventID = 11;
                             evento.GetComponent<BossFightsScript>()._events[2].GetComponent<SpecialAnimatorEvents>()._scriptMain = _scriptMain;
                             evento.GetComponent<BossFightsScript>().StartBossVoid();
                       
                             break;
                         case GameEvent.EventType.BossFight3:
+                            _scriptMain._scriptMain._scriptMusic.PlayMusic(5);
                             _scriptMain._onEventID = 11;
                    
                             evento.GetComponent<BossFightsScript>().StartBossVoid();
                             break;
                         case GameEvent.EventType.BossFight4:
+
+                            _scriptMain._scriptMain._scriptMusic.PlayMusic(5);
                             _scriptMain._onEventID = 11;
                             evento.GetComponent<BossFightsScript>().StartBossVoid();
                             break;

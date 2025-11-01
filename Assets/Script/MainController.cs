@@ -26,6 +26,7 @@ public class MainController : MonoBehaviour
         public bool[] _elementsUnlocked;
         public int _healthCoins;
         public int _hintCoins;
+        public bool[] _slimeUnlocked;
     }
     public SaveLoadValues _saveLoadValues;
 
@@ -42,6 +43,7 @@ public class MainController : MonoBehaviour
         public bool _hintAvailable;
         public bool _hintBought;
         public TextMeshProUGUI _hintText;
+        public TextMeshProUGUI[] _allSlimeText;
     }
     public PauseAssets _pauseAssets;
 
@@ -119,6 +121,21 @@ public class MainController : MonoBehaviour
             Time.timeScale = 0f;
             _pauseAssets._pause = true;
             pauseAnimator?.SetBool("PauseIn", true);
+
+
+            for (int i = 0; i < _pauseAssets._allSlimeText.Length; i++)
+            {
+             
+                    _pauseAssets._allSlimeText[i].gameObject.SetActive(false);
+               
+            }
+            for (int i = 0; i < _pauseAssets._allSlimeText.Length; i++)
+            {
+                if (_saveLoadValues._slimeUnlocked[i + 1])
+                {
+                    _pauseAssets._allSlimeText[i].gameObject.SetActive(true);
+                }
+            }
         }
         else
         {

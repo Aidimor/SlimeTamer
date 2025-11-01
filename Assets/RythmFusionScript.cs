@@ -211,7 +211,8 @@ public class RythmFusionScript : MonoBehaviour
 
         int eventStance = 0;
         bool endLoopAfterSelection = false;
-        _scriptMain._scriptMain._scriptMusic.PlayMusic();
+        //_scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal);
+
         while (!endLoopAfterSelection)
         {
 

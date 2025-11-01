@@ -34,8 +34,8 @@ public class BossFightsScript : MonoBehaviour
     {
 
         yield return new WaitForSeconds(1);
-        _scriptMain._scriptMain._scriptMusic.gameObject.GetComponent<AudioSource>().clip = _scriptMain._scriptMain._scriptMusic._allThemes[5];
-        _scriptMain._scriptMain._scriptMusic._audioBGM.Play();
+        //_scriptMain._scriptMain._scriptMusic.PlayMusic(5);
+      
         _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
 
         yield return new WaitForSeconds(1);
@@ -46,7 +46,7 @@ public class BossFightsScript : MonoBehaviour
                 _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossPoses[0]._bossStartPos;
                 break;
             case GameEvent.EventType.BossFight1:
-                Debug.Log("falla1");
+                _scriptMain._cascadeFrozen = false;
                 _scriptMain._bossAnimator.transform.localEulerAngles = _scriptMain._bossPoses[0]._bossStartRot;
                 _scriptMain._bossAnimator.transform.localPosition = _scriptMain._bossPoses[0]._bossStartPos;
                 break;
@@ -80,8 +80,10 @@ public class BossFightsScript : MonoBehaviour
                 StartCoroutine(ExitNumerator());
                 break;
             case GameEvent.EventType.BossFight1:
+             
                 _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
                 yield return new WaitForSeconds(1);
+                
                 StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
                 break;  
 
@@ -97,7 +99,7 @@ public class BossFightsScript : MonoBehaviour
             case GameEvent.EventType.BossFight3:
       
                 _scriptMain._bossAnimator.SetBool("Ventilator", true);
-                _scriptMain._scriptMain._scriptSFX._windSetVolume = 1;
+                _scriptMain._scriptMain._scriptSFX._strongWindSetVolume = 0.5f;
                 _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
                 //_events[1].gameObject.SetActive(true);
                 //_scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
@@ -111,8 +113,10 @@ public class BossFightsScript : MonoBehaviour
                 _events[0].gameObject.SetActive(true);
                 _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
                 _scriptMain._bossAnimator.SetTrigger("AttackFire");
-                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._flameOn);
+   
                 yield return new WaitForSeconds(1.5f);
+                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._flameOn);
+                _scriptMain._scriptMain._scriptSFX._fireSetVolume = 1;
                 _fire[0].Play();
                 yield return new WaitForSeconds(1);
                 StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
