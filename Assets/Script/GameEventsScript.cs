@@ -66,12 +66,12 @@ public class GameEventsScript : MonoBehaviour
                         break;
                     case true:
                         _scriptMain._GamesList.Add(0);
-                        List<int> posiblesNumeros0 = new List<int> { 1, 4, 5, 7, 15, 17, 18 };
-                        for (int i = 0; i < 10; i++)
-                        {
-                            int randomIndex = Random.Range(0, posiblesNumeros0.Count);
-                            _scriptMain._GamesList.Add(posiblesNumeros0[randomIndex]);
-                        }
+                        //List<int> posiblesNumeros0 = new List<int> { 1, 4, 5, 7, 15, 17, 18 };
+                        //for (int i = 0; i < 10; i++)
+                        //{
+                        //    int randomIndex = Random.Range(0, posiblesNumeros0.Count);
+                        //    _scriptMain._GamesList.Add(posiblesNumeros0[randomIndex]);
+                        //}
                         _scriptMain._GamesList.Add(16);
                         break;
                 }
@@ -391,11 +391,6 @@ public class GameEventsScript : MonoBehaviour
 
     }
 
-    public IEnumerator RestartNumerator()
-    {
- 
-       yield return null;
-    }
 
     public IEnumerator StartStageQuestionary()
     {

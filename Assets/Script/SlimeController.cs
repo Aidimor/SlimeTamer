@@ -124,7 +124,7 @@ public class SlimeController : MonoBehaviour
             case 1:
                 if (_slimeType == _scriptMain._rightElementID[0])
                 {
-                    Debug.Log("correcto");
+   
 
                     _scriptMain._slimeChanging = true;
                     _scriptMain._lightChanging = true;
@@ -245,9 +245,12 @@ public class SlimeController : MonoBehaviour
                             _scriptMain._proyectileCharge[0].Stop();
                             _scriptMain._proyectileCharge[1].Stop();
                             _scriptMain._proyectileCharge[2].Stop();
-                            _scriptMain._bossAnimator.Play("Damaged");
-                            _scriptMain._bossAnimator.SetBool("Damaged", true);
+                            _scriptMain._bossAnimator.Play("Frozen");
+                            //_scriptMain._bossAnimator.SetBool("Damaged", true);
+                            _scriptMain._enemyExplosion.Play();
                             yield return new WaitForSeconds(2);
+                            StartCoroutine(_scriptMain.GameEndsNumerator());
+                            yield break;
                             break;
                         case GameEvent.EventType.BossFight3:
                             break;
@@ -256,7 +259,7 @@ public class SlimeController : MonoBehaviour
                             _scriptMain._scriptEvents._rainParticle.Play();
                             yield return new WaitForSeconds(1);
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>().FireExtinguish();                         
-                            yield return new WaitForSeconds(1);
+                            yield break;
                             break;
                         case GameEvent.EventType.BossFight5:
                             break;

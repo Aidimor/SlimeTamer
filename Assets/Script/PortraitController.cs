@@ -228,6 +228,11 @@ public class PortraitController : MonoBehaviour
             }
         }
 
+        if (Input.GetKeyDown(KeyCode.R))
+        {
+            _scriptMainController._scriptInit.ClearSDKSaveManually();
+        }
+
     }
 
     public IEnumerator StartGameSpecial()

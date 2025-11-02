@@ -5,6 +5,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
 using System.Text;
+using System; // Para Action
 
 namespace LoL
 {
@@ -44,6 +45,7 @@ namespace LoL
         public bool languageReady = false;
 
         public bool _usePersistentSave; // true = guardar en disco, false = guardar en SDK
+        public bool _starZero;
 
         void Awake()
         {
@@ -87,47 +89,37 @@ namespace LoL
         private IEnumerator StartNumerator()
         {
             yield return new WaitUntil(() => LOLSDK.Instance != null);
+
 #if UNITY_EDITOR
             LoadMockData();
 #endif
-            LoadState();
+
+            if (_usePersistentSave)
+                LoadState();
+            else
+                LoadGameFromSDK();
         }
 
 #if UNITY_EDITOR
         void LoadMockData()
         {
-            Debug.Log("🧩 Cargando datos mock en modo Editor... (Idioma actual: " + _languageCode + ")");
-
             string startDataFilePath = Path.Combine(Application.streamingAssetsPath, "startGame.json");
-            Debug.Log(Application.streamingAssetsPath);
 
             if (File.Exists(startDataFilePath))
             {
                 string startDataAsJSON = File.ReadAllText(startDataFilePath, Encoding.UTF8);
                 var payload = JSON.Parse(startDataAsJSON);
 
-                //startDataAsJSON = startDataAsJSON.Replace("´", "’");
-       
-
-                // Solo asigna _languageCode si el payload tiene valor
                 if (!string.IsNullOrEmpty(payload["languageCode"]))
                     _languageCode = payload["languageCode"];
 
-                // Llamamos a OnStartGame solo si _languageCode tiene valor
                 if (!string.IsNullOrEmpty(_languageCode))
                     OnStartGame(payload.ToString());
             }
-            else
-            {
-                if (!string.IsNullOrEmpty(_languageCode))
-                    OnStartGame("{\"languageCode\": \"" + _languageCode + "\"}");
-                else
-                    Debug.Log("ℹ️ No hay languageCode definido en Inspector ni JSON. Se mantiene el idioma actual.");
-            }
 
-            // Cargar el archivo de idioma
+            // Cargar archivo de idioma
             string langFilePath = Path.Combine(Application.streamingAssetsPath, "language.json");
-            if (File.Exists(langFilePath) && !string.IsNullOrEmpty(_languageCode))
+            if (File.Exists(langFilePath))
             {
                 var lang = JSON.Parse(File.ReadAllText(langFilePath, Encoding.UTF8))?[_languageCode];
                 if (lang != null)
@@ -136,35 +128,58 @@ namespace LoL
         }
 #endif
 
-
-
-
-        // ========================
-        // GUARDADO
-        // ========================
-        public void SaveGame()
+        public void ClearSDKSaveManually()
         {
             if (MainController.Instance == null)
             {
-                Debug.LogWarning("⚠️ MainController no disponible para guardar");
+                Debug.LogWarning("⚠️ MainController no está listo para borrar el guardado.");
                 return;
             }
+
+            Debug.Log("🧹 Borrando guardado del SDK manualmente...");
+
+            // Crear un GameSaveState vacío
+            GameSaveState emptyState = new GameSaveState
+            {
+                _worldsUnlocked = new bool[4],     // ajustar tamaño según tu juego
+                _elementsUnlocked = new bool[4],
+                _slimeUnlocked = new bool[7],
+                _healthCoins = 0,
+                _hintCoins = 0,
+                _finalWorldUnlocked = false
+            };
+
+            // Guardar manualmente en SDK
+            LOLSDK.Instance.SaveState(new State<GameSaveState> { data = emptyState });
+
+            // Aplicar inmediatamente en memoria
+            ApplyLoadedState(emptyState);
+
+            Debug.Log("✅ Guardado del SDK borrado y reiniciado manualmente.");
+        }
+
+
+        // ========================
+        // Guardado
+        // ========================
+        public void SaveGame()
+        {
+            if (MainController.Instance == null) return;
 
             GameSaveState state = new GameSaveState
             {
                 _worldsUnlocked = MainController.Instance._saveLoadValues._worldsUnlocked,
                 _elementsUnlocked = MainController.Instance._saveLoadValues._elementsUnlocked,
+                _slimeUnlocked = MainController.Instance._saveLoadValues._slimeUnlocked,
                 _healthCoins = MainController.Instance._saveLoadValues._healthCoins,
                 _hintCoins = MainController.Instance._saveLoadValues._hintCoins,
-                _slimeUnlocked = MainController.Instance._saveLoadValues._slimeUnlocked,
                 _finalWorldUnlocked = MainController.Instance._saveLoadValues._finalWorldUnlocked
             };
 
-            string json = JsonUtility.ToJson(state, true);
-            string path = Path.Combine(Application.persistentDataPath, "gameSave.json");
-
             if (_usePersistentSave)
             {
+                string json = JsonUtility.ToJson(state, true);
+                string path = Path.Combine(Application.persistentDataPath, "gameSave.json");
                 File.WriteAllText(path, json, Encoding.UTF8);
                 Debug.Log("💾 Juego guardado localmente: " + path);
             }
@@ -175,6 +190,7 @@ namespace LoL
             }
         }
 
+
         // ========================
         // CARGA
         // ========================
@@ -183,6 +199,21 @@ namespace LoL
             if (_usePersistentSave)
             {
                 string path = Path.Combine(Application.persistentDataPath, "gameSave.json");
+
+
+                if (File.Exists(path))
+                {
+                    string json = File.ReadAllText(path, Encoding.UTF8);
+                    GameSaveState state = JsonUtility.FromJson<GameSaveState>(json);
+                    ApplyLoadedState(state);
+                    Debug.Log("📂 Juego cargado desde disco: " + path);
+                }
+                else
+                {
+                    Debug.Log("ℹ️ No hay guardado local. Inicializando uno nuevo...");
+                    InitializeEmptySave();
+                }
+
 
                 if (File.Exists(path))
                 {
@@ -195,60 +226,74 @@ namespace LoL
                 else
                 {
                     Debug.Log("ℹ️ No existe guardado. Creando archivo nuevo...");
-
-                    InitializeEmptySave();
-                    SaveGame();
+                    StartCoroutine(InitializeEmptySaveWithDelay(() =>
+                    {
+                        var emptyState = new GameSaveState
+                        {
+                            _worldsUnlocked = MainController.Instance._saveLoadValues._worldsUnlocked,
+                            _elementsUnlocked = MainController.Instance._saveLoadValues._elementsUnlocked,
+                            _slimeUnlocked = MainController.Instance._saveLoadValues._slimeUnlocked,
+                            _healthCoins = MainController.Instance._saveLoadValues._healthCoins,
+                            _hintCoins = MainController.Instance._saveLoadValues._hintCoins,
+                            _finalWorldUnlocked = MainController.Instance._saveLoadValues._finalWorldUnlocked
+                        };
+                        LOLSDK.Instance.SaveState(new State<GameSaveState> { data = emptyState });
+                        Debug.Log("✅ Nuevo guardado vacío creado y almacenado en SDK.");
+                    }));
                 }
             }
             else
             {
+                // 🔹 Borrar cualquier guardado existente
                 LOLSDK.Instance.LoadState<GameSaveState>(state =>
                 {
-                    if (state != null && state.data != null)
+                    //if (state != null && state.data != null)
+                    //{
+                    //    Debug.Log("🧹 Guardado existente detectado. Será eliminado.");
+                    //    state.data = null;
+                    //    LOLSDK.Instance.SaveState(state);
+                    //}
+
+                    // 🔹 Cargar normalmente
+                    LOLSDK.Instance.LoadState<GameSaveState>(newState =>
                     {
-                        ApplyLoadedState(state.data);
-                        Debug.Log("📂 Juego cargado correctamente desde SDK");
-                    }
-                    else
-                    {
-                        Debug.Log("ℹ️ No hay guardado en SDK, creando nuevo...");
-                        InitializeEmptySave();
-                    }
+                        if (newState != null && newState.data != null)
+                        {
+                            ApplyLoadedState(newState.data);
+                            Debug.Log("📂 Juego cargado correctamente desde SDK");
+                        }
+                        else
+                        {
+                            Debug.Log("ℹ️ No hay guardado en SDK, creando nuevo...");
+                            StartCoroutine(InitializeEmptySaveWithDelay(() =>
+                            {
+                                var emptyState = new GameSaveState
+                                {
+                                    _worldsUnlocked = MainController.Instance._saveLoadValues._worldsUnlocked,
+                                    _elementsUnlocked = MainController.Instance._saveLoadValues._elementsUnlocked,
+                                    _slimeUnlocked = MainController.Instance._saveLoadValues._slimeUnlocked,
+                                    _healthCoins = MainController.Instance._saveLoadValues._healthCoins,
+                                    _hintCoins = MainController.Instance._saveLoadValues._hintCoins,
+                                    _finalWorldUnlocked = MainController.Instance._saveLoadValues._finalWorldUnlocked
+                                };
+                                LOLSDK.Instance.SaveState(new State<GameSaveState> { data = emptyState });
+                                Debug.Log("✅ Nuevo guardado vacío creado y almacenado en SDK.");
+                            }));
+                        }
+                    });
                 });
             }
         }
 
-        private void ApplyLoadedState(GameSaveState state)
+        // Coroutine con callback para guardar después
+        private IEnumerator InitializeEmptySaveWithDelay(Action onComplete = null)
         {
-            if (MainController.Instance == null) return;
+            yield return new WaitUntil(() => MainController.Instance != null);
 
-            var values = MainController.Instance._saveLoadValues;
+            InitializeEmptySave();
+            Debug.Log("✅ Save vacío inicializado correctamente.");
 
-            // Actualizar _worldsUnlocked
-            if (state._worldsUnlocked != null)
-            {
-                for (int i = 0; i < values._worldsUnlocked.Length && i < state._worldsUnlocked.Length; i++)
-                    values._worldsUnlocked[i] = state._worldsUnlocked[i];
-            }
-
-            // Actualizar _elementsUnlocked
-            if (state._elementsUnlocked != null)
-            {
-                for (int i = 0; i < values._elementsUnlocked.Length && i < state._elementsUnlocked.Length; i++)
-                    values._elementsUnlocked[i] = state._elementsUnlocked[i];
-            }
-
-            // Actualizar _slimeUnlocked
-            if (state._slimeUnlocked != null)
-            {
-                for (int i = 0; i < values._slimeUnlocked.Length && i < state._slimeUnlocked.Length; i++)
-                    values._slimeUnlocked[i] = state._slimeUnlocked[i];
-            }
-
-            // Actualizar valores simples
-            values._healthCoins = state._healthCoins;
-            values._hintCoins = state._hintCoins;
-            values._finalWorldUnlocked = state._finalWorldUnlocked;
+            onComplete?.Invoke();
         }
 
         private void InitializeEmptySave()
@@ -257,19 +302,34 @@ namespace LoL
 
             var values = MainController.Instance._saveLoadValues;
 
-            values._worldsUnlocked[0] = true;
-            for (int i = 1; i < values._worldsUnlocked.Length; i++)
-                values._worldsUnlocked[i] = false;
-
-            for (int i = 0; i < values._elementsUnlocked.Length; i++)
-                values._elementsUnlocked[i] = false;
-
-            for (int i = 0; i < values._slimeUnlocked.Length; i++)
-                values._slimeUnlocked[i] = false;
-
+            values._worldsUnlocked = new bool[4] { true, false, false, false };
+            values._elementsUnlocked = new bool[4];
+            values._slimeUnlocked = new bool[7];
             values._healthCoins = 1;
             values._hintCoins = 1;
             values._finalWorldUnlocked = false;
+
+            Debug.Log("✅ Guardado vacío inicializado");
+        }
+
+        private void ApplyLoadedState(GameSaveState state)
+        {
+            if (MainController.Instance == null) return;
+
+            var values = MainController.Instance._saveLoadValues;
+
+            if (state._worldsUnlocked != null)
+                state._worldsUnlocked.CopyTo(values._worldsUnlocked, 0);
+            if (state._elementsUnlocked != null)
+                state._elementsUnlocked.CopyTo(values._elementsUnlocked, 0);
+            if (state._slimeUnlocked != null)
+                state._slimeUnlocked.CopyTo(values._slimeUnlocked, 0);
+
+            values._healthCoins = state._healthCoins;
+            values._hintCoins = state._hintCoins;
+            values._finalWorldUnlocked = state._finalWorldUnlocked;
+
+            Debug.Log("✅ Estado aplicado correctamente");
         }
 
         // ========================
@@ -284,7 +344,6 @@ namespace LoL
                 return;
             }
 
-            // Leer archivo con codificación UTF-8
             string json = File.ReadAllText(path, Encoding.UTF8);
             var langData = JSON.Parse(json);
 
@@ -301,7 +360,6 @@ namespace LoL
             }
 
             languageReady = true;
-            Debug.Log($"✅ Idioma cargado: {lang} ({_translations.Count} textos)");
         }
 
         void OnStartGame(string startGameJSON)
@@ -310,7 +368,6 @@ namespace LoL
 
             var payload = JSON.Parse(startGameJSON);
 
-            // Solo asignar _languageCode si viene con un valor válido
             if (!string.IsNullOrEmpty(payload["languageCode"]))
             {
                 _languageCode = payload["languageCode"];
@@ -323,15 +380,11 @@ namespace LoL
             }
         }
 
-
-
-
         void OnLanguageDefs(string langJSON)
         {
             if (!string.IsNullOrEmpty(langJSON))
             {
                 _langNode = JSON.Parse(langJSON);
-                Debug.Log("✅ LanguageDefs recibido.");
             }
         }
 
@@ -363,5 +416,82 @@ namespace LoL
 
         public int GetTextID(string key) =>
             _localizedItems.ContainsKey(key) ? _localizedItems[key].id : -1;
+
+        public void SaveGameToSDK()
+        {
+            if (LOLSDK.Instance == null)
+            {
+                Debug.LogWarning("⚠️ SDK no inicializado.");
+                return;
+            }
+
+            if (MainController.Instance == null)
+            {
+                Debug.LogWarning("⚠️ MainController no inicializado.");
+                return;
+            }
+
+            GameSaveState state = new GameSaveState
+            {
+                _worldsUnlocked = MainController.Instance._saveLoadValues._worldsUnlocked,
+                _elementsUnlocked = MainController.Instance._saveLoadValues._elementsUnlocked,
+                _slimeUnlocked = MainController.Instance._saveLoadValues._slimeUnlocked,
+                _healthCoins = MainController.Instance._saveLoadValues._healthCoins,
+                _hintCoins = MainController.Instance._saveLoadValues._hintCoins,
+                _finalWorldUnlocked = MainController.Instance._saveLoadValues._finalWorldUnlocked
+            };
+
+            string json = JsonUtility.ToJson(state);
+            LOLSDK.Instance.SaveState(json);
+
+            Debug.Log("💾 Guardado enviado al SDK: " + json);
+        }
+
+
+        public void LoadGameFromSDK()
+        {
+            if (LOLSDK.Instance == null)
+            {
+                Debug.LogWarning("⚠️ SDK no inicializado.");
+                return;
+            }
+
+            // Llamada correcta con callback
+            LOLSDK.Instance.LoadState<GameSaveState>(state =>
+            {
+                if (state != null && state.data != null)
+                {
+                    ApplyLoadedState(state.data);
+                    Debug.Log("📂 Juego cargado correctamente desde SDK");
+                }
+                else
+                {
+                    Debug.Log("ℹ️ No hay guardado en SDK, creando uno nuevo...");
+                    // Crear nuevo estado vacío
+                    var emptyState = new GameSaveState
+                    {
+                        _worldsUnlocked = new bool[4] { true, false, false, false },
+                        _elementsUnlocked = new bool[4],
+                        _slimeUnlocked = new bool[7],
+                        _healthCoins = 1,
+                        _hintCoins = 1,
+                        _finalWorldUnlocked = false
+                    };
+
+                    ApplyLoadedState(emptyState);
+                    LOLSDK.Instance.SaveState(JsonUtility.ToJson(emptyState));
+                    Debug.Log("✅ Nuevo guardado vacío creado y almacenado en SDK.");
+                }
+            });
+        }
+
+
+
+
     }
+
+
+
+
+
 }

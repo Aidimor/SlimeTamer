@@ -179,6 +179,15 @@ public class MainGameplayScript : MonoBehaviour
     }
     public WorldNameAssets _worldNameAssets;
 
+    [System.Serializable]
+    public class EndGameAssets
+    {
+        public Animator _wordsAnimator;
+        public GameObject _parent;
+    }
+    public EndGameAssets _endGameAssets;
+
+    public ParticleSystem _enemyExplosion;
   
     private void Awake()
     {
@@ -904,22 +913,13 @@ public class MainGameplayScript : MonoBehaviour
         _scriptMain._scriptSFX._rainSetVolume = 0;
         _scriptMain._scriptSFX._fireSetVolume = 0;
         _scriptMain._scriptSFX._chargeAttackVolume = 0;
-
    
-        //_scriptMain._gameOverAssets._onGameOver = false;
-        //_scriptMain._gameOverAssets._parent.GetComponent<Animator>().SetBool("GameOver", false);
+
         yield return new WaitForSeconds(2);
         _scriptMain._scriptInit.SaveGame();
         _scriptMain._scriptMusic.PlayMusic(0);
                 _scriptMain._saveLoadValues._healthCoins = 1;
                 _scriptMain.LoadSceneByName("IntroScene");
-             
-                //case 1:
-                //    _scriptMain._saveLoadValues._healthCoins++;
-
-                //    StartCoroutine(_scriptEvents.StartStageQuestionary());
-
-                //    break;
         }    
 
     public IEnumerator GameOverNumerator()
@@ -949,12 +949,6 @@ public class MainGameplayScript : MonoBehaviour
                 _scriptMain._saveLoadValues._healthCoins = 1;
                 _scriptMain.LoadSceneByName("IntroScene");
                 break;
-            //case 1:
-            //    _scriptMain._saveLoadValues._healthCoins++;
-             
-            //    StartCoroutine(_scriptEvents.StartStageQuestionary());
-        
-            //    break;
         }
     }
 
@@ -1042,6 +1036,21 @@ public class MainGameplayScript : MonoBehaviour
                 break;
         }
 
+    }
+
+    public IEnumerator GameEndsNumerator()
+    {
+        _endGameAssets._parent.SetActive(true);
+        _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._roar);
+        _scriptMain._scriptSFX._fireSetVolume = 1;
+        _bossAnimator.Play("DefeatedBoss");
+        yield return new WaitForSeconds(4);
+        _scriptMain._scriptSFX._fireSetVolume = 0;
+        _endGameAssets._wordsAnimator.SetTrigger("BossDefeated");
+        yield return new WaitForSeconds(2);
+        _scriptMain._bordersAnimator.SetBool("BorderOut", false);
+        yield return new WaitForSeconds(1);
+        _scriptMain.LoadSceneByName("IntroScene");
     }
 
     public IEnumerator EscribirTexto(string linea, TMPro.TextMeshProUGUI textoUI, float velocidad)

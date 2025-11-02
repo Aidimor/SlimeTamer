@@ -60,23 +60,32 @@ public class RythmFusionScript : MonoBehaviour
     void Start()
     {
         UpdateWorldTexts();
-        //switch (_scriptMain._scriptMain._onWorldGlobal)
-        //{
-        //    case 0:
-        //        _bpm = 100;
-        //        break;
-        //    case 1:
-        //        _bpm = 120;
-        //        break;
-        //    case 2:
-        //        _bpm = 120;
-        //        break;
-        //    case 3:
-        //        _bpm = 150;
-        //        break;
-        //}
+        switch (_scriptMain._scriptMain._onWorldGlobal)
+        {
+            case 0:
+                switch (_scriptMain._scriptMain._saveLoadValues._finalWorldUnlocked)
+                {
+                    case false:
+                        _bpm = 100;
+                        break;
+                    case true:
+                        _bpm = 200;
+                        break;
+                }
+         
+                break;
+            case 1:
+                _bpm = 170;
+                break;
+            case 2:
+                _bpm = 150;
+                break;
+            case 3:
+                _bpm = 130;
+                break;
+        }
 
-        for(int i = 0; i < 4; i++)
+        for (int i = 0; i < 4; i++)
         {
             _positions[i] = _elementsInfo[i]._parent.GetComponent<RectTransform>().anchoredPosition;
         }

@@ -59158,7 +59158,8 @@ MonoBehaviour:
   lastQuestionId: 
   lastAnswer: 
   languageReady: 0
-  _usePersistentSave: 1
+  _usePersistentSave: 0
+  _starZero: 0
 --- !u!4 &1955862550
 Transform:
   m_ObjectHideFlags: 0
