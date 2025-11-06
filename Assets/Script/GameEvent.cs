@@ -12,7 +12,8 @@ public class GameEvent : ScriptableObject
         Chest,
         Intro,
         Shop,
-        Teleporter
+        Teleporter,
+        Tutorial
     }
     public EventClassification _eventClassification;
 

@@ -17353,6 +17353,7 @@ MonoBehaviour:
     _hintCoins: 0
     _slimeUnlocked: 00000000000000
     _finalWorldUnlocked: 0
+    _progress: 0
   _pauseAssets:
     _parent: {fileID: 1523089174}
     _options:
@@ -51148,13 +51149,13 @@ AudioSource:
   OutputAudioMixerGroup: {fileID: 0}
   m_audioClip: {fileID: 8300000, guid: d9828661d18a41647a539355f8cb23e1, type: 3}
   m_PlayOnAwake: 0
-  m_Volume: 0.25
-  m_Pitch: 1
+  m_Volume: 0.05
+  m_Pitch: 0.95
   Loop: 1
   Mute: 0
   Spatialize: 0
   SpatializePostEffects: 0
-  Priority: 0
+  Priority: 256
   DopplerLevel: 1
   MinDistance: 1
   MaxDistance: 500
@@ -51251,7 +51252,8 @@ MonoBehaviour:
   - {fileID: 8300000, guid: 82a6c202c4eb14a44ad819023a97005a, type: 3}
   - {fileID: 8300000, guid: 54ab7e41e5a367b4cacc7f341c759b47, type: 3}
   - {fileID: 8300000, guid: 2b0a067e6d880b141b10665b163e4185, type: 3}
-  - {fileID: 8300000, guid: ad3be8c3d7ccccd479d0bc42e8dbd09c, type: 3}
+  - {fileID: 8300000, guid: 181097aada26fb6469953ba485343e3b, type: 3}
+  - {fileID: 8300000, guid: 181097aada26fb6469953ba485343e3b, type: 3}
 --- !u!1 &1610700997
 GameObject:
   m_ObjectHideFlags: 0
@@ -59158,7 +59160,7 @@ MonoBehaviour:
   lastQuestionId: 
   lastAnswer: 
   languageReady: 0
-  _usePersistentSave: 1
+  _usePersistentSave: 0
   _starZero: 0
 --- !u!4 &1955862550
 Transform:
@@ -65405,10 +65407,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1558ae6b9f002b5458b2369d067d6b1a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _jump: {fileID: 8300000, guid: 8ab34a758d032c041bee69ee71a0790c, type: 3}
+  _jump: {fileID: 8300000, guid: 5b043769084ff624f96784a7b7f440a6, type: 3}
   _fall: {fileID: 8300000, guid: 9b1cf199203a54e41967e8408bb06ead, type: 3}
   _explosion: {fileID: 8300000, guid: 2d28d5ba5ab8cd44084a15026257c449, type: 3}
-  _stoneSlide: {fileID: 8300000, guid: 8cfbf4d78d6219d4a9e708c5d3c8577b, type: 3}
+  _stoneSlide: {fileID: 8300000, guid: 9357aa61e0da7bc4b8a9fd6edd6e0c1f, type: 3}
   _stoneClose: {fileID: 8300000, guid: 1df4b02c53c28824eafaaae67233b7ae, type: 3}
   _next: {fileID: 8300000, guid: 0f1302319b29b44409679d93bb85c102, type: 3}
   _roar: {fileID: 8300000, guid: df0a3934d290d3f4d92eb5d37bead592, type: 3}
@@ -67017,17 +67019,17 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ---
+  m_text: Slime
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: ba00c017b08ea084782ebb0880e1f666, type: 2}
-  m_sharedMaterial: {fileID: 2140032, guid: ba00c017b08ea084782ebb0880e1f666, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 125cb55b44b24c4393181402bc6200e6, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
   m_fontColor32:
     serializedVersion: 2
-    rgba: 4278190080
-  m_fontColor: {r: 0, g: 0, b: 0, a: 1}
+    rgba: 4294967295
+  m_fontColor: {r: 1, g: 1, b: 1, a: 1}
   m_enableVertexGradient: 0
   m_colorMode: 3
   m_fontColorGradient:
@@ -67099,7 +67101,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0.1950976, b: 0.7264151, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1

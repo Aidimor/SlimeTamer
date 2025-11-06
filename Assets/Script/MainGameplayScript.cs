@@ -5,6 +5,7 @@ using UnityEngine;
 using TMPro;
 using UnityEngine.SceneManagement; // 👈 Necesario para eventos de escena
 using LoL;  // <- necesario para GameInitScript
+using LoLSDK;
 
 public class MainGameplayScript : MonoBehaviour
 {
@@ -188,6 +189,7 @@ public class MainGameplayScript : MonoBehaviour
     public EndGameAssets _endGameAssets;
 
     public ParticleSystem _enemyExplosion;
+    public bool _onTutorial;
   
     private void Awake()
     {
@@ -498,7 +500,7 @@ public class MainGameplayScript : MonoBehaviour
 
         _slimeParent.gameObject.SetActive(false);
         //LoseHeartVoid();
-        if(_scriptEvents._currentEventPrefab.name == "ChestEvent(Clone)" || _scriptEvents._currentEventPrefab.name == "Intro(Clone)")
+        if (_scriptEvents._currentEventPrefab.name == "ChestEvent(Clone)" || _scriptEvents._currentEventPrefab.name == "Intro(Clone)")
         {
             _topOptionsOn = false;
         }
@@ -508,18 +510,18 @@ public class MainGameplayScript : MonoBehaviour
         }
         _scriptSlime._slimeAnimator.SetBool("Moving", false);
         _darkenerChanging = false;
- 
+
         _shadow.gameObject.SetActive(true);
         yield return new WaitForSeconds(1);
 
-        if(_scriptEvents._onEvent == 1)
+        if (_scriptEvents._onEvent == 1)
         {
             _slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-255, _slimeParent.GetComponent<RectTransform>().anchoredPosition.y);
-        
+
             yield return new WaitForSeconds(0.25f);
-            if(_scriptMain._onWorldGlobal == 3)
+            if (_scriptMain._onWorldGlobal == 3)
             {
-  
+
                 _scriptSlime._slimeAnimator.Play("Fall2");
                 yield return new WaitForSeconds(1);
                 _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -30);
@@ -538,9 +540,9 @@ public class MainGameplayScript : MonoBehaviour
 
                 _slimeParent.gameObject.SetActive(true);
             }
-         
-  
-      
+
+
+
         }
         else
         {
@@ -560,14 +562,23 @@ public class MainGameplayScript : MonoBehaviour
         {
             _scriptSlime._slimeAnimator.SetBool("WindPush", true);
         }
+
+        if (_onTutorial)
+        {
+            LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("tutorial"));
+            yield return new WaitForSeconds(5);
+            _onTutorial = false;
+        }
      
 
         switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._eventClassification)
         {
             case GameEvent.EventClassification.Normal:
-            
+            case GameEvent.EventClassification.Tutorial:
                 StartCoroutine(_scriptRythm.RythmNumerator());
-                break;         
+           
+                break;
+
         }   
     }
 
@@ -610,8 +621,7 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator IntroStageNumerator()
     {
-       _scriptMain._scriptMusic.PlayMusic(_scriptMain._onWorldGlobal + 1);
-  
+
         _scriptSlime._fallingSlimeParticle.Play();
         _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
@@ -646,8 +656,7 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator StartsStageChest()
     {
-        _scriptMain._scriptMusic._audioBGM.clip = _scriptMain._scriptMusic._allThemes[_scriptMain._onWorldGlobal + 1];
-        _scriptMain._scriptMusic._audioBGM.Play();
+
         _dialogeAssets._nextParent.SetActive(false);
         _dialogeAssets._nextCircle.SetActive(false);
         _slimeParent.gameObject.SetActive(false);
@@ -736,6 +745,9 @@ public class MainGameplayScript : MonoBehaviour
             {
                 yield return null;
             }
+          
+            LOLSDK.Instance.SpeakText(_dialogeAssets._dialogeText.text);
+
             _dialogeAssets._nextParent.SetActive(true);
 
 
@@ -769,8 +781,7 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator StartsShopNumerator()
     {
-        _scriptMain._scriptMusic._audioBGM.clip = _scriptMain._scriptMusic._allThemes[_scriptMain._onWorldGlobal + 1];
-        _scriptMain._scriptMusic._audioBGM.Play();
+
         _dialogeAssets._nextParent.SetActive(false);
         _dialogeAssets._nextCircle.SetActive(false);
         //_slimeParent.gameObject.SetActive(false);
@@ -808,8 +819,7 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator StartsTeleporterAnimator()
     {
-        _scriptMain._scriptMusic._audioBGM.clip = _scriptMain._scriptMusic._allThemes[_scriptMain._onWorldGlobal + 1];
-        _scriptMain._scriptMusic._audioBGM.Play();
+
         _scriptEvents._currentEventPrefab.GetComponent<TeleporterScript>()._scriptMain = this.GetComponent<MainGameplayScript>();
         var _teleportScript = _scriptEvents._currentEventPrefab.GetComponent<TeleporterScript>();
         _topOptionsOn = false;
@@ -986,6 +996,7 @@ public class MainGameplayScript : MonoBehaviour
 
 
         yield return new WaitForSeconds(1);
+      
         _bossAnimator.gameObject.SetActive(false);
         _frontWindParticle.Stop();
         _bossAnimator.SetBool("Damaged", false);
@@ -1040,6 +1051,7 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator GameEndsNumerator()
     {
+         MainController.Instance._saveLoadValues._progress++;
         _endGameAssets._parent.SetActive(true);
         _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._roar);
         _scriptMain._scriptSFX._fireSetVolume = 1;

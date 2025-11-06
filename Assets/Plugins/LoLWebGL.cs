@@ -194,10 +194,22 @@ namespace LoLSDK
             Debug.Log($"[MockWebGL] SubmitProgress - Score: {score}, Progress: {currentProgress}/{maximumProgress}");
         }
 
+        //public void SubmitAnswer(int questionId, int alternativeId)
+        //{
+        //    Debug.Log($"[MockWebGL] SubmitAnswer - QID: {questionId}, AltID: {alternativeId}");
+        //}
+
         public void SubmitAnswer(int questionId, int alternativeId)
         {
-            Debug.Log($"[MockWebGL] SubmitAnswer - QID: {questionId}, AltID: {alternativeId}");
+            JSONObject payload = new JSONObject
+            {
+                ["questionId"] = questionId,
+                ["alternativeId"] = alternativeId
+            };
+            PostWindowMessage("answer", payload.ToString());
         }
+
+
 
         public void ShowQuestion()
         {

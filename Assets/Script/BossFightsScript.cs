@@ -99,7 +99,7 @@ public class BossFightsScript : MonoBehaviour
             case GameEvent.EventType.BossFight3:
       
                 _scriptMain._bossAnimator.SetBool("Ventilator", true);
-                _scriptMain._scriptMain._scriptSFX._strongWindSetVolume = 0.5f;
+                _scriptMain._scriptMain._scriptSFX._strongWindSetVolume = 0.15f;
                 _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
                 //_events[1].gameObject.SetActive(true);
                 //_scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
@@ -136,7 +136,9 @@ public class BossFightsScript : MonoBehaviour
     {
         _scriptMain._scriptMain._cinematicBorders.SetBool("FadeIn", true);
         yield return new WaitForSeconds(2f);
-      
+    
+         MainController.Instance._saveLoadValues._progress++;
+
         _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._whip);
         _scriptMain._bossAnimator.SetTrigger("Attack");
   

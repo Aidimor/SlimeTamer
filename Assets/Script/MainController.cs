@@ -3,7 +3,16 @@ using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using TMPro;
 using LoL;
-using SimpleJSON;
+using LoLSDK;
+
+[System.Serializable]
+public class Progress
+{
+    public int currentProgress;
+    public int maxProgress;
+    public int score;
+}
+
 
 public class MainController : MonoBehaviour
 {
@@ -28,8 +37,11 @@ public class MainController : MonoBehaviour
         public int _hintCoins;
         public bool[] _slimeUnlocked;
         public bool _finalWorldUnlocked;
+        public int _progress;
     }
     public SaveLoadValues _saveLoadValues;
+
+
 
     [System.Serializable]
     public class PauseAssets
@@ -83,6 +95,8 @@ public class MainController : MonoBehaviour
 
     public Animator _currencyAnimator;
 
+    
+
     private void Awake()
     {
         if (Instance == null)
@@ -103,6 +117,7 @@ public class MainController : MonoBehaviour
     // ---------------------------
     public void SetPause()
     {
+        _scriptSFX.PlaySound(_scriptSFX._chooseElement);
         Animator pauseAnimator = _pauseAssets._parent?.GetComponent<Animator>();
         if (pauseAnimator != null)
             pauseAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
@@ -127,7 +142,8 @@ public class MainController : MonoBehaviour
                 if (_saveLoadValues._slimeUnlocked != null && i + 1 < _saveLoadValues._slimeUnlocked.Length)
                 {
                     if (_saveLoadValues._slimeUnlocked[i + 1])
-                        _pauseAssets._allSlimeText[i].gameObject.SetActive(true);
+                        _pauseAssets._allSlimeText[i].text = GameInitScript.Instance.GetText("Slime" + (i + 1).ToString("f0"));
+                    _pauseAssets._allSlimeText[i].gameObject.SetActive(true);
                 }
             }
         }
@@ -184,4 +200,74 @@ public class MainController : MonoBehaviour
             _currencyAssets[1]._quantityText.text = _saveLoadValues._hintCoins.ToString();
         }
     }
+
+   public void FixSaveValues()
+    {
+        // 🔹 Asegurarse que haya al menos un mundo desbloqueado
+        if (_saveLoadValues._worldsUnlocked == null || _saveLoadValues._worldsUnlocked.Length == 0)
+        {
+            _saveLoadValues._worldsUnlocked = new bool[4];
+        }
+
+        bool anyWorldUnlocked = false;
+        foreach (bool unlocked in _saveLoadValues._worldsUnlocked)
+        {
+            if (unlocked) { anyWorldUnlocked = true; break; }
+        }
+
+        if (!anyWorldUnlocked)
+        {
+            _saveLoadValues._worldsUnlocked[0] = true; // desbloquea el primer mundo
+            Debug.Log("🔹 Se desbloqueó el primer mundo por defecto");
+        }
+
+        // 🔹 Asegurarse que haya al menos 1 health coin
+        if (_saveLoadValues._healthCoins <= 0)
+        {
+            _saveLoadValues._healthCoins = 1;
+            Debug.Log("🔹 Se asignó 1 Health Coin por defecto");
+        }
+
+        // 🔹 Asegurarse que haya al menos 1 hint coin
+        if (_saveLoadValues._hintCoins <= 0)
+        {
+            _saveLoadValues._hintCoins = 1;
+            Debug.Log("🔹 Se asignó 1 Hint Coin por defecto");
+        }
+
+        // 🔹 Si no hay slimeUnlocked, inicializar array vacío
+        if (_saveLoadValues._slimeUnlocked == null || _saveLoadValues._slimeUnlocked.Length == 0)
+        {
+            _saveLoadValues._slimeUnlocked = new bool[7];
+        }
+
+        // 🔹 Si elementsUnlocked es null, inicializar array
+        if (_saveLoadValues._elementsUnlocked == null || _saveLoadValues._elementsUnlocked.Length == 0)
+        {
+            _saveLoadValues._elementsUnlocked = new bool[4];
+        }
+    }
+
+    public void SubmitProgressToLoL(int currentProgress)
+    {
+        if (LOLSDK.Instance == null)
+        {
+            Debug.LogWarning("⚠️ LoL SDK no inicializado — progreso no enviado.");
+            return;
+        }
+
+        int maxProgress = 8; // o el número total de progresos que definiste
+        int score = 0;       // puedes dejarlo en 0 si no usas puntuación
+
+        // 💡 Versión correcta según tu SDK
+        LOLSDK.Instance.SubmitProgress(currentProgress, maxProgress, score);
+
+        Debug.Log($"📊 Progreso enviado a LoL: {currentProgress}/{maxProgress}");
+    }
+
+
+
+
+
+
 }

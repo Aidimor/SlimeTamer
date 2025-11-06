@@ -107,17 +107,17 @@ public class SlimeController : MonoBehaviour
 
     public IEnumerator ActionSlimeNumerator()
     {
-
+       
 
         _scriptMain._eventOn = true;
 
         _slimeAnimator.SetBool("Scared", false);
         //yield return new WaitForSeconds(1f);
-       
+
         //_scriptMain._lightChanging = false;
         //_scriptMain._shineParticle.Stop();
-     
 
+        Debug.Log(_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]);
 
         switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._weakto.Length)
         {
@@ -169,101 +169,117 @@ public class SlimeController : MonoBehaviour
 
                     _scriptMain._scriptSlime._slimeAnimator.SetTrigger("Action");
 
-
-                    switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType)
+                    switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventClassification)
                     {
-                        case GameEvent.EventType.Bridge:
-                            _scriptMain._airPushParticle.Play();
-                            yield return new WaitForSeconds(0.5f);
-                            _scriptMain._windBlockPalanca.Play();
-                            yield return new WaitForSeconds(0.5f);
-                            _scriptMain._airPushParticle.Stop();
-                            _scriptMain._windBlockPalanca.Stop();
-                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BridgeEvent>()._activateBridge = true;
-                            yield return new WaitForSeconds(2);
+                        case GameEvent.EventClassification.Normal:
+                            case GameEvent.EventClassification.Fight:
+                            switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType)
+                            {
+                                case GameEvent.EventType.Bridge:
+                                    _scriptMain._airPushParticle.Play();
+                                    yield return new WaitForSeconds(0.5f);
+                                    _scriptMain._windBlockPalanca.Play();
+                                    yield return new WaitForSeconds(0.5f);
+                                    _scriptMain._airPushParticle.Stop();
+                                    _scriptMain._windBlockPalanca.Stop();
+                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BridgeEvent>()._activateBridge = true;
+                                    yield return new WaitForSeconds(2);
+                                    break;
+                                case GameEvent.EventType.Lagoon:
+                                    _scriptMain._snowParticle.Play();
+                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFallEvent>().ActivateFreeze();
+                                    yield return new WaitForSeconds(4);
+                                    break;
+                                case GameEvent.EventType.Well:
+                                    _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
+                                    _scriptMain._scriptEvents._rainParticle.Play();
+                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFillEvent>()._fillBool = true;
+                                    yield return new WaitForSeconds(2);
+                                    break;
+                                case GameEvent.EventType.StrongAir:
+                                    _scriptMain._windBlocker.GetComponent<ParticleSystem>().Play();
+                                    //_scriptMain._scriptMain._windParticle.GetComponent<ForceField2D>().fuerza = 1250;
+                                    yield return new WaitForSeconds(2);
+                                    break;
+                                case GameEvent.EventType.FallingBridge:
+                                    _scriptMain._cutParticles[0].Play();
+                                    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._cut);
+                                    yield return new WaitForSeconds(0.5f);
+                                    _scriptMain._cutParticles[1].Play();
+                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<SandCutEventScript>().StartCuttingVoid();
+                                    yield return new WaitForSeconds(2);
+                                    break;
+                                case GameEvent.EventType.Gears:
+                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._stainsAnimator.SetTrigger("Splash");
+                                    yield return new WaitForSeconds(0.5f);
+                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._Stopped = true;
+                                    yield return new WaitForSeconds(2);
+                                    break;
+                                case GameEvent.EventType.Fire:
+                                    _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
+                                    _scriptMain._scriptEvents._rainParticle.Play();
+                                    yield return new WaitForSeconds(1);
+                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<FireEventScript>().FireExtinguishVoid();
+                                    yield return new WaitForSeconds(2);
+                                    break;
+                                case GameEvent.EventType.BossFight0:
+                                    break;
+                                case GameEvent.EventType.BossFight1:
+                                    Debug.Log("frozen");
+                                    _scriptMain._cascadeFrozen = true;
+                                    //_scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFallEvent>().ActivateFreeze();
+                                    _scriptMain._snowBool = true;
+
+                                    _scriptMain._bossAnimator.Play("Frozen");
+                                    _scriptMain._bossAnimator.SetBool("Frozen", true);
+                                    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._frozen);
+                                    _scriptMain._proyectileCharge[0].Stop();
+                                    _scriptMain._proyectileCharge[1].Stop();
+                                    _scriptMain._proyectileCharge[2].Stop();
+                                    _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
+                                    _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
+                                    yield return new WaitForSeconds(2);
+                                    break;
+                                case GameEvent.EventType.BossFight2:
+                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._events[2].GetComponent<Animator>().SetBool("Cut", true);
+                                    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._cut);
+                                    yield return new WaitForSeconds(0.5f);
+                                    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._boosDamaged);
+                                    _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
+                                    _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
+                                    _scriptMain._proyectileCharge[0].Stop();
+                                    _scriptMain._proyectileCharge[1].Stop();
+                                    _scriptMain._proyectileCharge[2].Stop();
+                 
+                                    //_scriptMain._bossAnimator.SetBool("Damaged", true);
+                                    _scriptMain._enemyExplosion.Play();
+                                    yield return new WaitForSeconds(2);
+                                    StartCoroutine(_scriptMain.GameEndsNumerator());
+                                    yield break;
+                                    break;
+                                case GameEvent.EventType.BossFight3:
+                              
+                                    break;
+                                case GameEvent.EventType.BossFight4:
+                                    _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
+                                    _scriptMain._scriptEvents._rainParticle.Play();
+                                    yield return new WaitForSeconds(1);
+                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>().FireExtinguish();
+                                    //yield break;
+                                    break;
+                                case GameEvent.EventType.BossFight5:
+                                    
+                                    break;
+                            }
                             break;
-                        case GameEvent.EventType.Lagoon:
-                            _scriptMain._snowParticle.Play();
-                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFallEvent>().ActivateFreeze();
-                            yield return new WaitForSeconds(4);
-                            break;
-                        case GameEvent.EventType.Well:
+                        case GameEvent.EventClassification.Tutorial:
                             _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
                             _scriptMain._scriptEvents._rainParticle.Play();
                             _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFillEvent>()._fillBool = true;
                             yield return new WaitForSeconds(2);
                             break;
-                        case GameEvent.EventType.StrongAir:
-                            _scriptMain._windBlocker.GetComponent<ParticleSystem>().Play();
-                            //_scriptMain._scriptMain._windParticle.GetComponent<ForceField2D>().fuerza = 1250;
-                            yield return new WaitForSeconds(2);
-                            break;
-                        case GameEvent.EventType.FallingBridge:
-                            _scriptMain._cutParticles[0].Play();
-                            yield return new WaitForSeconds(0.5f);
-                            _scriptMain._cutParticles[1].Play();
-                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<SandCutEventScript>().StartCuttingVoid();
-                            yield return new WaitForSeconds(2);
-                            break;
-                        case GameEvent.EventType.Gears:
-                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._stainsAnimator.SetTrigger("Splash");
-                            yield return new WaitForSeconds(0.5f);
-                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._Stopped = true;
-                            yield return new WaitForSeconds(2);
-                            break;
-                        case GameEvent.EventType.Fire:
-                            _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
-                            _scriptMain._scriptEvents._rainParticle.Play();
-                            yield return new WaitForSeconds(1);
-                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<FireEventScript>().FireExtinguishVoid();
-                            yield return new WaitForSeconds(2);
-                            break;
-                        case GameEvent.EventType.BossFight0:
-                            break;
-                        case GameEvent.EventType.BossFight1:
-                            _scriptMain._cascadeFrozen = true;
-                            //_scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFallEvent>().ActivateFreeze();
-                            _scriptMain._snowBool = true;              
-
-                            _scriptMain._bossAnimator.Play("Frozen");
-                            _scriptMain._bossAnimator.SetBool("Frozen", true);
-                            _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._frozen);
-                            _scriptMain._proyectileCharge[0].Stop();
-                            _scriptMain._proyectileCharge[1].Stop();
-                            _scriptMain._proyectileCharge[2].Stop();
-                            _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
-                            _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
-                            yield return new WaitForSeconds(2);
-                            break;
-                        case GameEvent.EventType.BossFight2:
-                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._events[2].GetComponent<Animator>().SetBool("Cut", true);
-                            _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._cut);
-                            yield return new WaitForSeconds(0.5f);
-                            _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._boosDamaged);
-                            _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
-                            _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
-                            _scriptMain._proyectileCharge[0].Stop();
-                            _scriptMain._proyectileCharge[1].Stop();
-                            _scriptMain._proyectileCharge[2].Stop();
-                            _scriptMain._bossAnimator.Play("Frozen");
-                            //_scriptMain._bossAnimator.SetBool("Damaged", true);
-                            _scriptMain._enemyExplosion.Play();
-                            yield return new WaitForSeconds(2);
-                            StartCoroutine(_scriptMain.GameEndsNumerator());
-                            yield break;
-                            break;
-                        case GameEvent.EventType.BossFight3:
-                            break;
-                        case GameEvent.EventType.BossFight4:
-                            _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
-                            _scriptMain._scriptEvents._rainParticle.Play();
-                            yield return new WaitForSeconds(1);
-                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>().FireExtinguish();                         
-                            yield break;
-                            break;
-                        case GameEvent.EventType.BossFight5:
-                            break;
                     }
+
       
                     _scriptMain._darkenerChanging = false;            
       

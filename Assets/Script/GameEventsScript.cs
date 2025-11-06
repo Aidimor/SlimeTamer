@@ -9,6 +9,7 @@ using LoL;
 public class GameEventsScript : MonoBehaviour
 {
     [SerializeField] private MainGameplayScript _scriptMain;
+    [SerializeField] private QuestionHandler _questionHandler;
     [Header("Lista de eventos")]
     public GameEvent[] _specialEvents;   // Ahora es directamente GameEvent[]
 
@@ -20,7 +21,7 @@ public class GameEventsScript : MonoBehaviour
     [Header("Padre de los objetos instanciados")]
     public Transform[] _eventosParent;
     public GameObject _currentEventPrefab;
-    public GameObject[] _enemiesGameObjects;
+    //public GameObject[] _enemiesGameObjects;
 
     public int _onEvent;
 
@@ -45,10 +46,10 @@ public class GameEventsScript : MonoBehaviour
 
     void Start()
     {
-        for(int i = 0; i < _enemiesGameObjects.Length; i++)
-        {
-            _enemiesGameObjects[i].gameObject.SetActive(false);
-        }
+        //for(int i = 0; i < _enemiesGameObjects.Length; i++)
+        //{
+        //    _enemiesGameObjects[i].gameObject.SetActive(false);
+        //}
 
         switch (_scriptMain._scriptMain._onWorldGlobal)
         {
@@ -56,9 +57,9 @@ public class GameEventsScript : MonoBehaviour
                 switch (_scriptMain._scriptMain._saveLoadValues._finalWorldUnlocked)
                 {
                     case false:
-                        _scriptMain._GamesList.Add(0);
+                        _scriptMain._GamesList.Add(0);             
                         _scriptMain._GamesList.Add(11);
-                        _scriptMain._GamesList.Add(10);
+                        _scriptMain._GamesList.Add(20);            
                         _scriptMain._GamesList.Add(6);
                         _scriptMain._GamesList.Add(3);
                         _scriptMain._GamesList.Add(1);
@@ -66,12 +67,12 @@ public class GameEventsScript : MonoBehaviour
                         break;
                     case true:
                         _scriptMain._GamesList.Add(0);
-                        //List<int> posiblesNumeros0 = new List<int> { 1, 4, 5, 7, 15, 17, 18 };
-                        //for (int i = 0; i < 10; i++)
-                        //{
-                        //    int randomIndex = Random.Range(0, posiblesNumeros0.Count);
-                        //    _scriptMain._GamesList.Add(posiblesNumeros0[randomIndex]);
-                        //}
+                        List<int> posiblesNumeros0 = new List<int> { 1, 4, 5, 7, 15, 17, 18 };
+                        for (int i = 0; i < 10; i++)
+                        {
+                            int randomIndex = Random.Range(0, posiblesNumeros0.Count);
+                            _scriptMain._GamesList.Add(posiblesNumeros0[randomIndex]);
+                        }
                         _scriptMain._GamesList.Add(16);
                         break;
                 }
@@ -82,13 +83,13 @@ public class GameEventsScript : MonoBehaviour
          
                 _scriptMain._GamesList.Add(0);
                 _scriptMain._GamesList.Add(1);
-             
+                _scriptMain._GamesList.Add(15);
                 _scriptMain._GamesList.Add(3);
                 _scriptMain._GamesList.Add(4);
                 _scriptMain._GamesList.Add(5);
                 _scriptMain._GamesList.Add(6);
                 _scriptMain._GamesList.Add(7);
-                List<int> posiblesNumeros1 = new List<int> { 1, 3, 4, 5, 6, 7, 8, 9, 10, 15, 17, 18 };
+                List<int> posiblesNumeros1 = new List<int> { 3, 4, 5, 6, 7, 8, 9, 10, 15, 17, 18 };
                 for (int i = 0; i < 6; i++)
                 {
                     int randomIndex = Random.Range(0, posiblesNumeros1.Count);
@@ -103,7 +104,6 @@ public class GameEventsScript : MonoBehaviour
                 _scriptMain._GamesList.Add(9);
                 _scriptMain._GamesList.Add(1);
                 _scriptMain._GamesList.Add(3);
-          
                 _scriptMain._GamesList.Add(1);
                 _scriptMain._GamesList.Add(19);
                 _scriptMain._GamesList.Add(4);
@@ -111,7 +111,7 @@ public class GameEventsScript : MonoBehaviour
                 _scriptMain._GamesList.Add(3);
                 _scriptMain._GamesList.Add(15);
                 // Aleatorios de un conjunto
-                List<int> posiblesNumeros3 = new List<int> { 1, 3, 4, 7, 8, 9, 15 };
+                List<int> posiblesNumeros3 = new List<int> { 3, 4, 7, 8, 9, 15 };
                 for (int i = 0; i < 4; i++)
                 {
                     int randomIndex = Random.Range(0, posiblesNumeros3.Count);
@@ -182,10 +182,10 @@ public class GameEventsScript : MonoBehaviour
         _scriptMain._scriptEvents._winRound = false;
         _scriptMain._scriptFusion.UnlockElements();
  
-        for (int i = 0; i < _enemiesGameObjects.Length; i++)
-        {
-            _enemiesGameObjects[i].gameObject.SetActive(false);
-        }
+        //for (int i = 0; i < _enemiesGameObjects.Length; i++)
+        //{
+        //    _enemiesGameObjects[i].gameObject.SetActive(false);
+        //}
 
         if (_specialEvents.Length > 0 && _specialEvents[_scriptMain._GamesList[_onEvent]]._eventPrefab != null)
         {
@@ -255,13 +255,12 @@ public class GameEventsScript : MonoBehaviour
                         case GameEvent.EventType.Well:
                             _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                             _scriptMain._onEventID = 3;
-                            evento.GetComponent<WaterFillEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
-                  
+                            evento.GetComponent<WaterFillEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);           
 
                             break;
                         case GameEvent.EventType.StrongAir:
                             _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
-                            _scriptMain._scriptMain._scriptSFX._strongWindSetVolume = 0.25f;
+                            _scriptMain._scriptMain._scriptSFX._strongWindSetVolume = 0.05f;
                             //_scriptMain._scriptSlime._slimeAnimator.SetBool("WindPush", true);
                             _scriptMain._onEventID = 4;
                             evento.GetComponent<StrongAirEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);                 
@@ -275,18 +274,18 @@ public class GameEventsScript : MonoBehaviour
                             evento.GetComponent<GearsPrefabEventScript>()._stainsAnimator.GetComponent<SpecialAnimatorEvents>()._scriptMainController = _scriptMain._scriptMain;
                             evento.GetComponent<GearsPrefabEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); 
                             break;
-                        case GameEvent.EventType.FightWasp:
-                            _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
-                            _enemiesGameObjects[0].gameObject.SetActive(true);
-                            evento.GetComponent<WaspFightScript>()._waspAnimator = _enemiesGameObjects[0].GetComponent<Animator>();
-                            _scriptMain._onEventID = 7;
-                            break;
-                        case GameEvent.EventType.FightSnail:
-                            _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
-                            _enemiesGameObjects[1].gameObject.SetActive(true);
-                            evento.GetComponent<SnailFightScript>()._snailAnimator = _enemiesGameObjects[1].GetComponent<Animator>();
-                            _scriptMain._onEventID = 8;
-                            break;
+                        //case GameEvent.EventType.FightWasp:
+                        //    _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
+                        //    _enemiesGameObjects[0].gameObject.SetActive(true);
+                        //    evento.GetComponent<WaspFightScript>()._waspAnimator = _enemiesGameObjects[0].GetComponent<Animator>();
+                        //    _scriptMain._onEventID = 7;
+                        //    break;
+                        //case GameEvent.EventType.FightSnail:
+                        //    _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
+                        //    _enemiesGameObjects[1].gameObject.SetActive(true);
+                        //    evento.GetComponent<SnailFightScript>()._snailAnimator = _enemiesGameObjects[1].GetComponent<Animator>();
+                        //    _scriptMain._onEventID = 8;
+                        //    break;
                         case GameEvent.EventType.Fire:
                             _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
 
@@ -339,6 +338,7 @@ public class GameEventsScript : MonoBehaviour
                     break;
 
                 case GameEvent.EventClassification.Questionary:
+                    _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                     evento.GetComponent<QuestionaryScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                     _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(_scriptMain._firstStage);
                     _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);
@@ -346,10 +346,13 @@ public class GameEventsScript : MonoBehaviour
         
                         yield return new WaitForSeconds(1);
                         _scriptMain._scriptSlime._slimeAnimator.SetBool("Moving", false);
-                        StartCoroutine(StartStageQuestionary());
-        
+                    // Llamas a la función que dispara el overlay
+                       _questionHandler.StartStageQuestionary();
+
+
                     break;
                 case GameEvent.EventClassification.Chest:
+                    _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                     evento.GetComponent<ChestEventScript>()._scriptMain = _scriptMain;
                     evento.GetComponent<ChestEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                     _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(_scriptMain._firstStage);
@@ -358,12 +361,14 @@ public class GameEventsScript : MonoBehaviour
                     StartCoroutine(_scriptMain.StartsStageChest());               
                     break;
                 case GameEvent.EventClassification.Intro:
+                    _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                     evento.GetComponent<IntroEventScript>()._scriptMain = _scriptMain;
                     _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
                     _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);       
                     StartCoroutine(_scriptMain.IntroStageNumerator());
                     break;
                 case GameEvent.EventClassification.Shop:
+                    _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                     evento.GetComponent<ShopScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                     //evento.GetComponent<QuestionaryScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                     _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
@@ -376,6 +381,7 @@ public class GameEventsScript : MonoBehaviour
                     StartCoroutine(_scriptMain.StartsShopNumerator());
                     break;
                 case GameEvent.EventClassification.Teleporter:
+                    _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                     evento.GetComponent<TeleporterScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                     _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-100, -200);
                     yield return new WaitForSeconds(1);
@@ -384,6 +390,17 @@ public class GameEventsScript : MonoBehaviour
                     StartCoroutine(_scriptMain.StartsTeleporterAnimator());
        
                     break;
+                case GameEvent.EventClassification.Tutorial:
+                    _scriptMain._onTutorial = true;
+                    _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
+                    _scriptMain._rightElementID[0] = 1;
+                    _scriptMain._onEventID = 3;
+                    evento.GetComponent<WaterFillEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
+                    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);
+                    StartCoroutine(_scriptMain.StartStageNumerator());
+
+            
+                    break;
           
             }
         }
@@ -391,37 +408,127 @@ public class GameEventsScript : MonoBehaviour
 
     }
 
-
-    public IEnumerator StartStageQuestionary()
+    public void AdvanceStage()
     {
-        _scriptMain._scriptMain._scriptInit.ShowQuestion();
-        _winRound = true;
-        // Espera hasta que se reciba la respuesta
-        //yield return new WaitUntil(() => _scriptMain._scriptMain._scriptInit.respuestaRecibida);
-        yield return new WaitForSeconds(1);
-
-        // Reinicia la variable para la próxima pregunta
-        _scriptMain._scriptMain._scriptInit.respuestaRecibida = false;
-
-        // Ahora puedes continuar con el juego, usando lastAnswerCorrect, lastAnswer, etc.
-        if (_scriptMain._scriptMain._scriptInit.lastAnswerCorrect)
-        {
-            Debug.Log("✅ El jugador respondió correctamente!");
-        }
-        else
-        {
-            Debug.Log("❌ El jugador respondió incorrectamente.");
-        }
-
-        _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
-
-        yield return new WaitForSeconds(2);
-  
-        Destroy(_scriptMain._scriptEvents._currentEventPrefab);
-
+        //StartCoroutine(AdvanceStageNumerator());
         StartCoroutine(_scriptMain.ExitNumerator());
-   
+        // Animaciones, efectos, spawn del siguiente evento, etc.
     }
+
+
+    //public IEnumerator AdvanceStageNumerator()
+    //{
+    //    StartCoroutine(_scriptMain.ExitNumerator());
+    //}
+
+    //public void StartStageQuestionary()
+    //{
+    //    Debug.Log("🟢 Mostrando pregunta al jugador...");
+    //    LOLSDK.Instance.ShowQuestion();
+
+    //    // Registramos el callback
+    //    LOLSDK.Instance.AnswerResultReceived += HandleAnswerResult;
+    //}
+
+    //private void HandleAnswerResult(string json)
+    //{
+    //    Debug.Log("🟡 AnswerResultReceived llamado: " + json);
+
+    //    var answerResult = SimpleJSON.JSON.Parse(json);
+    //    string isCorrect = answerResult["isCorrect"];
+
+    //    switch (isCorrect)
+    //    {
+    //        case "true":
+    //            Debug.Log("✅ El jugador respondió correctamente!");
+    //            break;
+    //        case "false":
+    //            Debug.Log("❌ El jugador respondió incorrectamente.");
+    //            break;
+    //        default:
+    //            Debug.Log("⚪ No respondió / cerró el overlay");
+    //            break;
+    //    }
+
+    //    // Quitamos el callback para no recibirlo otra vez
+    //    LOLSDK.Instance.AnswerResultReceived -= HandleAnswerResult;
+
+    //    // Ejecutamos la continuación en la siguiente frame
+    //    StartCoroutine(ContinueAfterQuestionNextFrame());
+    //}
+
+    //private IEnumerator ContinueAfterQuestionNextFrame()
+    //{
+    //    yield return null; // Espera un frame para que Unity “recupere control”
+
+    //    if (_scriptMain._scriptMain != null)
+    //    {
+    //        _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
+    //    }
+
+    //    if (_scriptMain._scriptEvents != null && _scriptMain._scriptEvents._currentEventPrefab != null)
+    //    {
+    //        Destroy(_scriptMain._scriptEvents._currentEventPrefab);
+    //    }
+
+    //    StartCoroutine(_scriptMain.ExitNumerator());
+
+    //    Debug.Log("▶ Continuando el juego después de la pregunta...");
+    //}
+
+
+
+
+
+    //public IEnumerator StartStageQuestionary()
+    //{
+    //    _scriptMain._scriptMain._scriptInit.ShowQuestion();
+
+    //    // Espera hasta que el jugador responda
+    //    yield return new WaitUntil(() => _scriptMain._scriptMain._scriptInit.respuestaRecibida);
+
+    //    // Ahora sí podemos leer la respuesta
+    //    if (_scriptMain._scriptMain._scriptInit.lastAnswerCorrect)
+    //    {
+    //        Debug.Log("✅ El jugador respondió correctamente!");
+    //    }
+    //    else
+    //    {
+    //        Debug.Log("❌ El jugador respondió incorrectamente.");
+    //    }
+
+    //    // Reinicia la variable para la próxima pregunta
+    //    _scriptMain._scriptMain._scriptInit.respuestaRecibida = false;
+
+    //    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
+
+    //    Destroy(_scriptMain._scriptEvents._currentEventPrefab);
+
+    //    StartCoroutine(_scriptMain.ExitNumerator());
+    //}
+
+    //// Este método recibe la respuesta desde la web
+    //public void OnWebAnswerReceived(string data)
+    //{
+    //    // Separa los datos que vienen en formato "questionId,alternativeId,correct"
+    //    string[] parts = data.Split(',');
+    //    int questionId = int.Parse(parts[0]);      // ID de la pregunta
+    //    int alternativeId = int.Parse(parts[1]);   // ID de la alternativa
+    //    bool correct = parts[2] == "1";            // 1 = correcta, 0 = incorrecta
+
+    //    // Guarda los datos en tu script de inicialización
+    //    _scriptMain._scriptMain._scriptInit.lastAnswer = alternativeId;
+    //    _scriptMain._scriptMain._scriptInit.lastAnswerCorrect = correct;
+    //    _scriptMain._scriptMain._scriptInit.respuestaRecibida = true;
+
+    //    Debug.Log($"Respuesta recibida: QID={questionId}, AltID={alternativeId}, Correct={correct}");
+    //}
+
+
+
+
+
+
 
 
 }

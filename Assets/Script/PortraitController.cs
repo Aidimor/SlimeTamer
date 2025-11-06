@@ -253,6 +253,7 @@ public class PortraitController : MonoBehaviour
 
     public IEnumerator StartGame()
     {
+        _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._chooseElement);
         _logo.gameObject.SetActive(false);
         _scriptMainController._cinematicBorders.SetBool("FadeIn", true);
         _parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -50f);
