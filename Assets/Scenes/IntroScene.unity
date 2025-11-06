@@ -65424,7 +65424,7 @@ MonoBehaviour:
   _chooseElement: {fileID: 8300000, guid: bffe130d9247ec5408ec2ec5b9c3affc, type: 3}
   _slimeCharge: {fileID: 8300000, guid: 5b7a073e4b7685f4bb613f1376097963, type: 3}
   _slimeRelease: {fileID: 8300000, guid: 77a90a2db0b2409448ba3316358510ef, type: 3}
-  _slimeArrives: {fileID: 0}
+  _slimeArrives: {fileID: 8300000, guid: 2d28d5ba5ab8cd44084a15026257c449, type: 3}
   _shopEnter: {fileID: 8300000, guid: 74599581660b3e844b4f4341f3d24ac9, type: 3}
   _slimeDead: {fileID: 8300000, guid: e880765645adad7499a90d1496f4d8c9, type: 3}
   _flameOn: {fileID: 8300000, guid: e950bae5f4f704d45994280a1192cd2f, type: 3}
