@@ -142,8 +142,11 @@ public class MainController : MonoBehaviour
                 if (_saveLoadValues._slimeUnlocked != null && i + 1 < _saveLoadValues._slimeUnlocked.Length)
                 {
                     if (_saveLoadValues._slimeUnlocked[i + 1])
+                    {
                         _pauseAssets._allSlimeText[i].text = GameInitScript.Instance.GetText("Slime" + (i + 1).ToString("f0"));
-                    _pauseAssets._allSlimeText[i].gameObject.SetActive(true);
+                        _pauseAssets._allSlimeText[i].gameObject.SetActive(true);
+                    }
+              
                 }
             }
         }

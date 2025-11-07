@@ -391,6 +391,7 @@ public class GameEventsScript : MonoBehaviour
        
                     break;
                 case GameEvent.EventClassification.Tutorial:
+                    _scriptMain._scriptMain._pauseAssets._hintAvailable = true;
                     _scriptMain._onTutorial = true;
                     _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                     _scriptMain._rightElementID[0] = 1;

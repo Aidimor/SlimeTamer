@@ -8,11 +8,8 @@ using System.Text;
 using System; // Para Action
 using UnityEngine.Networking;
 
-
-
 namespace LoL
 {
-
     [System.Serializable]
     public class LocalizedItem
     {
@@ -49,7 +46,7 @@ namespace LoL
         public string lastAnswer;
         public bool languageReady = false;
 
-        public bool _usePersistentSave; // true = guardar en disco, false = guardar en SDK
+        public bool _usePersistentSave; // true = guardar en disco, false = usar SDK
         public bool _starZero;
 
         void Awake()
@@ -88,8 +85,6 @@ namespace LoL
                 Time.timeScale = state == GameState.Paused ? 0f : 1f;
             };
 
-
-            // Registrar callback y pedir carga de estado
             LoadState();
             MainController.Instance.FixSaveValues();
             StartCoroutine(StartNumerator());
@@ -108,7 +103,6 @@ namespace LoL
             else
                 LoadGameFromSDK();
 
-            // 🔹 Enviar señal al Test Harness de que el juego está listo
             Debug.Log("🔹 Enviando GameIsReady al SDK...");
             LOLSDK.Instance.GameIsReady();
             Debug.Log("✅ GameIsReady enviado correctamente. Test Harness debería responder ahora.");
@@ -131,7 +125,7 @@ namespace LoL
                     OnStartGame(payload.ToString());
             }
 
-            // Cargar archivo de idioma
+            // Cargar idioma desde StreamingAssets
             string langFilePath = Path.Combine(Application.streamingAssetsPath, "language.json");
             if (File.Exists(langFilePath))
             {
@@ -169,92 +163,6 @@ namespace LoL
             Debug.Log("✅ Guardado del SDK borrado y reiniciado manualmente.");
         }
 
-        // ========================
-        // GUARDADO
-        // ========================
-        //public void SaveGame()
-        //{
-        //    if (MainController.Instance == null) return;
-
-        //    GameSaveState state = new GameSaveState
-        //    {
-        //        _worldsUnlocked = MainController.Instance._saveLoadValues._worldsUnlocked,
-        //        _elementsUnlocked = MainController.Instance._saveLoadValues._elementsUnlocked,
-        //        _slimeUnlocked = MainController.Instance._saveLoadValues._slimeUnlocked,
-        //        _healthCoins = MainController.Instance._saveLoadValues._healthCoins,
-        //        _hintCoins = MainController.Instance._saveLoadValues._hintCoins,
-        //        _finalWorldUnlocked = MainController.Instance._saveLoadValues._finalWorldUnlocked
-        //    };
-
-        //    if (_usePersistentSave)
-        //    {
-        //        string json = JsonUtility.ToJson(state, true);
-        //        string path = Path.Combine(Application.persistentDataPath, "gameSave.json");
-        //        File.WriteAllText(path, json, Encoding.UTF8);
-        //        Debug.Log("💾 Juego guardado localmente: " + path);
-        //    }
-        //    else
-        //    {
-        //        LOLSDK.Instance.SaveState(new State<GameSaveState> { data = state });
-        //        Debug.Log("💾 Juego guardado en SDK");
-        //    }
-        //}
-
-        //// ========================
-        //// CARGA
-        //// ========================
-        //public void LoadState()
-        //{
-        //    if (_usePersistentSave)
-        //    {
-        //        string path = Path.Combine(Application.persistentDataPath, "gameSave.json");
-
-        //        if (File.Exists(path))
-        //        {
-        //            string json = File.ReadAllText(path, Encoding.UTF8);
-        //            GameSaveState state = JsonUtility.FromJson<GameSaveState>(json);
-        //            ApplyLoadedState(state);
-        //            Debug.Log("📂 Juego cargado desde disco: " + path);
-        //        }
-        //        else
-        //        {
-        //            Debug.Log("ℹ️ No hay guardado local. Inicializando uno nuevo...");
-        //            InitializeEmptySave();
-        //        }
-        //    }
-        //    else
-        //    {
-        //        LOLSDK.Instance.LoadState<GameSaveState>(newState =>
-        //        {
-        //            if (newState != null && newState.data != null)
-        //            {
-        //                ApplyLoadedState(newState.data);
-        //                Debug.Log("📂 Juego cargado correctamente desde SDK");
-        //            }
-        //            else
-        //            {
-        //                Debug.Log("ℹ️ No hay guardado en SDK, creando nuevo...");
-        //                StartCoroutine(InitializeEmptySaveWithDelay(() =>
-        //                {
-        //                    var emptyState = new GameSaveState
-        //                    {
-        //                        _worldsUnlocked = new bool[4] { true, false, false, false },
-        //                        _elementsUnlocked = new bool[4],
-        //                        _slimeUnlocked = new bool[7],
-        //                        _healthCoins = 1,
-        //                        _hintCoins = 1,
-        //                        _finalWorldUnlocked = false
-        //                    };
-        //                    LOLSDK.Instance.SaveState(new State<GameSaveState> { data = emptyState });
-        //                    Debug.Log("✅ Nuevo guardado vacío creado y almacenado en SDK.");
-        //                }));
-        //            }
-        //        });
-        //    }
-        //}
-        // Save en memoria para WebGL / SDK
-        //private GameSaveState memorySave;
-
         public void SaveGame()
         {
             GameSaveState state = new GameSaveState
@@ -266,10 +174,9 @@ namespace LoL
                 _hintCoins = MainController.Instance._saveLoadValues._hintCoins,
                 _finalWorldUnlocked = MainController.Instance._saveLoadValues._finalWorldUnlocked,
                 _progress = MainController.Instance._saveLoadValues._progress
-
             };
-            MainController.Instance.SubmitProgressToLoL(MainController.Instance._saveLoadValues._progress);           
-            // Guardado persistente usando SDK
+
+            MainController.Instance.SubmitProgressToLoL(MainController.Instance._saveLoadValues._progress);
             LOLSDK.Instance.SaveState(new State<GameSaveState> { data = state });
 
             Debug.Log("💾 Estado guardado en LoLSDK");
@@ -305,33 +212,6 @@ namespace LoL
             });
         }
 
-
-
-
-
-        private IEnumerator InitializeEmptySaveWithDelay(Action onComplete = null)
-        {
-            yield return new WaitUntil(() => MainController.Instance != null);
-            InitializeEmptySave();
-            onComplete?.Invoke();
-        }
-
-        private void InitializeEmptySave()
-        {
-            if (MainController.Instance == null) return;
-
-            var values = MainController.Instance._saveLoadValues;
-            values._worldsUnlocked = new bool[4] { true, false, false, false };
-            values._elementsUnlocked = new bool[4];
-            values._slimeUnlocked = new bool[7];
-            values._healthCoins = 1;
-            values._hintCoins = 1;
-            values._finalWorldUnlocked = false;
-            values._progress = 0;
-
-            Debug.Log("✅ Guardado vacío inicializado");
-        }
-
         private void ApplyLoadedState(GameSaveState state)
         {
             if (MainController.Instance == null) return;
@@ -356,33 +236,6 @@ namespace LoL
         // ========================
         // IDIOMA
         // ========================
-        //public void LoadLanguage(string lang)
-        //{
-        //    string path = Path.Combine(Application.dataPath, "Jsons", $"{lang}.txt");
-        //    if (!File.Exists(path))
-        //    {
-        //        Debug.LogError("❌ No se encontró archivo de idioma: " + path);
-        //        return;
-        //    }
-
-        //    string json = File.ReadAllText(path, Encoding.UTF8);
-        //    var langData = JSON.Parse(json);
-
-        //    _translations.Clear();
-        //    _localizedItems.Clear();
-
-        //    foreach (var item in langData["items"])
-        //    {
-        //        string key = item.Value["key"];
-        //        string value = item.Value["value"];
-        //        int id = item.Value["id"]?.AsInt ?? -1;
-        //        _translations[key] = value;
-        //        _localizedItems[key] = new LocalizedItem { key = key, value = value, id = id };
-        //    }
-
-        //    languageReady = true;
-        //}
-
         public void LoadLanguage(string lang)
         {
             StartCoroutine(LoadLanguageCoroutine(lang));
@@ -390,28 +243,98 @@ namespace LoL
 
         private IEnumerator LoadLanguageCoroutine(string lang)
         {
-            // StreamingAssetsPath en WebGL es una URL
-            string path = Path.Combine(Application.streamingAssetsPath, "Language", $"{lang}.txt");
+            string fileName = "language.json"; // 👈 Un solo archivo para todos los idiomas
+            string persistentPath = Path.Combine(Application.persistentDataPath, fileName);
+            string streamingPath = Path.Combine(Application.streamingAssetsPath, fileName);
 
+            string json = null;
 
-            Debug.Log("🌐 Cargando idioma desde: " + path);
-
-            using UnityWebRequest request = UnityWebRequest.Get(path);
-            yield return request.SendWebRequest();
+            // 1️⃣ Buscar en guardado persistente primero
+            if (File.Exists(persistentPath))
+            {
+                Debug.Log($"📦 Cargando idioma desde guardado persistente: {persistentPath}");
+                json = File.ReadAllText(persistentPath, Encoding.UTF8);
+            }
+            else
+            {
+#if UNITY_WEBGL
+                // 2️⃣ En WebGL, cargar con UnityWebRequest
+                Debug.Log("🌐 Cargando idioma desde: " + streamingPath);
+                using UnityWebRequest request = UnityWebRequest.Get(streamingPath);
+                yield return request.SendWebRequest();
 
 #if UNITY_2020_3_OR_NEWER
-            if (request.result != UnityWebRequest.Result.Success)
+                if (request.result != UnityWebRequest.Result.Success)
 #else
-    if (request.isNetworkError || request.isHttpError)
+        if (request.isNetworkError || request.isHttpError)
 #endif
-            {
-                Debug.LogError("❌ Error al cargar idioma: " + request.error);
-                yield break;
+                {
+                    Debug.LogError("❌ Error al cargar idioma: " + request.error);
+                    yield break;
+                }
+
+                json = request.downloadHandler.text;
+#else
+        // 3️⃣ En Editor o PC: leer directamente desde StreamingAssets
+        if (File.Exists(streamingPath))
+        {
+            Debug.Log("💾 Cargando idioma desde StreamingAssets: " + streamingPath);
+            json = File.ReadAllText(streamingPath, Encoding.UTF8);
+        }
+        else
+        {
+            Debug.LogError("❌ No se encontró language.json en StreamingAssets ni PersistentDataPath");
+            yield break;
+        }
+#endif
             }
 
-            string json = request.downloadHandler.text;
-            var langData = SimpleJSON.JSON.Parse(json);
+            // 4️⃣ Aplicar idioma
+            if (!string.IsNullOrEmpty(json))
+            {
+                var root = SimpleJSON.JSON.Parse(json);
+                var langData = root?[lang]; // 👈 Ahora accedemos directamente al idioma plano
 
+                if (langData != null)
+                {
+                    _translations.Clear();
+                    _localizedItems.Clear();
+
+                    foreach (var kvp in langData)
+                    {
+                        string key = kvp.Key;
+                        string value = kvp.Value;
+
+                        _translations[key] = value;
+                        _localizedItems[key] = new LocalizedItem
+                        {
+                            key = key,
+                            value = value,
+                            id = -1 // Ya no usamos IDs
+                        };
+                    }
+
+                    languageReady = true;
+                    Debug.Log($"✅ Idioma '{lang}' cargado correctamente desde language.json");
+                    Debug.Log($"🔤 Total de claves cargadas: {_translations.Count}");
+
+                    // Depuración opcional
+                    foreach (var k in _translations.Keys)
+                        Debug.Log($" - {k}: {_translations[k]}");
+                }
+                else
+                {
+                    Debug.LogError($"❌ El archivo language.json no contiene el idioma '{lang}'");
+                }
+            }
+        }
+
+
+
+
+        private void ApplyLanguageFromJSON(string json, string lang)
+        {
+            var langData = SimpleJSON.JSON.Parse(json);
             _translations.Clear();
             _localizedItems.Clear();
 
@@ -420,16 +343,18 @@ namespace LoL
                 string key = item.Value["key"];
                 string value = item.Value["value"];
                 int id = item.Value["id"]?.AsInt ?? -1;
+
                 _translations[key] = value;
                 _localizedItems[key] = new LocalizedItem { key = key, value = value, id = id };
             }
 
             languageReady = true;
-            Debug.Log("✅ Idioma cargado correctamente: " + lang);
+            Debug.Log($"✅ Idioma '{lang}' cargado correctamente.");
         }
 
-
-
+        // ========================
+        // CALLBACKS DEL SDK
+        // ========================
         void OnStartGame(string startGameJSON)
         {
             if (string.IsNullOrEmpty(startGameJSON)) return;

@@ -738,8 +738,8 @@ public class MainGameplayScript : MonoBehaviour
             string text = GameInitScript.Instance.GetText("dialoge" + i.ToString());
             int id = GameInitScript.Instance.GetTextID("dialoge" + i.ToString());
             StartCoroutine(EscribirTexto(text, _dialogeAssets._dialogeText, 0.02f));
-            var PrincessImage = _scriptEvents._currentEventPrefab.GetComponent<ChestEventScript>();
-            PrincessImage._princessAnim.GetComponent<Image>().sprite = PrincessImage._allPrincessSprites[id];
+            //var PrincessImage = _scriptEvents._currentEventPrefab.GetComponent<ChestEventScript>();
+            //PrincessImage._princessAnim.GetComponent<Image>().sprite = PrincessImage._allPrincessSprites[id];
 
             while (_dialogeAssets._typing)
             {
