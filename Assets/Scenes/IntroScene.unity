@@ -36348,7 +36348,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _scriptMainController: {fileID: 670792205}
   _falling: 0
-  _fallSpeed: 5
   _parent: {fileID: 826323416}
   _logo: {fileID: 907457680}
   _OnPos: 1
@@ -51147,7 +51146,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: d9828661d18a41647a539355f8cb23e1, type: 3}
+  m_audioClip: {fileID: 8300000, guid: ad3be8c3d7ccccd479d0bc42e8dbd09c, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.05
   m_Pitch: 0.95
@@ -59155,13 +59154,12 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   _languageCode: es
+  languageReady: 0
+  _usePersistentSave: 1
   respuestaRecibida: 0
   lastAnswerCorrect: 0
   lastQuestionId: 
   lastAnswer: 
-  languageReady: 0
-  _usePersistentSave: 0
-  _starZero: 0
 --- !u!4 &1955862550
 Transform:
   m_ObjectHideFlags: 0
@@ -65456,7 +65454,7 @@ AudioSource:
   m_Enabled: 1
   serializedVersion: 4
   OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: 5b043769084ff624f96784a7b7f440a6, type: 3}
   m_PlayOnAwake: 0
   m_Volume: 0.8
   m_Pitch: 0.8
