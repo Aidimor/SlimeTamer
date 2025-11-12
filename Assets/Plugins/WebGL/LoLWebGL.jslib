@@ -6,10 +6,10 @@
     resolution,
     sdkVersion
   ) {
-    const targetGameObject = Pointer_stringify(callbackObject);
+    const targetGameObject = UTF8ToString(callbackObject);
     console.log('GameIsReady() from JS');
-    console.log('Game Name: ' + Pointer_stringify(gameName));
-    console.log('LoL UNITY SDK version: ' + Pointer_stringify(sdkVersion));
+    console.log('Game Name: ' + UTF8ToString(gameName));
+    console.log('LoL UNITY SDK version: ' + UTF8ToString(sdkVersion));
     console.log('Sending data to GameObject' + targetGameObject);
 
     const EVENT = {
@@ -34,23 +34,23 @@
         PLAYER_ACTIVITY_ID: 'playerActivityId',
         LOAD_STATE: 'loadState',
         SAVE_STATE_RESULT: 'saveStateResult',
-        ANSWER_RESULT: "answerResult"
+		    ANSWER_RESULT: "answerResult"
       }
     };
 
-    const LANGUAGE_PAYLOAD = {
-      _meta: {
-        maxChars: {
-          welcome: 20
-        }
-      },
-      en: {
-        welcome: 'welcome'
-      },
-      es: {
-        welcome: "¡Bienvenido!"
-      }
-    };
+    // const LANGUAGE_PAYLOAD = {
+    // 	_meta: {
+    // 		maxChars: {
+    // 			welcome: 20
+    // 		}
+    // 	},
+    // 	en: {
+    // 		welcome: 'welcome'
+    // 	},
+    // 	es: {
+    // 		welcome: "¡Bienvenido!"
+    // 	}
+    // };
 
     const START_GAME_PAYLOAD = {
       languageKey: 'en',
@@ -102,26 +102,26 @@
           );
           break;
         case EVENT.RECEIVED.PLAYER_ACTIVITY_ID:
-          SendMessage(
+	        SendMessage(
             targetGameObject,
             EVENT.UNITY.PLAYER_ACTIVITY_ID,
             msg.data.payload
           );
-          break;
+	        break;
         case EVENT.RECEIVED.LOAD_STATE:
-          SendMessage(
+	        SendMessage(
             targetGameObject,
             EVENT.UNITY.LOAD_STATE,
             msg.data.payload || ""
           );
-          break;
+	        break;
         case EVENT.RECEIVED.SAVE_STATE_RESULT:
-          SendMessage(
+	        SendMessage(
             targetGameObject,
             EVENT.UNITY.SAVE_STATE_RESULT,
             msg.data.payload
           );
-          break;
+	        break;
         case 'init':
           break;
         default:
@@ -136,26 +136,27 @@
         payload: JSON.stringify({
           aspectRatio: aspectRatio,
           resolution: resolution,
-          sdkVersion: Pointer_stringify(sdkVersion),
+          sdkVersion: UTF8ToString(sdkVersion),
         }),
       },
       '*'
     );
 
     setTimeout(function() {
-      // Envía idioma y datos de inicio falsos (útil para test en local)
-      SendMessage(targetGameObject, EVENT.UNITY.LANGUAGE_DEFS,
-        JSON.stringify(LANGUAGE_PAYLOAD)
-      );
-      SendMessage(targetGameObject, EVENT.UNITY.START_GAME,
-        JSON.stringify(START_GAME_PAYLOAD)
-      );
+      // Fake Language. Todo: send 'language' event from harness
+      // SendMessage(targetGameObject, EVENT.UNITY.LANGUAGE_DEFS,
+      // 	JSON.stringify(LANGUAGE_PAYLOAD)
+      // );
+      // Fake Start: todo: send 'start' event from harness
+      // SendMessage(targetGameObject, EVENT.UNITY.START_GAME,
+      // 	JSON.stringify(START_GAME_PAYLOAD)
+      // );
     }, 1);
   },
 
   _PostWindowMessage: function(_messageName, _jsonPayload) {
-    const messageName = Pointer_stringify(_messageName);
-    const jsonPayload = Pointer_stringify(_jsonPayload);
+    const messageName = UTF8ToString(_messageName);
+    const jsonPayload = UTF8ToString(_jsonPayload);
     const payload = {
       message: messageName,
       payload: jsonPayload,

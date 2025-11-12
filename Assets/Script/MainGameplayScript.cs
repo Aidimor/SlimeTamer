@@ -9,12 +9,12 @@ using LoLSDK;
 
 public class MainGameplayScript : MonoBehaviour
 {
+    public static MainGameplayScript Instance;
     public MainController _scriptMain;
-   
+    public FusionScript _scriptFusion;
     public GameObject _mainUI;
     public int _OnStation;
     public SlimeController _scriptSlime;
-    public FusionScript _scriptFusion;
     public GameEventsScript _scriptEvents;
     public RythmFusionScript _scriptRythm;
     public int _onEventID;
@@ -194,6 +194,7 @@ public class MainGameplayScript : MonoBehaviour
     private void Awake()
     {
         _scriptMain = GameObject.Find("CanvasIndestructible/Main/MainController").GetComponent<MainController>();
+        Instance = this;
         //_scriptLanguage = GameObject.Find("CanvasIndestructible/Main/LanguageManager").GetComponent<LanguageManager>();
     }
 
@@ -211,10 +212,10 @@ public class MainGameplayScript : MonoBehaviour
 
     void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        for(int i = 0; i < 3; i++)
-        {
-            _scriptFusion._elementsOptions[i]._unlocked = _scriptMain._saveLoadValues._elementsUnlocked[i];
-        }
+        //for(int i = 0; i < 3; i++)
+        //{
+        //    _scriptFusion._elementsOptions[i]._unlocked = _scriptMain._saveLoadValues._elementsUnlocked[i];
+        //}
 
         switch (_scriptMain._onWorldGlobal)
         {
@@ -236,6 +237,7 @@ public class MainGameplayScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        MainController.Instance._introSpecial = false;
         _totalStages._xPoses.Clear();
         StartNewWorld();
         _allStageAssets[_scriptMain._onWorldGlobal]._parentStage.SetActive(true);
@@ -373,7 +375,7 @@ public class MainGameplayScript : MonoBehaviour
             {
 
                 _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
-             _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, -190), 5 * Time.deltaTime);
+             _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, -207), 5 * Time.deltaTime);
             }
 
             if (_lightChanging)
@@ -565,8 +567,10 @@ public class MainGameplayScript : MonoBehaviour
 
         if (_onTutorial)
         {
-            LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("tutorial"));
-            yield return new WaitForSeconds(5);
+            LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("FullTutorial_0"));
+            yield return new WaitForSeconds(3);
+            LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("FullTutorial_1"));
+            yield return new WaitForSeconds(3);
             _onTutorial = false;
         }
      
@@ -642,9 +646,9 @@ public class MainGameplayScript : MonoBehaviour
         _worldNameAssets._background.color = _worldNameAssets._backgroundColor[_scriptMain._onWorldGlobal];
         yield return new WaitForSeconds(2);
         _worldNameAssets._parent.SetTrigger("WorldNameIn");
-        yield return new WaitForSeconds(1);
-        //_bossAnimator.SetTrigger("Flies");
-        yield return new WaitForSeconds(2);
+
+        //yield return new WaitForSeconds(3000);
+        yield return new WaitForSeconds(3);
         _slimeFalling = true;
         _scriptEvents._winRound = true;
         _firstStage = true;
@@ -926,7 +930,7 @@ public class MainGameplayScript : MonoBehaviour
    
 
         yield return new WaitForSeconds(2);
-        _scriptMain._scriptInit.SaveGame();
+        MainController.Instance.SaveProgress();
         _scriptMain._scriptMusic.PlayMusic(0);
                 _scriptMain._saveLoadValues._healthCoins = 1;
                 _scriptMain.LoadSceneByName("IntroScene");
@@ -954,7 +958,7 @@ public class MainGameplayScript : MonoBehaviour
         switch (_scriptMain._gameOverAssets._onPos)
         {
             case 0:
-                _scriptMain._scriptInit.SaveGame();
+                MainController.Instance.SaveProgress();
                 _scriptMain._scriptMusic.PlayMusic(0);
                 _scriptMain._saveLoadValues._healthCoins = 1;
                 _scriptMain.LoadSceneByName("IntroScene");
@@ -964,7 +968,7 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator ExitNumerator()
     {
-
+        MainController.Instance._introSpecial = false;
         if (_scriptEvents._currentEventPrefab.name != "Intro(Clone)")
         {
        
@@ -1051,7 +1055,9 @@ public class MainGameplayScript : MonoBehaviour
 
     public IEnumerator GameEndsNumerator()
     {
-         MainController.Instance._saveLoadValues._progress++;
+        MainController.Instance._introSpecial = false;
+        _scriptMain._saveLoadValues._progressSave[7] = true;
+
         _endGameAssets._parent.SetActive(true);
         _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._roar);
         _scriptMain._scriptSFX._fireSetVolume = 1;

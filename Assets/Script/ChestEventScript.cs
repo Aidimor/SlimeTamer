@@ -21,11 +21,8 @@ public class ChestEventScript : MonoBehaviour
 
         switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._chestItems[0])
         {
-            case GameEvent.ChestItems.Water:
-                if (!_scriptMain._scriptFusion._elementsOptions[0]._unlocked)
-                {
-                    MainController.Instance._saveLoadValues._progress++;
-                }              
+            case GameEvent.ChestItems.Water:          
+                 _scriptMain._scriptMain._saveLoadValues._progressSave[0] = true;              
                 _scriptMain._scriptFusion._elementsOptions[0]._unlocked = true;
                 _scriptMain._itemGotPanel._itemObject[0].SetActive(true);
                 _scriptMain._itemGotPanel.key = "description1";
@@ -33,20 +30,14 @@ public class ChestEventScript : MonoBehaviour
                 
                 break;
             case GameEvent.ChestItems.Air:
-                if (!_scriptMain._scriptFusion._elementsOptions[1]._unlocked)
-                {
-                    MainController.Instance._saveLoadValues._progress++;
-                }
+                _scriptMain._scriptMain._saveLoadValues._progressSave[1] = true;
                 _scriptMain._scriptFusion._elementsOptions[1]._unlocked = true;
                 _scriptMain._itemGotPanel._itemObject[1].SetActive(true);
                 _scriptMain._itemGotPanel.key = "description2";
                 _scriptMain._scriptMain._saveLoadValues._elementsUnlocked[2] = true;
                 break;
             case GameEvent.ChestItems.Earth:
-                if (!_scriptMain._scriptFusion._elementsOptions[2]._unlocked)
-                {
-                    MainController.Instance._saveLoadValues._progress++;
-                }
+                _scriptMain._scriptMain._saveLoadValues._progressSave[2] = true;
                 _scriptMain._scriptFusion._elementsOptions[2]._unlocked = true;
                 _scriptMain._itemGotPanel._itemObject[2].SetActive(true);
                 _scriptMain._itemGotPanel.key = "description3";

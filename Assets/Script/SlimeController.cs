@@ -36,6 +36,7 @@ public class SlimeController : MonoBehaviour
     public float _slimeSpeed;
     public ParticleSystem _fallingSlimeParticle;
 
+    public GameObject _slimeParent;
     void Start()
     {
         _slimeAnimator = GetComponent<Animator>();
@@ -343,7 +344,7 @@ public class SlimeController : MonoBehaviour
 
 
 
-                                    _scriptMain._scriptFusion.ActivatePanel();
+                                    //_scriptMain._scriptFusion.ActivatePanel();
                                     //if (_scriptMain._scriptMain._saveLoadValues._healthCoins > 1)
                                     //{
                                     //    _scriptMain._scriptMain._saveLoadValues._healthCoins--;

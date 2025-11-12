@@ -27,6 +27,7 @@ namespace LoL
         public int _hintCoins;
         public bool[] _slimeUnlocked;
         public bool _finalWorldUnlocked;
+        public bool[] _progressSave;
         public int _progress;
     }
 
@@ -49,6 +50,8 @@ namespace LoL
         public string lastQuestionId;
         public string lastAnswer;
 
+        public bool stateLoaded = false;
+
         void Awake()
         {
             if (Instance == null)
@@ -63,6 +66,10 @@ namespace LoL
             }
 
             Application.runInBackground = false;
+
+            // Asegurar que _saveLoadValues exista
+            if (MainController.Instance != null && MainController.Instance._saveLoadValues == null)
+                MainController.Instance._saveLoadValues = new MainController.SaveLoadValues();
         }
 
         void Start()
@@ -93,13 +100,35 @@ namespace LoL
             yield return new WaitUntil(() => LOLSDK.Instance != null);
 
 #if UNITY_EDITOR
+            LoadState();
             LoadMockData();
-#endif
 
+            // Forzar estado inicial si _saveLoadValues está vacío
+            if (MainController.Instance._saveLoadValues._worldsUnlocked == null || MainController.Instance._saveLoadValues._worldsUnlocked.Length == 0)
+            {
+                var emptyState = GetEmptySave();
+                var sl = MainController.Instance._saveLoadValues;
+
+                sl._worldsUnlocked = emptyState._worldsUnlocked;
+                sl._elementsUnlocked = emptyState._elementsUnlocked;
+                sl._slimeUnlocked = emptyState._slimeUnlocked;
+                sl._healthCoins = emptyState._healthCoins;
+                sl._hintCoins = emptyState._hintCoins;
+                sl._finalWorldUnlocked = emptyState._finalWorldUnlocked;
+                sl._progressSave = emptyState._progressSave;
+                sl._progress = emptyState._progress;
+
+                stateLoaded = true;
+                Debug.Log("✅ Estado inicial forzado en Editor");
+            }
+#else
             if (_usePersistentSave)
                 LoadState();
             else
                 LoadGameFromSDK();
+#endif
+
+            yield return new WaitUntil(() => languageReady && stateLoaded);
 
             Debug.Log("🔹 Enviando GameIsReady al SDK...");
             LOLSDK.Instance.GameIsReady();
@@ -110,7 +139,6 @@ namespace LoL
         void LoadMockData()
         {
             string startDataFilePath = Path.Combine(Application.streamingAssetsPath, "startGame.json");
-
             if (File.Exists(startDataFilePath))
             {
                 string startDataAsJSON = File.ReadAllText(startDataFilePath, Encoding.UTF8);
@@ -156,6 +184,8 @@ namespace LoL
             };
 
             LOLSDK.Instance.SaveState(new State<GameSaveState> { data = state });
+
+            MainController.Instance.SubmitProgressToLoL(MainController.Instance._saveLoadValues._progress);
             Debug.Log("💾 Estado guardado en LoLSDK");
         }
 
@@ -179,32 +209,24 @@ namespace LoL
 
         private IEnumerator ApplyLoadedStateWhenReady(GameSaveState state, bool isNewGame)
         {
-            // Espera a que MainController y _saveLoadValues estén listos
-            yield return new WaitUntil(() =>
-            {
-                var mc = MainController.Instance;
-                if (mc == null) return false;
-                if (mc._saveLoadValues == null) return false;
+            var mc = MainController.Instance;
 
-                // Si arrays son null, inicializar para evitar NullReferenceException
-                if (mc._saveLoadValues._worldsUnlocked == null)
-                    mc._saveLoadValues._worldsUnlocked = new bool[state._worldsUnlocked.Length];
-                if (mc._saveLoadValues._elementsUnlocked == null)
-                    mc._saveLoadValues._elementsUnlocked = new bool[state._elementsUnlocked.Length];
-                if (mc._saveLoadValues._slimeUnlocked == null)
-                    mc._saveLoadValues._slimeUnlocked = new bool[state._slimeUnlocked.Length];
+            // Inicializa arrays si son null
+            if (mc._saveLoadValues._worldsUnlocked == null)
+                mc._saveLoadValues._worldsUnlocked = new bool[state._worldsUnlocked.Length];
+            if (mc._saveLoadValues._elementsUnlocked == null)
+                mc._saveLoadValues._elementsUnlocked = new bool[state._elementsUnlocked.Length];
+            if (mc._saveLoadValues._slimeUnlocked == null)
+                mc._saveLoadValues._slimeUnlocked = new bool[state._slimeUnlocked.Length];
 
-                return true;
-            });
-
+            // Copia los valores reales
             ApplyLoadedState(state);
 
-            if (isNewGame)
-            {
-                LOLSDK.Instance.SaveState(new State<GameSaveState> { data = state });
-                Debug.Log("💾 Estado inicial guardado en LoLSDK");
-            }
+            stateLoaded = true;
+
+            yield break;
         }
+
 
         private void ApplyLoadedState(GameSaveState state)
         {
@@ -225,6 +247,7 @@ namespace LoL
             values._hintCoins = state._hintCoins;
             values._finalWorldUnlocked = state._finalWorldUnlocked;
             values._progress = state._progress;
+            values._progressSave = state._progressSave;
 
             Debug.Log("✅ Estado aplicado correctamente");
         }
@@ -243,6 +266,9 @@ namespace LoL
         // ========================
         // IDIOMA
         // ========================
+        // ========================
+        // IDIOMA
+        // ========================
         public void LoadLanguage(string lang)
         {
             StartCoroutine(LoadLanguageCoroutine(lang));
@@ -250,61 +276,67 @@ namespace LoL
 
         private IEnumerator LoadLanguageCoroutine(string lang)
         {
-            string fileName = "language.json";
-            string streamingPath = Path.Combine(Application.streamingAssetsPath, fileName);
             string json = null;
+            string fileName = "language.json";
+            string streamingPath = System.IO.Path.Combine(Application.streamingAssetsPath, fileName);
 
-#if UNITY_WEBGL
-            using UnityWebRequest request = UnityWebRequest.Get(streamingPath);
-            yield return request.SendWebRequest();
-            if (request.result != UnityWebRequest.Result.Success)
+            // 🔹 Intentar leer desde StreamingAssets (Editor/Standalone/Producción)
+            using (UnityWebRequest request = UnityWebRequest.Get(streamingPath))
             {
-                Debug.LogError("❌ Error al cargar idioma: " + request.error);
-                yield break;
-            }
-            json = request.downloadHandler.text;
-#else
-            if (File.Exists(streamingPath))
-                json = File.ReadAllText(streamingPath, Encoding.UTF8);
-            else
-            {
-                Debug.LogError("❌ No se encontró language.json en StreamingAssets");
-                yield break;
-            }
-#endif
+                yield return request.SendWebRequest();
 
-            if (!string.IsNullOrEmpty(json))
-            {
-                var root = SimpleJSON.JSON.Parse(json);
-                var langData = root[lang];
-
-                if (langData == null || langData["items"] == null || langData["items"].Count == 0)
+                if (request.result == UnityWebRequest.Result.Success)
                 {
-                    Debug.LogError($"❌ El archivo language.json no contiene el idioma '{lang}' o no tiene items");
+                    json = request.downloadHandler.text;
+                    Debug.Log("✅ language.json cargado desde StreamingAssets");
+                }
+                else
+                {
+                    Debug.LogWarning("⚠️ No se pudo leer StreamingAssets: " + request.error + " -> Intentando Resources");
+                }
+            }
+
+            // 🔹 Fallback a Resources para Harness/WebGL
+            if (string.IsNullOrEmpty(json))
+            {
+                TextAsset langFile = Resources.Load<TextAsset>("language"); // Assets/Resources/language.json
+                if (langFile != null)
+                {
+                    json = langFile.text;
+                    Debug.Log("✅ language.json cargado desde Resources como fallback");
+                }
+                else
+                {
+                    Debug.LogError("❌ No se encontró language.json en StreamingAssets ni en Resources");
                     yield break;
                 }
-
-                _translations.Clear();
-                _localizedItems.Clear();
-
-                foreach (JSONNode itemNode in langData["items"].AsArray)
-                {
-                    string key = itemNode["key"];
-                    string value = itemNode["value"];
-
-                    _translations[key] = value;
-                    _localizedItems[key] = new LocalizedItem
-                    {
-                        key = key,
-                        value = value,
-                        id = -1
-                    };
-                }
-
-                languageReady = true;
-                Debug.Log($"✅ Idioma '{lang}' cargado correctamente con {_translations.Count} claves.");
             }
+
+            var root = JSON.Parse(json);
+            var langData = root[lang];
+
+            if (langData == null || langData.Count == 0)
+            {
+                Debug.LogError($"❌ El archivo language.json no contiene el idioma '{lang}' o está vacío");
+                yield break;
+            }
+
+            _translations.Clear();
+            _localizedItems.Clear();
+
+            foreach (KeyValuePair<string, JSONNode> pair in langData)
+            {
+                string key = pair.Key;
+                string value = pair.Value;
+                _translations[key] = value;
+                _localizedItems[key] = new LocalizedItem { key = key, value = value, id = -1 };
+            }
+
+            languageReady = true;
+            Debug.Log($"✅ Idioma '{lang}' cargado correctamente con {_translations.Count} claves.");
         }
+
+
 
         // ========================
         // CALLBACKS DEL SDK

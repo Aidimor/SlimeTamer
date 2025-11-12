@@ -55,22 +55,20 @@ namespace LoL.Examples.Cooking
 
         #endregion Mock Game Fields
 
-        void Start()
+        void Start ()
         {
             purchasePanButton.onClick.AddListener(AddPan);
             pantryButton.onClick.AddListener(AddFoodToPantry);
+            purchasePanButton.interactable = false;
 
             // Create the WebGL (or mock) object
-            // This will all change in SDK V6 to be simplified and streamlined.
 #if UNITY_EDITOR
             ILOLSDK sdk = new LoLSDK.MockWebGL();
 #elif UNITY_WEBGL
-			ILOLSDK sdk = new LoLSDK.WebGL();
-#elif UNITY_IOS || UNITY_ANDROID
-            ILOLSDK sdk = null; // TODO COMING SOON IN V6
+            ILOLSDK sdk = new LoLSDK.WebGL();
 #endif
 
-            LOLSDK.Init(sdk, "com.legends-of-learning.unity.sdk.v5.1.example-cooking-game");
+            LOLSDK.Init(sdk, "com.legends-of-learning.unity.sdk.v5.4.example-cooking-game");
 
             // Register event handlers
             LOLSDK.Instance.StartGameReceived += new StartGameReceivedHandler(StartGame);
@@ -94,7 +92,7 @@ namespace LoL.Examples.Cooking
             Helper.StateButtonInitialize<CookingData>(newGameButton, continueButton, OnLoad);
         }
 
-        private void OnDestroy()
+        private void OnDestroy ()
         {
 #if UNITY_EDITOR
             if (!UnityEditor.EditorApplication.isPlayingOrWillChangePlaymode)
@@ -103,12 +101,12 @@ namespace LoL.Examples.Cooking
             LOLSDK.Instance.SaveResultReceived -= OnSaveResult;
         }
 
-        void Save()
+        void Save ()
         {
             LOLSDK.Instance.SaveState(cookingData);
         }
 
-        void OnSaveResult(bool success)
+        void OnSaveResult (bool success)
         {
             if (!success)
             {
@@ -122,7 +120,7 @@ namespace LoL.Examples.Cooking
             _feedbackMethod = StartCoroutine(_Feedback(GetText("autoSave")));
         }
 
-        void StartGame(string startGameJSON)
+        void StartGame (string startGameJSON)
         {
             if (string.IsNullOrEmpty(startGameJSON))
                 return;
@@ -132,7 +130,7 @@ namespace LoL.Examples.Cooking
             _langCode = startGamePayload["languageCode"];
         }
 
-        void LanguageUpdate(string langJSON)
+        void LanguageUpdate (string langJSON)
         {
             if (string.IsNullOrEmpty(langJSON))
                 return;
@@ -142,21 +140,19 @@ namespace LoL.Examples.Cooking
             TextDisplayUpdate();
         }
 
-        string GetText(string key)
+        string GetText (string key)
         {
-            string value = _langNode?[key];
-            return value ?? "--missing--";
+            return _langNode?[key] ?? "--missing--";
         }
 
         // This could be done in a component with a listener attached to an lang change
         // instead of coupling all the text to a controller class.
-        void TextDisplayUpdate()
+        void TextDisplayUpdate ()
         {
             pantryText.text = GetText("pantry");
             newGameText.text = GetText("newGame");
             continueText.text = GetText("continue");
-            // "Purchase Pan  <color=#F9DD3B>{0}</color>"
-            purchasePanText.text = string.Format(GetText("purchasePan"), cookingData.cost_of_pan);
+            purchasePanText.text = $"{GetText("purchasePan")} <color=#F9DD3B>{cookingData.cost_of_pan}</color>";
         }
 
         /// <summary>
@@ -165,11 +161,13 @@ namespace LoL.Examples.Cooking
         /// users saved data after a valid save is called.
         /// </summary>
         /// <param name="loadedCookingData"></param>
-        void OnLoad(CookingData loadedCookingData)
+        void OnLoad (CookingData loadedCookingData)
         {
             // Overrides serialized state data or continues with editor serialized values.
             if (loadedCookingData != null)
                 cookingData = loadedCookingData;
+
+            purchasePanButton.interactable = true;
 
             for (int i = 0; i < cookingData.num_of_pans; ++i)
             {
@@ -198,7 +196,7 @@ namespace LoL.Examples.Cooking
         }
 
         #region Mock Game Methods
-        void AddPan()
+        void AddPan ()
         {
             if (_init)
             {
@@ -211,7 +209,7 @@ namespace LoL.Examples.Cooking
             coinText.text = cookingData.coins.ToString();
         }
 
-        void AddFoodToPantry()
+        void AddFoodToPantry ()
         {
             if (_selectedFood == null)
                 return;
@@ -226,7 +224,7 @@ namespace LoL.Examples.Cooking
             _selectedFood.transform.SetParent(pantryButton.transform, false);
         }
 
-        void CreatePan()
+        void CreatePan ()
         {
             var pan = Instantiate(panPrefab, panHolder);
             pan.onClick.AddListener(() => AssignFood(pan.transform));
@@ -235,7 +233,7 @@ namespace LoL.Examples.Cooking
             purchasePanButton.interactable = cookingData.coins >= cookingData.cost_of_pan && cookingData.num_of_pans < 4;
         }
 
-        void AssignFood(Transform pan)
+        void AssignFood (Transform pan)
         {
             if (_selectedFood == null || pan.childCount > 0)
                 return;
@@ -251,7 +249,7 @@ namespace LoL.Examples.Cooking
             }
         }
 
-        void CreateFood(FoodData foodData)
+        void CreateFood (FoodData foodData)
         {
             var food = Instantiate(foodPrefab, foodPrefab.transform.parent);
             food.name = foodData.name;
@@ -262,8 +260,7 @@ namespace LoL.Examples.Cooking
             food.gameObject.SetActive(true);
         }
 
-        // This would actually use addressables, just doing this as a quick, baked in example.
-        Sprite GetFoodSprite(string image_key)
+        Sprite GetFoodSprite (string image_key)
         {
             switch (image_key)
             {
@@ -276,7 +273,7 @@ namespace LoL.Examples.Cooking
             }
         }
 
-        IEnumerator _Feedback(string text)
+        IEnumerator _Feedback (string text)
         {
             feedbackText.text = text;
             yield return _feedbackTimer;

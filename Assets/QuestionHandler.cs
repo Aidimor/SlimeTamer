@@ -4,37 +4,98 @@ using LoLSDK;
 
 public class QuestionHandler : MonoBehaviour
 {
-    [SerializeField] private MainGameplayScript _scriptMain;
+  
+    private bool isSubscribed = false; // Evita doble suscripción
+    private int scorePerQuestion = 1;  // Ajusta según tu juego
+    private int maxProgress = 8;       // Total de progresos definidos
 
-    // Esta función será llamada desde JS cuando la respuesta llegue
-    private void HandleAnswerResult(string json)
-    {
-        var answerResult = SimpleJSON.JSON.Parse(json);
-        string isCorrect = answerResult["isCorrect"];
-
-        // Procesa la respuesta de inmediato
-        if (isCorrect == "true") Debug.Log("✅ Correcto");
-        else if (isCorrect == "false") Debug.Log("❌ Incorrecto");
-        else Debug.Log("⚪ No respondió / cerró overlay");
-
-        // Continúa el juego directamente desde aquí
-        if (_scriptMain._scriptEvents._currentEventPrefab != null)
-            Destroy(_scriptMain._scriptEvents._currentEventPrefab);
-
-        _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
-
-        // En vez de corutinas que dependen del canvas, llama un método que avance el flujo:
-        _scriptMain._scriptEvents.AdvanceStage();
-
-        // Remueve el delegado
-        LOLSDK.Instance.AnswerResultReceived -= HandleAnswerResult;
-    }
-
-
-
+    // Inicia el cuestionario
     public void StartStageQuestionary()
     {
-        // Llama a LOLSDK para mostrar la pregunta
+        if (LOLSDK.Instance == null)
+        {
+            Debug.LogWarning("⚠️ LOLSDK no inicializado");
+            return;
+        }
+
+        if (!isSubscribed)
+        {
+            LOLSDK.Instance.AnswerResultReceived += HandleAnswerResult;
+            isSubscribed = true;
+        }
+
         LOLSDK.Instance.ShowQuestion();
+    }
+
+    private void HandleAnswerResult(string json)
+    {
+        var answerResult = JSON.Parse(json);
+        string isCorrect = answerResult["isCorrect"];
+        ProcessAnswer(isCorrect == "true");
+    }
+
+    private void ProcessAnswer(bool isCorrect)
+    {
+        GameEventsScript.Instance._winRound = true;
+        int currentProgress = MainController.Instance._saveLoadValues._progress;
+        int currentScore = 0;
+
+        if (isCorrect)
+        {
+            Debug.Log("✅ Correcto");
+            currentProgress++;
+            currentScore = scorePerQuestion;
+        }
+        else
+        {
+            Debug.Log("❌ Incorrecto");
+            currentProgress++;
+        }
+
+        // Guardar progreso interno
+        MainController.Instance._saveLoadValues._progress = currentProgress;
+
+        // Reportar progreso
+        SubmitProgressToLoL(currentProgress, currentScore);
+
+
+        //// Avanzar flujo del juego
+        //if (GameEventsScript.Instance._currentEventPrefab != null)
+        //    Destroy(GameEventsScript.Instance._currentEventPrefab);
+
+        //MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
+   
+
+        // Desuscribirse
+        if (isSubscribed)
+        {
+            LOLSDK.Instance.AnswerResultReceived -= HandleAnswerResult;
+            isSubscribed = false;
+        }
+
+        StartCoroutine(MainGameplayScript.Instance.ExitNumerator());
+    }
+
+    private void SubmitProgressToLoL(int currentProgress, int score)
+    {
+        if (LOLSDK.Instance == null)
+        {
+            Debug.LogWarning("⚠️ LOLSDK no inicializado — progreso no enviado.");
+            return;
+        }
+
+        LOLSDK.Instance.SubmitProgress(currentProgress, maxProgress, score);
+        Debug.Log($"📊 Progreso enviado a LoL: {currentProgress}/{maxProgress}, Score: {score}");
+    }
+
+    // 🔹 Permite simular una respuesta correcta con la tecla L
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.L))
+        {
+            Debug.Log("🧩 Simulación manual: presionaste L (Correcto)");
+            ProcessAnswer(true);
+
+        }
     }
 }

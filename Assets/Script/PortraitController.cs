@@ -58,6 +58,19 @@ public class PortraitController : MonoBehaviour
         }
 
         StartCoroutine(UpdateWorldTexts());
+        if (MainController.Instance._introSpecial)
+        {
+            //_scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._falling);
+            _falling = true;
+            for(int i = 0; i < _allWorlds.Length; i++)
+            {
+                _allWorlds[i]._worldText.gameObject.SetActive(false);
+                _allWorlds[i]._spaceButton.gameObject.SetActive(false);
+                _allWorlds[i]._lockedParemt.gameObject.SetActive(false);  
+            }
+            _logo.gameObject.SetActive(false);
+            _frontMap.gameObject.SetActive(false);
+        }
     }
 
     void OnDisable()
@@ -118,11 +131,11 @@ public class PortraitController : MonoBehaviour
         {
             _worldsParent.GetComponent<RectTransform>().anchoredPosition =
                 Vector2.MoveTowards(_worldsParent.GetComponent<RectTransform>().anchoredPosition,
-                new Vector2(0, _allWorlds[_scriptMainController._onWorldGlobal]._yPos + 60),
+                new Vector2(0, _allWorlds[_scriptMainController._onWorldGlobal]._yPos),
                 250f * Time.deltaTime);
 
             if (_worldsParent.GetComponent<RectTransform>().anchoredPosition.y ==
-                _allWorlds[_scriptMainController._onWorldGlobal]._yPos + 60 && !_gameStarts)
+                _allWorlds[_scriptMainController._onWorldGlobal]._yPos && !_gameStarts)
             {
                 StartCoroutine(StartGameSpecial());
             }
@@ -185,30 +198,38 @@ public class PortraitController : MonoBehaviour
 
     public IEnumerator StartGameSpecial()
     {
+        _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._falling);
         _gameStarts = true;
         _fallingSlime.Play();
         _logo.gameObject.SetActive(false);
-        _parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -50f);
+        //_parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -50f);
         _slimeParent.SetActive(false);
         yield return new WaitForSeconds(3);
         _scriptMainController._bordersAnimator.SetBool("BorderOut", false);
-        _scriptMainController._introSpecial = false;
+     
         yield return new WaitForSeconds(1);
+        _scriptMainController._introSpecial = false;
         _scriptMainController.LoadSceneByName("MainGame");
     }
 
     public IEnumerator StartGame()
     {
+        Debug.Log("empieza");
+        _gameStarts = true;
+        _scriptMainController._cinematicBorders.SetBool("FadeIn", true);
         _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._chooseElement);
         _logo.gameObject.SetActive(false);
-        _parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -50f);
+        //_parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -50f);
         _explosionSlimeParticle.Play();
         _slimeParent.SetActive(false);
         _fallingSlime.Play();
-        _gameStarts = true;
+        yield return new WaitForSeconds(1);
+        _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._fall);
         _scriptMainController._onWorldGlobal = _onWorldPos;
-        yield return new WaitForSeconds(3);
+        yield return new WaitForSeconds(2);
+
         _scriptMainController._bordersAnimator.SetBool("BorderOut", false);
+        yield return new WaitForSeconds(2);
         _scriptMainController.LoadSceneByName("MainGame");
     }
 }

@@ -245,7 +245,7 @@ public class RythmFusionScript : MonoBehaviour
                 int elementIndex = _order[step];
                 customStep = step;
                 _onElement = elementIndex;
-
+  
                 _elementsInfo[elementIndex]._selector.GetComponent<Animator>().SetTrigger("SelectorIn");
                 _scriptSlime._slimeRawImage.transform.localScale = new Vector2(3f, 3f);
                 _elementsInfo[elementIndex]._elementOrb.transform.localScale = new Vector2(1.25f, 1.25f);
@@ -283,7 +283,7 @@ public class RythmFusionScript : MonoBehaviour
             }
 
             for (int i = 0; i < 4; i++)
-                _elementsInfo[i]._imageColor.color = _halfColors[0];
+                _elementsInfo[i]._imageColor.color = _halfColors[4];
 
             _buttonPressed = false;
 
@@ -428,7 +428,7 @@ public class RythmFusionScript : MonoBehaviour
         for (int i = 0; i < 4; i++)
         {
             _elementsInfo[i]._parent.SetActive(false);
-            _elementsInfo[i]._imageColor.color = _halfColors[0];     
+            _elementsInfo[i]._imageColor.color = _halfColors[4];     
         }
       
     }

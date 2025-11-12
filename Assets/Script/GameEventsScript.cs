@@ -8,6 +8,7 @@ using LoL;
 
 public class GameEventsScript : MonoBehaviour
 {
+    public static GameEventsScript Instance;
     [SerializeField] private MainGameplayScript _scriptMain;
     [SerializeField] private QuestionHandler _questionHandler;
     [Header("Lista de eventos")]
@@ -43,6 +44,10 @@ public class GameEventsScript : MonoBehaviour
     public bool _enter;
     public ParticleSystem _rainParticle;
 
+    public void Awake()
+    {
+        Instance = this;
+    }
 
     void Start()
     {
@@ -57,9 +62,9 @@ public class GameEventsScript : MonoBehaviour
                 switch (_scriptMain._scriptMain._saveLoadValues._finalWorldUnlocked)
                 {
                     case false:
-                        _scriptMain._GamesList.Add(0);             
+                        _scriptMain._GamesList.Add(0);
                         _scriptMain._GamesList.Add(11);
-                        _scriptMain._GamesList.Add(20);            
+                        _scriptMain._GamesList.Add(20);
                         _scriptMain._GamesList.Add(6);
                         _scriptMain._GamesList.Add(3);
                         _scriptMain._GamesList.Add(1);
@@ -180,7 +185,7 @@ public class GameEventsScript : MonoBehaviour
      
         _scriptMain._scriptSlime._slimeAnimator.SetBool("WindPush", false);
         _scriptMain._scriptEvents._winRound = false;
-        _scriptMain._scriptFusion.UnlockElements();
+        //_scriptMain._scriptFusion.UnlockElements();
  
         //for (int i = 0; i < _enemiesGameObjects.Length; i++)
         //{
@@ -237,8 +242,8 @@ public class GameEventsScript : MonoBehaviour
                     }
                     _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(_scriptMain._firstStage);
                     _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);
-           
-                    _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -200);
+                    _scriptMain._scriptSlime._slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -207);
+              
                     switch (_specialEvents[_scriptMain._GamesList[_onEvent]]._eventType)
                     {
                         case GameEvent.EventType.Bridge:
@@ -336,27 +341,29 @@ public class GameEventsScript : MonoBehaviour
                     StartCoroutine(_scriptMain.StartStageNumerator());
 
                     break;
-
                 case GameEvent.EventClassification.Questionary:
+
+                    _scriptMain._scriptSlime._slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-150, -207);
                     _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                     evento.GetComponent<QuestionaryScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                     _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(_scriptMain._firstStage);
                     _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);
-                    _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -200);
-        
-                        yield return new WaitForSeconds(1);
-                        _scriptMain._scriptSlime._slimeAnimator.SetBool("Moving", false);
-                    // Llamas a la función que dispara el overlay
-                       _questionHandler.StartStageQuestionary();
+              
 
+                    yield return new WaitForSeconds(1);
+                    _scriptMain._scriptSlime._slimeAnimator.SetBool("Moving", false);
 
+                    // Llama al QuestionHandler para mostrar la pregunta y reportar progreso
+                    _questionHandler.StartStageQuestionary();
                     break;
-                case GameEvent.EventClassification.Chest:
+
+
+                case GameEvent.EventClassification.Chest:           
                     _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                     evento.GetComponent<ChestEventScript>()._scriptMain = _scriptMain;
                     evento.GetComponent<ChestEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                     _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(_scriptMain._firstStage);
-                    _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -200);
+                    _scriptMain._scriptSlime._slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-150, -207);
                     _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);       
                     StartCoroutine(_scriptMain.StartsStageChest());               
                     break;
@@ -367,23 +374,26 @@ public class GameEventsScript : MonoBehaviour
                     _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);       
                     StartCoroutine(_scriptMain.IntroStageNumerator());
                     break;
+          
                 case GameEvent.EventClassification.Shop:
+
+                    _scriptMain._scriptSlime._slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-150, -207);
                     _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                     evento.GetComponent<ShopScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                     //evento.GetComponent<QuestionaryScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                     _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
                     //_scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(_scriptMain._firstStage);
                     _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);
-                    _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-100, -200);
+
 
                     yield return new WaitForSeconds(1);
                     _scriptMain._scriptSlime._slimeAnimator.SetBool("Moving", false);
                     StartCoroutine(_scriptMain.StartsShopNumerator());
                     break;
                 case GameEvent.EventClassification.Teleporter:
+                    _scriptMain._scriptSlime._slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-150, -207);
                     _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                     evento.GetComponent<TeleporterScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
-                    _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition = new Vector2(-100, -200);
                     yield return new WaitForSeconds(1);
                     _scriptMain._scriptSlime._slimeAnimator.SetBool("Moving", false);
                     _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", true);
@@ -391,6 +401,7 @@ public class GameEventsScript : MonoBehaviour
        
                     break;
                 case GameEvent.EventClassification.Tutorial:
+                    _scriptMain._scriptSlime._slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-250, -207);
                     _scriptMain._scriptMain._pauseAssets._hintAvailable = true;
                     _scriptMain._onTutorial = true;
                     _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
@@ -409,12 +420,12 @@ public class GameEventsScript : MonoBehaviour
 
     }
 
-    public void AdvanceStage()
-    {
-        //StartCoroutine(AdvanceStageNumerator());
-        StartCoroutine(_scriptMain.ExitNumerator());
-        // Animaciones, efectos, spawn del siguiente evento, etc.
-    }
+    //public void AdvanceStage()
+    //{
+    //    //StartCoroutine(AdvanceStageNumerator());
+    //    StartCoroutine(_scriptMain.ExitNumerator());
+    //    // Animaciones, efectos, spawn del siguiente evento, etc.
+    //}
 
 
     //public IEnumerator AdvanceStageNumerator()

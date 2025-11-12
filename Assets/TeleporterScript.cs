@@ -42,34 +42,25 @@ public class TeleporterScript : MonoBehaviour
             case 0:
                 break;
             case 1:
-                if (!_scriptMain._scriptMain._saveLoadValues._worldsUnlocked[0])
-                {
-                    MainController.Instance._saveLoadValues._progress++;
-                }
+                _scriptMain._scriptMain._saveLoadValues._progressSave[3] = true;
                 _scriptMain._scriptMain._saveLoadValues._finalWorldUnlocked = true;
                 _scriptMain._scriptMain._saveLoadValues._worldsUnlocked[0] = true;
                 _scriptMain._scriptMain._onWorldGlobal = 0;
                 break;
 
             case 2:
-                if (!_scriptMain._scriptMain._saveLoadValues._worldsUnlocked[1])
-                {
-                    MainController.Instance._saveLoadValues._progress++;
-                }
+                _scriptMain._scriptMain._saveLoadValues._progressSave[4] = true;
                 _scriptMain._scriptMain._saveLoadValues._worldsUnlocked[1] = true;
                 _scriptMain._scriptMain._onWorldGlobal = 1;
                 break;
             case 3:
-                if (!_scriptMain._scriptMain._saveLoadValues._worldsUnlocked[2])
-                {
-                    MainController.Instance._saveLoadValues._progress++;
-                }
+                _scriptMain._scriptMain._saveLoadValues._progressSave[5] = true;
                 _scriptMain._scriptMain._saveLoadValues._worldsUnlocked[2] = true;
                 _scriptMain._scriptMain._onWorldGlobal = 2;
          
                 break;
         }
-        _scriptMain._scriptMain._scriptInit.SaveGame();
+        MainController.Instance.SaveProgress(); 
         _scriptMain._bossAnimator.gameObject.SetActive(false);
         _scriptMain._scriptMain.LoadSceneByName("IntroScene");
     }
