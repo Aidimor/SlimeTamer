@@ -1,5 +1,4 @@
 ﻿using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using LoL;
@@ -34,7 +33,7 @@ public class SlimeController : MonoBehaviour
 
     public int _fightChances;
     public float _slimeSpeed;
-    public ParticleSystem _fallingSlimeParticle;
+
 
     public GameObject _slimeParent;
     void Start()
@@ -387,9 +386,5 @@ public class SlimeController : MonoBehaviour
       
     }
 
-    public void JumpingSlimeRock()
-    {
-        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._rockSlimeMoving);
 
-    }
 }

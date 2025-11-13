@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class BossFightsScript : MonoBehaviour
@@ -89,11 +88,7 @@ public class BossFightsScript : MonoBehaviour
 
             case GameEvent.EventType.BossFight2:
                 _events[2].gameObject.SetActive(true);  
-                _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
-                //_events[1].gameObject.SetActive(true);
-                //_scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
-                //_scriptMain._bossAnimator.SetTrigger("AttackFire");
-                yield return new WaitForSeconds(1);
+                _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);     
                 StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
                 break;
             case GameEvent.EventType.BossFight3:
@@ -101,9 +96,6 @@ public class BossFightsScript : MonoBehaviour
                 _scriptMain._bossAnimator.SetBool("Ventilator", true);
                 _scriptMain._scriptMain._scriptSFX._strongWindSetVolume = 0.15f;
                 _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
-                //_events[1].gameObject.SetActive(true);
-                //_scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
-                //_scriptMain._bossAnimator.SetTrigger("AttackFire");
                 yield return new WaitForSeconds(0.5f);
                 _scriptMain._frontWindParticle.Play();
                 yield return new WaitForSeconds(0.5f);
@@ -121,9 +113,7 @@ public class BossFightsScript : MonoBehaviour
                 yield return new WaitForSeconds(1);
                 StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
                 break;
-            case GameEvent.EventType.BossFight5:
-                //StartCoroutine(ExitNumerator());
-                break;
+
         }
 
   
@@ -151,7 +141,6 @@ public class BossFightsScript : MonoBehaviour
         yield return new WaitForSeconds(1.5f);
 
 
-        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._ding);
         _scriptMain._flyingSlimeParticles[1].Play();
         yield return new WaitForSeconds(2);
         _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);

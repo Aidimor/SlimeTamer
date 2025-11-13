@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine.UI;
 using UnityEngine;
 using LoL;
 
@@ -9,12 +6,6 @@ public class ChestEventScript : MonoBehaviour
     public MainGameplayScript _scriptMain;
     public Animator _princessAnim;
     public GameObject[] _worlds;
-    public Sprite[] _allPrincessSprites;
-
-
-    // Start is called before the first frame update
-
-
 
     public void ItemGet()
     {
@@ -55,7 +46,6 @@ public class ChestEventScript : MonoBehaviour
             _scriptMain._itemGotPanel._Message.text = localizedText;
         }
 
-        //_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[1] = true;
 
     }
 }

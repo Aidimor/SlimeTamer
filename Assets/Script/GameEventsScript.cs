@@ -3,8 +3,6 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using LoLSDK;
-using LoL;
 
 public class GameEventsScript : MonoBehaviour
 {

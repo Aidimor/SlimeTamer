@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using System.Text;
 using System.Collections;
 using System.Collections.Generic;
@@ -104,7 +103,8 @@ namespace LoL
             LoadMockData();
 
             // Forzar estado inicial si _saveLoadValues está vacío
-            if (MainController.Instance._saveLoadValues._worldsUnlocked == null || MainController.Instance._saveLoadValues._worldsUnlocked.Length == 0)
+            if (MainController.Instance._saveLoadValues._worldsUnlocked == null ||
+                MainController.Instance._saveLoadValues._worldsUnlocked.Length == 0)
             {
                 var emptyState = GetEmptySave();
                 var sl = MainController.Instance._saveLoadValues;
@@ -180,12 +180,13 @@ namespace LoL
                 _healthCoins = MainController.Instance._saveLoadValues._healthCoins,
                 _hintCoins = MainController.Instance._saveLoadValues._hintCoins,
                 _finalWorldUnlocked = MainController.Instance._saveLoadValues._finalWorldUnlocked,
+                _progressSave = MainController.Instance._saveLoadValues._progressSave,
                 _progress = MainController.Instance._saveLoadValues._progress
             };
 
             LOLSDK.Instance.SaveState(new State<GameSaveState> { data = state });
+            MainController.Instance.SubmitProgressToLoL(state._progress);
 
-            MainController.Instance.SubmitProgressToLoL(MainController.Instance._saveLoadValues._progress);
             Debug.Log("💾 Estado guardado en LoLSDK");
         }
 
@@ -211,22 +212,33 @@ namespace LoL
         {
             var mc = MainController.Instance;
 
-            // Inicializa arrays si son null
-            if (mc._saveLoadValues._worldsUnlocked == null)
-                mc._saveLoadValues._worldsUnlocked = new bool[state._worldsUnlocked.Length];
-            if (mc._saveLoadValues._elementsUnlocked == null)
-                mc._saveLoadValues._elementsUnlocked = new bool[state._elementsUnlocked.Length];
-            if (mc._saveLoadValues._slimeUnlocked == null)
-                mc._saveLoadValues._slimeUnlocked = new bool[state._slimeUnlocked.Length];
+            if (mc._saveLoadValues == null)
+                mc._saveLoadValues = new MainController.SaveLoadValues();
 
-            // Copia los valores reales
+            // 🔹 SOLO inicializamos si los arrays del SAVE están vacíos
+            if (state._worldsUnlocked == null || state._worldsUnlocked.Length == 0)
+                state._worldsUnlocked = new bool[4] { true, false, false, false };
+
+            if (state._elementsUnlocked == null || state._elementsUnlocked.Length == 0)
+                state._elementsUnlocked = new bool[4];
+
+            if (state._slimeUnlocked == null || state._slimeUnlocked.Length == 0)
+                state._slimeUnlocked = new bool[7];
+
+            if (state._progressSave == null || state._progressSave.Length == 0)
+                state._progressSave = new bool[8];
+
+            // 🔹 Asegurar que los arrays existen en el SaveLoadValues
+            mc._saveLoadValues._worldsUnlocked ??= new bool[state._worldsUnlocked.Length];
+            mc._saveLoadValues._elementsUnlocked ??= new bool[state._elementsUnlocked.Length];
+            mc._saveLoadValues._slimeUnlocked ??= new bool[state._slimeUnlocked.Length];
+            mc._saveLoadValues._progressSave ??= new bool[state._progressSave.Length];
+
             ApplyLoadedState(state);
 
             stateLoaded = true;
-
             yield break;
         }
-
 
         private void ApplyLoadedState(GameSaveState state)
         {
@@ -239,17 +251,24 @@ namespace LoL
 
             var values = mc._saveLoadValues;
 
-            state._worldsUnlocked?.CopyTo(values._worldsUnlocked, 0);
-            state._elementsUnlocked?.CopyTo(values._elementsUnlocked, 0);
-            state._slimeUnlocked?.CopyTo(values._slimeUnlocked, 0);
+            if (state._worldsUnlocked != null && state._worldsUnlocked.Length > 0)
+                state._worldsUnlocked.CopyTo(values._worldsUnlocked, 0);
 
-            values._healthCoins = state._healthCoins;
-            values._hintCoins = state._hintCoins;
+            if (state._elementsUnlocked != null && state._elementsUnlocked.Length > 0)
+                state._elementsUnlocked.CopyTo(values._elementsUnlocked, 0);
+
+            if (state._slimeUnlocked != null && state._slimeUnlocked.Length > 0)
+                state._slimeUnlocked.CopyTo(values._slimeUnlocked, 0);
+
+            if (state._progressSave != null && state._progressSave.Length > 0)
+                state._progressSave.CopyTo(values._progressSave, 0);
+
+            values._healthCoins = state._healthCoins > 0 ? state._healthCoins : 1;
+            values._hintCoins = state._hintCoins > 0 ? state._hintCoins : 1;
             values._finalWorldUnlocked = state._finalWorldUnlocked;
             values._progress = state._progress;
-            values._progressSave = state._progressSave;
 
-            Debug.Log("✅ Estado aplicado correctamente");
+            Debug.Log("✅ Estado aplicado correctamente (manteniendo valores cargados)");
         }
 
         private GameSaveState GetEmptySave() => new()
@@ -260,12 +279,10 @@ namespace LoL
             _healthCoins = 1,
             _hintCoins = 1,
             _finalWorldUnlocked = false,
+            _progressSave = new bool[8],
             _progress = 0
         };
 
-        // ========================
-        // IDIOMA
-        // ========================
         // ========================
         // IDIOMA
         // ========================
@@ -280,7 +297,6 @@ namespace LoL
             string fileName = "language.json";
             string streamingPath = System.IO.Path.Combine(Application.streamingAssetsPath, fileName);
 
-            // 🔹 Intentar leer desde StreamingAssets (Editor/Standalone/Producción)
             using (UnityWebRequest request = UnityWebRequest.Get(streamingPath))
             {
                 yield return request.SendWebRequest();
@@ -296,10 +312,9 @@ namespace LoL
                 }
             }
 
-            // 🔹 Fallback a Resources para Harness/WebGL
             if (string.IsNullOrEmpty(json))
             {
-                TextAsset langFile = Resources.Load<TextAsset>("language"); // Assets/Resources/language.json
+                TextAsset langFile = Resources.Load<TextAsset>("language");
                 if (langFile != null)
                 {
                     json = langFile.text;
@@ -335,8 +350,6 @@ namespace LoL
             languageReady = true;
             Debug.Log($"✅ Idioma '{lang}' cargado correctamente con {_translations.Count} claves.");
         }
-
-
 
         // ========================
         // CALLBACKS DEL SDK

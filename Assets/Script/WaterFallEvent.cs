@@ -1,7 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
+
 
 public class WaterFallEvent : MonoBehaviour
 {
@@ -11,10 +10,6 @@ public class WaterFallEvent : MonoBehaviour
     public bool _freezeBool;
     public GameObject[] _worlds;
     // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
 
     // Update is called once per frame
     public void ActivateFreeze()

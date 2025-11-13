@@ -3,7 +3,6 @@ using UnityEngine.UI;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
-using UnityEngine.SceneManagement; // 👈 Necesario para eventos de escena
 using LoL;  // <- necesario para GameInitScript
 using LoLSDK;
 
@@ -32,22 +31,13 @@ public class MainGameplayScript : MonoBehaviour
     public class TotalStages
     {
         public GameObject _SlimeIcon;
-        //public int _total;     
+
         public List<float> _xPoses = new List<float>();
     }
     public TotalStages _totalStages;
 
     public List<int> _GamesList = new List<int>();
 
-    //[System.Serializable]
-    //public class HearthAssets
-    //{
-    //    public GameObject _parent;
-    //    public Image[] _totalHearts;
-    //    public Color[] _heartColors;
-    //}
-    //public HearthAssets _heartAssets;
-    //public int _totalLifes = 4;
 
     [System.Serializable]
     public class ItemGotPanel
@@ -78,7 +68,7 @@ public class MainGameplayScript : MonoBehaviour
     public Animator _bossAnimator;
 
     public bool _slimeFalling;
-    //public ParticleSystem _fallingParticle;
+
 
     public bool _firstStage;
     public GameObject _stageParent;
@@ -195,42 +185,13 @@ public class MainGameplayScript : MonoBehaviour
     {
         _scriptMain = GameObject.Find("CanvasIndestructible/Main/MainController").GetComponent<MainController>();
         Instance = this;
-        //_scriptLanguage = GameObject.Find("CanvasIndestructible/Main/LanguageManager").GetComponent<LanguageManager>();
+    
     }
 
 
-    void OnEnable()
-    {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-    }
 
-    void OnDisable()
-    {
-        SceneManager.sceneLoaded -= OnSceneLoaded;
-        //UpdateWorldTexts();
-    }
 
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        //for(int i = 0; i < 3; i++)
-        //{
-        //    _scriptFusion._elementsOptions[i]._unlocked = _scriptMain._saveLoadValues._elementsUnlocked[i];
-        //}
 
-        switch (_scriptMain._onWorldGlobal)
-        {
-            case 0:
-                //_topOptionsOn = false;
-                break;
-            case 1:
-            case 2:
-            case 3:
-                //_topOptionsOn = true;
-                break;
-        }
-
-        //_totalStages._total = _GamesList.Count;
-        }
 
 
 
@@ -351,9 +312,7 @@ public class MainGameplayScript : MonoBehaviour
         // 🔹 Actualizaciones de UI de pausa (si está pausado)v
         if (_scriptMain._gameOverAssets._onGameOver || !_scriptMain._pauseAssets._pause)
         {
-            //float h = Input.GetAxisRaw("Vertical");
-            //if (h < 0) _scriptMain._gameOverAssets._onPos = 0;
-            //if (h > 0) _scriptMain._gameOverAssets._onPos = 1;
+ 
 
             // Mover puntero del menú de pausa
             _scriptMain._gameOverAssets._pointer.GetComponent<RectTransform>().anchoredPosition =
@@ -626,7 +585,7 @@ public class MainGameplayScript : MonoBehaviour
     public IEnumerator IntroStageNumerator()
     {
 
-        _scriptSlime._fallingSlimeParticle.Play();
+  
         _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
         _shadow.gameObject.SetActive(false);
@@ -974,7 +933,7 @@ public class MainGameplayScript : MonoBehaviour
        
             _scriptSlime._slimeAnimator.SetBool("Moving", true);
         }
-        _scriptSlime._fallingSlimeParticle.Stop();
+
         _Cascade[0].Stop();
 
         yield return new WaitForSeconds(0.5f);

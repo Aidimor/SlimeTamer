@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 public class WaterFillEvent : MonoBehaviour
@@ -9,14 +7,7 @@ public class WaterFillEvent : MonoBehaviour
     public Image _water;
     public GameObject[] _worlds;
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        //_scriptMain = GameObject.Find(("CanvasIndestructible/MAIN/MainController")).gameObject.GetComponent<MainController>();
-        //_worlds[_scriptMain._scriptMain._onWorldGlobal].gameObject.SetActive(true);
-    }
 
-    // Update is called once per frame
     void Update()
     {
         switch (_fillBool)

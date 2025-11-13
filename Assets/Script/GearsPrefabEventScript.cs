@@ -1,5 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class GearsPrefabEventScript : MonoBehaviour
@@ -7,7 +5,7 @@ public class GearsPrefabEventScript : MonoBehaviour
 
     [SerializeField] private GameObject[] gears;
     public float _rotationSpped;
-    [SerializeField] private GameObject[] _blockParent;
+    [SerializeField] private GameObject _blockParent;
     public int _blockStation;
     public bool _Stopped;
     public float[] _yPos;
@@ -23,8 +21,6 @@ public class GearsPrefabEventScript : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //if (!_Stopped)
-        //{
 
         //}
         GearsVoid();
@@ -50,11 +46,9 @@ public class GearsPrefabEventScript : MonoBehaviour
     {
         if (_Stopped)
         {
-            for(int i = 0; i < _blockParent.Length; i++)
-            {
-                _blockParent[i].GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_blockParent[i].GetComponent<RectTransform>().anchoredPosition, new Vector2(_blockParent[i].GetComponent<RectTransform>().anchoredPosition.x, _yPos[2]), 1f * Time.deltaTime);
-            }
- 
+   
+                _blockParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_blockParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(_blockParent.GetComponent<RectTransform>().anchoredPosition.x, _yPos[2]), 1f * Time.deltaTime);
+         
         }
         else
         {
@@ -75,10 +69,9 @@ public class GearsPrefabEventScript : MonoBehaviour
                 }
             }
 
-            for (int i = 0; i < _blockParent.Length; i++)
-            {
-                _blockParent[i].GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_blockParent[i].GetComponent<RectTransform>().anchoredPosition, new Vector2(_blockParent[i].GetComponent<RectTransform>().anchoredPosition.x, _yPos[_blockStation]), 1f * Time.deltaTime);
-            }
+
+                _blockParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_blockParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(_blockParent.GetComponent<RectTransform>().anchoredPosition.x, _yPos[_blockStation]), 1f * Time.deltaTime);
+        
 
         }
 

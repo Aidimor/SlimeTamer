@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using TMPro;
 
 public class IntroEventScript : MonoBehaviour
 {
@@ -46,33 +45,16 @@ public class IntroEventScript : MonoBehaviour
     private void Start()
     {
         sentences = new Queue<string>();
-       //_scriptMain._scriptEvents._centerDialogeAssets._parent.SetActive(false);
+     
     }
 
-    private void Update()
-    {
-        // Avanza con la barra espaciadora
-        //if (Input.GetKeyDown(KeyCode.Space))
-        //{
-        //    DisplayNextSentence();
-        //}
-    }
+
 
     public void StartIntroVoid()
     {
         // Coloca el slime en su posición inicial
         _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition =
             _scriptMain._scriptFusion._slimeStartPos[0];
-
-        //// Activa el mundo actual
-        //_worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
-
-        // Obtiene el bloque de diálogo correcto
-        //var dialogeBlock = _worldIntroAssets[_scriptMain._scriptMain._onWorldGlobal]
-        //    ._dialogeAssets[_worldIntroAssets[_scriptMain._scriptMain._onWorldGlobal]._onDialoge];
-
-        // Convierte el string en array de frases (separadas por saltos de línea)
-        //StartDialogue(dialogeBlock._dialoges.Split('\n'));
     }
 
     public void ExitIntroVoid()
@@ -81,15 +63,7 @@ public class IntroEventScript : MonoBehaviour
         _scriptMain._scriptFusion._slimeRenderer.GetComponent<RectTransform>().anchoredPosition =
             _scriptMain._scriptFusion._slimeStartPos[1];
 
-        //// Activa el mundo actual
-        //_worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
-
-        // Obtiene el bloque de diálogo correcto
-        //var dialogeBlock = _worldIntroAssets[_scriptMain._scriptMain._onWorldGlobal]
-        //    ._dialogeAssets[_worldIntroAssets[_scriptMain._scriptMain._onWorldGlobal]._onDialoge];
-
-        // Convierte el string en array de frases (separadas por saltos de línea)
-        //StartDialogue(dialogeBlock._dialoges.Split('\n'));
+   
     }
 
     public void StartDialogue(string[] dialogueLines)
