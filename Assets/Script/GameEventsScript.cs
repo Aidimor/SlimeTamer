@@ -49,11 +49,6 @@ public class GameEventsScript : MonoBehaviour
 
     void Start()
     {
-        //for(int i = 0; i < _enemiesGameObjects.Length; i++)
-        //{
-        //    _enemiesGameObjects[i].gameObject.SetActive(false);
-        //}
-
         switch (_scriptMain._scriptMain._onWorldGlobal)
         {
             case 0:
@@ -366,6 +361,7 @@ public class GameEventsScript : MonoBehaviour
                     StartCoroutine(_scriptMain.StartsStageChest());               
                     break;
                 case GameEvent.EventClassification.Intro:
+                    _scriptMain._scriptSlime._slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-525, -500);                  
                     _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                     evento.GetComponent<IntroEventScript>()._scriptMain = _scriptMain;
                     _scriptMain._scriptFusion._slimeRenderer.gameObject.SetActive(true);
@@ -417,128 +413,5 @@ public class GameEventsScript : MonoBehaviour
 
 
     }
-
-    //public void AdvanceStage()
-    //{
-    //    //StartCoroutine(AdvanceStageNumerator());
-    //    StartCoroutine(_scriptMain.ExitNumerator());
-    //    // Animaciones, efectos, spawn del siguiente evento, etc.
-    //}
-
-
-    //public IEnumerator AdvanceStageNumerator()
-    //{
-    //    StartCoroutine(_scriptMain.ExitNumerator());
-    //}
-
-    //public void StartStageQuestionary()
-    //{
-    //    Debug.Log("🟢 Mostrando pregunta al jugador...");
-    //    LOLSDK.Instance.ShowQuestion();
-
-    //    // Registramos el callback
-    //    LOLSDK.Instance.AnswerResultReceived += HandleAnswerResult;
-    //}
-
-    //private void HandleAnswerResult(string json)
-    //{
-    //    Debug.Log("🟡 AnswerResultReceived llamado: " + json);
-
-    //    var answerResult = SimpleJSON.JSON.Parse(json);
-    //    string isCorrect = answerResult["isCorrect"];
-
-    //    switch (isCorrect)
-    //    {
-    //        case "true":
-    //            Debug.Log("✅ El jugador respondió correctamente!");
-    //            break;
-    //        case "false":
-    //            Debug.Log("❌ El jugador respondió incorrectamente.");
-    //            break;
-    //        default:
-    //            Debug.Log("⚪ No respondió / cerró el overlay");
-    //            break;
-    //    }
-
-    //    // Quitamos el callback para no recibirlo otra vez
-    //    LOLSDK.Instance.AnswerResultReceived -= HandleAnswerResult;
-
-    //    // Ejecutamos la continuación en la siguiente frame
-    //    StartCoroutine(ContinueAfterQuestionNextFrame());
-    //}
-
-    //private IEnumerator ContinueAfterQuestionNextFrame()
-    //{
-    //    yield return null; // Espera un frame para que Unity “recupere control”
-
-    //    if (_scriptMain._scriptMain != null)
-    //    {
-    //        _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
-    //    }
-
-    //    if (_scriptMain._scriptEvents != null && _scriptMain._scriptEvents._currentEventPrefab != null)
-    //    {
-    //        Destroy(_scriptMain._scriptEvents._currentEventPrefab);
-    //    }
-
-    //    StartCoroutine(_scriptMain.ExitNumerator());
-
-    //    Debug.Log("▶ Continuando el juego después de la pregunta...");
-    //}
-
-
-
-
-
-    //public IEnumerator StartStageQuestionary()
-    //{
-    //    _scriptMain._scriptMain._scriptInit.ShowQuestion();
-
-    //    // Espera hasta que el jugador responda
-    //    yield return new WaitUntil(() => _scriptMain._scriptMain._scriptInit.respuestaRecibida);
-
-    //    // Ahora sí podemos leer la respuesta
-    //    if (_scriptMain._scriptMain._scriptInit.lastAnswerCorrect)
-    //    {
-    //        Debug.Log("✅ El jugador respondió correctamente!");
-    //    }
-    //    else
-    //    {
-    //        Debug.Log("❌ El jugador respondió incorrectamente.");
-    //    }
-
-    //    // Reinicia la variable para la próxima pregunta
-    //    _scriptMain._scriptMain._scriptInit.respuestaRecibida = false;
-
-    //    _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
-
-    //    Destroy(_scriptMain._scriptEvents._currentEventPrefab);
-
-    //    StartCoroutine(_scriptMain.ExitNumerator());
-    //}
-
-    //// Este método recibe la respuesta desde la web
-    //public void OnWebAnswerReceived(string data)
-    //{
-    //    // Separa los datos que vienen en formato "questionId,alternativeId,correct"
-    //    string[] parts = data.Split(',');
-    //    int questionId = int.Parse(parts[0]);      // ID de la pregunta
-    //    int alternativeId = int.Parse(parts[1]);   // ID de la alternativa
-    //    bool correct = parts[2] == "1";            // 1 = correcta, 0 = incorrecta
-
-    //    // Guarda los datos en tu script de inicialización
-    //    _scriptMain._scriptMain._scriptInit.lastAnswer = alternativeId;
-    //    _scriptMain._scriptMain._scriptInit.lastAnswerCorrect = correct;
-    //    _scriptMain._scriptMain._scriptInit.respuestaRecibida = true;
-
-    //    Debug.Log($"Respuesta recibida: QID={questionId}, AltID={alternativeId}, Correct={correct}");
-    //}
-
-
-
-
-
-
-
 
 }

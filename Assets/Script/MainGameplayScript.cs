@@ -54,7 +54,7 @@ public class MainGameplayScript : MonoBehaviour
     public class AllStageAssets
     {
         public GameObject _parentStage;
-        public GameObject _backStage;
+        //public GameObject _backStage;
         public GameObject _frontStage;
     }
     public AllStageAssets[] _allStageAssets;
@@ -120,7 +120,7 @@ public class MainGameplayScript : MonoBehaviour
     public bool _lightChanging;
     public bool _darkenerChanging;
 
-    public GameObject _shadow;
+ 
     public ParticleSystem _slimeExplosion;
     public bool _dead;
     public GameObject _windBlocker;
@@ -472,12 +472,12 @@ public class MainGameplayScript : MonoBehaviour
         _scriptSlime._slimeAnimator.SetBool("Moving", false);
         _darkenerChanging = false;
 
-        _shadow.gameObject.SetActive(true);
+
         yield return new WaitForSeconds(1);
 
         if (_scriptEvents._onEvent == 1)
         {
-            _slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-255, _slimeParent.GetComponent<RectTransform>().anchoredPosition.y);
+            //_slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-550, -350);
 
             yield return new WaitForSeconds(0.25f);
             if (_scriptMain._onWorldGlobal == 3)
@@ -561,12 +561,12 @@ public class MainGameplayScript : MonoBehaviour
         _topOptions.SetActive(_topOptionsOn);
 
         // Stage backgrounds
-        for (int i = 0; i < _allStageAssets.Length; i++)
-        {
-            _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = Vector2.MoveTowards(
-                _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition,
-                new Vector2(0, 0), 30 * Time.deltaTime);
-        }
+        //for (int i = 0; i < _allStageAssets.Length; i++)
+        //{
+        //    _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = Vector2.MoveTowards(
+        //        _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition,
+        //        new Vector2(0, 0), 30 * Time.deltaTime);
+        //}
 
         // Slime cayendo
         if (_slimeFalling)
@@ -588,13 +588,13 @@ public class MainGameplayScript : MonoBehaviour
   
         _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
-        _shadow.gameObject.SetActive(false);
+  
         _scriptMain._scriptSFX._windSetVolume = 1;
-        for (int i = 0; i < _allStageAssets.Length; i++)
-        {
-            _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -600f);
-        }
-        _allStageAssets[_scriptMain._onWorldGlobal]._frontStage.SetActive(false);
+        //for (int i = 0; i < _allStageAssets.Length; i++)
+        //{
+        //    _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -600f);
+        //}
+        _scriptEvents._currentEventPrefab.GetComponent<IntroEventScript>()._worlds[_scriptMain._onWorldGlobal].SetActive(true);   
         _scriptMain._cinematicBorders.SetBool("FadeIn", true);  
         _scriptSlime._slimeAnimator.SetBool("Falling", true);
         _scriptEvents._currentEventPrefab.GetComponent<IntroEventScript>().StartIntroVoid();
@@ -604,6 +604,7 @@ public class MainGameplayScript : MonoBehaviour
         _worldNameAssets._worldNameText.text = GameInitScript.Instance.GetText("WorldName" + (_scriptMain._onWorldGlobal + 1).ToString("F0"));
         _worldNameAssets._background.color = _worldNameAssets._backgroundColor[_scriptMain._onWorldGlobal];
         yield return new WaitForSeconds(2);
+
         _worldNameAssets._parent.SetTrigger("WorldNameIn");
 
         //yield return new WaitForSeconds(3000);
@@ -628,7 +629,7 @@ public class MainGameplayScript : MonoBehaviour
         _scriptSlime._slimeAnimator.SetBool("Moving", false);
         _darkenerChanging = false;
 
-        _shadow.gameObject.SetActive(true);
+  
         yield return new WaitForSeconds(1);
 
         if(_scriptEvents._onEvent == 1)
@@ -668,7 +669,7 @@ public class MainGameplayScript : MonoBehaviour
         }
 
 
-        _shadow.gameObject.SetActive(true);
+    
         yield return new WaitForSeconds(1);
         _dialogeAssets._dialogePanel.SetBool("DialogeIn", true);
         //_scriptEvents._currentEventPrefab.GetComponent<ChestEventScript>()._chestAnimator.SetTrigger("ChestOpen");
@@ -852,17 +853,17 @@ public class MainGameplayScript : MonoBehaviour
 
         _bossAnimator.gameObject.SetActive(false);
       
-        _allStageAssets[_scriptMain._onWorldGlobal]._frontStage.SetActive(true);
+     
         _scriptMain._cinematicBorders.SetBool("FadeIn", false);
         _scriptSlime._slimeAnimator.SetBool("Falling", false);
         _fallParticle.gameObject.SetActive(false);
         _slimeFalling = false;
         _scriptMain._scriptSFX._windSetVolume = 0;
 
-        for (int i = 0; i < _allStageAssets.Length; i++)
-        {
-            _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-        }
+        //for (int i = 0; i < _allStageAssets.Length; i++)
+        //{
+        //    _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+        //}
         _scriptSlime._slimeRawImage.gameObject.SetActive(true);
         if(_scriptMain._saveLoadValues._healthCoins > 0)
         {
@@ -979,7 +980,7 @@ public class MainGameplayScript : MonoBehaviour
     
 
         // _scriptSlime._WindBlocker.gameObject.SetActive(false);
-        _allStageAssets[_scriptMain._onWorldGlobal]._frontStage.SetActive(true);
+        //_allStageAssets[_scriptMain._onWorldGlobal]._frontStage.SetActive(true);
         _scriptMain._cinematicBorders.SetBool("FadeIn", false);
         _scriptSlime._slimeAnimator.SetBool("Falling", false);
         _fallParticle.gameObject.SetActive(false);
@@ -988,10 +989,10 @@ public class MainGameplayScript : MonoBehaviour
         _scriptSlime._slimeType = 0;
         _scriptSlime.ChangeSlime();
         _windBlocker.GetComponent<ParticleSystem>().Stop();
-        for (int i = 0; i < _allStageAssets.Length; i++)
-        {
-            _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-        }
+        //for (int i = 0; i < _allStageAssets.Length; i++)
+        //{
+        //    _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
+        //}
 
         //if (_scriptEvents._onEvent)
 

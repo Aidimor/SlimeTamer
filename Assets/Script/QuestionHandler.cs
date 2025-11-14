@@ -84,13 +84,13 @@ public class QuestionHandler : MonoBehaviour
     }
 
     // 🔹 Permite simular una respuesta correcta con la tecla L
-    private void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.L))
-        {
-            Debug.Log("🧩 Simulación manual: presionaste L (Correcto)");
-            ProcessAnswer(true);
+    //private void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.L))
+    //    {
+    //        Debug.Log("🧩 Simulación manual: presionaste L (Correcto)");
+    //        ProcessAnswer(true);
 
-        }
-    }
+    //    }
+    //}
 }
