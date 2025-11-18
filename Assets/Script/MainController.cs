@@ -108,7 +108,7 @@ public class MainController : MonoBehaviour
             return;
         }
 
-        // Inicializar _saveLoadValues con valores por defecto
+        // Inicializar _saveLoadValues con valores por defecto (se sobrescribirán con el LoadState)
         if (_saveLoadValues == null)
             _saveLoadValues = new SaveLoadValues();
 
@@ -122,7 +122,27 @@ public class MainController : MonoBehaviour
         empty._progressSave = new bool[8];
         empty._progress = 0;
 
-        _saveLoadValues = empty; // Evita que la UI vea ceros
+        _saveLoadValues = empty; // Aplicar los valores por defecto iniciales
+    }
+
+    // ---------------------------
+    // NUEVO MÉTODO DE ARRANQUE LLAMADO DESDE GameInitScript
+    // ESTO SÓLO SE EJECUTA CUANDO EL IDIOMA Y EL ESTADO ESTÁN LISTOS
+    // ---------------------------
+    public void StartGameContent()
+    {
+        Debug.Log("🚀 MainController: Inicio de Contenido. El idioma y el estado de guardado están listos.");
+
+        // 1. Asegúrate de que Time.timeScale esté en 1.
+        Time.timeScale = 1f;
+
+        // 2. Carga aquí la escena inicial del juego, el menú principal o inicia el primer diálogo.
+        // Por ejemplo, si tienes una escena llamada "WorldMapScene":
+        LoadSceneByName("WorldMapScene");
+
+        // NOTA: Si necesitas mostrar un diálogo inmediatamente después de cargar la escena, 
+        // la lógica para mostrar el diálogo debe ir en la función OnSceneLoaded (no implementada aquí)
+        // o en un script de la escena, después de que la escena haya cargado completamente.
     }
 
 
@@ -158,6 +178,7 @@ public class MainController : MonoBehaviour
                 {
                     if (_saveLoadValues._slimeUnlocked[i + 1])
                     {
+                        // Ahora es seguro llamar a GetText
                         _pauseAssets._allSlimeText[i].text = GameInitScript.Instance.GetText("Slime" + (i + 1).ToString("f0"));
                         _pauseAssets._allSlimeText[i].gameObject.SetActive(true);
                     }
@@ -204,7 +225,7 @@ public class MainController : MonoBehaviour
             return;
         }
         _saveLoadValues._progress = 0;
-        for(int i = 0; i < _saveLoadValues._progressSave.Length; i++)
+        for (int i = 0; i < _saveLoadValues._progressSave.Length; i++)
         {
             if (_saveLoadValues._progressSave[i])
             {
@@ -216,18 +237,15 @@ public class MainController : MonoBehaviour
         Debug.Log("💾 Guardado solicitado desde MainController");
     }
 
+
     public void Update()
     {
+        // Añadí una comprobación de Instance antes de acceder a stateLoaded para mayor seguridad
+        if (_scriptInit != null && !_scriptInit.stateLoaded) return;
+
+        // Estos accesos ya son seguros si el script de inicio está listo.
         _currencyAssets[0]._quantityText.text = _saveLoadValues._healthCoins.ToString();
         _currencyAssets[1]._quantityText.text = _saveLoadValues._hintCoins.ToString();
-        if (!GameInitScript.Instance.stateLoaded) return; // <- evita mostrar ceros antes de cargar
-
-
-        //if (_currencyAssets != null && _currencyAssets.Length >= 2)
-        //{
-        //    _currencyAssets[0]._quantityText.text = _saveLoadValues._healthCoins.ToString();
-        //    _currencyAssets[1]._quantityText.text = _saveLoadValues._hintCoins.ToString();
-        //}
     }
 
 

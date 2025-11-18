@@ -69,16 +69,16 @@ public class RythmFusionScript : MonoBehaviour
                         _bpm = 100;
                         break;
                     case true:
-                        _bpm = 180;
+                        _bpm = 160;
                         break;
                 }
          
                 break;
             case 1:
-                _bpm = 160;
+                _bpm = 150;
                 break;
             case 2:
-                _bpm = 140;
+                _bpm = 135;
                 break;
             case 3:
                 _bpm = 120;

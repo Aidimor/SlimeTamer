@@ -1,0 +1,6 @@
+if (navigator.mediaDevices && navigator.mediaDevices.enumerateDevices) {
+    navigator.mediaDevices.enumerateDevices().catch(e => {
+        console.warn("Audio device enumeration blocked: ", e);
+    });
+}
+
