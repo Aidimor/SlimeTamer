@@ -288,48 +288,82 @@ public class RythmFusionScript : MonoBehaviour
                     break;
                 case GameEvent.EventType.BossFight1:
                 case GameEvent.EventType.BossFight2:
-                    if (!_scriptMain._scriptEvents._winRound)
+
+                    switch (_OnPhase)
                     {
+                        //case 0:
+                        //    _scriptMain._windBossParticles[1].Play();
+                        //    //_scriptSlime._slimeAnimator.SetBool("WindPush", true);
+                        //    break;
 
-
-
-
-                        switch (_OnPhase)
-                        {
-                            case 0:
-                                _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.5f;
-                                _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 1;
-                              
-                         
-                                _scriptMain._bossAnimator.SetBool("SideShoot", true);
-                                break;
-                            case 2:
-                                _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
-                                _scriptMain._bossAnimator.SetTrigger("Action");
-                                break;
-                            case 4:
-                                _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 1f;
-                                _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
-                                _scriptMain._bossAnimator.SetTrigger("Action");
-                                break;
-                            case 6:
-                                _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
-                                _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
-                                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._bossAttack);
-                                _scriptMain._bossAnimator.SetTrigger("Action");
-                                yield return new WaitForSeconds(0.25f);
-                                if (!_scriptMain._dead)
-                                {
-
-                                    StartCoroutine(_scriptMain.LoseLifeNumerator());
-                                    endLoopAfterSelection = true;
-                                }
-                                break;
-
-                        }
+                        case 2:
+                            _scriptMain._windBossParticles[1].Play();
+                            _scriptSlime._slimeAnimator.SetTrigger("Action");
+                            break;
+                        case 3:
+                            //_scriptMain._windBossParticles[2].Play();
+                            _scriptSlime._slimeAnimator.SetTrigger("Action");
+                            break;
+                        case 4:
+                            _scriptMain._windBossParticles[3].Play();
+                            _scriptSlime._slimeAnimator.SetTrigger("Action");
+                            break;
+                        case 5:
+                            _scriptSlime._slimeAnimator.SetTrigger("Action");
+                            _scriptMain._slimeFlying = true;
+                            yield return new WaitForSeconds(0.25f);
+                            if (!_scriptMain._dead)
+                            {
+                                StartCoroutine(_scriptMain.LoseLifeNumerator());
+                                endLoopAfterSelection = true;
+                            }
+                            break;
 
                     }
-                    break;
+
+
+                //if (!_scriptMain._scriptEvents._winRound)
+                //{
+
+
+
+
+                //    switch (_OnPhase)
+                //    {
+                //        case 0:
+                //            //_scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.5f;
+                //            //_scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 1;
+
+
+                //            //_scriptMain._bossAnimator.SetBool("SideShoot", true);
+                //            break;
+                //        case 2:
+                //            //_scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
+                //            //_scriptMain._bossAnimator.SetTrigger("Action");
+                //            break;
+                //        case 4:
+                //            //_scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 1f;
+                //            //_scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
+                //            //_scriptMain._bossAnimator.SetTrigger("Action");
+                //            break;
+                //        case 6:
+                //            //_scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
+                //            //_scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
+                //            //_scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._bossAttack);
+                //            //_scriptMain._bossAnimator.SetTrigger("Action");
+                //            //yield return new WaitForSeconds(0.25f);
+                //            //if (!_scriptMain._dead)
+                //            //{
+
+                //            //    StartCoroutine(_scriptMain.LoseLifeNumerator());
+                //            //    endLoopAfterSelection = true;
+                //            //}
+                //            break;
+
+                //    }
+
+                //}
+                break;
                 case GameEvent.EventType.BossFight3:
                     if (!_scriptMain._scriptEvents._winRound)
                     {
@@ -351,9 +385,11 @@ public class RythmFusionScript : MonoBehaviour
                                 break;
                             case 6:
                                 _scriptSlime._slimeAnimator.SetTrigger("Action");
+                                _scriptMain._slimeFlying = true;
                                 yield return new WaitForSeconds(0.25f);
                                 if (!_scriptMain._dead)
                                 {
+
                                     StartCoroutine(_scriptMain.LoseLifeNumerator());
                                     endLoopAfterSelection = true;
                                 }

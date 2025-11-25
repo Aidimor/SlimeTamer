@@ -238,6 +238,10 @@ public class SlimeController : MonoBehaviour
                                     _scriptMain._proyectileCharge[2].Stop();
                                     _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
                                     _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
+                                    _scriptMain._windBossParticles[0].Stop();
+                                    _scriptMain._windBossParticles[1].Stop();
+                                    _scriptMain._windBossParticles[2].Stop();
+                                    _scriptMain._windBossParticles[3].Stop();
                                     yield return new WaitForSeconds(2);
                                     break;
                                 case GameEvent.EventType.BossFight2:

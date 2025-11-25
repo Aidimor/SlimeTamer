@@ -55,13 +55,23 @@ public class GameEventsScript : MonoBehaviour
                 switch (_scriptMain._scriptMain._saveLoadValues._finalWorldUnlocked)
                 {
                     case false:
-                        _scriptMain._GamesList.Add(0);                    
-                        _scriptMain._GamesList.Add(11);
-                        _scriptMain._GamesList.Add(20);
-                        _scriptMain._GamesList.Add(6);
-                        _scriptMain._GamesList.Add(3);
+                        _scriptMain._GamesList.Add(0);                
+                        _scriptMain._GamesList.Add(15);
+                    
+                        _scriptMain._GamesList.Add(17);
+                        _scriptMain._GamesList.Add(18);
+                        _scriptMain._GamesList.Add(16);
                         //_scriptMain._GamesList.Add(1);
                         _scriptMain._GamesList.Add(13);
+
+
+                        //_scriptMain._GamesList.Add(0);                    
+                        //_scriptMain._GamesList.Add(11);
+                        //_scriptMain._GamesList.Add(20);
+                        //_scriptMain._GamesList.Add(6);
+                        //_scriptMain._GamesList.Add(3);
+                        ////_scriptMain._GamesList.Add(1);
+                        //_scriptMain._GamesList.Add(13);
                         break;
                     case true:
                         _scriptMain._GamesList.Add(0);

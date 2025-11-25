@@ -44,6 +44,21 @@ public class PortraitController : MonoBehaviour
     public GameObject _slimeParent;
     public GameObject _frontMap;
 
+    public TextMeshProUGUI _quitar;
+    public int _quitarID;
+    public static PortraitController Instance;
+
+    public void Awake()
+    {
+        Instance = this;
+        //if (Instance != null)
+        //{
+        //    Destroy(gameObject);
+        //    return;
+        //}
+
+       
+    }
     void OnEnable()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
@@ -62,15 +77,23 @@ public class PortraitController : MonoBehaviour
         {
             //_scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._falling);
             _falling = true;
-            for(int i = 0; i < _allWorlds.Length; i++)
+            for (int i = 0; i < _allWorlds.Length; i++)
             {
                 _allWorlds[i]._worldText.gameObject.SetActive(false);
                 _allWorlds[i]._spaceButton.gameObject.SetActive(false);
-                _allWorlds[i]._lockedParemt.gameObject.SetActive(false);  
+                _allWorlds[i]._lockedParemt.gameObject.SetActive(false);
             }
             _logo.gameObject.SetActive(false);
             _frontMap.gameObject.SetActive(false);
         }
+        StartCoroutine(StartsSceneNumerator());
+    }
+
+    public IEnumerator StartsSceneNumerator()
+    {
+        yield return new WaitForSeconds(2);
+        MainController.Instance._currencyAssets[0]._quantityText.text = MainController.Instance._saveLoadValues._healthCoins.ToString("f0");
+        MainController.Instance._currencyAssets[1]._quantityText.text = MainController.Instance._saveLoadValues._hintCoins.ToString("f0");
     }
 
     void OnDisable()
@@ -107,10 +130,21 @@ public class PortraitController : MonoBehaviour
 
         for (int i = 0; i < _allWorlds.Length; i++)
         {
+            int displayNumber = _allWorlds.Length - i;
+
+            var world = _allWorlds[i];
+            if (world._worldText != null && !string.IsNullOrEmpty(world.key))
+                world._worldText.text = gi.GetText(world.key) + " " + displayNumber;
+        }
+
+
+
+        for (int i = 0; i < _allWorlds.Length; i++)
+        {
             var world = _allWorlds[i];
 
-            if (world._worldText != null && !string.IsNullOrEmpty(world.key))
-                world._worldText.text = gi.GetText(world.key) + " " + (i + 1);
+            //if (world._worldText != null && !string.IsNullOrEmpty(world.key))
+            //    world._worldText.text = gi.GetText(world.key) + " " + (i + 1);
 
             if (world._lockedText != null)
                 world._lockedText.text = gi.GetText("locked");
@@ -140,6 +174,9 @@ public class PortraitController : MonoBehaviour
                 StartCoroutine(StartGameSpecial());
             }
         }
+
+        MainController.Instance._currencyAssets[0]._quantityText.text = MainController.Instance._saveLoadValues._healthCoins.ToString("f0");
+        MainController.Instance._currencyAssets[1]._quantityText.text = MainController.Instance._saveLoadValues._hintCoins.ToString("f0");
     }
 
     private void HandleMovement()
@@ -206,7 +243,7 @@ public class PortraitController : MonoBehaviour
         _slimeParent.SetActive(false);
         yield return new WaitForSeconds(3);
         _scriptMainController._bordersAnimator.SetBool("BorderOut", false);
-     
+
         yield return new WaitForSeconds(1);
         _scriptMainController._introSpecial = false;
         _scriptMainController.LoadSceneByName("MainGame");
@@ -230,5 +267,14 @@ public class PortraitController : MonoBehaviour
         _scriptMainController._bordersAnimator.SetBool("BorderOut", false);
         yield return new WaitForSeconds(2);
         _scriptMainController.LoadSceneByName("MainGame");
+    }
+
+    public void botonBorrar()
+    {
+        MainController.Instance._saveLoadValues._hintCoins++;
+        MainController.Instance._currencyAssets[1]._quantityText.text = MainController.Instance._saveLoadValues._hintCoins.ToString("f0");
+        MainController.Instance._saveLoadValues._healthCoins++;
+        MainController.Instance._currencyAssets[0]._quantityText.text = MainController.Instance._saveLoadValues._hintCoins.ToString("f0");
+        GameInitScript.Instance.SaveGame();
     }
 }

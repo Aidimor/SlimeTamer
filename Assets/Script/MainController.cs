@@ -19,10 +19,12 @@ public class MainController : MonoBehaviour
 
     public PortraitController _scriptPortrait;
     public GameInitScript _scriptInit;
+    // ... otras referencias a scripts ...
     public SFXscript _scriptSFX;
     public MusicController _scriptMusic;
 
     public Animator _bordersAnimator;
+    // ... otras variables de Animator y AudioSource ...
     public Animator _cinematicBorders;
     public AudioSource _bgmAS;
     public AudioClip[] _allBGM;
@@ -41,6 +43,7 @@ public class MainController : MonoBehaviour
     }
     public SaveLoadValues _saveLoadValues;
 
+    // ... otras clases serializables (PauseAssets, CurrencyAssets, GameOverAssets, NewSlimePanel) ...
     [System.Serializable]
     public class PauseAssets
     {
@@ -108,26 +111,15 @@ public class MainController : MonoBehaviour
             return;
         }
 
-        // Inicializar _saveLoadValues con valores por defecto (se sobrescribirán con el LoadState)
+        // PASO CRÍTICO 1: Crear la instancia del objeto contenedor.
         if (_saveLoadValues == null)
             _saveLoadValues = new SaveLoadValues();
 
-        var empty = new SaveLoadValues();
-        empty._worldsUnlocked = new bool[4] { true, false, false, false };
-        empty._elementsUnlocked = new bool[4];
-        empty._slimeUnlocked = new bool[7];
-        empty._healthCoins = 1;
-        empty._hintCoins = 1;
-        empty._finalWorldUnlocked = false;
-        empty._progressSave = new bool[8];
-        empty._progress = 0;
-
-        _saveLoadValues = empty; // Aplicar los valores por defecto iniciales
+        // Importante: No debe haber NINGUNA inicialización de _hintCoins o _healthCoins aquí.
     }
 
     // ---------------------------
-    // NUEVO MÉTODO DE ARRANQUE LLAMADO DESDE GameInitScript
-    // ESTO SÓLO SE EJECUTA CUANDO EL IDIOMA Y EL ESTADO ESTÁN LISTOS
+    // MÉTODO DE ARRANQUE LLAMADO DESDE GameInitScript (LUEGO DE LA CARGA)
     // ---------------------------
     public void StartGameContent()
     {
@@ -136,23 +128,52 @@ public class MainController : MonoBehaviour
         // 1. Asegúrate de que Time.timeScale esté en 1.
         Time.timeScale = 1f;
 
-        // 2. Carga aquí la escena inicial del juego, el menú principal o inicia el primer diálogo.
-        // Por ejemplo, si tienes una escena llamada "WorldMapScene":
-        LoadSceneByName("WorldMapScene");
+        // 2. 💡 CORRECCIÓN CLAVE: Actualiza la UI de las monedas con los valores cargados.
+        UpdateCurrencyUI();
 
-        // NOTA: Si necesitas mostrar un diálogo inmediatamente después de cargar la escena, 
-        // la lógica para mostrar el diálogo debe ir en la función OnSceneLoaded (no implementada aquí)
-        // o en un script de la escena, después de que la escena haya cargado completamente.
+        // 3. Carga aquí la escena inicial del juego, el menú principal o inicia el primer diálogo.
+        // Por ejemplo, si tienes una escena llamada "WorldMapScene":
+        //LoadSceneByName("WorldMapScene");
+    }
+
+    /// <summary>
+    /// Actualiza la UI de las monedas (Health y Hint) con los valores cargados en _saveLoadValues.
+    /// Se llama solo una vez en StartGameContent.
+    /// </summary>
+    private void UpdateCurrencyUI()
+    {
+        // Asumiendo que _currencyAssets[0] es Health y [1] es Hint
+        if (_currencyAssets != null && _currencyAssets.Length > 1)
+        {
+            // Moneda 0: Health
+            if (_currencyAssets[0]?._quantityText != null)
+            {
+                _currencyAssets[0]._quantityText.text = _saveLoadValues._healthCoins.ToString();
+                Debug.Log($"💰 UI Health Coin Actualizada a: {_saveLoadValues._healthCoins}");
+            }
+
+            // Moneda 1: Hint
+            if (_currencyAssets[1]?._quantityText != null)
+            {
+                _currencyAssets[1]._quantityText.text = _saveLoadValues._hintCoins.ToString();
+                Debug.Log($"💰 UI Hint Coin Actualizada a: {_saveLoadValues._hintCoins}");
+            }
+        }
+        else
+        {
+            Debug.LogError("❌ CurrencyAssets no está configurado correctamente en MainController.");
+        }
     }
 
 
     public void LoadSceneByName(string sceneName) => SceneManager.LoadScene(sceneName);
 
     // ---------------------------
-    // PAUSA
+    // PAUSA (Lógica omitida por brevedad, no hay cambios requeridos aquí)
     // ---------------------------
     public void SetPause()
     {
+        // ... (código SetPause)
         _scriptSFX.PlaySound(_scriptSFX._chooseElement);
         Animator pauseAnimator = _pauseAssets._parent?.GetComponent<Animator>();
         if (pauseAnimator != null)
@@ -194,7 +215,7 @@ public class MainController : MonoBehaviour
     }
 
     // ---------------------------
-    // GAME OVER
+    // GAME OVER (Lógica omitida por brevedad, no hay cambios requeridos aquí)
     // ---------------------------
     public void SetGameOver()
     {
@@ -215,7 +236,7 @@ public class MainController : MonoBehaviour
     public bool IsPaused() => _pauseAssets._pause || _gameOverAssets._onGameOver;
 
     // ---------------------------
-    // GUARDADO
+    // GUARDADO (Lógica correcta)
     // ---------------------------
     public void SaveProgress()
     {
@@ -237,32 +258,17 @@ public class MainController : MonoBehaviour
         Debug.Log("💾 Guardado solicitado desde MainController");
     }
 
-
+    // ---------------------------
+    // ACTUALIZACIÓN DEL JUEGO
+    // ---------------------------
     public void Update()
     {
-        // Añadí una comprobación de Instance antes de acceder a stateLoaded para mayor seguridad
-        if (_scriptInit != null && !_scriptInit.stateLoaded) return;
+        // 🛑 ELIMINADAS LAS ASIGNACIONES DE TEXTO DE MONEDAS DEL UPDATE.
+        // La actualización de monedas (UI) ahora se gestiona en UpdateCurrencyUI()
+        // y se llama manualmente cuando las monedas cambian y en StartGameContent().
 
-        // Estos accesos ya son seguros si el script de inicio está listo.
-        _currencyAssets[0]._quantityText.text = _saveLoadValues._healthCoins.ToString();
-        _currencyAssets[1]._quantityText.text = _saveLoadValues._hintCoins.ToString();
-    }
-
-
-    public void FixSaveValues()
-    {
-        if (_saveLoadValues._worldsUnlocked == null || _saveLoadValues._worldsUnlocked.Length == 0)
-            _saveLoadValues._worldsUnlocked = new bool[4];
-        if (_saveLoadValues._elementsUnlocked == null || _saveLoadValues._elementsUnlocked.Length == 0)
-            _saveLoadValues._elementsUnlocked = new bool[4];
-        if (_saveLoadValues._slimeUnlocked == null || _saveLoadValues._slimeUnlocked.Length == 0)
-            _saveLoadValues._slimeUnlocked = new bool[7];
-        if (_saveLoadValues._healthCoins <= 0) _saveLoadValues._healthCoins = 1;
-        if (_saveLoadValues._hintCoins <= 0) _saveLoadValues._hintCoins = 1;
-        bool anyWorldUnlocked = false;
-        foreach (bool unlocked in _saveLoadValues._worldsUnlocked)
-            if (unlocked) { anyWorldUnlocked = true; break; }
-        if (!anyWorldUnlocked) _saveLoadValues._worldsUnlocked[0] = true;
+        if (_scriptInit == null || !_scriptInit.stateLoaded || !_scriptInit.languageReady)
+            return;
     }
 
 

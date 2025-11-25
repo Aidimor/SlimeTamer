@@ -180,6 +180,9 @@ public class MainGameplayScript : MonoBehaviour
 
     public ParticleSystem _enemyExplosion;
     public bool _onTutorial;
+
+    public ParticleSystem[] _windBossParticles;
+    public bool _slimeFlying;
   
     private void Awake()
     {
@@ -322,6 +325,17 @@ public class MainGameplayScript : MonoBehaviour
 
         }
 
+        if (_slimeFlying)
+        {
+            _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
+_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-1000f, -207), 5 * Time.deltaTime);
+        }
+        else
+        {
+            _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
+_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, -207), 5 * Time.deltaTime);
+        }
+
         if (_GamesList[_scriptEvents._onEvent] != 11 && _eventOn)
         {
             if (_slimeChanging)
@@ -332,9 +346,17 @@ public class MainGameplayScript : MonoBehaviour
             }
             else
             {
-
-                _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
-             _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, -207), 5 * Time.deltaTime);
+  //              if (_slimeFlying)
+  //              {
+  //                  _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
+  //_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-500f, -207), 5 * Time.deltaTime);
+  //              }
+  //              else
+  //              {
+  //                  _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
+  //_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, -207), 5 * Time.deltaTime);
+  //              }
+     
             }
 
             if (_lightChanging)
@@ -455,12 +477,13 @@ public class MainGameplayScript : MonoBehaviour
     }
     public IEnumerator StartStageNumerator()
     {
+        MainController.Instance.SaveProgress();
         _scriptRythm._OnPhase = 0;
 
         _scriptMain._pauseAssets._hintText.text = GameInitScript.Instance.GetText("hint" + _GamesList[_scriptEvents._onEvent].ToString("f0"));
 
         _slimeParent.gameObject.SetActive(false);
-        //LoseHeartVoid();
+
         if (_scriptEvents._currentEventPrefab.name == "ChestEvent(Clone)" || _scriptEvents._currentEventPrefab.name == "Intro(Clone)")
         {
             _topOptionsOn = false;
@@ -477,7 +500,7 @@ public class MainGameplayScript : MonoBehaviour
 
         if (_scriptEvents._onEvent == 1)
         {
-            //_slimeParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(-550, -350);
+       
 
             yield return new WaitForSeconds(0.25f);
             if (_scriptMain._onWorldGlobal == 3)
@@ -936,12 +959,9 @@ public class MainGameplayScript : MonoBehaviour
         }
 
         _Cascade[0].Stop();
-
         yield return new WaitForSeconds(0.5f);
         _scriptMain._bordersAnimator.SetBool("BorderOut", false);
-        _scriptEvents._rainParticle.Stop();
-     
-        //_scriptMain._windParticle.GetComponent<ForceField2D>().fuerza = 5;
+        _scriptEvents._rainParticle.Stop();          
         _windParticle.Stop();
         _snowParticle.Stop();
         _scriptMain._scriptSFX._strongWindSetVolume = 0;
@@ -953,14 +973,16 @@ public class MainGameplayScript : MonoBehaviour
         _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime.fillAmount = 0;
+        _windBossParticles[0].Stop();
+        _windBossParticles[1].Stop();
+        _windBossParticles[2].Stop();
+        _windBossParticles[3].Stop();
+        _slimeFlying = false;
         _scriptMain._bordersAnimator.SetBool("BorderOut", false);
         _snowBool = false;
         _dialogeAssets._nextParent.SetActive(false);
         _dialogeAssets._nextCircle.SetActive(false);
-
-
-        yield return new WaitForSeconds(1);
-      
+        yield return new WaitForSeconds(1);      
         _bossAnimator.gameObject.SetActive(false);
         _frontWindParticle.Stop();
         _bossAnimator.SetBool("Damaged", false);
@@ -974,13 +996,9 @@ public class MainGameplayScript : MonoBehaviour
             if (_scriptEvents._currentEventPrefab.name == "Intro(Clone)")
             {
                 _scriptEvents._currentEventPrefab.GetComponent<IntroEventScript>().ExitIntroVoid();
-                //_scriptEvents._onEvent++;
+               
             }
-        }
-    
-
-        // _scriptSlime._WindBlocker.gameObject.SetActive(false);
-        //_allStageAssets[_scriptMain._onWorldGlobal]._frontStage.SetActive(true);
+        }    
         _scriptMain._cinematicBorders.SetBool("FadeIn", false);
         _scriptSlime._slimeAnimator.SetBool("Falling", false);
         _fallParticle.gameObject.SetActive(false);
@@ -989,19 +1007,11 @@ public class MainGameplayScript : MonoBehaviour
         _scriptSlime._slimeType = 0;
         _scriptSlime.ChangeSlime();
         _windBlocker.GetComponent<ParticleSystem>().Stop();
-        //for (int i = 0; i < _allStageAssets.Length; i++)
-        //{
-        //    _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-        //}
-
-        //if (_scriptEvents._onEvent)
-
         switch (_scriptEvents._winRound)
         {
             case false:
         
-                Destroy(_scriptEvents._currentEventPrefab);
-                //StartCoroutine(LoseLifeNumerator());
+                Destroy(_scriptEvents._currentEventPrefab);       
                 break;
             case true:
              

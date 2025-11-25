@@ -79,16 +79,26 @@ public class BossFightsScript : MonoBehaviour
                 StartCoroutine(ExitNumerator());
                 break;
             case GameEvent.EventType.BossFight1:
-             
+                _scriptMain._bossAnimator.SetBool("OnGround",true);
+                _scriptMain._bossAnimator.SetBool("Ventilator", true);
                 _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
-                yield return new WaitForSeconds(1);
-                
+     
+                yield return new WaitForSeconds(0.5f);
+                _scriptMain._windBossParticles[0].Play();
+                yield return new WaitForSeconds(0.5f);
+                _scriptMain._scriptSlime._slimeAnimator.SetBool("WindPush", true);
                 StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
                 break;  
 
             case GameEvent.EventType.BossFight2:
+                _scriptMain._scriptMain._scriptSFX._strongWindSetVolume = 0.15f;
+                _scriptMain._bossAnimator.SetBool("OnGround", false);
+                _scriptMain._bossAnimator.SetBool("Ventilator", true);   
                 _events[2].gameObject.SetActive(true);  
-                _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);     
+                _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", false);
+                //yield return new WaitForSeconds(0.5f);
+                //_scriptMain._windBossParticles[0].Play();
+                //yield return new WaitForSeconds(0.5f);
                 StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
                 break;
             case GameEvent.EventType.BossFight3:
