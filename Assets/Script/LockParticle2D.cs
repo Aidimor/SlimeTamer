@@ -54,24 +54,24 @@ public class ForceField2D : MonoBehaviour
         }
     }
 
-    void LateUpdate()
-    {
-        if (_scriptMain == null)
-            return;
+    //void LateUpdate()
+    //{
+    //    if (_scriptMain == null)
+    //        return;
 
-        if (particles == null || particles.Length < ps.main.maxParticles)
-            particles = new ParticleSystem.Particle[ps.main.maxParticles];
+    //    if (particles == null || particles.Length < ps.main.maxParticles)
+    //        particles = new ParticleSystem.Particle[ps.main.maxParticles];
 
-        int count = ps.GetParticles(particles);
+    //    int count = ps.GetParticles(particles);
 
-        for (int i = 0; i < count; i++)
-        {
-            Vector3 dir = (particles[i].position - _scriptMain._windBlocker.transform.position).normalized;
-            dir.z = 0;
-            particles[i].velocity += dir * fuerza * Time.deltaTime;
-            particles[i].position = new Vector3(particles[i].position.x, particles[i].position.y, 0);
-        }
+    //    for (int i = 0; i < count; i++)
+    //    {
+    //        Vector3 dir = (particles[i].position - _scriptMain._windBlocker.transform.position).normalized;
+    //        dir.z = 0;
+    //        particles[i].velocity += dir * fuerza * Time.deltaTime;
+    //        particles[i].position = new Vector3(particles[i].position.x, particles[i].position.y, 0);
+    //    }
 
-        ps.SetParticles(particles, count);
-    }
+    //    ps.SetParticles(particles, count);
+    //}
 }

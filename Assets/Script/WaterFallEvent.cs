@@ -21,6 +21,7 @@ public class WaterFallEvent : MonoBehaviour
     {
         _scriptMain._snowBool = true;
         yield return new WaitForSeconds(1);
+        _scriptMain._scriptEvents._cascadeParticle.gameObject.SetActive(false);
         _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._frozen);
         _WaterIceEventObjects[0].SetActive(false);
         _WaterIceEventObjects[1].SetActive(true);

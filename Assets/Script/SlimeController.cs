@@ -117,7 +117,7 @@ public class SlimeController : MonoBehaviour
         //_scriptMain._lightChanging = false;
         //_scriptMain._shineParticle.Stop();
 
-        Debug.Log(_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]);
+        //Debug.Log(_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]);
 
         switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._weakto.Length)
         {

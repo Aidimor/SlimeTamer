@@ -60,7 +60,13 @@
     "dialoge7": "Now, take this...",
     "dialoge8": "The winds are on your side!",
     "locked": "LOCKED",
-    "tutorial": "Press space to select an element at the right moment."
+    "tutorial": "Press space to select an element at the right moment.",
+    "tutorial1": "Choose a element and add that power to the slime",
+    "tutorial2": "Add a second element to transform the slime",
+    "tutorial3": "Use different element particles to create a new slime variation",
+    "tutorial4": "Choose the correct slime to continue your adventure!",
+    "tutorialhealth": "Obtain and extra life",
+    "tutorialhint": "Obtain a hint to help you with the stage"
   },
   "es": {
     "world": "Mundo",
@@ -109,7 +115,13 @@
     "dialoge7": "Ahora, toma esto...",
     "dialoge8": "¡Los vientos están de tu lado!",
     "locked": "BLOQUEADO",
-    "tutorial": "Presiona espacio para elegir un elemento en el momento correcto."
+    "tutorial": "Presiona espacio para elegir un elemento en el momento correcto.",
+    "tutorial1": "Elige un elemento y añade ese poder al slime",
+    "tutorial2": "Añade un segundo elemento para transformar el slime",
+    "tutorial3": "Usa diferentes particulas para crear diferentes variedades de slime",
+    "tutorial4": "!Elige el correcto para avanzar en tu aventura!",
+    "tutorialhealth": "Obten una vida extra",
+    "tutorialhint": "Obten una pista para resolver el nivel"
   }
 }
 

@@ -41,6 +41,8 @@ public class GameEventsScript : MonoBehaviour
     public CenterDialogeAssets _centerDialogeAssets;   
     public bool _enter;
     public ParticleSystem _rainParticle;
+    public ParticleSystem _cascadeParticle;
+    public ParticleSystem _windParticle;
 
     public void Awake()
     {
@@ -55,23 +57,23 @@ public class GameEventsScript : MonoBehaviour
                 switch (_scriptMain._scriptMain._saveLoadValues._finalWorldUnlocked)
                 {
                     case false:
-                        _scriptMain._GamesList.Add(0);                
-                        _scriptMain._GamesList.Add(15);
-                    
-                        _scriptMain._GamesList.Add(17);
-                        _scriptMain._GamesList.Add(18);
-                        _scriptMain._GamesList.Add(16);
+                        //_scriptMain._GamesList.Add(0);
+                        ////_scriptMain._GamesList.Add(8);
+                        //_scriptMain._GamesList.Add(15);
+
+                        //_scriptMain._GamesList.Add(17);
+                        //_scriptMain._GamesList.Add(18);
+                        //_scriptMain._GamesList.Add(16);    
+                        //_scriptMain._GamesList.Add(13);
+
+
+                        _scriptMain._GamesList.Add(0);
+                        _scriptMain._GamesList.Add(11);
+                        _scriptMain._GamesList.Add(20);
+                        _scriptMain._GamesList.Add(6);
+                        _scriptMain._GamesList.Add(3);
                         //_scriptMain._GamesList.Add(1);
                         _scriptMain._GamesList.Add(13);
-
-
-                        //_scriptMain._GamesList.Add(0);                    
-                        //_scriptMain._GamesList.Add(11);
-                        //_scriptMain._GamesList.Add(20);
-                        //_scriptMain._GamesList.Add(6);
-                        //_scriptMain._GamesList.Add(3);
-                        ////_scriptMain._GamesList.Add(1);
-                        //_scriptMain._GamesList.Add(13);
                         break;
                     case true:
                         _scriptMain._GamesList.Add(0);
@@ -90,6 +92,7 @@ public class GameEventsScript : MonoBehaviour
             case 1:        
          
                 _scriptMain._GamesList.Add(0);
+
                 //_scriptMain._GamesList.Add(1);
                 _scriptMain._GamesList.Add(15);
                 _scriptMain._GamesList.Add(3);
@@ -131,19 +134,18 @@ public class GameEventsScript : MonoBehaviour
                 break;
             case 3:
                 _scriptMain._GamesList.Add(0);
-                _scriptMain._GamesList.Add(6);
-                //_scriptMain._GamesList.Add(1);
-                _scriptMain._GamesList.Add(3);
-                _scriptMain._GamesList.Add(18);
-                //_scriptMain._GamesList.Add(1);
+                //_scriptMain._GamesList.Add(6);
+                ////_scriptMain._GamesList.Add(1);
+                //_scriptMain._GamesList.Add(3);
+                //_scriptMain._GamesList.Add(18);  
                 _scriptMain._GamesList.Add(12);
-                _scriptMain._GamesList.Add(9);
+                _scriptMain._GamesList.Add(7);
                 _scriptMain._GamesList.Add(3);
                 //_scriptMain._GamesList.Add(1);
                 _scriptMain._GamesList.Add(10);
                 _scriptMain._GamesList.Add(3);
                 //_scriptMain._GamesList.Add(1);
-                _scriptMain._GamesList.Add(7);
+                _scriptMain._GamesList.Add(9);
                 _scriptMain._GamesList.Add(2);
                 StartCoroutine(StartLevelNumerator());
 
@@ -259,6 +261,7 @@ public class GameEventsScript : MonoBehaviour
                             _scriptMain._onEventID = 2;
                             evento.GetComponent<WaterFallEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);
                             evento.GetComponent<WaterFallEvent>()._scriptMain = _scriptMain;
+                            _cascadeParticle.gameObject.SetActive(true);
                             break;
                         case GameEvent.EventType.Well:
                             _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
@@ -269,6 +272,7 @@ public class GameEventsScript : MonoBehaviour
                         case GameEvent.EventType.StrongAir:
                             _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
                             _scriptMain._scriptMain._scriptSFX._strongWindSetVolume = 0.05f;
+                            _windParticle.Play();
                             //_scriptMain._scriptSlime._slimeAnimator.SetBool("WindPush", true);
                             _scriptMain._onEventID = 4;
                             evento.GetComponent<StrongAirEvent>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true);                 

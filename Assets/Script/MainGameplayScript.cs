@@ -183,6 +183,21 @@ public class MainGameplayScript : MonoBehaviour
 
     public ParticleSystem[] _windBossParticles;
     public bool _slimeFlying;
+
+    [System.Serializable]
+    public class TutorialAssets
+    {
+        public GameObject _tutorialParent;
+        public TextMeshProUGUI _description;
+        public bool _tutorialOn;
+
+        public GameObject _tutorialParent2;
+        public TextMeshProUGUI _coinTextTutorial;
+        public TextMeshProUGUI _hintTextTutorial;
+
+        public bool[] _specialBools;
+    }
+    public TutorialAssets _tutorialAssets;
   
     private void Awake()
     {
@@ -325,39 +340,52 @@ public class MainGameplayScript : MonoBehaviour
 
         }
 
-        if (_slimeFlying)
-        {
-            _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
-_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-1000f, -207), 5 * Time.deltaTime);
-        }
-        else
-        {
-            _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
-_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, -207), 5 * Time.deltaTime);
-        }
+//        if (_slimeFlying)
+//        {
+//            _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
+//_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-1000f, -207), 5 * Time.deltaTime);
+//        }
+//        else
+//        {
+//            _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
+//_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, -207), 5 * Time.deltaTime);
+//        }
 
         if (_GamesList[_scriptEvents._onEvent] != 11 && _eventOn)
         {
-            if (_slimeChanging)
+            if (_slimeFlying)
             {
-
                 _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
-                   _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(50, -50), 5 * Time.deltaTime);
+_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-500f, -207), 5 * Time.deltaTime);
             }
             else
             {
-  //              if (_slimeFlying)
-  //              {
-  //                  _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
-  //_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-500f, -207), 5 * Time.deltaTime);
-  //              }
-  //              else
-  //              {
-  //                  _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
-  //_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, -207), 5 * Time.deltaTime);
-  //              }
-     
+                if (_slimeChanging)
+                {
+
+                    _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
+                       _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(50, -50), 5 * Time.deltaTime);
+                }
+                else
+                {
+                    _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
+_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, -207), 5 * Time.deltaTime);
+
+                }
+
             }
+
+            //if (_slimeChanging)
+            //{
+
+            //    _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
+            //       _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(50, -50), 5 * Time.deltaTime);
+            //}
+            //else
+            //{
+       
+
+            //}
 
             if (_lightChanging)
             {
@@ -466,6 +494,9 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
 
         }
         _scriptMain._pauseAssets._hintText.gameObject.SetActive(_scriptMain._pauseAssets._hintBought);
+
+        _windBlocker.transform.position = 
+            new Vector3(_slimeParent.transform.position.x + 1, _slimeParent.transform.position.y, 0);
     }
 
     public void HintVoid()
@@ -547,14 +578,14 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
             _scriptSlime._slimeAnimator.SetBool("WindPush", true);
         }
 
-        if (_onTutorial)
-        {
-            LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("FullTutorial_0"));
-            yield return new WaitForSeconds(3);
-            LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("FullTutorial_1"));
-            yield return new WaitForSeconds(3);
-            _onTutorial = false;
-        }
+        //if (_onTutorial)
+        //{
+        //    LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("FullTutorial_0"));
+        //    yield return new WaitForSeconds(3);
+        //    LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("FullTutorial_1"));
+        //    yield return new WaitForSeconds(3);
+        //    _onTutorial = false;
+        //}
      
 
         switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._eventClassification)
@@ -704,9 +735,11 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
                 switch (_scriptEvents._specialEvents[_GamesList[_scriptEvents._onEvent]]._chestItems[0])
                 {
                     case GameEvent.ChestItems.Water:
+                        _tutorialAssets._tutorialOn = true;
                         _dialogeAssets._dialogeSize = new Vector2(1, 4);
                         break;
                     case GameEvent.ChestItems.Earth:
+                        _tutorialAssets._tutorialOn = true;
                         _dialogeAssets._dialogeSize = new Vector2(4, 6);
                         break;
                     case GameEvent.ChestItems.Air:
@@ -783,6 +816,21 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._chooseElement);
         yield return new WaitForSeconds(1);
         _shopAssets._onShop = true;
+
+        if(_scriptMain._onWorldGlobal == 0 && !_scriptMain._saveLoadValues._finalWorldUnlocked)
+        {
+            _tutorialAssets._tutorialParent2.SetActive(true);
+            _tutorialAssets._coinTextTutorial.text = GameInitScript.Instance.GetText("tutorialhealth");
+            _tutorialAssets._hintTextTutorial.text = GameInitScript.Instance.GetText("tutorialhint");
+            yield return new WaitForSeconds(5);
+        }
+ 
+
+        while (!Input.GetButtonDown("Submit"))
+        {
+            yield return null;
+        }
+        _tutorialAssets._tutorialParent2.SetActive(false);
         while (_shopAssets._onShop)
         {
             yield return null;
@@ -962,7 +1010,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         yield return new WaitForSeconds(0.5f);
         _scriptMain._bordersAnimator.SetBool("BorderOut", false);
         _scriptEvents._rainParticle.Stop();          
-        _windParticle.Stop();
+   
         _snowParticle.Stop();
         _scriptMain._scriptSFX._strongWindSetVolume = 0;
         _scriptMain._scriptSFX._windSetVolume = 0;
@@ -977,11 +1025,14 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         _windBossParticles[1].Stop();
         _windBossParticles[2].Stop();
         _windBossParticles[3].Stop();
+        _windBlocker.GetComponent<ParticleSystem>().Stop();
+        _windParticle.Stop();
         _slimeFlying = false;
         _scriptMain._bordersAnimator.SetBool("BorderOut", false);
         _snowBool = false;
         _dialogeAssets._nextParent.SetActive(false);
         _dialogeAssets._nextCircle.SetActive(false);
+        _scriptEvents._cascadeParticle.gameObject.SetActive(false);
         yield return new WaitForSeconds(1);      
         _bossAnimator.gameObject.SetActive(false);
         _frontWindParticle.Stop();

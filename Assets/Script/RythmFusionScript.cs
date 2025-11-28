@@ -56,6 +56,7 @@ public class RythmFusionScript : MonoBehaviour
 
     public int _OnPhase;
     public TextMeshProUGUI _pressSpaceText;
+    public bool _first;
 
     void Start()
     {
@@ -108,7 +109,7 @@ public class RythmFusionScript : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Submit") && !_buttonPressed && _canPress && !_scriptMain._scriptMain._pauseAssets._pause)
+        if (Input.GetButtonDown("Submit") && !_buttonPressed && _canPress && !_scriptMain._scriptMain._pauseAssets._pause && !_scriptMain._tutorialAssets._tutorialOn)
         {
             switch (_onElement)
             {
@@ -227,7 +228,7 @@ public class RythmFusionScript : MonoBehaviour
 
             for (int step = 0; step < _order.Count; step++)
             {
-
+         
                 if (step == 0)
                 {
                     for (int i = 0; i < 4; i++)
@@ -240,8 +241,9 @@ public class RythmFusionScript : MonoBehaviour
                 int elementIndex = _order[step];
                 customStep = step;
                 _onElement = elementIndex;
-  
-                _elementsInfo[elementIndex]._selector.GetComponent<Animator>().SetTrigger("SelectorIn");
+            
+
+       
                 _scriptSlime._slimeRawImage.transform.localScale = new Vector2(3f, 3f);
                 _elementsInfo[elementIndex]._elementOrb.transform.localScale = new Vector2(1.25f, 1.25f);
                 _movingSelector.GetComponent<RectTransform>().anchoredPosition =  new Vector2(_elementsInfo[_onElement]._parent.GetComponent<RectTransform>().anchoredPosition.x, _movingSelector.GetComponent<RectTransform>().anchoredPosition.y);
@@ -249,6 +251,121 @@ public class RythmFusionScript : MonoBehaviour
                 _kickSound.pitch = step == 3 ? 1f : 0.9f;
                 _scriptMain._mainUI.transform.localScale = step == 3 ?
                     new Vector2(1.05f, 1.05f) : new Vector2(1.01f, 1.01f);
+
+                switch (_scriptMain._scriptMain._onWorldGlobal)
+                {
+                    case 0:
+                        if (_scriptMain._tutorialAssets._tutorialOn && _onElement == 1) // CAMBIAR 'while' por 'if' (Recomendado)
+                        {
+
+                            _scriptMain._tutorialAssets._tutorialParent.SetActive(true);
+                            _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(_movingSelector.GetComponent<RectTransform>().anchoredPosition.x, _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition.y);
+                            _bpm = 0;
+                            _scriptMain._tutorialAssets._description.gameObject.SetActive(true);
+                            _scriptMain._tutorialAssets._description.text = GameInitScript.Instance.GetText("tutorial" + (_elementsSelection.Count + 1).ToString());
+                            yield return new WaitForSeconds(4);
+                            // BUFER DE ENTRADA: Espera un frame para asegurar que el GetButtonDown no sea la entrada del frame anterior.
+                            yield return null;
+
+                            while (!Input.GetButtonDown("Submit"))
+                            {
+                                yield return null;
+                            }
+
+                            // Aquí el input ya fue detectado
+
+                            // Si la lógica de selección de elementos se hace antes de continuar, hazla aquí.
+                            // ChooseElementVoid();
+
+                            if (_elementsSelection.Count > 0)
+                            {
+                                // Asegura que el tutorial no se active de nuevo en el siguiente frame
+                                _scriptMain._tutorialAssets._tutorialOn = false;
+                            }
+
+                            ChooseElementVoid();
+                            _bpm = 100;
+                            _scriptMain._tutorialAssets._tutorialParent.SetActive(false);
+                            _scriptMain._tutorialAssets._description.gameObject.SetActive(false);
+                            // Si utilizaste 'if', el código ya continúa. Si hubieras usado 'while', 
+                            // pondrías un 'break;' aquí.
+                        }
+                        break;
+                    case 3:
+                        if (_scriptMain._tutorialAssets._tutorialOn) // CAMBIAR 'while' por 'if' (Recomendado)
+                        {                 
+                            switch (_onElement)
+                            {
+                                case 1:
+                                    if (!_first && !_scriptMain._tutorialAssets._specialBools[0])
+                                    {
+                                        _scriptMain._tutorialAssets._tutorialParent.SetActive(true);
+                                        _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(_movingSelector.GetComponent<RectTransform>().anchoredPosition.x, _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition.y);
+                                        _bpm = 0;
+                                        _scriptMain._tutorialAssets._description.gameObject.SetActive(true);
+                                        _scriptMain._tutorialAssets._description.text = GameInitScript.Instance.GetText("tutorial3" + (_elementsSelection.Count + 1).ToString());
+                                        yield return new WaitForSeconds(4);
+                                        // BUFER DE ENTRADA: Espera un frame para asegurar que el GetButtonDown no sea la entrada del frame anterior.
+                                        yield return null;
+
+                                        while (!Input.GetButtonDown("Submit"))
+                                        {
+                                            yield return null;
+                                        }
+                                        _scriptMain._tutorialAssets._specialBools[0] = true;
+                                        if (_elementsSelection.Count > 0)
+                                        {
+
+                                            _scriptMain._tutorialAssets._tutorialOn = false;
+                                        }
+
+                                        ChooseElementVoid();
+                                        _bpm = 100;
+                                        _scriptMain._tutorialAssets._tutorialParent.SetActive(false);
+                                        _scriptMain._tutorialAssets._description.gameObject.SetActive(false);
+                                        _first = true;
+                                    }
+            
+                                    break;
+                                case 3:
+                                    if (!_first && !_scriptMain._tutorialAssets._specialBools[1])
+                                    {
+                                        _scriptMain._tutorialAssets._tutorialParent.SetActive(true);
+                                        _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(_movingSelector.GetComponent<RectTransform>().anchoredPosition.x, _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition.y);
+                                        _bpm = 0;
+                                        _scriptMain._tutorialAssets._description.gameObject.SetActive(true);
+                                        _scriptMain._tutorialAssets._description.text = GameInitScript.Instance.GetText("tutorial4" + (_elementsSelection.Count + 1).ToString());
+                                        yield return new WaitForSeconds(4);
+                                        // BUFER DE ENTRADA: Espera un frame para asegurar que el GetButtonDown no sea la entrada del frame anterior.
+                                        yield return null;
+                                        _scriptMain._tutorialAssets._specialBools[1] = true;
+                                        while (!Input.GetButtonDown("Submit"))
+                                        {
+                                            yield return null;
+                                        }
+
+                                        if (_elementsSelection.Count > 0)
+                                        {
+
+                                            _scriptMain._tutorialAssets._tutorialOn = false;
+                                        }
+
+                                        ChooseElementVoid();
+                                        _bpm = 100;
+                                        _scriptMain._tutorialAssets._tutorialParent.SetActive(false);
+                                        _scriptMain._tutorialAssets._description.gameObject.SetActive(false);
+                                        _first = true;
+                                    }
+                     
+                                    break;
+                            }
+        
+                       
+                        }
+                        break;
+                }    
+      
+                _elementsInfo[elementIndex]._selector.GetComponent<Animator>().SetTrigger("SelectorIn");
                 _kickSound.Play();
 
                 _canPress = true;
@@ -443,7 +560,7 @@ public class RythmFusionScript : MonoBehaviour
 
             }
             _OnPhase++;
-
+            _first = false;
             if (eventStance < 3) eventStance++;
         }
 
@@ -468,6 +585,7 @@ public class RythmFusionScript : MonoBehaviour
 
     public void ChooseElementVoid()
     {
+        Debug.Log("se presiona");
         _buttonPressed = true;
         _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._chooseElement);
         _movingSelector.Play("MovingSelectorOn");

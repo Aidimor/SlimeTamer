@@ -5402,7 +5402,7 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 8300000, guid: da1e06c401dcba74f93321c5c06b0da5, type: 3}
   _saveLoadValues:
-    _worldsUnlocked: 01000000
+    _worldsUnlocked: 01010101
     _elementsUnlocked: 01010101
     _healthCoins: 0
     _hintCoins: 0
@@ -11373,7 +11373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.6862745}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -13354,7 +13354,7 @@ MonoBehaviour:
   _allWorlds:
   - _worldParent: {fileID: 0}
     _yPos: 0
-    _backgroundColor: {r: 1, g: 0.3726415, b: 0.87391335, a: 1}
+    _backgroundColor: {r: 1, g: 0.53333336, b: 0.92156863, a: 1}
     _worldText: {fileID: 1003820943}
     _spaceButton: {fileID: 101374140}
     _lockedParemt: {fileID: 505627003}
