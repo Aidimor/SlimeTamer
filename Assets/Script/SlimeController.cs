@@ -319,13 +319,22 @@ public class SlimeController : MonoBehaviour
                                     break;
                                 case GameEvent.EventType.BossFight1:
                                 case GameEvent.EventType.BossFight2:
-                                    _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
-                                    _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
-                                    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._bossAttack);
-                                    _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
-                                    yield return new WaitForSeconds(0.5f);
-                                    _scriptMain._bossAnimator.Play("SideFinalAttack");
-                                    StartCoroutine(_scriptMain.LoseLifeNumerator());
+                                    _slimeAnimator.SetTrigger("Action");
+                                    _scriptMain._slimeFlying = true;
+                                    yield return new WaitForSeconds(0.25f);
+                                    if (!_scriptMain._dead)
+                                    {
+
+                                        StartCoroutine(_scriptMain.LoseLifeNumerator());
+                                        ////endLoopAfterSelection = true;
+                                    }
+                                    ////_scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
+                                    ////_scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
+                                    ////_scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._bossAttack);
+                                    //_scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
+                                    //yield return new WaitForSeconds(0.5f);
+                                    ////_scriptMain._bossAnimator.Play("SideFinalAttack");
+                                    //StartCoroutine(_scriptMain.LoseLifeNumerator());
                                     break;
                                 case GameEvent.EventType.BossFight3:
                                     _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);

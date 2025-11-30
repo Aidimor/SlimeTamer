@@ -442,7 +442,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &77244420
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5402,10 +5402,10 @@ MonoBehaviour:
   - {fileID: 0}
   - {fileID: 8300000, guid: da1e06c401dcba74f93321c5c06b0da5, type: 3}
   _saveLoadValues:
-    _worldsUnlocked: 01010101
-    _elementsUnlocked: 01010101
-    _healthCoins: 0
-    _hintCoins: 0
+    _worldsUnlocked: 01000000
+    _elementsUnlocked: 00000000
+    _healthCoins: 1
+    _hintCoins: 1
     _slimeUnlocked: 00000000000000
     _finalWorldUnlocked: 0
     _progressSave: 0000000000000000
@@ -12491,7 +12491,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1088227470
 RectTransform:
   m_ObjectHideFlags: 0
@@ -15537,7 +15537,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 83db0ccf0ddabe34bb79dc4551a0f708, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -16132,7 +16132,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 83db0ccf0ddabe34bb79dc4551a0f708, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -17529,7 +17529,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 83db0ccf0ddabe34bb79dc4551a0f708, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1

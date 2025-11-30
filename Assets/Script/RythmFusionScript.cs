@@ -263,7 +263,9 @@ public class RythmFusionScript : MonoBehaviour
                             _bpm = 0;
                             _scriptMain._tutorialAssets._description.gameObject.SetActive(true);
                             _scriptMain._tutorialAssets._description.text = GameInitScript.Instance.GetText("tutorial" + (_elementsSelection.Count + 1).ToString());
-                            yield return new WaitForSeconds(4);
+                            yield return new WaitForSeconds(1);
+                            _scriptMain._tutorialAssets._pressSpace.text = GameInitScript.Instance.GetText("press");
+                            _scriptMain._tutorialAssets._pressSpace.gameObject.SetActive(true);
                             // BUFER DE ENTRADA: Espera un frame para asegurar que el GetButtonDown no sea la entrada del frame anterior.
                             yield return null;
 
@@ -276,7 +278,7 @@ public class RythmFusionScript : MonoBehaviour
 
                             // Si la lógica de selección de elementos se hace antes de continuar, hazla aquí.
                             // ChooseElementVoid();
-
+                            _scriptMain._tutorialAssets._pressSpace.gameObject.SetActive(false);
                             if (_elementsSelection.Count > 0)
                             {
                                 // Asegura que el tutorial no se active de nuevo en el siguiente frame
@@ -303,10 +305,12 @@ public class RythmFusionScript : MonoBehaviour
                                         _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(_movingSelector.GetComponent<RectTransform>().anchoredPosition.x, _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition.y);
                                         _bpm = 0;
                                         _scriptMain._tutorialAssets._description.gameObject.SetActive(true);
-                                        _scriptMain._tutorialAssets._description.text = GameInitScript.Instance.GetText("tutorial3" + (_elementsSelection.Count + 1).ToString());
-                                        yield return new WaitForSeconds(4);
-                                        // BUFER DE ENTRADA: Espera un frame para asegurar que el GetButtonDown no sea la entrada del frame anterior.
-                                        yield return null;
+                                        _scriptMain._tutorialAssets._description.text = GameInitScript.Instance.GetText("tutorial3");
+                                        yield return new WaitForSeconds(1);
+                                        _scriptMain._tutorialAssets._pressSpace.text = GameInitScript.Instance.GetText("press");
+                                        _scriptMain._tutorialAssets._pressSpace.gameObject.SetActive(true);
+                                       // BUFER DE ENTRADA: Espera un frame para asegurar que el GetButtonDown no sea la entrada del frame anterior.
+                                       yield return null;
 
                                         while (!Input.GetButtonDown("Submit"))
                                         {
@@ -318,7 +322,7 @@ public class RythmFusionScript : MonoBehaviour
 
                                             _scriptMain._tutorialAssets._tutorialOn = false;
                                         }
-
+                                        _scriptMain._tutorialAssets._pressSpace.gameObject.SetActive(false);
                                         ChooseElementVoid();
                                         _bpm = 100;
                                         _scriptMain._tutorialAssets._tutorialParent.SetActive(false);
@@ -334,8 +338,10 @@ public class RythmFusionScript : MonoBehaviour
                                         _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(_movingSelector.GetComponent<RectTransform>().anchoredPosition.x, _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition.y);
                                         _bpm = 0;
                                         _scriptMain._tutorialAssets._description.gameObject.SetActive(true);
-                                        _scriptMain._tutorialAssets._description.text = GameInitScript.Instance.GetText("tutorial4" + (_elementsSelection.Count + 1).ToString());
-                                        yield return new WaitForSeconds(4);
+                                        _scriptMain._tutorialAssets._description.text = GameInitScript.Instance.GetText("tutorial4");
+                                        yield return new WaitForSeconds(1);
+                                        _scriptMain._tutorialAssets._pressSpace.text = GameInitScript.Instance.GetText("press");
+                                        _scriptMain._tutorialAssets._pressSpace.gameObject.SetActive(true);
                                         // BUFER DE ENTRADA: Espera un frame para asegurar que el GetButtonDown no sea la entrada del frame anterior.
                                         yield return null;
                                         _scriptMain._tutorialAssets._specialBools[1] = true;
@@ -349,7 +355,7 @@ public class RythmFusionScript : MonoBehaviour
 
                                             _scriptMain._tutorialAssets._tutorialOn = false;
                                         }
-
+                                        _scriptMain._tutorialAssets._pressSpace.gameObject.SetActive(false);
                                         ChooseElementVoid();
                                         _bpm = 100;
                                         _scriptMain._tutorialAssets._tutorialParent.SetActive(false);

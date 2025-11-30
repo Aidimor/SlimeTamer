@@ -195,10 +195,24 @@ public class MainGameplayScript : MonoBehaviour
         public TextMeshProUGUI _coinTextTutorial;
         public TextMeshProUGUI _hintTextTutorial;
 
+        public TextMeshProUGUI _pressSpace;
+        public TextMeshProUGUI _dialogePressSpace;
+        public TextMeshProUGUI _shopPressSpace;
+        public TextMeshProUGUI _shopPressEnter;
+        public TextMeshProUGUI _menuText;
         public bool[] _specialBools;
     }
     public TutorialAssets _tutorialAssets;
-  
+
+    [System.Serializable]
+    public class HintSubPanel
+    {
+        public GameObject _parent;
+        public TextMeshProUGUI _hintText;
+        public bool _hintAvailable;
+    }
+    public HintSubPanel _hintSub;
+
     private void Awake()
     {
         _scriptMain = GameObject.Find("CanvasIndestructible/Main/MainController").GetComponent<MainController>();
@@ -227,6 +241,9 @@ public class MainGameplayScript : MonoBehaviour
         _scriptMain._pauseAssets._optionsText[0].text = GameInitScript.Instance.GetText("pause1");
         _scriptMain._pauseAssets._optionsText[1].text = GameInitScript.Instance.GetText("pause2");
         _scriptMain._pauseAssets._optionsText[2].text = GameInitScript.Instance.GetText("pause3");
+
+        _tutorialAssets._shopPressEnter.text = GameInitScript.Instance.GetText("pressenter");
+        _tutorialAssets._menuText.text = GameInitScript.Instance.GetText("hintmenu");
     }
 
     public void StartNewWorld()
@@ -305,6 +322,7 @@ public class MainGameplayScript : MonoBehaviour
                         {
                             _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._chooseElement);
                             HintVoid();
+                            //_scriptMain.SetPause(); // Reanudar
                         }
      
                         // Otra acción (reiniciar, menú, etc.)
@@ -340,16 +358,7 @@ public class MainGameplayScript : MonoBehaviour
 
         }
 
-//        if (_slimeFlying)
-//        {
-//            _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
-//_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-1000f, -207), 5 * Time.deltaTime);
-//        }
-//        else
-//        {
-//            _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
-//_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, -207), 5 * Time.deltaTime);
-//        }
+//
 
         if (_GamesList[_scriptEvents._onEvent] != 11 && _eventOn)
         {
@@ -375,17 +384,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
 
             }
 
-            //if (_slimeChanging)
-            //{
-
-            //    _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(
-            //       _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(50, -50), 5 * Time.deltaTime);
-            //}
-            //else
-            //{
-       
-
-            //}
+    
 
             if (_lightChanging)
             {
@@ -494,9 +493,21 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
 
         }
         _scriptMain._pauseAssets._hintText.gameObject.SetActive(_scriptMain._pauseAssets._hintBought);
+        _hintSub._hintText.gameObject.SetActive(_scriptMain._pauseAssets._hintBought);
 
         _windBlocker.transform.position = 
             new Vector3(_slimeParent.transform.position.x + 1, _slimeParent.transform.position.y, 0);
+
+        if (_hintSub._hintAvailable)
+        {
+            _hintSub._parent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_hintSub._parent.GetComponent<RectTransform>().anchoredPosition,
+                new Vector2(180, 327), 10 * Time.deltaTime);
+        }
+        else
+        {
+            _hintSub._parent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_hintSub._parent.GetComponent<RectTransform>().anchoredPosition,
+    new Vector2(340, 327), 10 * Time.deltaTime);
+        }
     }
 
     public void HintVoid()
@@ -505,6 +516,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
       
         _scriptMain._saveLoadValues._hintCoins--;
         _scriptMain._pauseAssets._hintAvailable = false;
+        _hintSub._hintAvailable = true;
     }
     public IEnumerator StartStageNumerator()
     {
@@ -512,6 +524,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         _scriptRythm._OnPhase = 0;
 
         _scriptMain._pauseAssets._hintText.text = GameInitScript.Instance.GetText("hint" + _GamesList[_scriptEvents._onEvent].ToString("f0"));
+        _hintSub._hintText.text = GameInitScript.Instance.GetText("hint" + _GamesList[_scriptEvents._onEvent].ToString("f0"));
 
         _slimeParent.gameObject.SetActive(false);
 
@@ -769,11 +782,12 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
             LOLSDK.Instance.SpeakText(_dialogeAssets._dialogeText.text);
 
             _dialogeAssets._nextParent.SetActive(true);
+            _tutorialAssets._dialogePressSpace.text = GameInitScript.Instance.GetText("press");
 
 
-          
 
- 
+
+
             if (i == (int)_dialogeAssets._dialogeSize.y - 1)
             {
                 _dialogeAssets._nextCircle.SetActive(true);
@@ -822,15 +836,17 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
             _tutorialAssets._tutorialParent2.SetActive(true);
             _tutorialAssets._coinTextTutorial.text = GameInitScript.Instance.GetText("tutorialhealth");
             _tutorialAssets._hintTextTutorial.text = GameInitScript.Instance.GetText("tutorialhint");
-            yield return new WaitForSeconds(5);
+            yield return new WaitForSeconds(3);
         }
- 
+        _tutorialAssets._shopPressSpace.text = GameInitScript.Instance.GetText("press");
+        _tutorialAssets._shopPressSpace.gameObject.SetActive(true);
 
         while (!Input.GetButtonDown("Submit"))
         {
             yield return null;
         }
         _tutorialAssets._tutorialParent2.SetActive(false);
+        _tutorialAssets._shopPressSpace.gameObject.SetActive(false);
         while (_shopAssets._onShop)
         {
             yield return null;
@@ -879,14 +895,14 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         yield return new WaitForSeconds(0.2f);
         _scriptMain._scriptSFX._fireSetVolume = 0;
         _scriptMain._saveLoadValues._healthCoins--;
-        //_loseLifeParticle.Play();
+
         for (int i = 0; i < 4M; i++)
         {
             _scriptRythm._elementsInfo[i]._parent.SetActive(false);
         }
         _scriptRythm._elementsSelection.Clear();
         _dead = true;
-        //LoseHeartVoid();
+       
         _slimeExplosion.Play();
         _scriptSlime._slimeRawImage.gameObject.SetActive(false);
         _scriptRythm._OnPhase = 0;
@@ -917,10 +933,14 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime.fillAmount = 0;
         _scriptMain._bordersAnimator.SetBool("BorderOut", false);
-
+        _windBossParticles[0].Stop();
+        _windBossParticles[1].Stop();
+        _windBossParticles[2].Stop();
+        _windBossParticles[3].Stop();
         yield return new WaitForSeconds(2);
         Destroy(_scriptEvents._currentEventPrefab);
 
+      
 
         _bossAnimator.gameObject.SetActive(false);
       
@@ -930,11 +950,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         _fallParticle.gameObject.SetActive(false);
         _slimeFalling = false;
         _scriptMain._scriptSFX._windSetVolume = 0;
-
-        //for (int i = 0; i < _allStageAssets.Length; i++)
-        //{
-        //    _allStageAssets[i]._backStage.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 0);
-        //}
+ 
         _scriptSlime._slimeRawImage.gameObject.SetActive(true);
         if(_scriptMain._saveLoadValues._healthCoins > 0)
         {
@@ -1025,6 +1041,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         _windBossParticles[1].Stop();
         _windBossParticles[2].Stop();
         _windBossParticles[3].Stop();
+        _hintSub._hintAvailable = false;
         _windBlocker.GetComponent<ParticleSystem>().Stop();
         _windParticle.Stop();
         _slimeFlying = false;
