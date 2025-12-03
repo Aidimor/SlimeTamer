@@ -860,6 +860,8 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
                 _scriptMain._saveLoadValues._hintCoins++;
                 break;
         }
+        _scriptMain._currencyAssets[0]._quantityText.text = _scriptMain._saveLoadValues._healthCoins.ToString();
+        _scriptMain._currencyAssets[1]._quantityText.text = _scriptMain._saveLoadValues._hintCoins.ToString();
         _shopAssets._parent.SetBool("ShopIn", false);
         yield return new WaitForSeconds(1);
  
@@ -929,6 +931,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
 
 
         _scriptSlime._slimeAnimator.SetBool("Scared", false);
+        _scriptSlime._slimeAnimator.SetInteger("ID", 0);
         _scriptSlime._materialColors[1] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime._materialColors[2] = _scriptSlime._slimeAssets[0]._mainColor;
         _scriptSlime.fillAmount = 0;

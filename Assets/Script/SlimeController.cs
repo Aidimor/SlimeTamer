@@ -254,10 +254,15 @@ public class SlimeController : MonoBehaviour
                                     _scriptMain._proyectileCharge[0].Stop();
                                     _scriptMain._proyectileCharge[1].Stop();
                                     _scriptMain._proyectileCharge[2].Stop();
-                 
+
+                                    _scriptMain._windBossParticles[0].Stop();
+                                    _scriptMain._windBossParticles[1].Stop();
+                                    _scriptMain._windBossParticles[2].Stop();
+                                    _scriptMain._windBossParticles[3].Stop();
+
                                     //_scriptMain._bossAnimator.SetBool("Damaged", true);
                                     _scriptMain._enemyExplosion.Play();
-                                    yield return new WaitForSeconds(2);
+                                    yield return new WaitForSeconds(0.5f);
                                     StartCoroutine(_scriptMain.GameEndsNumerator());
                                     yield break;
                                     break;

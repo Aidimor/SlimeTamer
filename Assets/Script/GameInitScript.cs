@@ -5,6 +5,7 @@ using UnityEngine.Networking;
 using LoLSDK;
 using SimpleJSON;
 using System.Text;
+using TMPro;
 
 namespace LoL
 {
@@ -17,17 +18,30 @@ namespace LoL
         public int id;
     }
 
+    // CLASE BASE DE GUARDADO (Tus variables de juego)
     [System.Serializable]
     public class GameSaveState
     {
-        public bool[] _worldsUnlocked;
-        public bool[] _elementsUnlocked;
         public int _healthCoins;
         public int _hintCoins;
+
+        // 🔥 VARIABLES DESBLOQUEADAS Y HABILITADAS 🔥
+        public int _progress; // Progreso actual (ej. nivel o mundo completado)
+        public bool[] _worldsUnlocked;
+        public bool[] _elementsUnlocked;
         public bool[] _slimeUnlocked;
         public bool _finalWorldUnlocked;
         public bool[] _progressSave;
-        public int _progress;
+    }
+
+    // 🔥 CLASE HELPER REQUERIDA POR LOL
+    [System.Serializable]
+    public class GameFullState
+    {
+        public int score;
+        public int currentProgress;
+        public int maximumProgress;
+        public GameSaveState data;
     }
     // --- Fin Estructuras de datos ---
 
@@ -37,16 +51,17 @@ namespace LoL
         public static GameInitScript Instance;
 
         [Header("Language")]
-        public string _languageCode = "en"; // Valor por defecto
+        public string _languageCode = "en";
         public bool languageReady = false;
         private Dictionary<string, string> _translations = new();
         private Dictionary<string, LocalizedItem> _localizedItems = new();
 
         [Header("Game Save")]
-        public bool stateLoaded = false;
+        private bool _stateLoaded = false;
+        public bool stateLoaded { get => _stateLoaded; private set => _stateLoaded = value; }
+        // Almacena el estado cargado desde el SDK para persistencia
+        public GameFullState LoadedFullState { get; private set; }
 
-        // Asumiendo que MainController tiene un método para iniciar el contenido.
-        // Asegúrate de que este script pueda encontrar la instancia de MainController.
         [Tooltip("Referencia al MainController de la escena.")]
         public MainController mainController;
 
@@ -57,106 +72,116 @@ namespace LoL
         public string lastAnswer;
 
         private static bool _initialized = false;
+        private bool _loadAttempted = false;
 
-void Awake()
-{
-    if (Instance != null)
-    {
-        Destroy(gameObject);
-        return;
-    }
-
-    Instance = this;
-    DontDestroyOnLoad(gameObject);
-
-    if (!_initialized)
-    {
-        _initialized = true;
-        InitializeSDK();
-    }
-}
+        [Tooltip("Permite inyectar JSON de prueba en lugar del guardado del SDK.")]
+        public string SaveJson;
+        [SerializeField] private TMP_Text _json;
 
 
+        // **********************************************
+        // 🔥 FUNCIÓN START CON LÓGICA DE RE-APLICACIÓN
+        // **********************************************
+        void Start()
+        {
+            if (Instance != null)
+            {
+                Destroy(gameObject);
+                return;
+            }
 
-        void InitializeSDK()
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+
+            if (!_initialized)
+            {
+                _initialized = true;
+                StartCoroutine(InitializeSDK());
+            }
+            // SI YA ESTÁ INICIALIZADO: Re-aplica el estado cargado al nuevo MainController de la escena.
+            else if (LoadedFullState != null)
+            {
+                Debug.Log("ℹ️ GameInitScript: Ya inicializado. Re-aplicando estado guardado al nuevo MainController.");
+                StartCoroutine(ApplyLoadedStateWhenReady());
+            }
+            else
+            {
+                // Si ya está inicializado pero no había guardado (LoadedFullState es null), 
+                // significa que se usó la inicialización por defecto.
+                Debug.Log("ℹ️ GameInitScript: Ya inicializado sin datos guardados. Forzando verificación de estado.");
+                CheckReadyState();
+            }
+        }
+
+
+        public IEnumerator InitializeSDK()
         {
             ILOLSDK sdk = null;
 
 #if UNITY_EDITOR
-            // Mock para pruebas en el editor
-            // CAMBIO: Quitar el prefijo 'LoLSDK.'
             sdk = new MockWebGL();
 #elif UNITY_WEBGL
-    // SDK real para producción
-    // CAMBIO: Quitar el prefijo 'LoLSDK.'
-    sdk = new WebGL();
+            sdk = new WebGL();
 #endif
 
-            // 1. Initialize SDK (solo una vez)
-            LOLSDK.Init(sdk, "com.legends-of-learning.slimer-tamer");
+            // 1. Initialize SDK
+            LOLSDK.Init(sdk, "com.legends-of-learning.slimer-tamer");
 
-            // 2. Registrar callbacks
-            LOLSDK.Instance.StartGameReceived += OnStartGame;
+            // 2. Registrar callbacks
+            LOLSDK.Instance.StartGameReceived += OnStartGame;
             LOLSDK.Instance.SaveResultReceived += OnSaveResult;
             LOLSDK.Instance.AnswerResultReceived += OnAnswerResult;
 
-            // ⚡ CORRECCIÓN: Iniciar la carga del estado aquí, en paralelo con el idioma,
-            // para evitar una segunda llamada dentro de OnStartGame.
-            LoadGameFromSDK();
-
-            // 3. Decirle al harness que estamos listos
-            Debug.Log("⚡ Calling GameIsReady (ONE TIME ONLY)");
+            // 3. Decirle al harness que estamos listos
             LOLSDK.Instance.GameIsReady();
 
+            // 4. Iniciar la carga del estado
+            Debug.Log("⏳ Forzando espera de 2.0 segundos antes de LoadGameFromSDK()...");
+            yield return new WaitForSeconds(2f);
+
+            LoadGameFromSDK();
+
 #if UNITY_EDITOR
-            // 4. Mock Data (solo en Editor)
-            StartCoroutine(LoadMockData());
+            // 5. Mock Data (solo en Editor)
+            StartCoroutine(LoadMockData());
 #endif
-        }
+        }
 
         // -----------------------------------------------------------------
         // Lógica de Sincronización
         // -----------------------------------------------------------------
 
-        /// <summary>
-        /// Se llama cuando se completa la carga del idioma o la carga del estado.
-        /// Verifica si ambos están listos para iniciar el contenido principal del juego.
-        /// </summary>
         public void CheckReadyState()
         {
             if (languageReady && stateLoaded)
             {
                 Debug.Log("✅ GameInitScript: Todos los sistemas listos. Iniciando contenido del juego.");
 
-                if (mainController != null)
+                var mc = MainController.Instance;
+
+                if (mc != null)
                 {
                     // ASUMIDO: Este método inicia el juego real.
-                    // Asegúrate de que MainController tenga un método StartGameContent()
-                    mainController.StartGameContent();
+                    mc.StartGameContent();
                 }
                 else
                 {
-                    Debug.LogError("❌ MainController no está asignado en GameInitScript. ¡El juego no puede iniciar!");
+                    Debug.LogError("❌ MainController.Instance es NULL. ¡El juego no puede iniciar!");
                 }
             }
             else
             {
-                Debug.Log($"⏳ Esperando idioma y estado: languageReady={languageReady}, stateLoaded={stateLoaded}");
+                Debug.Log($"⏳ Esperando idioma y estado: languageReady={languageReady}, stateLoaded={stateLoaded}, LoadAttempted={_loadAttempted}");
             }
         }
 
         // -----------------------------------------------------------------
-        // MOCK DATA (Solo para UNITY_EDITOR)
+        // MOCK DATA (Solo para UNITY_EDITOR) - Sin cambios
         // -----------------------------------------------------------------
 #if UNITY_EDITOR
-        /// <summary>
-        /// Simula la recepción de StartGame y LanguageDefs en el Editor.
-        /// </summary>
         private IEnumerator LoadMockData()
         {
-            yield return new WaitForSeconds(0.5f); // Dar tiempo a que los listeners se registren
-
-            // 1. MOCK START GAME (Datos de inicio)
+            yield return new WaitForSeconds(0.5f);
             string startGameJsonPath = System.IO.Path.Combine(Application.streamingAssetsPath, "startGame.json");
             string startGameJSON = "{}";
 
@@ -167,61 +192,53 @@ void Awake()
             }
             else
             {
-                // Si no existe el archivo mock, creamos un JSON mínimo
                 var mockJson = new SimpleJSON.JSONObject();
                 mockJson["languageCode"] = "en";
-                mockJson["languageUrl"] = ""; // No hay URL remota en mock, forzamos carga local
+                mockJson["languageUrl"] = "";
                 startGameJSON = mockJson.ToString();
                 Debug.LogWarning("⚠️ No se encontró startGame.json. Usando datos mock mínimos.");
             }
 
-            // Llama directamente al callback de StartGame (simulando la recepción del SDK)
             OnStartGame(startGameJSON);
         }
 #endif
 
         // -----------------------------------------------------------------
-        // SDK Callbacks & Language URL Handler
+        // SDK Callbacks & Language URL Handler - Sin cambios
         // -----------------------------------------------------------------
 
-void OnStartGame(string startGameJSON)
-        {
-            if (string.IsNullOrEmpty(startGameJSON))
-            {
-                Debug.LogError("❌ StartGame JSON vacío");
-                // Forzar el estado a cargado para no bloquear
-                stateLoaded = true; // Asumimos que el estado debe estar listo para no bloquear
-                languageReady = false; // El idioma falló
-                CheckReadyState();
-                return;
-            }
+        void OnStartGame(string startGameJSON)
+        {
+            if (string.IsNullOrEmpty(startGameJSON))
+            {
+                Debug.LogError("❌ StartGame JSON vacío");
+                stateLoaded = true;
+                languageReady = false;
+                CheckReadyState();
+                return;
+            }
 
-            Debug.Log("📥 StartGame JSON recibido: " + startGameJSON);
+            Debug.Log("📥 StartGame JSON recibido: " + startGameJSON);
 
-            var payload = JSON.Parse(startGameJSON);
+            var payload = JSON.Parse(startGameJSON);
 
-            _languageCode = payload["languageCode"] ?? "en";
-            string languageURL = payload["languageUrl"];
+            _languageCode = payload["languageCode"] ?? "en";
+            string languageURL = payload["languageUrl"];
 
-            Debug.Log($"🔹 languageCode: {_languageCode}, languageUrl: {languageURL}");
+            Debug.Log($"🔹 languageCode: {_languageCode}, languageUrl: {languageURL}");
 
-            if (!string.IsNullOrEmpty(languageURL))
-            {
-                // 🌐 Carga remota
-                Debug.Log("🌐 Intentando cargar language.json desde URL del payload");
-                StartCoroutine(LoadLanguageFromURL(languageURL));
-            }
-            else
-            {
-                // 📦 Carga local (para Editor o fallback)
-                Debug.Log("📦 languageUrl vacío. Intentando carga local.");
-                StartCoroutine(LoadLanguageCoroutine(_languageCode));
-            }
+            if (!string.IsNullOrEmpty(languageURL))
+            {
+                Debug.Log("🌐 Intentando cargar language.json desde URL del payload");
+                StartCoroutine(LoadLanguageFromURL(languageURL));
+            }
+            else
+            {
+                Debug.Log("📦 languageUrl vacío. Intentando carga local.");
+                StartCoroutine(LoadLanguageCoroutine(_languageCode));
+            }
+        }
 
-            // ⚡ NOTA: La llamada a LoadGameFromSDK() se eliminó de aquí
-            // para evitar el doble LoadState en el harness, y se movió a InitializeSDK().
-        }
-        // 🟢 COROUTINE: Carga remota de idioma (URL)
         private IEnumerator LoadLanguageFromURL(string url)
         {
             using (UnityWebRequest request = UnityWebRequest.Get(url))
@@ -237,22 +254,16 @@ void OnStartGame(string startGameJSON)
                 else
                 {
                     Debug.LogError($"❌ No se pudo cargar language.json desde URL: {request.error}. Intentando fallback local.");
-
-                    // 💡 FALLBACK: Si falla la carga remota, intenta la carga local
                     yield return LoadLanguageCoroutine(_languageCode);
                 }
             }
-           
         }
 
-
-        // 📦 COROUTINE: Carga local de idioma (StreamingAssets y Resources)
         private IEnumerator LoadLanguageCoroutine(string lang)
         {
             string json = null;
             string path = System.IO.Path.Combine(Application.streamingAssetsPath, "language.json");
 
-            // Intentar cargar desde StreamingAssets (compatible con Editor y WebGL)
             using (UnityWebRequest request = UnityWebRequest.Get(path))
             {
                 yield return request.SendWebRequest();
@@ -265,8 +276,6 @@ void OnStartGame(string startGameJSON)
                 else
                 {
                     Debug.LogWarning("⚠️ No se pudo leer StreamingAssets: " + request.error);
-
-                    // Intentar cargar desde Resources como último recurso
                     TextAsset langFile = Resources.Load<TextAsset>("language");
                     if (langFile != null)
                     {
@@ -286,7 +295,6 @@ void OnStartGame(string startGameJSON)
                 ApplyLanguageJSON(json);
             }
 
-            // Llamar a CheckReadyState incluso si falló la carga (para evitar bloqueo)
             if (!languageReady)
             {
                 CheckReadyState();
@@ -296,12 +304,10 @@ void OnStartGame(string startGameJSON)
         private void ApplyLanguageJSON(string json)
         {
             var root = JSON.Parse(json);
-            // El JSON del SDK envuelve las traducciones, por lo que buscamos el código de idioma
             var langData = root[_languageCode];
 
             if (langData == null || langData.Count == 0)
             {
-                // Fallback a inglés si el idioma solicitado no existe
                 if (_languageCode != "en")
                 {
                     Debug.LogWarning($"⚠️ Idioma '{_languageCode}' no encontrado. Intentando fallback a 'en'.");
@@ -325,7 +331,6 @@ void OnStartGame(string startGameJSON)
                 string key = pair.Key;
                 string value = pair.Value;
                 _translations[key] = value;
-                // Asume que LocalizedItem.id es -1 si no se usa
                 _localizedItems[key] = new LocalizedItem { key = key, value = value, id = -1 };
             }
 
@@ -336,175 +341,161 @@ void OnStartGame(string startGameJSON)
         }
 
         // -----------------------------------------------------------------
-        // Game Save/Load
+        // Game Save/Load (FLUJO DE SDK)
         // -----------------------------------------------------------------
-
-        // EN GameInitScript.cs
-
-        // EN GameInitScript.cs
 
         public void LoadGameFromSDK()
         {
-       
-            LOLSDK.Instance.LoadState<GameSaveState>(state =>
+            if (_loadAttempted)
             {
-                GameSaveState loadedState;
+   
+                return;
+            }
+            _loadAttempted = true;
+            stateLoaded = false;
 
-                if (state != null && state.data != null)
+     
+
+            LOLSDK.Instance.LoadState<GameFullState>(state =>
+            {        
+                if (_json != null)
                 {
-                    PortraitController.Instance._quitarID++;
-                    PortraitController.Instance._quitar.text = PortraitController.Instance._quitarID.ToString();
-                    loadedState = state.data;
-                    Debug.Log($"📂 Estado cargado desde SDK. Health: {loadedState._healthCoins}, Hint: {loadedState._hintCoins}");
-
-                    // 🛑 ELIMINADAS: Estas asignaciones de UI son prematuras y causan conflictos.
-                    // PortraitController.Instance._quitar.text = loadedState._hintCoins.ToString();
-                    // PortraitController.Instance._quitar.text = "HACE LOAD";
+                    if (state != null && state.data != null)
+                    {
+                        try
+                        {
+                            string fullResponseJson = JsonUtility.ToJson(state.data);
+                            _json.text = "SAVED FULL STATE RECEIVED (RAW):\n" + fullResponseJson;
+                        }
+                        catch (System.Exception e)
+                        {
+                            _json.text = $"❌ Error al serializar JSON de guardado:\n{e.Message}";
+                            Debug.LogError($"❌ Error al serializar JSON de guardado: {e.Message}");
+                        }
+                    }
+                    else
+                    {
+                        _json.text = "JSON GUARDADO RECIBIDO: NULL / VACÍO (Nueva partida)";
+                    }
+                }
+           
+                if (state != null && state.data != null && state.data.data != null)
+                {
+                    LoadedFullState = state.data;
+                    Debug.Log($"✅ Estado de guardado encontrado y cargado. Health: {LoadedFullState.data._healthCoins}, Progress: {LoadedFullState.currentProgress}/{LoadedFullState.maximumProgress}");
                 }
                 else
                 {
-                    PortraitController.Instance._quitarID++;
-                    PortraitController.Instance._quitar.text = PortraitController.Instance._quitarID.ToString();
-                    Debug.Log("ℹ️ No hay estado guardado o está vacío. Creando uno nuevo con valores por defecto.");
-                    loadedState = GetEmptySave(); // 👈 Usar el estado por defecto
-
-                    // 🛑 ELIMINADA: Asignación de UI prematura.
-                    // PortraitController.Instance._quitar.text = "DEFECTO";
+                    LoadedFullState = null;
+                    Debug.Log("ℹ️ No se encontró estado guardado. Se usará la inicialización de MainController (Nueva Partida).");
                 }
 
-                // Iniciar la aplicación del estado, esperando a que MainController esté listo.
-                StartCoroutine(ApplyLoadedStateWhenReady(loadedState));
+                StartCoroutine(ApplyLoadedStateWhenReady());
             });
         }
 
-        // EN GameInitScript.cs
 
-        private IEnumerator ApplyLoadedStateWhenReady(GameSaveState state)
+        // ******************************************************
+        // 🔥 CORRUTINA DE APLICACIÓN DEL ESTADO CARGADO (CLAVE)
+        // ******************************************************
+        public IEnumerator ApplyLoadedStateWhenReady()
         {
-            PortraitController.Instance._quitarID++;
-            PortraitController.Instance._quitar.text = PortraitController.Instance._quitarID.ToString();
             Debug.Log("📂 Esperando inicialización de MainController...");
 
-            // 💡 CORRECCIÓN CRÍTICA: Bucle de espera robusto. 
-            // Esto asegura que la instancia de MainController y su objeto de datos existan 
-            // antes de intentar leerlos o escribir en ellos.
+            // Espera hasta que el MainController de la escena actual esté listo
             while (MainController.Instance == null || MainController.Instance._saveLoadValues == null)
             {
-                yield return null; // Espera un frame y vuelve a verificar
+                yield return null;
             }
 
             var mc = MainController.Instance;
 
-            // Ya no necesitamos la verificación 'if (mc == null)' aquí porque el bucle 'while'
-            // garantiza que 'mc' y 'mc._saveLoadValues' no sean nulos antes de continuar.
+            // Usamos LoadedFullState (que persiste entre escenas) para aplicar los datos.
+            if (LoadedFullState != null && LoadedFullState.data != null)
+            {
+                GameSaveState loadedData = LoadedFullState.data;
+                Debug.Log($"DIAGNÓSTICO INIT: Valor cargado del SDK (Persistente): {loadedData._healthCoins}");
 
-            // --- Lógica de inicialización segura del estado (ya es correcta) ---
+                // --- Aplicación del estado ---
+                ApplyLoadedState(loadedData, mc);
 
-            // Inicialización segura de arrays en el estado cargado (NULL coalescing '??=')
-            //state._worldsUnlocked ??= new bool[4] { true, false, false, false };
-            state._worldsUnlocked ??= new bool[4];
-            state._elementsUnlocked ??= new bool[4];
-            state._slimeUnlocked ??= new bool[7];
-            state._progressSave ??= new bool[8];
+                ReportProgressToTeacherApp(LoadedFullState.currentProgress, LoadedFullState.maximumProgress);
+            }
+            else
+            {
+                // Si LoadedFullState es null (ej. primera partida o no hay datos), usa los valores por defecto.
+                Debug.Log("DIAGNÓSTICO INIT: LoadedState es NULL. Usando valores por defecto de MainController.");
+                mc.UpdateCurrencyUI();
+            }
 
-            // Asegurar que los arrays de destino tengan el tamaño adecuado
-            mc._saveLoadValues._worldsUnlocked ??= new bool[state._worldsUnlocked.Length];
-            mc._saveLoadValues._elementsUnlocked ??= new bool[state._elementsUnlocked.Length];
-            mc._saveLoadValues._slimeUnlocked ??= new bool[state._slimeUnlocked.Length];
-            mc._saveLoadValues._progressSave ??= new bool[state._progressSave.Length];
-         
-
-            // --- Aplicación del estado ---
-            ApplyLoadedState(state);
             stateLoaded = true;
-
             CheckReadyState();
         }
-        // EN GameInitScript.cs
 
-        // EN GameInitScript.cs
-        // EN GameInitScript.cs
-        // EN GameInitScript.cs
-
-        private void ApplyLoadedState(GameSaveState state)
+        private void ApplyLoadedState(GameSaveState state, MainController mc)
         {
-            // ... (Tu contador de depuración, el cual ignoramos) ...
+            // 1. Aplicar datos lógicos al MainController
+            mc._saveLoadValues._healthCoins = state._healthCoins;
+            mc._saveLoadValues._hintCoins = state._hintCoins;
+            mc._saveLoadValues._progress = state._progress;
 
-            // 🔥 CORRECCIÓN: Usar MainController.Instance, garantizado por ApplyLoadedStateWhenReady
-            //var mc = MainController.Instance;
+            // Asegurar que los arrays de destino existan o re-dimensionarlos si el guardado trae datos.
+            var saveValues = mc._saveLoadValues;
 
-            // Si la referencia local mainController estaba nula, esta asignación fallaba silenciosamente.
-            // La línea anterior es más robusta.
-
-            // Si mc es null aquí, algo falló en ApplyLoadedStateWhenReady, pero asumimos que pasa.
-            if(mainController == null)
+            // Worlds Unlocked (y otros arrays)
+            if (state._worldsUnlocked != null)
             {
-                Debug.LogError("❌ ApplyLoadedState: MainController.Instance es NULL. No se puede aplicar el estado.");
-                return; // Detener la ejecución
+                // Solo re-dimensiona si el array del saveValues es null o tiene un tamaño diferente
+                if (saveValues._worldsUnlocked == null || saveValues._worldsUnlocked.Length != state._worldsUnlocked.Length)
+                    saveValues._worldsUnlocked = new bool[state._worldsUnlocked.Length];
+                System.Array.Copy(state._worldsUnlocked, saveValues._worldsUnlocked, state._worldsUnlocked.Length);
             }
 
-            var values = mainController._saveLoadValues; // Esta referencia ahora es segura
-
-            if (values == null)
+            if (state._elementsUnlocked != null)
             {
-                Debug.LogError("❌ ApplyLoadedState: _saveLoadValues es NULL. Inicializar en MainController Awake.");
-                return;
+                if (saveValues._elementsUnlocked == null || saveValues._elementsUnlocked.Length != state._elementsUnlocked.Length)
+                    saveValues._elementsUnlocked = new bool[state._elementsUnlocked.Length];
+                System.Array.Copy(state._elementsUnlocked, saveValues._elementsUnlocked, state._elementsUnlocked.Length);
             }
 
-            // 💡 PASO CRÍTICO: Asignación directa de las monedas
-            values._healthCoins = state._healthCoins;
-            values._hintCoins = state._hintCoins; // ¡Ahora esto se aplica al objeto CORRECTO!
-
-            values._finalWorldUnlocked = state._finalWorldUnlocked;
-            values._progress = state._progress;
-
-            // 🔥 Agregamos el Debug.Log de verificación y la actualización de UI aquí:
-            Debug.Log($"✅ Estado cargado con éxito. MainController._hintCoins FINAL: {values._hintCoins}");
-
-            // Opcional: Descomenta estas líneas si MainController NO tiene un UpdateCurrencyUI()
-            // Si MainController tiene un método StartGameContent() que ya llama a UpdateCurrencyUI(),
-            // no necesitas esto, ya que CheckReadyState lo hará después de este método.
-            /* if (mc._currencyAssets != null && mc._currencyAssets.Length > 1)
+            if (state._slimeUnlocked != null)
             {
-                mc._currencyAssets[1]._quantityText.text = values._hintCoins.ToString();
-                mc._currencyAssets[0]._quantityText.text = values._healthCoins.ToString();
+                if (saveValues._slimeUnlocked == null || saveValues._slimeUnlocked.Length != state._slimeUnlocked.Length)
+                    saveValues._slimeUnlocked = new bool[state._slimeUnlocked.Length];
+                System.Array.Copy(state._slimeUnlocked, saveValues._slimeUnlocked, state._slimeUnlocked.Length);
             }
-            */
 
-            // ... (Tu código de UI de depuración final, si lo quieres) ...
+            if (state._progressSave != null)
+            {
+                if (saveValues._progressSave == null || saveValues._progressSave.Length != state._progressSave.Length)
+                    saveValues._progressSave = new bool[state._progressSave.Length];
+                System.Array.Copy(state._progressSave, saveValues._progressSave, state._progressSave.Length);
+            }
+
+            saveValues._finalWorldUnlocked = state._finalWorldUnlocked;
+
+            // 2. DEBUG DE VERIFICACIÓN FINAL
+            Debug.Log($"✅ Aplicando Estado FINAL al MainController. Health: {saveValues._healthCoins}, Hint: {saveValues._hintCoins}, Progress: {saveValues._progress}");
+
+            // 3. ACTUALIZAR UI
+            mc.UpdateCurrencyUI();
         }
-        private GameSaveState GetEmptySave() => new()
-        {
-            _worldsUnlocked = new bool[4] { true, false, false, false },
-            _elementsUnlocked = new bool[4],
-            _slimeUnlocked = new bool[7],
-            _healthCoins = 1, // 👈 Se inicializa a 1 SOLO AQUÍ
-            _hintCoins = 1,   // 👈 Se inicializa a 1 SOLO AQUÍ
-            _finalWorldUnlocked = false,
-            _progressSave = new bool[8],
-            _progress = 0
-        };
 
         // -----------------------------------------------------------------
-        // Otros Callbacks y Funciones de Utilidad
+        // Funciones de Reporte de Progreso y Guardado - Sin cambios
         // -----------------------------------------------------------------
 
-        /// <summary>
-        /// NOTIFICA AL SDK QUE EL JUEGO O UNA TAREA CRÍTICA HA TERMINADO.
-        /// CORRECCIÓN: Se usa CompleteGame() sin argumentos, basado en la definición del SDK proporcionada.
-        /// El JSON de estado final se ignora en la llamada al SDK, pero se mantiene en la firma de la función.
-        /// </summary>
-        /// <param name="finalStateJson">JSON que describe el estado final.</param>
-        public void GameIsComplete(string finalStateJson)
+        public void ReportProgressToTeacherApp(int currentProgress, int maxProgress)
         {
-            if (LOLSDK.Instance == null)
+            if (maxProgress > 0)
             {
-                Debug.LogError("❌ LOLSDK no está inicializado. No se puede llamar a CompleteGame.");
-                return;
+                LOLSDK.Instance.SubmitProgress(currentProgress, maxProgress);
+                Debug.Log($"📊 Progreso reportado al maestro: {currentProgress}/{maxProgress}");
             }
-            // Llamada corregida sin argumentos
-            LOLSDK.Instance.CompleteGame();
-            Debug.Log("🎉 CompleteGame llamado (sin JSON). JSON de estado final ignorado: " + finalStateJson);
+            else
+            {
+                Debug.LogWarning("⚠️ No se pudo reportar progreso: maximumProgress es 0. Asegúrate de definirlo.");
+            }
         }
 
         public void SaveGame()
@@ -515,26 +506,62 @@ void OnStartGame(string startGameJSON)
                 return;
             }
 
-            // Mapear los datos de MainController.SaveLoadValues a la clase GameSaveState para el SDK
-            GameSaveState state = new GameSaveState
+            var saveValues = MainController.Instance._saveLoadValues;
+
+            // 1. Obtener tus datos de guardado (GameSaveState)
+            GameSaveState gameState = new GameSaveState
             {
-                _worldsUnlocked = MainController.Instance._saveLoadValues._worldsUnlocked,
-                _elementsUnlocked = MainController.Instance._saveLoadValues._elementsUnlocked,
-                _slimeUnlocked = MainController.Instance._saveLoadValues._slimeUnlocked,
-                _healthCoins = MainController.Instance._saveLoadValues._healthCoins,
-                _hintCoins = MainController.Instance._saveLoadValues._hintCoins,
-                _finalWorldUnlocked = MainController.Instance._saveLoadValues._finalWorldUnlocked,
-                _progressSave = MainController.Instance._saveLoadValues._progressSave,
-                _progress = MainController.Instance._saveLoadValues._progress
+                _healthCoins = saveValues._healthCoins,
+                _hintCoins = saveValues._hintCoins,
+                _progress = saveValues._progress,
+
+                _worldsUnlocked = saveValues._worldsUnlocked,
+                _elementsUnlocked = saveValues._elementsUnlocked,
+                _slimeUnlocked = saveValues._slimeUnlocked,
+                _finalWorldUnlocked = saveValues._finalWorldUnlocked,
+                _progressSave = saveValues._progressSave
             };
 
-            LOLSDK.Instance.SaveState(new State<GameSaveState> { data = state });
-            Debug.Log("💾 Estado guardado en LoLSDK");
+            // 2. Crear la estructura GameFullState con datos de progreso
+            int maxProgress = 8;
+            int currentProg = saveValues._progress;
+
+            GameFullState fullState = new GameFullState
+            {
+                score = gameState._healthCoins + gameState._hintCoins,
+                currentProgress = currentProg,
+                maximumProgress = maxProgress,
+                data = gameState
+            };
+
+            // 3. Guardar usando la estructura LoLSDK.State<GameFullState>
+            LOLSDK.Instance.SaveState(new LoLSDK.State<GameFullState> { data = fullState });
+
+            // 4. Reportar el progreso al maestro
+            ReportProgressToTeacherApp(fullState.currentProgress, fullState.maximumProgress);
+
+            Debug.Log($"💾 Estado guardado en LoLSDK. Health: {gameState._healthCoins}, Progress: {fullState.currentProgress}/{fullState.maximumProgress}");
         }
 
         void OnSaveResult(bool success)
         {
             Debug.Log(success ? "✅ Guardado exitoso" : "❌ Error al guardar");
+        }
+
+        // -----------------------------------------------------------------
+        // Otros Callbacks y Funciones de Utilidad - Sin cambios
+        // -----------------------------------------------------------------
+
+        public void GameIsComplete(string finalStateJson)
+        {
+            if (LOLSDK.Instance == null)
+            {
+                Debug.LogError("❌ LOLSDK no está inicializado. No se puede llamar a CompleteGame.");
+                return;
+            }
+
+            LOLSDK.Instance.CompleteGame();
+            Debug.Log("🎉 CompleteGame llamado.");
         }
 
         public void OnAnswerResult(string resultJSON)

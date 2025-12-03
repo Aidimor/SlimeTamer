@@ -5,6 +5,7 @@ using TMPro;
 using LoL;
 using LoLSDK;
 
+// Se recomienda usar el GameSaveState de LoL.GameInitScript si es el mismo.
 [System.Serializable]
 public class Progress
 {
@@ -17,33 +18,42 @@ public class MainController : MonoBehaviour
 {
     public static MainController Instance;
 
+    // --- Referencias a Scripts ---
     public PortraitController _scriptPortrait;
     public GameInitScript _scriptInit;
-    // ... otras referencias a scripts ...
     public SFXscript _scriptSFX;
     public MusicController _scriptMusic;
+    // --- Fin Referencias a Scripts ---
 
+    // --- Assets y Componentes ---
     public Animator _bordersAnimator;
-    // ... otras variables de Animator y AudioSource ...
     public Animator _cinematicBorders;
     public AudioSource _bgmAS;
     public AudioClip[] _allBGM;
+    public Animator _currencyAnimator;
+    // --- Fin Assets y Componentes ---
 
+    // La clase SaveLoadValues debe coincidir con GameSaveState en GameInitScript
     [System.Serializable]
     public class SaveLoadValues
     {
-        public bool[] _worldsUnlocked;
-        public bool[] _elementsUnlocked;
-        public int _healthCoins;
-        public int _hintCoins;
-        public bool[] _slimeUnlocked;
-        public bool _finalWorldUnlocked;
-        public bool[] _progressSave;
-        public int _progress;
+        // 🔑 VALORES INICIALES (JUEGO NUEVO).
+        public bool[] _worldsUnlocked = new bool[4] { true, false, false, false };
+        public bool[] _elementsUnlocked = new bool[4];
+        public int _healthCoins = 1;
+        public int _hintCoins = 1;
+        public bool[] _slimeUnlocked = new bool[7];
+        public bool _finalWorldUnlocked = false;
+        public bool[] _progressSave = new bool[8];
+        public int _progress = 0;
     }
+
+    // CRÍTICO: Objeto de datos que será cargado por GameInitScript.
     public SaveLoadValues _saveLoadValues;
 
-    // ... otras clases serializables (PauseAssets, CurrencyAssets, GameOverAssets, NewSlimePanel) ...
+    // --- Otras Clases Serializables ---
+    // (PauseAssets, CurrencyAssets, GameOverAssets, NewSlimePanel sin cambios)
+    #region SerializableClasses
     [System.Serializable]
     public class PauseAssets
     {
@@ -82,9 +92,6 @@ public class MainController : MonoBehaviour
     }
     public GameOverAssets _gameOverAssets;
 
-    public int _onWorldGlobal;
-    public bool _introSpecial;
-
     [System.Serializable]
     public class NewSlimePanel
     {
@@ -93,10 +100,14 @@ public class MainController : MonoBehaviour
         public TextMeshProUGUI _slimeNameText;
     }
     public NewSlimePanel newSlimePanel;
+    #endregion
 
-    public Animator _currencyAnimator;
-
+    // --- Variables de Estado ---
+    public int _onWorldGlobal;
+    public bool _introSpecial;
     private int _lastReportedProgress = 0;
+    // --- Fin Variables de Estado ---
+
 
     void Awake()
     {
@@ -111,69 +122,62 @@ public class MainController : MonoBehaviour
             return;
         }
 
-        // PASO CRÍTICO 1: Crear la instancia del objeto contenedor.
+        // 🔥 CORRECCIÓN CRÍTICA: Inicializar la clase de guardado si es NULL.
+        // Esto garantiza que el GameInitScript siempre tiene una estructura válida para sobreescribir.
         if (_saveLoadValues == null)
             _saveLoadValues = new SaveLoadValues();
 
-        // Importante: No debe haber NINGUNA inicialización de _hintCoins o _healthCoins aquí.
+        // Asegurar que GameInitScript tiene una referencia a este MainController
+        if (GameInitScript.Instance != null)
+        {
+            GameInitScript.Instance.mainController = this;
+        }
     }
 
-    // ---------------------------
-    // MÉTODO DE ARRANQUE LLAMADO DESDE GameInitScript (LUEGO DE LA CARGA)
-    // ---------------------------
+    // -----------------------------------------------------------------------------------
+    // MÉTODO DE ARRANQUE LLAMADO DESDE GameInitScript
+    // -----------------------------------------------------------------------------------
     public void StartGameContent()
     {
         Debug.Log("🚀 MainController: Inicio de Contenido. El idioma y el estado de guardado están listos.");
-
-        // 1. Asegúrate de que Time.timeScale esté en 1.
         Time.timeScale = 1f;
-
-        // 2. 💡 CORRECCIÓN CLAVE: Actualiza la UI de las monedas con los valores cargados.
         UpdateCurrencyUI();
-
-        // 3. Carga aquí la escena inicial del juego, el menú principal o inicia el primer diálogo.
-        // Por ejemplo, si tienes una escena llamada "WorldMapScene":
-        //LoadSceneByName("WorldMapScene");
     }
 
-    /// <summary>
-    /// Actualiza la UI de las monedas (Health y Hint) con los valores cargados en _saveLoadValues.
-    /// Se llama solo una vez en StartGameContent.
-    /// </summary>
-    private void UpdateCurrencyUI()
+    // -----------------------------------------------------------------------------------
+    // ACTUALIZACIÓN DE UI
+    // -----------------------------------------------------------------------------------
+    public void UpdateCurrencyUI()
     {
-        // Asumiendo que _currencyAssets[0] es Health y [1] es Hint
-        if (_currencyAssets != null && _currencyAssets.Length > 1)
+        if (_currencyAssets == null || _currencyAssets.Length < 2 || _saveLoadValues == null)
         {
-            // Moneda 0: Health
-            if (_currencyAssets[0]?._quantityText != null)
-            {
-                _currencyAssets[0]._quantityText.text = _saveLoadValues._healthCoins.ToString();
-                Debug.Log($"💰 UI Health Coin Actualizada a: {_saveLoadValues._healthCoins}");
-            }
-
-            // Moneda 1: Hint
-            if (_currencyAssets[1]?._quantityText != null)
-            {
-                _currencyAssets[1]._quantityText.text = _saveLoadValues._hintCoins.ToString();
-                Debug.Log($"💰 UI Hint Coin Actualizada a: {_saveLoadValues._hintCoins}");
-            }
+            Debug.LogError("❌ No se puede actualizar la UI: Faltan referencias en MainController o SaveLoadValues es NULL.");
+            return;
         }
-        else
+
+        // Moneda 0: Health
+        if (_currencyAssets[0]?._quantityText != null)
         {
-            Debug.LogError("❌ CurrencyAssets no está configurado correctamente en MainController.");
+            _currencyAssets[0]._quantityText.text = _saveLoadValues._healthCoins.ToString("f0");
+            Debug.Log($"💰 UI Health Coin Actualizada a: {_saveLoadValues._healthCoins}");
+        }
+
+        // Moneda 1: Hint
+        if (_currencyAssets[1]?._quantityText != null)
+        {
+            _currencyAssets[1]._quantityText.text = _saveLoadValues._hintCoins.ToString("f0");
+            Debug.Log($"💰 UI Hint Coin Actualizada a: {_saveLoadValues._hintCoins}");
         }
     }
 
 
     public void LoadSceneByName(string sceneName) => SceneManager.LoadScene(sceneName);
 
-    // ---------------------------
-    // PAUSA (Lógica omitida por brevedad, no hay cambios requeridos aquí)
-    // ---------------------------
+    // -----------------------------------------------------------------------------------
+    // PAUSA
+    // -----------------------------------------------------------------------------------
     public void SetPause()
     {
-        // ... (código SetPause)
         _scriptSFX.PlaySound(_scriptSFX._chooseElement);
         Animator pauseAnimator = _pauseAssets._parent?.GetComponent<Animator>();
         if (pauseAnimator != null)
@@ -199,7 +203,6 @@ public class MainController : MonoBehaviour
                 {
                     if (_saveLoadValues._slimeUnlocked[i + 1])
                     {
-                        // Ahora es seguro llamar a GetText
                         _pauseAssets._allSlimeText[i].text = GameInitScript.Instance.GetText("Slime" + (i + 1).ToString("f0"));
                         _pauseAssets._allSlimeText[i].gameObject.SetActive(true);
                     }
@@ -214,9 +217,9 @@ public class MainController : MonoBehaviour
         }
     }
 
-    // ---------------------------
-    // GAME OVER (Lógica omitida por brevedad, no hay cambios requeridos aquí)
-    // ---------------------------
+    // -----------------------------------------------------------------------------------
+    // GAME OVER
+    // -----------------------------------------------------------------------------------
     public void SetGameOver()
     {
         if (!_gameOverAssets._onGameOver)
@@ -235,16 +238,19 @@ public class MainController : MonoBehaviour
 
     public bool IsPaused() => _pauseAssets._pause || _gameOverAssets._onGameOver;
 
-    // ---------------------------
-    // GUARDADO (Lógica correcta)
-    // ---------------------------
+    // -----------------------------------------------------------------------------------
+    // GUARDADO
+    // -----------------------------------------------------------------------------------
     public void SaveProgress()
     {
-        if (_scriptInit == null)
+        // Usar GameInitScript.Instance en lugar de _scriptInit, ya que es el Singleton persistente
+        if (GameInitScript.Instance == null)
         {
-            Debug.LogWarning("⚠️ GameInitScript no asignado");
+            Debug.LogWarning("⚠️ GameInitScript no está listo o no existe.");
             return;
         }
+
+        // Recalcular el progreso total antes de guardar
         _saveLoadValues._progress = 0;
         for (int i = 0; i < _saveLoadValues._progressSave.Length; i++)
         {
@@ -254,23 +260,15 @@ public class MainController : MonoBehaviour
             }
         }
 
-        _scriptInit.SaveGame();
+        GameInitScript.Instance.SaveGame();
         Debug.Log("💾 Guardado solicitado desde MainController");
     }
 
-    // ---------------------------
-    // ACTUALIZACIÓN DEL JUEGO
-    // ---------------------------
     public void Update()
     {
-        // 🛑 ELIMINADAS LAS ASIGNACIONES DE TEXTO DE MONEDAS DEL UPDATE.
-        // La actualización de monedas (UI) ahora se gestiona en UpdateCurrencyUI()
-        // y se llama manualmente cuando las monedas cambian y en StartGameContent().
-
-        if (_scriptInit == null || !_scriptInit.stateLoaded || !_scriptInit.languageReady)
+        if (GameInitScript.Instance == null || !GameInitScript.Instance.stateLoaded || !GameInitScript.Instance.languageReady)
             return;
     }
-
 
     public void SubmitProgressToLoL(int currentProgress, int score = 0)
     {
@@ -287,6 +285,15 @@ public class MainController : MonoBehaviour
         _lastReportedProgress = currentProgress;
 
         LOLSDK.Instance.SubmitProgress(currentProgress, maxProgress, score);
-        Debug.Log($"📊 Progreso enviado a LoL: {currentProgress}/{maxProgress}, Score: {score}");
+    }
+
+    public void SetCoinsAndSave(int health, int hint)
+    {
+        if (_saveLoadValues == null) return;
+        _saveLoadValues._healthCoins = health;
+        _saveLoadValues._hintCoins = hint;
+        UpdateCurrencyUI(); // Muestra los nuevos valores inmediatamente
+        SaveProgress(); // Llama a GameInitScript.SaveGame()
+        Debug.Log($"¡FORZADO! Monedas guardadas: Health={health}, Hint={hint}");
     }
 }

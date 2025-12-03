@@ -86,12 +86,14 @@ public class PortraitController : MonoBehaviour
             _logo.gameObject.SetActive(false);
             _frontMap.gameObject.SetActive(false);
         }
+        //_scriptMainController._currencyAssets[0]._quantityText.text = _scriptMainController._saveLoadValues._healthCoins.ToString();
+        //_scriptMainController._currencyAssets[1]._quantityText.text = _scriptMainController._saveLoadValues._hintCoins.ToString();
         StartCoroutine(StartsSceneNumerator());
     }
 
     public IEnumerator StartsSceneNumerator()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(1);
         MainController.Instance._currencyAssets[0]._quantityText.text = MainController.Instance._saveLoadValues._healthCoins.ToString("f0");
         MainController.Instance._currencyAssets[1]._quantityText.text = MainController.Instance._saveLoadValues._hintCoins.ToString("f0");
     }

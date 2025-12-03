@@ -57,22 +57,11 @@ public class GameEventsScript : MonoBehaviour
                 switch (_scriptMain._scriptMain._saveLoadValues._finalWorldUnlocked)
                 {
                     case false:
-                        //_scriptMain._GamesList.Add(0);
-                        ////_scriptMain._GamesList.Add(8);
-                        //_scriptMain._GamesList.Add(15);
-
-                        //_scriptMain._GamesList.Add(17);
-                        //_scriptMain._GamesList.Add(18);
-                        //_scriptMain._GamesList.Add(16);    
-                        //_scriptMain._GamesList.Add(13);
-
-
                         _scriptMain._GamesList.Add(0);
                         _scriptMain._GamesList.Add(11);
                         _scriptMain._GamesList.Add(20);
                         _scriptMain._GamesList.Add(6);
-                        _scriptMain._GamesList.Add(3);
-                        //_scriptMain._GamesList.Add(1);
+                        _scriptMain._GamesList.Add(3);             
                         _scriptMain._GamesList.Add(13);
                         break;
                     case true:
@@ -89,11 +78,8 @@ public class GameEventsScript : MonoBehaviour
 
                 StartCoroutine(StartLevelNumerator()); 
                 break;
-            case 1:        
-         
-                _scriptMain._GamesList.Add(0);
-
-                //_scriptMain._GamesList.Add(1);
+            case 1:            
+                _scriptMain._GamesList.Add(0);  
                 _scriptMain._GamesList.Add(15);
                 _scriptMain._GamesList.Add(3);
                 _scriptMain._GamesList.Add(4);
@@ -112,10 +98,8 @@ public class GameEventsScript : MonoBehaviour
                 break;
             case 2:
                 _scriptMain._GamesList.Add(0);
-                _scriptMain._GamesList.Add(9);
-                //_scriptMain._GamesList.Add(1);
-                _scriptMain._GamesList.Add(3);
-                //_scriptMain._GamesList.Add(1);
+                _scriptMain._GamesList.Add(9);             
+                _scriptMain._GamesList.Add(3);       
                 _scriptMain._GamesList.Add(19);
                 _scriptMain._GamesList.Add(4);
                 _scriptMain._GamesList.Add(8);
@@ -134,17 +118,12 @@ public class GameEventsScript : MonoBehaviour
                 break;
             case 3:
                 _scriptMain._GamesList.Add(0);
-                //_scriptMain._GamesList.Add(6);
-                ////_scriptMain._GamesList.Add(1);
-                //_scriptMain._GamesList.Add(3);
-                //_scriptMain._GamesList.Add(18);  
+    
                 _scriptMain._GamesList.Add(12);
                 _scriptMain._GamesList.Add(7);
                 _scriptMain._GamesList.Add(3);
-                //_scriptMain._GamesList.Add(1);
                 _scriptMain._GamesList.Add(10);
-                _scriptMain._GamesList.Add(3);
-                //_scriptMain._GamesList.Add(1);
+                _scriptMain._GamesList.Add(3);            
                 _scriptMain._GamesList.Add(9);
                 _scriptMain._GamesList.Add(2);
                 StartCoroutine(StartLevelNumerator());
