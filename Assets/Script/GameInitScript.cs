@@ -117,34 +117,51 @@ namespace LoL
         public IEnumerator InitializeSDK()
         {
             ILOLSDK sdk = null;
-
 #if UNITY_EDITOR
             sdk = new MockWebGL();
 #elif UNITY_WEBGL
-            sdk = new WebGL();
+    sdk = new WebGL();
 #endif
 
-            // 1. Initialize SDK
-            LOLSDK.Init(sdk, "com.legends-of-learning.slimer-tamer");
+            try
+            {
+                LOLSDK.Init(sdk, "com.legends-of-learning.slimer-tamer");
 
-            // 2. Registrar callbacks
-            LOLSDK.Instance.StartGameReceived += OnStartGame;
-            LOLSDK.Instance.SaveResultReceived += OnSaveResult;
-            LOLSDK.Instance.AnswerResultReceived += OnAnswerResult;
+                LOLSDK.Instance.StartGameReceived += this.OnStartGame;
+                LOLSDK.Instance.SaveResultReceived += this.OnSaveResult;
+                LOLSDK.Instance.AnswerResultReceived += this.OnAnswerResult;
+                LOLSDK.Instance.LanguageDefsReceived += this.HandleLanguageDefs;
+                LOLSDK.Instance.GameStateChanged += new GameStateChangedHandler(this.HandleGameStateChange);
+                LOLSDK.Instance.QuestionsReceived += new QuestionListReceivedHandler(this.HandleQuestions);
 
-            // 3. Decirle al harness que estamos listos
-            LOLSDK.Instance.GameIsReady();
+                // Primero: informar que estamos listos
+                LOLSDK.Instance.GameIsReady();
+                Debug.Log("INIT: GameIsReady() called.");
 
-            // 4. Iniciar la carga del estado
-            Debug.Log("⏳ Forzando espera de 2.0 segundos antes de LoadGameFromSDK()...");
-            yield return new WaitForSeconds(2f);
+                // Ahora pedir al SDK que entregue el estado guardado (firma: recibe GameSaveState directamente)
+                // Esto sigue el patrón del ejemplo Cooking: LoadState<T>(Action<T>)
+                // Reemplaza la llamada ambigua por una lambda con cast explícito:
+                LOLSDK.Instance.LoadState<GameSaveState>(state => OnLoadStateWrapper((LoLSDK.State<GameSaveState>)state));
 
-            LoadGameFromSDK();
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError("❌ Excepción durante InitializeSDK: " + ex.ToString());
+            }
+
+            // delay opcional
+            yield return new WaitForSeconds(0.5f);
 
 #if UNITY_EDITOR
-            // 5. Mock Data (solo en Editor)
             StartCoroutine(LoadMockData());
 #endif
+        }
+
+
+        void HandleQuestions(MultipleChoiceQuestionList questionList)
+        {
+            Debug.Log("HandleQuestions");
+            SharedState.QuestionList = questionList;
         }
 
         // -----------------------------------------------------------------
@@ -237,6 +254,13 @@ namespace LoL
                 Debug.Log("📦 languageUrl vacío. Intentando carga local.");
                 StartCoroutine(LoadLanguageCoroutine(_languageCode));
             }
+        }
+
+        // Handle pause / resume
+        void HandleGameStateChange(GameState gameState)
+        {
+            // Either GameState.Paused or GameState.Resumed
+            Debug.Log("HandleGameStateChange");
         }
 
         private IEnumerator LoadLanguageFromURL(string url)
@@ -340,59 +364,156 @@ namespace LoL
             CheckReadyState();
         }
 
+        void HandleLanguageDefs(string json)
+        {
+            JSONNode langDefs = JSON.Parse(json);
+
+            // Example of accessing language strings
+            // Debug.Log(langDefs);
+            // Debug.Log(langDefs["welcome"]);
+
+            SharedState.LanguageDefs = langDefs;
+        }
+
+        // Agrega este método a tu clase (ajusta la firma si el delegate no es string)
+        //private void HandleLanguageDefs(string languageDefsJson)
+        //{
+        //    Debug.Log("📥 LanguageDefsReceived invoked: " + languageDefsJson);
+
+        //    if (string.IsNullOrEmpty(languageDefsJson))
+        //    {
+        //        Debug.LogWarning("⚠️ LanguageDefsReceived: payload vacío");
+        //        return;
+        //    }
+
+        //    // Intentamos parsear; depende del formato que envíe la SDK.
+        //    var root = JSON.Parse(languageDefsJson);
+
+        //    // Ejemplo: si el payload tiene un languageUrl o una lista de idiomas
+        //    string languageUrl = root["languageUrl"] ?? "";
+        //    string languageCode = root["languageCode"] ?? _languageCode;
+
+        //    Debug.Log($"🔹 LanguageDefs: code={languageCode}, url={languageUrl}");
+
+        //    // Actualiza tu código de idioma si viene distinto
+        //    _languageCode = languageCode;
+
+        //    if (!string.IsNullOrEmpty(languageUrl))
+        //    {
+        //        // Carga el language.json remoto (reusa tu coroutine)
+        //        StartCoroutine(LoadLanguageFromURL(languageUrl));
+        //    }
+        //    else
+        //    {
+        //        // Si no hay URL, intenta cargar local con tu existing flow
+        //        StartCoroutine(LoadLanguageCoroutine(_languageCode));
+        //    }
+        //}
+
         // -----------------------------------------------------------------
         // Game Save/Load (FLUJO DE SDK)
         // -----------------------------------------------------------------
 
-        public void LoadGameFromSDK()
+        //public void LoadGameFromSDK()
+        //{
+        //    if (_loadAttempted)
+        //    {
+
+        //        return;
+        //    }
+        //    _loadAttempted = true;
+        //    stateLoaded = false;
+
+
+
+        //    LOLSDK.Instance.LoadState<GameFullState>(state =>
+        //    {        
+        //        if (_json != null)
+        //        {
+        //            if (state != null && state.data != null)
+        //            {
+        //                try
+        //                {
+        //                    string fullResponseJson = JsonUtility.ToJson(state.data);
+        //                    _json.text = "SAVED FULL STATE RECEIVED (RAW):\n" + fullResponseJson;
+        //                }
+        //                catch (System.Exception e)
+        //                {
+        //                    _json.text = $"❌ Error al serializar JSON de guardado:\n{e.Message}";
+        //                    Debug.LogError($"❌ Error al serializar JSON de guardado: {e.Message}");
+        //                }
+        //            }
+        //            else
+        //            {
+        //                _json.text = "JSON GUARDADO RECIBIDO: NULL / VACÍO (Nueva partida)";
+        //            }
+        //        }
+
+        //        if (state != null && state.data != null && state.data.data != null)
+        //        {
+        //            LoadedFullState = state.data;
+        //            Debug.Log($"✅ Estado de guardado encontrado y cargado. Health: {LoadedFullState.data._healthCoins}, Progress: {LoadedFullState.currentProgress}/{LoadedFullState.maximumProgress}");
+        //        }
+        //        else
+        //        {
+        //            LoadedFullState = null;
+        //            Debug.Log("ℹ️ No se encontró estado guardado. Se usará la inicialización de MainController (Nueva Partida).");
+        //        }
+
+        //        StartCoroutine(ApplyLoadedStateWhenReady());
+        //    });
+        //}
+
+        // Alternativa: método que la SDK puede invocar directamente si prefieres separar lógica
+        // --- Método con la firma que espera la SDK: recibe LoLSDK.State<GameSaveState>
+        private void OnLoadStateWrapper(LoLSDK.State<GameSaveState> state)
         {
-            if (_loadAttempted)
+            try
             {
-   
-                return;
+                GameSaveState loaded = null;
+
+                if (state != null)
+                {
+                    // El contenedor State<T> normalmente tiene la propiedad `.data`
+                    loaded = state.data;
+                }
+
+                // Reusa tu método existente que toma GameSaveState
+                OnLoadGameSave(loaded);
             }
-            _loadAttempted = true;
-            stateLoaded = false;
-
-     
-
-            LOLSDK.Instance.LoadState<GameFullState>(state =>
-            {        
-                if (_json != null)
-                {
-                    if (state != null && state.data != null)
-                    {
-                        try
-                        {
-                            string fullResponseJson = JsonUtility.ToJson(state.data);
-                            _json.text = "SAVED FULL STATE RECEIVED (RAW):\n" + fullResponseJson;
-                        }
-                        catch (System.Exception e)
-                        {
-                            _json.text = $"❌ Error al serializar JSON de guardado:\n{e.Message}";
-                            Debug.LogError($"❌ Error al serializar JSON de guardado: {e.Message}");
-                        }
-                    }
-                    else
-                    {
-                        _json.text = "JSON GUARDADO RECIBIDO: NULL / VACÍO (Nueva partida)";
-                    }
-                }
-           
-                if (state != null && state.data != null && state.data.data != null)
-                {
-                    LoadedFullState = state.data;
-                    Debug.Log($"✅ Estado de guardado encontrado y cargado. Health: {LoadedFullState.data._healthCoins}, Progress: {LoadedFullState.currentProgress}/{LoadedFullState.maximumProgress}");
-                }
-                else
-                {
-                    LoadedFullState = null;
-                    Debug.Log("ℹ️ No se encontró estado guardado. Se usará la inicialización de MainController (Nueva Partida).");
-                }
-
-                StartCoroutine(ApplyLoadedStateWhenReady());
-            });
+            catch (System.Exception ex)
+            {
+                Debug.LogError("OnLoadStateWrapper: excepción al procesar LoadState callback: " + ex);
+                // Aun así llamamos con null para que la lógica de fallback corra
+                OnLoadGameSave(null);
+            }
         }
+
+        // --- Tu método ya existente que aplica el GameSaveState al LoadedFullState
+        private void OnLoadGameSave(GameSaveState loadedSave)
+        {
+            Debug.Log($"OnLoadGameSave invoked. loadedSave == null? {loadedSave == null}");
+
+            if (loadedSave != null)
+            {
+                LoadedFullState = new GameFullState
+                {
+                    data = loadedSave,
+                    currentProgress = loadedSave._progress,
+                    maximumProgress = Mathf.Max(loadedSave._progress, 8)
+                };
+
+                Debug.Log("OnLoadGameSave: datos cargados desde SDK: " + JsonUtility.ToJson(loadedSave));
+            }
+            else
+            {
+                LoadedFullState = null;
+                Debug.Log("OnLoadGameSave: no había datos (nueva partida).");
+            }
+
+            StartCoroutine(ApplyLoadedStateWhenReady());
+        }
+
 
 
         // ******************************************************
@@ -410,27 +531,51 @@ namespace LoL
 
             var mc = MainController.Instance;
 
-            // Usamos LoadedFullState (que persiste entre escenas) para aplicar los datos.
-            if (LoadedFullState != null && LoadedFullState.data != null)
+            try
             {
-                GameSaveState loadedData = LoadedFullState.data;
-                Debug.Log($"DIAGNÓSTICO INIT: Valor cargado del SDK (Persistente): {loadedData._healthCoins}");
+                if (LoadedFullState != null && LoadedFullState.data != null)
+                {
+                    GameSaveState loadedData = LoadedFullState.data;
+                    Debug.Log($"DIAGNÓSTICO INIT: Valor cargado del SDK (Persistente): {loadedData._healthCoins}");
 
-                // --- Aplicación del estado ---
-                ApplyLoadedState(loadedData, mc);
+                    // Aplicación del estado (protegida)
+                    try
+                    {
+                        ApplyLoadedState(loadedData, mc);
+                    }
+                    catch (System.Exception exApply)
+                    {
+                        Debug.LogError("ApplyLoadedState: excepción al aplicar estado cargado: " + exApply);
+                    }
 
-                ReportProgressToTeacherApp(LoadedFullState.currentProgress, LoadedFullState.maximumProgress);
+                    // Reportar progreso (si corresponde)
+                    try
+                    {
+                        ReportProgressToTeacherApp(LoadedFullState.currentProgress, LoadedFullState.maximumProgress);
+                    }
+                    catch (System.Exception exReport)
+                    {
+                        Debug.LogWarning("ReportProgressToTeacherApp: excepción al reportar progreso: " + exReport);
+                    }
+                }
+                else
+                {
+                    // Fallback: no hay guardado -> usar valores por defecto del MainController
+                    Debug.Log("DIAGNÓSTICO INIT: LoadedFullState es NULL o no contiene data. Usando valores por defecto de MainController.");
+                    mc.UpdateCurrencyUI();
+                }
             }
-            else
+            catch (System.Exception ex)
             {
-                // Si LoadedFullState es null (ej. primera partida o no hay datos), usa los valores por defecto.
-                Debug.Log("DIAGNÓSTICO INIT: LoadedState es NULL. Usando valores por defecto de MainController.");
+                Debug.LogError("ApplyLoadedStateWhenReady: excepción inesperada: " + ex);
+                // Asegurarse que la UI se actualice aunque algo haya fallado
                 mc.UpdateCurrencyUI();
             }
 
             stateLoaded = true;
             CheckReadyState();
         }
+
 
         private void ApplyLoadedState(GameSaveState state, MainController mc)
         {
@@ -508,13 +653,11 @@ namespace LoL
 
             var saveValues = MainController.Instance._saveLoadValues;
 
-            // 1. Obtener tus datos de guardado (GameSaveState)
             GameSaveState gameState = new GameSaveState
             {
                 _healthCoins = saveValues._healthCoins,
                 _hintCoins = saveValues._hintCoins,
                 _progress = saveValues._progress,
-
                 _worldsUnlocked = saveValues._worldsUnlocked,
                 _elementsUnlocked = saveValues._elementsUnlocked,
                 _slimeUnlocked = saveValues._slimeUnlocked,
@@ -522,26 +665,22 @@ namespace LoL
                 _progressSave = saveValues._progressSave
             };
 
-            // 2. Crear la estructura GameFullState con datos de progreso
-            int maxProgress = 8;
-            int currentProg = saveValues._progress;
-
-            GameFullState fullState = new GameFullState
+            try
             {
-                score = gameState._healthCoins + gameState._hintCoins,
-                currentProgress = currentProg,
-                maximumProgress = maxProgress,
-                data = gameState
-            };
+                // Guarda el objeto "raw" directamente (igual que el ejemplo Cooking)
+                LOLSDK.Instance.SaveState(gameState);
+                Debug.Log($"💾 Estado RAW guardado en LoLSDK. Health: {gameState._healthCoins}, Progress: {gameState._progress}");
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("SaveGame: Exception when calling SaveState: " + e);
+            }
 
-            // 3. Guardar usando la estructura LoLSDK.State<GameFullState>
-            LOLSDK.Instance.SaveState(new LoLSDK.State<GameFullState> { data = fullState });
-
-            // 4. Reportar el progreso al maestro
-            ReportProgressToTeacherApp(fullState.currentProgress, fullState.maximumProgress);
-
-            Debug.Log($"💾 Estado guardado en LoLSDK. Health: {gameState._healthCoins}, Progress: {fullState.currentProgress}/{fullState.maximumProgress}");
+            // Reportar el progreso por separado (si lo necesitas)
+            ReportProgressToTeacherApp(gameState._progress, /*maxProgress*/ 8);
         }
+
+
 
         void OnSaveResult(bool success)
         {
