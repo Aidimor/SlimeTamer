@@ -39,19 +39,6 @@ public class SlimeController : MonoBehaviour
     void Start()
     {
         _slimeAnimator = GetComponent<Animator>();
-
-        //// ✅ Crear una instancia segura del material
-        //_mainMaterial = new Material(_mainMaterial);
-
-        //// Asignar la instancia al renderer para este slime
-        //var renderer = GetComponent<Renderer>();
-        //if (renderer != null)
-        //{
-        //    renderer.material = _mainMaterial;
-        //}
-
-        //// Inicializar color base
-        //_mainMaterial.SetColor("_BaseColor", _materialColors[0]);
     }
 
     void Update()
@@ -107,18 +94,8 @@ public class SlimeController : MonoBehaviour
 
     public IEnumerator ActionSlimeNumerator()
     {
-       
-
         _scriptMain._eventOn = true;
-
         _slimeAnimator.SetBool("Scared", false);
-        //yield return new WaitForSeconds(1f);
-
-        //_scriptMain._lightChanging = false;
-        //_scriptMain._shineParticle.Stop();
-
-        //Debug.Log(_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]);
-
         switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._weakto.Length)
         {
             case 1:
@@ -135,8 +112,7 @@ public class SlimeController : MonoBehaviour
 
                     _scriptMain._scriptMain.newSlimePanel._backgroundImage.color = _scriptMain._scriptSlime._slimeAssets[_slimeType]._mainColor;
 
-                    _scriptMain._scriptMain.newSlimePanel._slimeNameText.text = GameInitScript.Instance.GetText("Slime" + _slimeType.ToString("f0"));
-                    //_scriptMain._scriptMain.newSlimePanel._slimeNameText.text = _scriptMain._scriptSlime._slimeAssets[_slimeType].name
+                    _scriptMain._scriptMain.newSlimePanel._slimeNameText.text = GameInitScript.Instance.GetText("Slime" + _slimeType.ToString("f0"));                   
                     _scriptMain._scriptMain.newSlimePanel._parent.SetBool("AnnounceIn", true);
 
 
@@ -163,6 +139,7 @@ public class SlimeController : MonoBehaviour
                     _scriptMain._successAssets._text.text = "SUCCESS";
                     _scriptMain._successAssets._parent.SetBool("Success", true);
                     _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._successSound);
+             
                     yield return new WaitForSeconds(1);
                     _scriptMain._successAssets._parent.SetBool("Success", false);
        
@@ -177,9 +154,12 @@ public class SlimeController : MonoBehaviour
                             {
                                 case GameEvent.EventType.Bridge:
                                     _scriptMain._airPushParticle.Play();
+                                    _scriptMain._scriptMain._scriptSFX._windSetVolume = 1f;
                                     yield return new WaitForSeconds(0.5f);
+                       
                                     _scriptMain._windBlockPalanca.Play();
                                     yield return new WaitForSeconds(0.5f);
+                                    _scriptMain._scriptMain._scriptSFX._windSetVolume = 0f;
                                     _scriptMain._airPushParticle.Stop();
                                     _scriptMain._windBlockPalanca.Stop();
                                     _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BridgeEvent>()._activateBridge = true;
@@ -197,8 +177,7 @@ public class SlimeController : MonoBehaviour
                                     yield return new WaitForSeconds(2);
                                     break;
                                 case GameEvent.EventType.StrongAir:
-                                    _scriptMain._windBlocker.GetComponent<ParticleSystem>().Play();
-                                    //_scriptMain._scriptMain._windParticle.GetComponent<ForceField2D>().fuerza = 1250;
+                                    _scriptMain._windBlocker.GetComponent<ParticleSystem>().Play();                               
                                     yield return new WaitForSeconds(2);
                                     break;
                                 case GameEvent.EventType.FallingBridge:
@@ -226,10 +205,8 @@ public class SlimeController : MonoBehaviour
                                     break;
                                 case GameEvent.EventType.BossFight1:
                                     Debug.Log("frozen");
-                                    _scriptMain._cascadeFrozen = true;
-                                    //_scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFallEvent>().ActivateFreeze();
+                                    _scriptMain._cascadeFrozen = true;                           
                                     _scriptMain._snowBool = true;
-
                                     _scriptMain._bossAnimator.Play("Frozen");
                                     _scriptMain._bossAnimator.SetBool("Frozen", true);
                                     _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._frozen);
@@ -258,9 +235,7 @@ public class SlimeController : MonoBehaviour
                                     _scriptMain._windBossParticles[0].Stop();
                                     _scriptMain._windBossParticles[1].Stop();
                                     _scriptMain._windBossParticles[2].Stop();
-                                    _scriptMain._windBossParticles[3].Stop();
-
-                                    //_scriptMain._bossAnimator.SetBool("Damaged", true);
+                                    _scriptMain._windBossParticles[3].Stop();                             
                                     _scriptMain._enemyExplosion.Play();
                                     yield return new WaitForSeconds(0.5f);
                                     StartCoroutine(_scriptMain.GameEndsNumerator());
@@ -329,22 +304,13 @@ public class SlimeController : MonoBehaviour
                                     yield return new WaitForSeconds(0.25f);
                                     if (!_scriptMain._dead)
                                     {
-
-                                        StartCoroutine(_scriptMain.LoseLifeNumerator());
-                                        ////endLoopAfterSelection = true;
+                                        StartCoroutine(_scriptMain.LoseLifeNumerator());                              
                                     }
-                                    ////_scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
-                                    ////_scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
-                                    ////_scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._bossAttack);
-                                    //_scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
-                                    //yield return new WaitForSeconds(0.5f);
-                                    ////_scriptMain._bossAnimator.Play("SideFinalAttack");
-                                    //StartCoroutine(_scriptMain.LoseLifeNumerator());
+
                                     break;
                                 case GameEvent.EventType.BossFight3:
                                     _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
-                                    yield return new WaitForSeconds(0.5f);
-                                 
+                                    yield return new WaitForSeconds(0.5f);                                 
                                     StartCoroutine(_scriptMain.LoseLifeNumerator());
                                     break;
                                 case GameEvent.EventType.BossFight4:
@@ -358,34 +324,10 @@ public class SlimeController : MonoBehaviour
                                     break;
                                 default:
                                     yield return new WaitForSeconds(2);
-
-
-
-                                    //_scriptMain._scriptFusion.ActivatePanel();
-                                    //if (_scriptMain._scriptMain._saveLoadValues._healthCoins > 1)
-                                    //{
-                                    //    _scriptMain._scriptMain._saveLoadValues._healthCoins--;
-
-                                    //}
-                                    //else
-                                    //{
-                                    //    StartCoroutine(_scriptMain.LoseLifeNumerator());
-                                    //}
-
-
                                     StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
                                     break;
                             }
-
-                      
-
-
-                
-
-
-
-                            break;
-           
+                            break;           
                         case GameEvent.EventClassification.Questionary:
                             break;
                     }

@@ -250,7 +250,7 @@ public class GameEventsScript : MonoBehaviour
                             break;
                         case GameEvent.EventType.StrongAir:
                             _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
-                            _scriptMain._scriptMain._scriptSFX._strongWindSetVolume = 0.05f;
+                            _scriptMain._scriptMain._scriptSFX._strongWindSetVolume = 1f;
                             _windParticle.Play();
                             //_scriptMain._scriptSlime._slimeAnimator.SetBool("WindPush", true);
                             _scriptMain._onEventID = 4;
@@ -265,18 +265,6 @@ public class GameEventsScript : MonoBehaviour
                             evento.GetComponent<GearsPrefabEventScript>()._stainsAnimator.GetComponent<SpecialAnimatorEvents>()._scriptMainController = _scriptMain._scriptMain;
                             evento.GetComponent<GearsPrefabEventScript>()._worlds[_scriptMain._scriptMain._onWorldGlobal].SetActive(true); 
                             break;
-                        //case GameEvent.EventType.FightWasp:
-                        //    _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
-                        //    _enemiesGameObjects[0].gameObject.SetActive(true);
-                        //    evento.GetComponent<WaspFightScript>()._waspAnimator = _enemiesGameObjects[0].GetComponent<Animator>();
-                        //    _scriptMain._onEventID = 7;
-                        //    break;
-                        //case GameEvent.EventType.FightSnail:
-                        //    _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
-                        //    _enemiesGameObjects[1].gameObject.SetActive(true);
-                        //    evento.GetComponent<SnailFightScript>()._snailAnimator = _enemiesGameObjects[1].GetComponent<Animator>();
-                        //    _scriptMain._onEventID = 8;
-                        //    break;
                         case GameEvent.EventType.Fire:
                             _scriptMain._scriptMain._scriptMusic.PlayMusic(_scriptMain._scriptMain._onWorldGlobal + 1);
 

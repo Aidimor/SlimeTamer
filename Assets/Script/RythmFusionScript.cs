@@ -4,6 +4,8 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using LoL;
+using LoL;  // <- necesario para GameInitScript
+using LoLSDK;
 
 public class RythmFusionScript : MonoBehaviour
 {
@@ -258,13 +260,23 @@ public class RythmFusionScript : MonoBehaviour
                         if (_scriptMain._tutorialAssets._tutorialOn && _onElement == 1) // CAMBIAR 'while' por 'if' (Recomendado)
                         {
 
+      
+              
+                                string key = "tutorial" + (_elementsSelection.Count + 1).ToString();
+                                string text = GameInitScript.Instance.GetText(key);                        
+                                string speakKey = key;                    
+                                LOLSDK.Instance.SpeakText(speakKey);
+                            yield return new WaitForSeconds(0.25f);
                             _scriptMain._tutorialAssets._tutorialParent.SetActive(true);
                             _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(_movingSelector.GetComponent<RectTransform>().anchoredPosition.x, _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition.y);
                             _bpm = 0;
                             _scriptMain._tutorialAssets._description.gameObject.SetActive(true);
                             _scriptMain._tutorialAssets._description.text = GameInitScript.Instance.GetText("tutorial" + (_elementsSelection.Count + 1).ToString());
+
+
                             yield return new WaitForSeconds(1);
                             _scriptMain._tutorialAssets._pressSpace.text = GameInitScript.Instance.GetText("press");
+                            _pressSpaceText.text = GameInitScript.Instance.GetText("press");
                             _scriptMain._tutorialAssets._pressSpace.gameObject.SetActive(true);
                             // BUFER DE ENTRADA: Espera un frame para asegurar que el GetButtonDown no sea la entrada del frame anterior.
                             yield return null;
@@ -301,11 +313,19 @@ public class RythmFusionScript : MonoBehaviour
                                 case 1:
                                     if (!_first && !_scriptMain._tutorialAssets._specialBools[0])
                                     {
+                                
+
+                                        string key = "tutorial3";
+                                        string text = GameInitScript.Instance.GetText(key);
+                                        string speakKey = key;
+                                        LOLSDK.Instance.SpeakText(speakKey);
+                                        yield return new WaitForSeconds(0.25f);
                                         _scriptMain._tutorialAssets._tutorialParent.SetActive(true);
                                         _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(_movingSelector.GetComponent<RectTransform>().anchoredPosition.x, _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition.y);
                                         _bpm = 0;
                                         _scriptMain._tutorialAssets._description.gameObject.SetActive(true);
                                         _scriptMain._tutorialAssets._description.text = GameInitScript.Instance.GetText("tutorial3");
+
                                         yield return new WaitForSeconds(1);
                                         _scriptMain._tutorialAssets._pressSpace.text = GameInitScript.Instance.GetText("press");
                                         _scriptMain._tutorialAssets._pressSpace.gameObject.SetActive(true);
@@ -334,11 +354,20 @@ public class RythmFusionScript : MonoBehaviour
                                 case 3:
                                     if (!_first && !_scriptMain._tutorialAssets._specialBools[1])
                                     {
+                              
+
+                                        string key = "tutorial4";
+                                        string text = GameInitScript.Instance.GetText(key);
+                                        string speakKey = key;
+                                        LOLSDK.Instance.SpeakText(speakKey);
+                                        yield return new WaitForSeconds(0.25f);
+
                                         _scriptMain._tutorialAssets._tutorialParent.SetActive(true);
                                         _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(_movingSelector.GetComponent<RectTransform>().anchoredPosition.x, _scriptMain._tutorialAssets._tutorialParent.GetComponent<RectTransform>().anchoredPosition.y);
                                         _bpm = 0;
                                         _scriptMain._tutorialAssets._description.gameObject.SetActive(true);
                                         _scriptMain._tutorialAssets._description.text = GameInitScript.Instance.GetText("tutorial4");
+
                                         yield return new WaitForSeconds(1);
                                         _scriptMain._tutorialAssets._pressSpace.text = GameInitScript.Instance.GetText("press");
                                         _scriptMain._tutorialAssets._pressSpace.gameObject.SetActive(true);
@@ -554,8 +583,12 @@ public class RythmFusionScript : MonoBehaviour
     // =====================================================
 
     public void ChooseElementVoid()
-    {
-        Debug.Log("se presiona");
+    {  
+        string key = "element" + _onElement.ToString();
+        string text = GameInitScript.Instance.GetText(key);
+        string speakKey = key;
+        LOLSDK.Instance.SpeakText(speakKey);
+
         _buttonPressed = true;
         _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._chooseElement);
         _movingSelector.Play("MovingSelectorOn");

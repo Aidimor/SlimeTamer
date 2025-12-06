@@ -188,10 +188,12 @@ public class MainGameplayScript : MonoBehaviour
     public class TutorialAssets
     {
         public GameObject _tutorialParent;
+  
         public TextMeshProUGUI _description;
         public bool _tutorialOn;
 
         public GameObject _tutorialParent2;
+        public GameObject _tutorialParent3;
         public TextMeshProUGUI _coinTextTutorial;
         public TextMeshProUGUI _hintTextTutorial;
 
@@ -334,7 +336,8 @@ public class MainGameplayScript : MonoBehaviour
 
                        // Salir o continuar
                         break;
-                }
+                }         
+                MainController.Instance.UpdateCurrencyUI();
             }
         }
 
@@ -512,6 +515,12 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
 
     public void HintVoid()
     {
+        string key = "hint" + _GamesList[_scriptEvents._onEvent].ToString();
+        _scriptMain._pauseAssets._hintText.text = GameInitScript.Instance.GetText("hint" + _GamesList[_scriptEvents._onEvent].ToString("f0"));
+        string text = GameInitScript.Instance.GetText(key);
+        string speakKey = key;
+        LOLSDK.Instance.SpeakText(speakKey);
+
         _scriptMain._pauseAssets._hintBought = true;        
       
         _scriptMain._saveLoadValues._hintCoins--;
@@ -690,8 +699,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
 
         _dialogeAssets._nextParent.SetActive(false);
         _dialogeAssets._nextCircle.SetActive(false);
-        _slimeParent.gameObject.SetActive(false);
-        //LoseHeartVoid();
+        _slimeParent.gameObject.SetActive(false);    
         _topOptionsOn = false;
         _scriptSlime._slimeAnimator.SetBool("Moving", false);
         _darkenerChanging = false;
@@ -768,41 +776,33 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
 
         for (int i = (int)_dialogeAssets._dialogeSize.x; i < (int)_dialogeAssets._dialogeSize.y; i++)
         {
-            string text = GameInitScript.Instance.GetText("dialoge" + i.ToString());
-            int id = GameInitScript.Instance.GetTextID("dialoge" + i.ToString());
-            StartCoroutine(EscribirTexto(text, _dialogeAssets._dialogeText, 0.02f));
-            //var PrincessImage = _scriptEvents._currentEventPrefab.GetComponent<ChestEventScript>();
-            //PrincessImage._princessAnim.GetComponent<Image>().sprite = PrincessImage._allPrincessSprites[id];
+            string key = "dialoge" + i.ToString();
+            string text = GameInitScript.Instance.GetText(key);
 
+            // SpeakText necesita la KEY, no el ID
+            string speakKey = key;
+
+            StartCoroutine(EscribirTexto(text, _dialogeAssets._dialogeText, 0.02f));
+            LOLSDK.Instance.SpeakText(speakKey);
             while (_dialogeAssets._typing)
-            {
                 yield return null;
-            }
-          
-            LOLSDK.Instance.SpeakText(_dialogeAssets._dialogeText.text);
+     
 
             _dialogeAssets._nextParent.SetActive(true);
             _tutorialAssets._dialogePressSpace.text = GameInitScript.Instance.GetText("press");
 
-
-
-
-
             if (i == (int)_dialogeAssets._dialogeSize.y - 1)
-            {
                 _dialogeAssets._nextCircle.SetActive(true);
-            }
-        
-      
-       
+
             while (!Input.GetButtonDown("Submit"))
-            {
                 yield return null;
-            }
+
             _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._next);
+
             _dialogeAssets._nextParent.SetActive(false);
             _dialogeAssets._nextCircle.SetActive(false);
         }
+
         //_scriptEvents._onEvent++;
         _dialogeAssets._dialogePanel.SetBool("DialogeIn", false);
         _itemGotPanel._parent.SetTrigger("ItemGot");
@@ -836,7 +836,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
             _tutorialAssets._tutorialParent2.SetActive(true);
             _tutorialAssets._coinTextTutorial.text = GameInitScript.Instance.GetText("tutorialhealth");
             _tutorialAssets._hintTextTutorial.text = GameInitScript.Instance.GetText("tutorialhint");
-            yield return new WaitForSeconds(3);
+            yield return new WaitForSeconds(1);
         }
         _tutorialAssets._shopPressSpace.text = GameInitScript.Instance.GetText("press");
         _tutorialAssets._shopPressSpace.gameObject.SetActive(true);
@@ -845,8 +845,33 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         {
             yield return null;
         }
+
         _tutorialAssets._tutorialParent2.SetActive(false);
         _tutorialAssets._shopPressSpace.gameObject.SetActive(false);
+        _shopAssets._parent.SetBool("ShopIn", false);
+        yield return new WaitForSeconds(1);
+        if (_scriptMain._onWorldGlobal == 0 && !_scriptMain._saveLoadValues._finalWorldUnlocked)
+        {
+            string key = "tutorialmenu";
+            string text = GameInitScript.Instance.GetText(key);
+            string speakKey = key;
+            LOLSDK.Instance.SpeakText(speakKey);
+
+            _tutorialAssets._tutorialParent3.SetActive(true);
+            _tutorialAssets._description.gameObject.SetActive(true);
+            _tutorialAssets._description.text = GameInitScript.Instance.GetText("tutorialmenu");
+            yield return new WaitForSeconds(1);
+
+            _tutorialAssets._pressSpace.text = GameInitScript.Instance.GetText("pressenter");
+            _tutorialAssets._pressSpace.gameObject.SetActive(true);
+
+            while (!Input.GetButtonDown("Pause"))
+            {
+                yield return null;
+            }
+        }
+        _tutorialAssets._tutorialParent3.SetActive(false);
+        _tutorialAssets._description.gameObject.SetActive(false);
         while (_shopAssets._onShop)
         {
             yield return null;
@@ -860,9 +885,8 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
                 _scriptMain._saveLoadValues._hintCoins++;
                 break;
         }
-        _scriptMain._currencyAssets[0]._quantityText.text = _scriptMain._saveLoadValues._healthCoins.ToString();
-        _scriptMain._currencyAssets[1]._quantityText.text = _scriptMain._saveLoadValues._hintCoins.ToString();
-        _shopAssets._parent.SetBool("ShopIn", false);
+        MainController.Instance.UpdateCurrencyUI();
+  
         yield return new WaitForSeconds(1);
  
         _scriptEvents._winRound = true;
@@ -891,7 +915,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
 
     public IEnumerator LoseLifeNumerator()
     {
-
+        MainController.Instance.UpdateCurrencyUI();
         _scriptMain._currencyAnimator.SetTrigger("LoseLife");
         _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._slimeDead);
         yield return new WaitForSeconds(0.2f);
@@ -1008,6 +1032,8 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         switch (_scriptMain._gameOverAssets._onPos)
         {
             case 0:
+                MainController.Instance._saveLoadValues._healthCoins = 1;
+                MainController.Instance._saveLoadValues._hintCoins = 1;
                 MainController.Instance.SaveProgress();
                 _scriptMain._scriptMusic.PlayMusic(0);
                 _scriptMain._saveLoadValues._healthCoins = 1;

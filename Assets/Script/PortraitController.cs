@@ -273,9 +273,24 @@ public class PortraitController : MonoBehaviour
 
     public void botonBorrar()
     {
-        MainController.Instance._saveLoadValues._hintCoins++;
+        for(int i = 0; i < MainController.Instance._saveLoadValues._elementsUnlocked.Length; i++)
+        {
+            MainController.Instance._saveLoadValues._elementsUnlocked[i] = false;
+        }
+        for (int i = 0; i < MainController.Instance._saveLoadValues._worldsUnlocked.Length; i++)
+        {
+            MainController.Instance._saveLoadValues._worldsUnlocked[i] = false;
+        }
+        MainController.Instance._saveLoadValues._worldsUnlocked[0] = true;
+        for (int i = 0; i < MainController.Instance._saveLoadValues._slimeUnlocked.Length; i++)
+        {
+            MainController.Instance._saveLoadValues._slimeUnlocked[i] = false;
+        }
+        MainController.Instance._saveLoadValues._progress = 0;
+
+        MainController.Instance._saveLoadValues._hintCoins = 1;
         MainController.Instance._currencyAssets[1]._quantityText.text = MainController.Instance._saveLoadValues._hintCoins.ToString("f0");
-        MainController.Instance._saveLoadValues._healthCoins++;
+        MainController.Instance._saveLoadValues._healthCoins = 1;
         MainController.Instance._currencyAssets[0]._quantityText.text = MainController.Instance._saveLoadValues._hintCoins.ToString("f0");
         GameInitScript.Instance.SaveGame();
     }

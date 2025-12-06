@@ -67,7 +67,9 @@
     "tutorial4": "Choose the correct slime to continue your adventure!",
     "tutorialhealth": "Obtain and extra life",
     "tutorialhint": "Obtain a hint to help you with the stage",
+    "tutorialmenu": "Press Enter to deploy the hint menu",
     "pressenter": "PRESS ENTER",
+    "pressspace": "PRESS SPACE",
     "hintmenu": "HINT MENU"
   },
   "es": {
@@ -124,7 +126,9 @@
     "tutorial4": "!Elige el correcto para avanzar en tu aventura!",
     "tutorialhealth": "Obten una vida extra",
     "tutorialhint": "Obten una pista para resolver el nivel",
+    "tutorialmenu": "Presiona Enter para sacar el menu de pistas",
     "pressenter": "PRESIONA ENTER",
+    "pressspace": "PRESIONA ESPACIO",
     "hintmenu": "MENU PISTAS"
   }
 }
