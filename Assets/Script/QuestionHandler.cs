@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using SimpleJSON;
 using LoL;
 using LoLSDK;
@@ -8,40 +9,89 @@ public class QuestionHandler : MonoBehaviour
     private int scorePerQuestion = 1;
     private int maxProgress = 8;
 
-    // Flag para la coroutine de espera.
     public bool IsAnswerProcessed { get; private set; } = false;
 
-    // Usamos Awake para garantizar que la suscripción ocurra tan pronto como el script esté activo.
-    private void Awake()
+    private bool isSubscribed = false;
+    private bool isShowingQuestion = false;
+
+    [System.Serializable]
+    private class FinalState { public int progress; public int score; }
+
+    private void Start()
     {
-        // 🚨 CRÍTICO: Suscribirse inmediatamente si el SDK existe.
-        if (LOLSDK.Instance != null)
+        StartCoroutine(WaitForSDKAndSubscribe());
+    }
+
+    private IEnumerator WaitForSDKAndSubscribe()
+    {
+        // Esperar hasta que el SDK exista
+        int frameWait = 0;
+        while (LOLSDK.Instance == null && frameWait < 300) // timeout ~300 frames (~5s)
+        {
+            frameWait++;
+            yield return null;
+        }
+
+        if (LOLSDK.Instance == null)
+        {
+            Debug.LogError("❌ [Q] Timeout esperando LOLSDK.Instance en Start.");
+            yield break;
+        }
+
+        if (!isSubscribed)
         {
             LOLSDK.Instance.AnswerResultReceived += HandleAnswerResult;
-            Debug.Log("✅ [Q] Suscripción a AnswerResultReceived realizada en Awake.");
-        }
-        else
-        {
-            Debug.LogError("❌ [Q] ERROR: LOLSDK no está disponible en Awake. La suscripción falló.");
+            isSubscribed = true;
+            Debug.Log("✅ [Q] Suscripción a AnswerResultReceived realizada en Start/WaitForSDK.");
         }
     }
 
-    // Usamos OnDestroy para limpiar la suscripción cuando el objeto es destruido, previniendo fugas de memoria.
     private void OnDestroy()
     {
-        if (LOLSDK.Instance != null)
+        if (isSubscribed && LOLSDK.Instance != null)
         {
             LOLSDK.Instance.AnswerResultReceived -= HandleAnswerResult;
             Debug.Log("🗑️ [Q] Desuscripción de AnswerResultReceived realizada en OnDestroy.");
         }
     }
 
-    // Inicia el cuestionario
+    // Public: iniciar el flujo de pregunta
     public void StartStageQuestionary()
+    {
+        // No llamamos ShowQuestion hasta estar suscritos (o hasta timeout)
+        if (!isSubscribed)
+        {
+            Debug.Log("⚠️ [Q] StartStageQuestionary llamado pero aún no estamos suscritos. Esperando suscripción...");
+            StartCoroutine(ShowQuestionWhenSubscribed(120)); // timeout 120 frames (~2s)
+            return;
+        }
+
+        ShowQuestionImmediate();
+    }
+
+    private IEnumerator ShowQuestionWhenSubscribed(int timeoutFrames)
+    {
+        int waited = 0;
+        while (!isSubscribed && waited < timeoutFrames)
+        {
+            waited++;
+            yield return null;
+        }
+
+        if (!isSubscribed)
+        {
+            Debug.LogError("❌ [Q] No se logró suscribir antes de ShowQuestion (timeout). No se mostrará la pregunta.");
+            yield break;
+        }
+
+        ShowQuestionImmediate();
+    }
+
+    private void ShowQuestionImmediate()
     {
         if (LOLSDK.Instance == null)
         {
-            Debug.LogWarning("⚠️ [Q] LOLSDK no inicializado. No se puede mostrar la pregunta.");
+            Debug.LogWarning("⚠️ [Q] LOLSDK.Instance es null al intentar ShowQuestion.");
             return;
         }
 
@@ -51,18 +101,15 @@ public class QuestionHandler : MonoBehaviour
             return;
         }
 
-        // 1. Resetear el flag antes de mostrar la pregunta
         IsAnswerProcessed = false;
-
-        // Llamamos a la función que usa LOLSDK.Instance.ShowQuestion()
+        isShowingQuestion = true;
         GameInitScript.Instance.ShowQuestion();
-        Debug.Log("⬆️ [Q] QuestionHandler: Pregunta mostrada. Esperando HandleAnswerResult...");
+        Debug.Log("⬆️ [Q] Question mostrada. Esperando respuesta del SDK...");
     }
 
     private void HandleAnswerResult(string json)
     {
-        // 🚨 CRÍTICO: Este Log debería aparecer SÍ O SÍ si el SDK dispara el evento.
-        Debug.Log($"🔥 [Q] HandleAnswerResult FIRED con JSON: {json}");
+        Debug.Log($"🔥 [Q] HandleAnswerResult INVOCADO con JSON: {json}");
 
         try
         {
@@ -72,88 +119,112 @@ public class QuestionHandler : MonoBehaviour
         }
         catch (System.Exception e)
         {
-            Debug.LogError($"❌ [Q] Error al parsear JSON en HandleAnswerResult: {e.Message}");
-            // Asegúrate de desbloquear el flujo incluso si falla el JSON para evitar el congelamiento.
+            Debug.LogError($"❌ [Q] Error parseando JSON en HandleAnswerResult: {e.Message}");
+            // Para evitar que el flujo quede congelado
             IsAnswerProcessed = true;
+            isShowingQuestion = false;
         }
     }
 
-    /// <summary>
-    /// Procesa la respuesta, actualiza el estado del juego, notifica al SDK y desbloquea el flujo del juego.
-    /// </summary>
     private void ProcessAnswer(bool isCorrect)
     {
+        Debug.Log($"🔁 [Q] ProcessAnswer comenzando. isCorrect={isCorrect}");
+
         if (MainController.Instance == null)
         {
-            Debug.LogError("❌ [Q] MainController no está inicializado. No se puede procesar la respuesta.");
-            IsAnswerProcessed = true; // Desbloquear el flujo principal.
+            Debug.LogError("❌ [Q] MainController no está inicializado. Desbloqueando flujo.");
+            IsAnswerProcessed = true;
+            isShowingQuestion = false;
             return;
         }
 
-        // LÓGICA DEL USUARIO: Marcar la ronda como ganada
         if (GameEventsScript.Instance != null)
-        {
             GameEventsScript.Instance._winRound = true;
-        }
 
         int currentProgress = MainController.Instance._saveLoadValues._progress;
         int currentScore = 0;
 
-        if (isCorrect)
-        {
-            Debug.Log("✅ [Q] Respuesta Correcta");
-            currentProgress++;
-            currentScore = scorePerQuestion;
-        }
-        else
-        {
-            Debug.Log("❌ [Q] Respuesta Incorrecta");
-            currentProgress++;
-        }
+        currentProgress++;
+        if (isCorrect) currentScore = scorePerQuestion;
 
-        // Guardar progreso interno
         MainController.Instance._saveLoadValues._progress = currentProgress;
-
-        // 1. Guardar estado completo en el SDK
         MainController.Instance.SaveProgress();
-        Debug.Log("💾 [Q] Progreso guardado internamente.");
+        Debug.Log($"💾 [Q] Progreso actualizado internamente: {currentProgress}, score pregunta: {currentScore}");
 
-        // 2. Reportar progreso y score al SDK
+        // Enviar progreso al SDK
         SubmitProgressToLoL(currentProgress, currentScore);
 
-        // 3. Notificar al harness de LoL que la actividad ha finalizado (CRUCIAL para desbloquear).
+        // Marcar final state para el harness
         if (GameInitScript.Instance != null)
         {
-            // Nota: El score debe ser el acumulado si estás usando un sistema de puntos, 
-            // o solo el de la pregunta si es por progreso. Usaremos el de la pregunta para este ejemplo.
-            string finalStateJson = JsonUtility.ToJson(new { progress = currentProgress, score = currentScore });
+            var finalState = new FinalState { progress = currentProgress, score = currentScore };
+            string finalJson = JsonUtility.ToJson(finalState);
 
-            // 💡 LLAMADA AL SDK PARA LIBERAR EL HARNESS Y EVITAR CONGELAMIENTO 💡
-            GameInitScript.Instance.GameIsComplete(finalStateJson);
-            Debug.Log("🎉 [Q] GameIsComplete llamado. El harness debería estar desbloqueado.");
+            // Llamar a GameIsComplete ANTES de intentar reanudar el juego
+            GameInitScript.Instance.GameIsComplete(finalJson);
+            Debug.Log("🎉 [Q] GameIsComplete llamado con: " + finalJson);
         }
         else
         {
-            Debug.LogError("❌ [Q] GameInitScript no disponible para llamar a GameIsComplete.");
+            Debug.LogError("❌ [Q] GameInitScript es null al intentar GameIsComplete.");
         }
 
-        // 4. LÓGICA DEL USUARIO: Iniciar el Coroutine de salida del UI (Ahora que el harness está desbloqueado).
-        if (MainGameplayScript.Instance != null)
-        {
-            StartCoroutine(MainGameplayScript.Instance.ExitNumerator());
-            Debug.Log("🏃 [Q] ProcessAnswer: Llamando a ExitNumerator para reanudar el juego.");
-        }
+        // Intentamos reanudar el juego con retries (por si el harness tarda en liberar)
+        StartCoroutine(TryExitNumeratorWithRetries(6, 0.15f)); // 6 intentos, 150ms entre ellos
 
-        // 5. Marcar el flag para que el GameFlowManager (yield return new WaitUntil...) continúe.
+        // Marcar flags
         IsAnswerProcessed = true;
-        Debug.Log("🟢 [Q] QuestionHandler: Respuesta procesada. IsAnswerProcessed = true. FIN DEL FLUJO.");
+        isShowingQuestion = false;
+        Debug.Log("🟢 [Q] ProcessAnswer finalizado. IsAnswerProcessed = true");
+    }
+
+    private IEnumerator TryExitNumeratorWithRetries(int attempts, float delaySeconds)
+    {
+        if (MainGameplayScript.Instance == null)
+        {
+            Debug.LogWarning("⚠️ [Q] MainGameplayScript.Instance es null — no se podrá llamar ExitNumerator.");
+            yield break;
+        }
+
+        int attempt = 0;
+        while (attempt < attempts)
+        {
+            attempt++;
+            Debug.Log($"🔁 [Q] Intentando ExitNumerator, intento {attempt}/{attempts}...");
+
+            // Llamamos al IEnumerator del gameplay
+            // Intentamos envolverlo con try/catch por si lanza excepciones
+            bool started = false;
+            try
+            {
+                StartCoroutine(MainGameplayScript.Instance.ExitNumerator());
+                started = true;
+            }
+            catch (System.Exception ex)
+            {
+                Debug.LogError($"❌ [Q] Exception al StartCoroutine(ExitNumerator): {ex.Message}");
+            }
+
+            if (started)
+            {
+                Debug.Log($"✅ [Q] ExitNumerator llamado (intento {attempt}). Esperando breve confirmación...");
+                // Si el ExitNumerator hace algo visible o cambia estado, aquí puedes comprobar condiciones.
+                // Esperamos un poco y luego salimos porque lo más probable es que ya se reanudó.
+                yield return new WaitForSeconds(delaySeconds);
+                yield break;
+            }
+
+            yield return new WaitForSeconds(delaySeconds);
+        }
+
+        Debug.LogWarning("⚠️ [Q] No se pudo ejecutar ExitNumerator después de varios intentos.");
     }
 
     private void SubmitProgressToLoL(int currentProgress, int score)
     {
         if (LOLSDK.Instance == null)
         {
-            Debug.LogWarning("⚠️ [Q] LOLSDK no inicializado — progreso no enviado.");
+            Debug.LogWarning("⚠️ [Q] LOLSDK.Instance es null — progreso no enviado.");
             return;
         }
 

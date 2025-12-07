@@ -332,12 +332,13 @@ public class MainGameplayScript : MonoBehaviour
                     case 2:
                         _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._chooseElement);
                         _scriptMain.SetPause();
+                        //MainController.Instance.UpdateCurrencyUI();
                         StartCoroutine(ExitPauseNumerator());
 
                        // Salir o continuar
                         break;
                 }         
-                MainController.Instance.UpdateCurrencyUI();
+            
             }
         }
 
@@ -1006,7 +1007,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         yield return new WaitForSeconds(2);
         MainController.Instance.SaveProgress();
         _scriptMain._scriptMusic.PlayMusic(0);
-                _scriptMain._saveLoadValues._healthCoins = 1;
+           
                 _scriptMain.LoadSceneByName("IntroScene");
         }    
 
@@ -1135,7 +1136,8 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         yield return new WaitForSeconds(2);
         _scriptMain._bordersAnimator.SetBool("BorderOut", false);
         yield return new WaitForSeconds(1);
-        _scriptMain.LoadSceneByName("IntroScene");
+        LOLSDK.Instance.CompleteGame();
+        //_scriptMain.LoadSceneByName("IntroScene");
     }
 
     public IEnumerator EscribirTexto(string linea, TMPro.TextMeshProUGUI textoUI, float velocidad)

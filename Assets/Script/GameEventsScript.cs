@@ -65,7 +65,7 @@ public class GameEventsScript : MonoBehaviour
                         _scriptMain._GamesList.Add(13);
                         break;
                     case true:
-                        _scriptMain._GamesList.Add(0);
+                        _scriptMain._GamesList.Add(0);          
                         List<int> posiblesNumeros0 = new List<int> { 4, 5, 7, 15, 17, 18 };
                         for (int i = 0; i < 10; i++)
                         {
@@ -117,8 +117,7 @@ public class GameEventsScript : MonoBehaviour
 
                 break;
             case 3:
-                _scriptMain._GamesList.Add(0);
-    
+                _scriptMain._GamesList.Add(0);          
                 _scriptMain._GamesList.Add(12);
                 _scriptMain._GamesList.Add(7);
                 _scriptMain._GamesList.Add(3);

@@ -136,7 +136,7 @@ namespace LoL
 
                 // Primero: informar que estamos listos
                 LOLSDK.Instance.GameIsReady();
-                Debug.Log("INIT: GameIsReady() called.");
+      
 
                 // Ahora pedir al SDK que entregue el estado guardado (firma: recibe GameSaveState directamente)
                 // Esto sigue el patrón del ejemplo Cooking: LoadState<T>(Action<T>)
@@ -375,94 +375,6 @@ namespace LoL
             SharedState.LanguageDefs = langDefs;
         }
 
-        // Agrega este método a tu clase (ajusta la firma si el delegate no es string)
-        //private void HandleLanguageDefs(string languageDefsJson)
-        //{
-        //    Debug.Log("📥 LanguageDefsReceived invoked: " + languageDefsJson);
-
-        //    if (string.IsNullOrEmpty(languageDefsJson))
-        //    {
-        //        Debug.LogWarning("⚠️ LanguageDefsReceived: payload vacío");
-        //        return;
-        //    }
-
-        //    // Intentamos parsear; depende del formato que envíe la SDK.
-        //    var root = JSON.Parse(languageDefsJson);
-
-        //    // Ejemplo: si el payload tiene un languageUrl o una lista de idiomas
-        //    string languageUrl = root["languageUrl"] ?? "";
-        //    string languageCode = root["languageCode"] ?? _languageCode;
-
-        //    Debug.Log($"🔹 LanguageDefs: code={languageCode}, url={languageUrl}");
-
-        //    // Actualiza tu código de idioma si viene distinto
-        //    _languageCode = languageCode;
-
-        //    if (!string.IsNullOrEmpty(languageUrl))
-        //    {
-        //        // Carga el language.json remoto (reusa tu coroutine)
-        //        StartCoroutine(LoadLanguageFromURL(languageUrl));
-        //    }
-        //    else
-        //    {
-        //        // Si no hay URL, intenta cargar local con tu existing flow
-        //        StartCoroutine(LoadLanguageCoroutine(_languageCode));
-        //    }
-        //}
-
-        // -----------------------------------------------------------------
-        // Game Save/Load (FLUJO DE SDK)
-        // -----------------------------------------------------------------
-
-        //public void LoadGameFromSDK()
-        //{
-        //    if (_loadAttempted)
-        //    {
-
-        //        return;
-        //    }
-        //    _loadAttempted = true;
-        //    stateLoaded = false;
-
-
-
-        //    LOLSDK.Instance.LoadState<GameFullState>(state =>
-        //    {        
-        //        if (_json != null)
-        //        {
-        //            if (state != null && state.data != null)
-        //            {
-        //                try
-        //                {
-        //                    string fullResponseJson = JsonUtility.ToJson(state.data);
-        //                    _json.text = "SAVED FULL STATE RECEIVED (RAW):\n" + fullResponseJson;
-        //                }
-        //                catch (System.Exception e)
-        //                {
-        //                    _json.text = $"❌ Error al serializar JSON de guardado:\n{e.Message}";
-        //                    Debug.LogError($"❌ Error al serializar JSON de guardado: {e.Message}");
-        //                }
-        //            }
-        //            else
-        //            {
-        //                _json.text = "JSON GUARDADO RECIBIDO: NULL / VACÍO (Nueva partida)";
-        //            }
-        //        }
-
-        //        if (state != null && state.data != null && state.data.data != null)
-        //        {
-        //            LoadedFullState = state.data;
-        //            Debug.Log($"✅ Estado de guardado encontrado y cargado. Health: {LoadedFullState.data._healthCoins}, Progress: {LoadedFullState.currentProgress}/{LoadedFullState.maximumProgress}");
-        //        }
-        //        else
-        //        {
-        //            LoadedFullState = null;
-        //            Debug.Log("ℹ️ No se encontró estado guardado. Se usará la inicialización de MainController (Nueva Partida).");
-        //        }
-
-        //        StartCoroutine(ApplyLoadedStateWhenReady());
-        //    });
-        //}
 
         // Alternativa: método que la SDK puede invocar directamente si prefieres separar lógica
         // --- Método con la firma que espera la SDK: recibe LoLSDK.State<GameSaveState>
@@ -562,16 +474,16 @@ namespace LoL
                 {
                     // Fallback: no hay guardado -> usar valores por defecto del MainController
                     Debug.Log("DIAGNÓSTICO INIT: LoadedFullState es NULL o no contiene data. Usando valores por defecto de MainController.");
-                    mc.UpdateCurrencyUI();
+                    //mc.UpdateCurrencyUI();
                 }
             }
             catch (System.Exception ex)
             {
                 Debug.LogError("ApplyLoadedStateWhenReady: excepción inesperada: " + ex);
-                // Asegurarse que la UI se actualice aunque algo haya fallado
-                mc.UpdateCurrencyUI();
+                //// Asegurarse que la UI se actualice aunque algo haya fallado
+                //mc.UpdateCurrencyUI();
             }
-
+            mc.UpdateCurrencyUI();
             stateLoaded = true;
             CheckReadyState();
         }
@@ -623,6 +535,7 @@ namespace LoL
             Debug.Log($"✅ Aplicando Estado FINAL al MainController. Health: {saveValues._healthCoins}, Hint: {saveValues._hintCoins}, Progress: {saveValues._progress}");
 
             // 3. ACTUALIZAR UI
+            //PortraitController.Instance.botonBorrar();
             mc.UpdateCurrencyUI();
         }
 
@@ -710,12 +623,14 @@ namespace LoL
             lastQuestionId = result["questionId"] ?? "unknown";
             lastAnswer = result["answer"] ?? "none";
             respuestaRecibida = true;
+            StartCoroutine(MainGameplayScript.Instance.ExitNumerator());
         }
 
         public void ShowQuestion()
         {
             LOLSDK.Instance.ShowQuestion();
             respuestaRecibida = false;
+      
         }
 
         public string GetText(string key) =>
