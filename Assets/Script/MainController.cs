@@ -18,6 +18,8 @@ public class MainController : MonoBehaviour
 {
     public static MainController Instance;
 
+    public bool _newGameplay;
+
     // --- SISTEMA CENTRALIZADO DE PROGRESO ---
     public Progress progress = new Progress();
 
@@ -99,6 +101,8 @@ public class MainController : MonoBehaviour
     public int _onWorldGlobal;
     public bool _introSpecial;
     private int _lastReportedProgress = 0;
+
+   
 
     void Awake()
     {

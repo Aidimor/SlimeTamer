@@ -5074,6 +5074,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a52e6b125792be5468e5229aba924186, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _newGameplay: 0
   progress:
     currentProgress: 0
     maxProgress: 8

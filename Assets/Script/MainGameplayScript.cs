@@ -215,12 +215,12 @@ public class MainGameplayScript : MonoBehaviour
     }
     public HintSubPanel _hintSub;
 
-    private void Awake()
-    {
-        _scriptMain = GameObject.Find("CanvasIndestructible/Main/MainController").GetComponent<MainController>();
-        Instance = this;
+    //private void Awake()
+    //{
+    //    _scriptMain = GameObject.Find("CanvasIndestructible/Main/MainController").GetComponent<MainController>();
+    //    Instance = this;
     
-    }
+    //}
 
 
 
