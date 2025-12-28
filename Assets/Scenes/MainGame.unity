@@ -314342,9 +314342,22 @@ MonoBehaviour:
   - {fileID: 6050535114513154093, guid: 17610124dc4ab6148b4dff4237b05b15, type: 3}
   _allStages:
   - {fileID: 11400000, guid: da1f0ddc2915a654e932670d379365d2, type: 2}
+  _allGrounds: []
   _parent: {fileID: 1468435748}
   _elementPrefab: {fileID: 5309732986324711119, guid: d116fc950c5ceff4aa89dbec91b8f866, type: 3}
+  _hazardPrefab: {fileID: 3405589612252051776, guid: 29b9b0499eb44884db2f909fcb705005, type: 3}
   _idStage: 0
+  _entrancePrefab: {fileID: 6200660515124529202, guid: 252d7b94a393d4041829c030e5296d96, type: 3}
+  _exitPrefab: {fileID: 4888735223859397862, guid: 4a9d29596e3a4464d888c80ef7f91e29, type: 3}
+  _movementSpeed: 5
+  _movementAvailable: 1
+  _buttonPressed: 0
+  _onPose: 0
+  _slimeObject: {fileID: 419673005}
+  _lockedColors:
+  - {r: 0, g: 0, b: 0, a: 0}
+  - {r: 1, g: 0, b: 0.5965824, a: 0.39215687}
+  _movesAvailable: 00000000
 --- !u!1 &1221488631
 GameObject:
   m_ObjectHideFlags: 0

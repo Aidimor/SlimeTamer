@@ -6,6 +6,9 @@ using TMPro;
 [CreateAssetMenu(menuName = "NewStages/NewStage")]
 public class NewGameEvent : ScriptableObject
 {
+    public int _spawnPoint;
+    public int _exitPoint;
+
     public List<int> _allPlaces = new List<int>();
 
     [System.Serializable]
