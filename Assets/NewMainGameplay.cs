@@ -1,6 +1,7 @@
-using System.Collections;
-using System.Collections.Generic;
+ï»¿using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
+
 
 public class NewMainGameplay : MonoBehaviour
 {
@@ -8,161 +9,149 @@ public class NewMainGameplay : MonoBehaviour
     public GameObject[] _groundAssets;
     public NewGameEvent[] _allStages;
     public List<GameObject> _allGrounds = new List<GameObject>();
+    public List<GameObject> _allElements = new List<GameObject>();
+    public List<GameObject> _allHazards = new List<GameObject>();
     public Transform _parent;
+
     public GameObject _elementPrefab;
     public GameObject _hazardPrefab;
-    public int _idStage;
-
-    public GameObject _entrancePrefab;   
+    public GameObject _entrancePrefab;
     public GameObject _exitPrefab;
 
-    public float _movementSpeed;
-    public bool _movementAvailable;
-    public bool _buttonPressed;
+    public int _idStage;
+
+    public float _movementSpeed = 6f;
+    public bool _movementAvailable = true;
+    private bool _buttonPressed;
+
     public int _onPose;
     public GameObject _slimeObject;
 
     public Color[] _lockedColors;
 
-    public bool[] _movesAvailable;
- 
+    // 0 = abajo, 1 = arriba, 2 = derecha, 3 = izquierda
+    public bool[] _movesAvailable = new bool[4];
+
+    [System.Serializable]
+    public class SlimeInfo
+    {
+        public int _slimeID; //0=Normal,1=Solid,2=Liquid,3=Gas
+        public int[] _elementsParticles; //0=Carbon,1=Hydrogen,2=Oxygen
+    }
+    public SlimeInfo _slimeInfo;
+
+
     void Start()
+    {
+        StartVoids();
+    }
+
+    public void StartVoids()
     {
         StageCreationVoid();
         SetElements();
         SetHazards();
         SetEntranceExit();
+
         _onPose = _allStages[_idStage]._spawnPoint;
-
+        CalculateMoves();
     }
 
-    private void Update()
+    void Update()
     {
-        if(_movementAvailable)
-        PlayerMovementController();
-      
+        if (_movementAvailable)
+            PlayerMovementController();
     }
 
-    public void StageCreationVoid()
+    // ===================== STAGE =====================
+
+    void StageCreationVoid()
     {
-        for (int i = 0; i < _allStages[_idStage]._allPlaces.Count; i++)
+        _allGrounds.Clear();
+
+        foreach (int place in _allStages[_idStage]._allPlaces)
         {
             GameObject ground = Instantiate(_groundAssets[_idStage], _parent);
 
             RectTransform groundRT = ground.GetComponent<RectTransform>();
-            RectTransform targetRT =
-                _allPositions[_allStages[_idStage]._allPlaces[i]].GetComponent<RectTransform>();
+            RectTransform targetRT = _allPositions[place].GetComponent<RectTransform>();
 
-            if (groundRT != null && targetRT != null)
-            {
-                // Posición en mundo del target
-                Vector3 worldPos = targetRT.position;
+            groundRT.position = targetRT.position;
+            groundRT.localScale = Vector3.one;
 
-                // Convertir a local del nuevo parent
-                groundRT.position = worldPos;
+            StageGroundScript g = ground.GetComponent<StageGroundScript>();
+            g._id = place;
+            g._lockedBool = false;
 
-                groundRT.localScale = Vector3.one;
-            }
-            ground.GetComponent<StageGroundScript>()._id = _allStages[_idStage]._allPlaces[i];
             _allGrounds.Add(ground);
         }
-       
     }
 
-    public void SetElements()
+    void SetElements()
     {
-        for(int i = 0; i < _allStages[_idStage]._elements.Length; i++)
+        foreach (var data in _allStages[_idStage]._elements)
         {
-            GameObject Element = Instantiate(_elementPrefab, transform.position, transform.rotation);
-            switch (_allStages[_idStage]._elements[i]._elementType)
+            GameObject element = Instantiate(_elementPrefab, _parent);
+            RectTransform rt = element.GetComponent<RectTransform>();
+            rt.position = _allPositions[data._onPlace].GetComponent<RectTransform>().position;
+            rt.localScale = Vector3.one;
+
+            ElementOrbScript orb = element.GetComponent<ElementOrbScript>();
+            orb._onPose = data._onPlace;
+            orb.ID = data._elementType switch
             {
-                case NewGameEvent.Elements.ElementType.C:             
-                    Element.GetComponent<ElementOrbScript>().ID = 0;           
-                    break;
-                case NewGameEvent.Elements.ElementType.H:
-                    Element.GetComponent<ElementOrbScript>().ID = 1;
-                    break;
-                case NewGameEvent.Elements.ElementType.O:
-                    Element.GetComponent<ElementOrbScript>().ID = 2;
-                    break;
-            }
-            Element.GetComponent<ElementOrbScript>()._quantity = _allStages[_idStage]._elements[i]._quantity;
-            Element.transform.parent = _parent.transform;
-            Element.transform.localScale = Vector3.one;
-            Element.GetComponent<RectTransform>().anchoredPosition = _allPositions[_allStages[_idStage]._elements[i]._onPlace].GetComponent<RectTransform>().anchoredPosition;
-            Element.GetComponent<ElementOrbScript>().ElementSetVoid();
+                NewGameEvent.Elements.ElementType.C => 0,
+                NewGameEvent.Elements.ElementType.H => 1,
+                _ => 2
+            };
+
+            orb._quantity = data._quantity;
+            orb.ElementSetVoid();
+            _allElements.Add(element);
         }
     }
 
-    public void SetHazards()
+    void SetHazards()
     {
-        for (int i = 0; i < _allStages[_idStage]._hazards.Length; i++)
+        foreach (var data in _allStages[_idStage]._hazards)
         {
             GameObject hazard = Instantiate(_hazardPrefab, _parent);
+            RectTransform rt = hazard.GetComponent<RectTransform>();
+            rt.position = _allPositions[data._onPlace].GetComponent<RectTransform>().position;
+            rt.localScale = Vector3.one;
 
-            RectTransform hazardRT = hazard.GetComponent<RectTransform>();
-            RectTransform targetRT =
-                _allPositions[_allStages[_idStage]._hazards[i]._onPlace]
-                .GetComponent<RectTransform>();
+            ObstaclesScript obs = hazard.GetComponent<ObstaclesScript>();
 
-            switch (_allStages[_idStage]._hazards[i]._hazards)
+            obs._id = data._hazards switch
             {
-                case NewGameEvent.Hazards.HazardsType.Fire:
-                    hazard.GetComponent<ObstaclesScript>()._id = 0;
-                    break;
-                case NewGameEvent.Hazards.HazardsType.Hole:
-                    hazard.GetComponent<ObstaclesScript>()._id = 1;
-                    break;
-                case NewGameEvent.Hazards.HazardsType.Switch:
-                    hazard.GetComponent<ObstaclesScript>()._id = 2;
-                    break;
-                case NewGameEvent.Hazards.HazardsType.Switch2:
-                    hazard.GetComponent<ObstaclesScript>()._id = 3;
-                    break;
-            }
+                NewGameEvent.Hazards.HazardsType.Fire => 0,
+                NewGameEvent.Hazards.HazardsType.Hole => 1,
+                NewGameEvent.Hazards.HazardsType.Switch => 2,
+                _ => 3
+            };
 
-            if (hazardRT != null && targetRT != null)
-            {
-                // Copiar posición en mundo
-                hazardRT.position = targetRT.position;
-                hazardRT.localScale = Vector3.one;
-            }
-
-            hazard.GetComponent<ObstaclesScript>().SetObstacle();
+            obs.SetObstacle();
+            _allHazards.Add(hazard);
         }
     }
 
-    public void SetEntranceExit()
+    void SetEntranceExit()
     {
-        GameObject entrance = Instantiate(_entrancePrefab, _parent);
-        RectTransform entranceRT = entrance.GetComponent<RectTransform>();
-        RectTransform targetEntranceRT =
-           _allPositions[_allStages[_idStage]._spawnPoint]
-           .GetComponent<RectTransform>();
-
-        if (entranceRT != null && targetEntranceRT != null)
-        {
-            // Copiar posición en mundo
-            entranceRT.position = targetEntranceRT.position;
-            entranceRT.localScale = Vector3.one;
-        }
-
-
-        GameObject exit = Instantiate(_exitPrefab, _parent);
-        RectTransform exitRT = exit.GetComponent<RectTransform>();
-        RectTransform targetExitRT =
-   _allPositions[_allStages[_idStage]._exitPoint]
-   .GetComponent<RectTransform>();
-
-        if (entranceRT != null && targetExitRT != null)
-        {
-            // Copiar posición en mundo
-            exitRT.position = targetExitRT.position;
-            exitRT.localScale = Vector3.one;
-        }
+        CreateMarker(_entrancePrefab, _allStages[_idStage]._spawnPoint);
+        CreateMarker(_exitPrefab, _allStages[_idStage]._exitPoint);
     }
 
-    public void PlayerMovementController()
+    void CreateMarker(GameObject prefab, int place)
+    {
+        GameObject obj = Instantiate(prefab, _parent);
+        RectTransform rt = obj.GetComponent<RectTransform>();
+        rt.position = _allPositions[place].GetComponent<RectTransform>().position;
+        rt.localScale = Vector3.one;
+    }
+
+    // ===================== MOVEMENT =====================
+
+    void PlayerMovementController()
     {
         RectTransform slimeRT = _slimeObject.GetComponent<RectTransform>();
         RectTransform targetRT = _allPositions[_onPose].GetComponent<RectTransform>();
@@ -173,90 +162,185 @@ public class NewMainGameplay : MonoBehaviour
             _movementSpeed * Time.deltaTime
         );
 
-        if (Input.GetAxisRaw("Horizontal") > 0 && !_buttonPressed)
+        // Reset input
+        if (Input.GetAxisRaw("Horizontal") == 0 &&
+            Input.GetAxisRaw("Vertical") == 0)
         {
-            LockPositions();
-            _onPose++;
-            _buttonPressed = true;
-            RestartCondition();
-        }
-        else if (Input.GetAxisRaw("Horizontal") < 0 && !_buttonPressed)
-        {
-            LockPositions();
-            _onPose--;
-            _buttonPressed = true;
-            RestartCondition();
-        }
-
-        else if (Input.GetAxisRaw("Vertical") < 0 && !_buttonPressed)
-        {
-      
-            if (_onPose - 5 >= 0)
-            {
-                LockPositions();
-                _onPose -= 5;
-                _buttonPressed = true;
-                RestartCondition();
-            }
-            _buttonPressed = true;
-        }
-
-        else if (Input.GetAxisRaw("Vertical") > 0 && !_buttonPressed)
-        {
-            if(_onPose + 5 <= _allPositions.Length - 1)
-            {
-                LockPositions();
-                _onPose += 5;
-                _buttonPressed = true;
-                RestartCondition();
-            }
-   
-        }
-
-        if (Input.GetAxisRaw("Horizontal") == 0 && Input.GetAxisRaw("Vertical") == 0)
-        {          
             _buttonPressed = false;
         }
-    }
-    public void LockPositions()
-    {
-        bool available = false;
 
-        for (int i = 0; i < _allStages[_idStage]._allPlaces.Count; i++)
-        {
-            if (_onPose == _allStages[_idStage]._allPlaces[i])
-            {
-                available = true;
-                break;
-            }
-        }
+        if (_buttonPressed) return;
 
-        if (available)
-        {
-            for(int i = 0; i < _allGrounds.Count; i++)
-            {
-                if(_onPose == _allGrounds[i].GetComponent<StageGroundScript>()._id)
-                {            
-                    _allGrounds[i].GetComponent<StageGroundScript>()._lockedBool = true;
-                    _allGrounds[i].GetComponent<StageGroundScript>()._lockImage.color = _lockedColors[1];
-                    return;
-                }
-            }       
-        }
+        if (Input.GetAxisRaw("Horizontal") > 0 && _movesAvailable[2])
+            MoveTo(_onPose + 1);
+
+        else if (Input.GetAxisRaw("Horizontal") < 0 && _movesAvailable[3])
+            MoveTo(_onPose - 1);
+
+        else if (Input.GetAxisRaw("Vertical") > 0 && _movesAvailable[0])
+            MoveTo(_onPose + 5);
+
+        else if (Input.GetAxisRaw("Vertical") < 0 && _movesAvailable[1])
+            MoveTo(_onPose - 5);
     }
 
-    public void RestartCondition()
+    void MoveTo(int newPose)
     {
-        for(int i = 0; i < _allGrounds.Count; i++)
+        LockCurrentPosition();
+
+        _onPose = newPose;
+        _buttonPressed = true;
+
+        bool restart = IsLocked();
+
+        // ðŸ”‘ SIEMPRE recalcular
+        CalculateMoves();
+        HazardDetection();
+        ElementDetection();
+        if (restart)
         {
-            if (_onPose == _allGrounds[i].GetComponent<StageGroundScript>()._id && _allGrounds[i].GetComponent<StageGroundScript>()._lockedBool)
+        
+            StartCoroutine(RestartLevel());
+            // AquÃ­ luego puedes resetear nivel, animar, etc.
+        }
+    }
+
+    // ===================== LOGIC =====================
+
+    void CalculateMoves()
+    {
+        for (int i = 0; i < 4; i++)
+            _movesAvailable[i] = false;
+
+        foreach (int place in _allStages[_idStage]._allPlaces)
+        {
+            if (place == _onPose + 5) _movesAvailable[0] = true;
+            if (place == _onPose - 5) _movesAvailable[1] = true;
+            if (place == _onPose + 1) _movesAvailable[2] = true;
+            if (place == _onPose - 1) _movesAvailable[3] = true;
+        }
+
+        Debug.Log("SECURE");
+    }
+
+    void LockCurrentPosition()
+    {
+        foreach (GameObject g in _allGrounds)
+        {
+            StageGroundScript ground = g.GetComponent<StageGroundScript>();
+
+            if (ground._id == _onPose)
             {
-                Debug.Log("RESTART");
+                ground._lockedBool = true;
+                ground._lockImage.color = _lockedColors[1];
                 return;
             }
-
         }
-    
     }
 
+    bool IsLocked()
+    {
+        foreach (GameObject g in _allGrounds)
+        {
+            StageGroundScript ground = g.GetComponent<StageGroundScript>();
+            if (ground._id == _onPose && ground._lockedBool)
+                return true;
+        }
+        return false;
+    }
+
+    public IEnumerator RestartLevel()
+    {
+        yield return new WaitForSeconds(0.5f);
+        for(int i = 0; i < _allGrounds.Count; i++)
+        {
+            _allGrounds[i].GetComponent<StageGroundScript>()._lockedBool = false;
+            _allGrounds[i].GetComponent<StageGroundScript>()._lockImage.color = _lockedColors[0];
+        }
+        for(int i = 0; i < _allElements.Count; i++)
+        {
+            Destroy(_allElements[i]);
+        }
+        _allElements.Clear();
+        for (int i = 0; i < _allHazards.Count; i++)
+        {
+            Destroy(_allHazards[i]);
+        }
+        _allHazards.Clear();
+        _slimeInfo._elementsParticles[0] = 0;
+        _slimeInfo._elementsParticles[1] = 0;
+        _slimeInfo._elementsParticles[2] = 0;
+        Debug.Log("RESTART");
+        StartVoids();
+    }
+
+    public void HazardDetection()
+    {
+        var HazardInfo = _allStages[_idStage];
+        for (int i = 0; i < HazardInfo._hazards.Length; i++)
+        {
+            if(_onPose == HazardInfo._hazards[i]._onPlace)
+            {
+                switch (HazardInfo._hazards[i]._hazards)
+            {
+                case NewGameEvent.Hazards.HazardsType.Fire:
+                      if(_slimeInfo._slimeID != 2)
+                        {
+                            StartCoroutine(RestartLevel());
+                        }
+                        Debug.Log("Fire");
+                
+                        break;
+                case NewGameEvent.Hazards.HazardsType.Hole:
+                        if (_slimeInfo._slimeID != 3)
+                        {
+                            StartCoroutine(RestartLevel());
+                        }                 
+                            
+                            Debug.Log("Hole");
+                  
+                        break;
+                 case NewGameEvent.Hazards.HazardsType.Switch:                
+                        Debug.Log("Switch");
+                        break;
+                 case NewGameEvent.Hazards.HazardsType.Switch2:
+                     break;
+
+                }
+            }
+        }
+    }
+
+    public void ElementDetection()
+    {
+        var ElementInfo = _allStages[_idStage];
+        for (int i = 0; i < ElementInfo._elements.Length; i++)
+        {
+            if (_onPose == ElementInfo._elements[i]._onPlace)
+            {
+                switch  (ElementInfo._elements[i]._elementType)
+                {
+                    case NewGameEvent.Elements.ElementType.C:
+                        _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
+                        break;
+                    case NewGameEvent.Elements.ElementType.H:
+                        _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
+                        break;
+                    case NewGameEvent.Elements.ElementType.O:
+                        _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
+                        break;
+                }
+            }
+            
+        }
+        for(int i = 0; i < _allElements.Count; i++)
+        {
+            if(_allElements[i].GetComponent<ElementOrbScript>()._onPose == _onPose)
+            {
+                Destroy(_allElements[i].gameObject);
+                _allElements.RemoveAt(i);
+            }
+           
+        }
+    }
 }

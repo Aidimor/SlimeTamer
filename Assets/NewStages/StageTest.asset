@@ -15,5 +15,16 @@ MonoBehaviour:
   _spawnPoint: 2
   _exitPoint: 24
   _allPlaces: 02000000070000000c00000011000000160000001700000018000000
-  _elements: []
-  _hazards: []
+  _elements:
+  - _onPlace: 7
+    _elementType: 1
+    _quantity: 1
+  - _onPlace: 12
+    _elementType: 0
+    _quantity: 1
+  - _onPlace: 17
+    _elementType: 2
+    _quantity: 3
+  _hazards:
+  - _onPlace: 22
+    _hazards: 1

@@ -5,6 +5,7 @@ using TMPro;
 public class ElementOrbScript : MonoBehaviour
 {
     public int ID;
+    public int _onPose;
     public Image _circle;
     public Image _sprite;
     public Sprite[] _allIcons;
