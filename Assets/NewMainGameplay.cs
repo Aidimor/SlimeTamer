@@ -28,6 +28,7 @@ public class NewMainGameplay : MonoBehaviour
     public GameObject _slimeObject;
 
     public Color[] _lockedColors;
+    public List<GameObject> _exitEntranceObjects = new List<GameObject>();
 
     // 0 = abajo, 1 = arriba, 2 = derecha, 3 = izquierda
     public bool[] _movesAvailable = new bool[4];
@@ -44,6 +45,8 @@ public class NewMainGameplay : MonoBehaviour
     void Start()
     {
         StartVoids();
+        MainController.Instance._bordersAnimator.SetBool("BorderOut", true);
+        MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
     }
 
     public void StartVoids()
@@ -71,7 +74,7 @@ public class NewMainGameplay : MonoBehaviour
 
         foreach (int place in _allStages[_idStage]._allPlaces)
         {
-            GameObject ground = Instantiate(_groundAssets[_idStage], _parent);
+            GameObject ground = Instantiate(_groundAssets[0], _parent);
 
             RectTransform groundRT = ground.GetComponent<RectTransform>();
             RectTransform targetRT = _allPositions[place].GetComponent<RectTransform>();
@@ -147,6 +150,7 @@ public class NewMainGameplay : MonoBehaviour
         RectTransform rt = obj.GetComponent<RectTransform>();
         rt.position = _allPositions[place].GetComponent<RectTransform>().position;
         rt.localScale = Vector3.one;
+        _exitEntranceObjects.Add(obj);
     }
 
     // ===================== MOVEMENT =====================
@@ -171,10 +175,23 @@ public class NewMainGameplay : MonoBehaviour
 
         if (_buttonPressed) return;
 
-        if (Input.GetAxisRaw("Horizontal") > 0 && _movesAvailable[2])
+        if (Input.GetAxisRaw("Horizontal") > 0 &&
+            _movesAvailable[2] &&
+            _onPose != 4 &&
+            _onPose != 9 &&
+            _onPose != 14 &&
+            _onPose != 19 &&
+            _onPose != 24)
+        {
             MoveTo(_onPose + 1);
+        }
 
-        else if (Input.GetAxisRaw("Horizontal") < 0 && _movesAvailable[3])
+
+        else if (Input.GetAxisRaw("Horizontal") < 0 && _movesAvailable[3] &&
+            _onPose != 0 &&
+            _onPose != 5 &&
+            _onPose != 15 &&
+            _onPose != 20)
             MoveTo(_onPose - 1);
 
         else if (Input.GetAxisRaw("Vertical") > 0 && _movesAvailable[0])
@@ -197,6 +214,7 @@ public class NewMainGameplay : MonoBehaviour
         CalculateMoves();
         HazardDetection();
         ElementDetection();
+        ExitDetection();
         if (restart)
         {
         
@@ -220,7 +238,7 @@ public class NewMainGameplay : MonoBehaviour
             if (place == _onPose - 1) _movesAvailable[3] = true;
         }
 
-        Debug.Log("SECURE");
+   
     }
 
     void LockCurrentPosition()
@@ -273,6 +291,52 @@ public class NewMainGameplay : MonoBehaviour
         Debug.Log("RESTART");
         StartVoids();
     }
+
+    public IEnumerator NexttLevel()
+    {
+        _movementAvailable = false;
+
+        _idStage++;
+        yield return new WaitForSeconds(0.5f);
+
+        for (int i = 0; i < _allGrounds.Count; i++)
+            Destroy(_allGrounds[i]);
+        _allGrounds.Clear();
+
+        for (int i = 0; i < _allElements.Count; i++)
+            Destroy(_allElements[i]);
+        _allElements.Clear();
+
+        for (int i = 0; i < _allHazards.Count; i++)
+            Destroy(_allHazards[i]);
+        _allHazards.Clear();
+
+        _slimeInfo._elementsParticles[0] = 0;
+        _slimeInfo._elementsParticles[1] = 0;
+        _slimeInfo._elementsParticles[2] = 0;
+
+        for(int i = 0; i < _exitEntranceObjects.Count; i++)
+        {
+            Destroy(_exitEntranceObjects[i]);
+        }
+        _exitEntranceObjects.Clear();
+
+        Debug.Log("NextLevel");
+
+        // NUEVO spawn
+        _onPose = _allStages[_idStage]._spawnPoint;
+
+        // 🔑 POSICIÓN CORRECTA
+        _slimeObject.GetComponent<RectTransform>().position =
+            _allPositions[_onPose].GetComponent<RectTransform>().position;
+
+        StartVoids();          // recrea stage
+        CalculateMoves();      // recalcula movimientos
+
+        yield return new WaitForSeconds(0.2f);
+        _movementAvailable = true;
+    }
+
 
     public void HazardDetection()
     {
@@ -331,7 +395,9 @@ public class NewMainGameplay : MonoBehaviour
                         break;
                 }
             }
-            
+            TransformSlimeVoid();
+
+
         }
         for(int i = 0; i < _allElements.Count; i++)
         {
@@ -342,5 +408,52 @@ public class NewMainGameplay : MonoBehaviour
             }
            
         }
+    }
+
+    public void TransformSlimeVoid()
+    {
+        if(_slimeInfo._elementsParticles[0] >= 2)
+        {
+            _slimeInfo._slimeID = 1;
+            Debug.Log("CARBONO");
+        }
+        else if (_slimeInfo._elementsParticles[1] >= 2 && _slimeInfo._elementsParticles[2] >= 1)
+        {
+            _slimeInfo._slimeID = 2;
+            Debug.Log("AGUA");
+        }
+        else if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[2] >= 2)
+        {
+            _slimeInfo._slimeID = 3;
+            Debug.Log("C02");
+        }
+        //StartCoroutine(TransformSlimeNumerator());
+    }
+
+    public void ExitDetection()
+    {
+        var ExitID= _allStages[_idStage]._exitPoint;
+        if (_onPose == ExitID)
+        {
+            StartCoroutine(ExitNumerator());            
+        }
+    }
+
+    public IEnumerator ExitNumerator()
+    {
+        _movementAvailable = false;
+        MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
+        MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
+       
+        yield return new WaitForSeconds(1);
+        StartCoroutine(NexttLevel());
+        yield return new WaitForSeconds(1);
+        MainController.Instance._bordersAnimator.SetBool("BorderOut", true);
+        MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
+    }
+
+    public IEnumerator TransformSlimeNumerator()
+    {
+        yield return new WaitForSeconds(0.2f);
     }
 }

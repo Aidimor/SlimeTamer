@@ -1,0 +1,37 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06444818b2c5c5245a52126020660b89, type: 3}
+  m_Name: Stage4
+  m_EditorClassIdentifier: 
+  _spawnPoint: 12
+  _exitPoint: 16
+  _allPlaces: 0000000001000000020000000300000004000000050000000600000007000000090000000a0000000b0000000c0000000d0000000e0000000f0000001000000011000000120000001300000014000000150000001600000017000000
+  _elements:
+  - _onPlace: 5
+    _elementType: 2
+    _quantity: 1
+  - _onPlace: 22
+    _elementType: 1
+    _quantity: 2
+  _hazards:
+  - _onPlace: 15
+    _hazards: 0
+  - _onPlace: 17
+    _hazards: 0
+  - _onPlace: 20
+    _hazards: 0
+  - _onPlace: 21
+    _hazards: 0
+  - _onPlace: 10
+    _hazards: 0
+  - _onPlace: 11
+    _hazards: 0
