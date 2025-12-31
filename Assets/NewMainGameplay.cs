@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using System.Collections;
-
+using UnityEngine.UI;
 
 public class NewMainGameplay : MonoBehaviour
 {
@@ -11,9 +11,11 @@ public class NewMainGameplay : MonoBehaviour
     public List<GameObject> _allGrounds = new List<GameObject>();
     public List<GameObject> _allElements = new List<GameObject>();
     public List<GameObject> _allHazards = new List<GameObject>();
+    public List<GameObject> _allAtoms = new List<GameObject>();
     public Transform _parent;
 
     public GameObject _elementPrefab;
+    public GameObject _atomPrefab;
     public GameObject _hazardPrefab;
     public GameObject _entrancePrefab;
     public GameObject _exitPrefab;
@@ -40,7 +42,9 @@ public class NewMainGameplay : MonoBehaviour
         public int[] _elementsParticles; //0=Carbon,1=Hydrogen,2=Oxygen
     }
     public SlimeInfo _slimeInfo;
-
+    public Sprite[] _allGroundsSprites;
+    public Image[] _backgroundImage;
+    public Color[] _backgroundColor;
 
     void Start()
     {
@@ -85,7 +89,12 @@ public class NewMainGameplay : MonoBehaviour
             StageGroundScript g = ground.GetComponent<StageGroundScript>();
             g._id = place;
             g._lockedBool = false;
+            ground.GetComponent<Image>().sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
+            _backgroundImage[0].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
+            _backgroundImage[0].color = _backgroundColor[MainController.Instance._onWorldGlobal];
 
+            _backgroundImage[1].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
+            _backgroundImage[2].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
             _allGrounds.Add(ground);
         }
     }
@@ -112,6 +121,22 @@ public class NewMainGameplay : MonoBehaviour
             orb.ElementSetVoid();
             _allElements.Add(element);
         }
+
+        for (int i = 0; i < _allStages[_idStage]._atomPlace.Length; i++)
+        {
+            GameObject atom = Instantiate(_atomPrefab, _parent);
+
+            RectTransform rt = atom.GetComponent<RectTransform>();
+            RectTransform targetRT =
+                _allPositions[_allStages[_idStage]._atomPlace[i]]
+                .GetComponent<RectTransform>();
+
+            rt.position = targetRT.position;
+            rt.localScale = Vector3.one;
+
+            _allAtoms.Add(atom);
+        }
+
     }
 
     void SetHazards()
