@@ -46,6 +46,10 @@ public class NewMainGameplay : MonoBehaviour
     public Image[] _backgroundImage;
     public Color[] _backgroundColor;
 
+    public Animator _slimeAnimator;
+    public int _atomsObtained;
+    public List<int> _atomList = new List<int>();
+
     void Start()
     {
         StartVoids();
@@ -59,8 +63,9 @@ public class NewMainGameplay : MonoBehaviour
         SetElements();
         SetHazards();
         SetEntranceExit();
-
+        _atomsObtained = 0;
         _onPose = _allStages[_idStage]._spawnPoint;
+
         CalculateMoves();
     }
 
@@ -135,6 +140,7 @@ public class NewMainGameplay : MonoBehaviour
             rt.localScale = Vector3.one;
 
             _allAtoms.Add(atom);
+            _atomList.Add(_allStages[_idStage]._atomPlace[i]);
         }
 
     }
@@ -185,7 +191,7 @@ public class NewMainGameplay : MonoBehaviour
         RectTransform slimeRT = _slimeObject.GetComponent<RectTransform>();
         RectTransform targetRT = _allPositions[_onPose].GetComponent<RectTransform>();
 
-        slimeRT.position = Vector3.Lerp(
+        slimeRT.position = Vector3.MoveTowards(
             slimeRT.position,
             targetRT.position,
             _movementSpeed * Time.deltaTime
@@ -209,6 +215,7 @@ public class NewMainGameplay : MonoBehaviour
             _onPose != 24)
         {
             MoveTo(_onPose + 1);
+            _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, -90);
         }
 
 
@@ -217,17 +224,32 @@ public class NewMainGameplay : MonoBehaviour
             _onPose != 5 &&
             _onPose != 15 &&
             _onPose != 20)
+        {
             MoveTo(_onPose - 1);
+            _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, 90);
+        }
+  
+
 
         else if (Input.GetAxisRaw("Vertical") > 0 && _movesAvailable[0])
-            MoveTo(_onPose + 5);
+        {
+            MoveTo(_onPose + 5); 
+            _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, 0);
+        }
+     
+
 
         else if (Input.GetAxisRaw("Vertical") < 0 && _movesAvailable[1])
+        {
             MoveTo(_onPose - 5);
+            _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, 180);
+        }
+          
     }
 
     void MoveTo(int newPose)
     {
+        StartCoroutine(MoveNumerator());
         LockCurrentPosition();
 
         _onPose = newPose;
@@ -239,13 +261,21 @@ public class NewMainGameplay : MonoBehaviour
         CalculateMoves();
         HazardDetection();
         ElementDetection();
+        AtomDetection();
         ExitDetection();
         if (restart)
         {
         
-            StartCoroutine(RestartLevel());
+         RestartLevel();
             // Aquí luego puedes resetear nivel, animar, etc.
         }
+    }
+
+    public IEnumerator MoveNumerator()
+    {
+        _slimeAnimator.SetBool("Moving", true);
+        yield return new WaitForSeconds(0.5f);
+        _slimeAnimator.SetBool("Moving", false);
     }
 
     // ===================== LOGIC =====================
@@ -292,10 +322,13 @@ public class NewMainGameplay : MonoBehaviour
         return false;
     }
 
-    public IEnumerator RestartLevel()
+    public void RestartLevel()
     {
-        yield return new WaitForSeconds(0.5f);
-        for(int i = 0; i < _allGrounds.Count; i++)
+        MainController.Instance._restartBeam.Play("RestartBeam");
+  
+        _slimeObject.GetComponent<RectTransform>().anchoredPosition = _allGrounds[_allStages[_idStage]._spawnPoint].GetComponent<RectTransform>().anchoredPosition;
+        Debug.Log(_allStages[_idStage]._spawnPoint);
+        for (int i = 0; i < _allGrounds.Count; i++)
         {
             _allGrounds[i].GetComponent<StageGroundScript>()._lockedBool = false;
             _allGrounds[i].GetComponent<StageGroundScript>()._lockImage.color = _lockedColors[0];
@@ -313,7 +346,7 @@ public class NewMainGameplay : MonoBehaviour
         _slimeInfo._elementsParticles[0] = 0;
         _slimeInfo._elementsParticles[1] = 0;
         _slimeInfo._elementsParticles[2] = 0;
-        Debug.Log("RESTART");
+        MainController.Instance._saveLoadValues._totalAtoms -= _atomsObtained;
         StartVoids();
     }
 
@@ -375,7 +408,7 @@ public class NewMainGameplay : MonoBehaviour
                 case NewGameEvent.Hazards.HazardsType.Fire:
                       if(_slimeInfo._slimeID != 2)
                         {
-                            StartCoroutine(RestartLevel());
+                            RestartLevel();
                         }
                         Debug.Log("Fire");
                 
@@ -383,7 +416,7 @@ public class NewMainGameplay : MonoBehaviour
                 case NewGameEvent.Hazards.HazardsType.Hole:
                         if (_slimeInfo._slimeID != 3)
                         {
-                            StartCoroutine(RestartLevel());
+                           RestartLevel();
                         }                 
                             
                             Debug.Log("Hole");
@@ -433,7 +466,39 @@ public class NewMainGameplay : MonoBehaviour
             }
            
         }
+
     }
+
+    public void AtomDetection()
+    {
+        //var AtomInfo = _allStages[_idStage];
+        for (int i = 0; i < _atomList.Count; i++)
+        {
+            if (_onPose == _atomList[i])
+            {
+                MainController.Instance._saveLoadValues._totalAtoms++;
+                Debug.Log("Atomo en: " + _atomList[i].ToString());
+                Destroy(_allAtoms[i]);
+                _allAtoms.RemoveAt(i);
+                _atomList.RemoveAt(i);
+                _atomsObtained++;
+            }
+   
+
+
+        }
+        for (int i = 0; i < _allElements.Count; i++)
+        {
+            if (_allElements[i].GetComponent<ElementOrbScript>()._onPose == _onPose)
+            {
+                Destroy(_allElements[i].gameObject);
+                _allElements.RemoveAt(i);
+            }
+
+        }
+
+    }
+
 
     public void TransformSlimeVoid()
     {

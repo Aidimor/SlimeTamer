@@ -314357,7 +314357,7 @@ MonoBehaviour:
   _entrancePrefab: {fileID: 6200660515124529202, guid: 252d7b94a393d4041829c030e5296d96, type: 3}
   _exitPrefab: {fileID: 4888735223859397862, guid: 4a9d29596e3a4464d888c80ef7f91e29, type: 3}
   _idStage: 1
-  _movementSpeed: 5
+  _movementSpeed: 1.75
   _movementAvailable: 1
   _onPose: 0
   _slimeObject: {fileID: 419673005}
@@ -314383,6 +314383,7 @@ MonoBehaviour:
   - {r: 0, g: 1, b: 0, a: 0.19607843}
   - {r: 1, g: 1, b: 1, a: 0.19607843}
   - {r: 1, g: 0.97662324, b: 0, a: 0.19607843}
+  _slimeAnimator: {fileID: 2082077613}
 --- !u!1 &1221488631
 GameObject:
   m_ObjectHideFlags: 0

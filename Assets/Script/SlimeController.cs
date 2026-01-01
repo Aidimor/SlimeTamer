@@ -340,11 +340,11 @@ public class SlimeController : MonoBehaviour
 
     }
 
-    public void JumpingSlime()
-    {
-        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._slimeJumping);
+    //public void JumpingSlime()
+    //{
+    //    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._slimeJumping);
       
-    }
+    //}
 
 
 }

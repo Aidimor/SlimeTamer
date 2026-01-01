@@ -25,4 +25,4 @@ MonoBehaviour:
   _hazards:
   - _onPlace: 18
     _hazards: 1
-  _atomPlace: 07000000
+  _atomPlace: 0700000006000000

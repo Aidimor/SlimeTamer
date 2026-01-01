@@ -32,6 +32,7 @@ public class MainController : MonoBehaviour
     // --- Assets y Componentes ---
     public Animator _bordersAnimator;
     public Animator _cinematicBorders;
+    public Animator _restartBeam;
     public AudioSource _bgmAS;
     public AudioClip[] _allBGM;
     public Animator _currencyAnimator;
@@ -46,6 +47,7 @@ public class MainController : MonoBehaviour
         public bool[] _slimeUnlocked = new bool[7];
         public bool _finalWorldUnlocked = false;
         public bool[] _progressSave = new bool[8];
+        public int _totalAtoms;
         public int _progress = 0;
     }
 
