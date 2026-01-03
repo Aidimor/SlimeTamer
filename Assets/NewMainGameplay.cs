@@ -32,6 +32,8 @@ public class NewMainGameplay : MonoBehaviour
     public Color[] _lockedColors;
     public List<GameObject> _exitEntranceObjects = new List<GameObject>();
 
+    public SlimeController _scriptSlime;
+
     // 0 = abajo, 1 = arriba, 2 = derecha, 3 = izquierda
     public bool[] _movesAvailable = new bool[4];
 
@@ -40,6 +42,7 @@ public class NewMainGameplay : MonoBehaviour
     {
         public int _slimeID; //0=Normal,1=Solid,2=Liquid,3=Gas
         public int[] _elementsParticles; //0=Carbon,1=Hydrogen,2=Oxygen
+        public Color[] _allSlimeColors;
     }
     public SlimeInfo _slimeInfo;
     public Sprite[] _allGroundsSprites;
@@ -49,6 +52,10 @@ public class NewMainGameplay : MonoBehaviour
     public Animator _slimeAnimator;
     public int _atomsObtained;
     public List<int> _atomList = new List<int>();
+    public Color _slimeMainColor;
+    public Animator _transformAnimator;
+    bool _transformed;
+   
 
     void Start()
     {
@@ -71,8 +78,10 @@ public class NewMainGameplay : MonoBehaviour
 
     void Update()
     {
-        if (_movementAvailable)
+     
             PlayerMovementController();
+        _slimeMainColor = Color.Lerp(_slimeMainColor, _slimeInfo._allSlimeColors[_slimeInfo._slimeID], 2 * Time.deltaTime);
+        _scriptSlime._slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_BaseColor", _slimeMainColor);
     }
 
     // ===================== STAGE =====================
@@ -197,8 +206,9 @@ public class NewMainGameplay : MonoBehaviour
             _movementSpeed * Time.deltaTime
         );
 
-        // Reset input
-        if (Input.GetAxisRaw("Horizontal") == 0 &&
+        if (_movementAvailable) {
+            // Reset input
+            if (Input.GetAxisRaw("Horizontal") == 0 &&
             Input.GetAxisRaw("Vertical") == 0)
         {
             _buttonPressed = false;
@@ -214,8 +224,9 @@ public class NewMainGameplay : MonoBehaviour
             _onPose != 19 &&
             _onPose != 24)
         {
-            MoveTo(_onPose + 1);
-            _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, -90);
+                _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, -90);
+                MoveTo(_onPose + 1);
+    
         }
 
 
@@ -225,31 +236,35 @@ public class NewMainGameplay : MonoBehaviour
             _onPose != 15 &&
             _onPose != 20)
         {
-            MoveTo(_onPose - 1);
-            _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, 90);
+                _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, 90);
+                MoveTo(_onPose - 1);
+    
         }
   
 
 
         else if (Input.GetAxisRaw("Vertical") > 0 && _movesAvailable[0])
         {
-            MoveTo(_onPose + 5); 
-            _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, 0);
+                _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, 0);
+                MoveTo(_onPose + 5); 
+      
         }
      
 
 
         else if (Input.GetAxisRaw("Vertical") < 0 && _movesAvailable[1])
         {
-            MoveTo(_onPose - 5);
-            _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, 180);
+                _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, 180);
+                MoveTo(_onPose - 5);
+  
         }
-          
+        }
+
     }
 
     void MoveTo(int newPose)
     {
-        StartCoroutine(MoveNumerator());
+        StartMoveCoroutine();
         LockCurrentPosition();
 
         _onPose = newPose;
@@ -271,12 +286,46 @@ public class NewMainGameplay : MonoBehaviour
         }
     }
 
+    private Coroutine _moveCoroutine;
+
+    public void StartMoveCoroutine()
+    {
+        // Evita duplicados
+        if (_moveCoroutine != null)
+            StopCoroutine(_moveCoroutine);
+
+        _moveCoroutine = StartCoroutine(MoveNumerator());
+    }
+
+    public void StopMoveCoroutine()
+    {
+        if (_moveCoroutine != null)
+        {
+            StopCoroutine(_moveCoroutine);
+            _moveCoroutine = null;
+        }
+
+        // Reset de estado por seguridad
+        _slimeAnimator.SetBool("Moving", false);
+        _movementAvailable = true;
+    }
+
+
+
     public IEnumerator MoveNumerator()
     {
+        _movementAvailable = false;
         _slimeAnimator.SetBool("Moving", true);
+
         yield return new WaitForSeconds(0.5f);
+
         _slimeAnimator.SetBool("Moving", false);
+
+        yield return new WaitForSeconds(0.3f);
+
+        _movementAvailable = true;
     }
+
 
     // ===================== LOGIC =====================
 
@@ -347,6 +396,10 @@ public class NewMainGameplay : MonoBehaviour
         _slimeInfo._elementsParticles[1] = 0;
         _slimeInfo._elementsParticles[2] = 0;
         MainController.Instance._saveLoadValues._totalAtoms -= _atomsObtained;
+
+        _slimeInfo._slimeID = 0;
+        _slimeAnimator.SetInteger("ID", 0);
+        _transformed = false;
         StartVoids();
     }
 
@@ -390,9 +443,11 @@ public class NewMainGameplay : MonoBehaviour
 
         StartVoids();          // recrea stage
         CalculateMoves();      // recalcula movimientos
-
+        _slimeInfo._slimeID = 0;
+        _slimeAnimator.SetInteger("ID", 0);
         yield return new WaitForSeconds(0.2f);
         _movementAvailable = true;
+        _transformed = false;
     }
 
 
@@ -409,6 +464,11 @@ public class NewMainGameplay : MonoBehaviour
                       if(_slimeInfo._slimeID != 2)
                         {
                             RestartLevel();
+                        }
+                        else
+                        {
+                            _allHazards[i].GetComponent<ObstaclesScript>()._fireParticle.Stop();
+                            _allHazards[i].GetComponent<ObstaclesScript>()._smokeParticle.Play();
                         }
                         Debug.Log("Fire");
                 
@@ -453,20 +513,29 @@ public class NewMainGameplay : MonoBehaviour
                         break;
                 }
             }
-            TransformSlimeVoid();
-
+            if (!_transformed)
+            {
+                TransformSlimeVoid();
+            }
+        
+            StartCoroutine(ElementNumerator());
 
         }
-        for(int i = 0; i < _allElements.Count; i++)
+
+
+    }
+    public IEnumerator ElementNumerator()
+    {
+        yield return new WaitForSeconds(0.5f);
+        for (int i = 0; i < _allElements.Count; i++)
         {
-            if(_allElements[i].GetComponent<ElementOrbScript>()._onPose == _onPose)
+            if (_allElements[i].GetComponent<ElementOrbScript>()._onPose == _onPose)
             {
                 Destroy(_allElements[i].gameObject);
                 _allElements.RemoveAt(i);
             }
-           
-        }
 
+        }
     }
 
     public void AtomDetection()
@@ -487,12 +556,12 @@ public class NewMainGameplay : MonoBehaviour
 
 
         }
-        for (int i = 0; i < _allElements.Count; i++)
+        for (int i = 0; i < _allAtoms.Count; i++)
         {
-            if (_allElements[i].GetComponent<ElementOrbScript>()._onPose == _onPose)
+            if (_allAtoms[i].GetComponent<ElementOrbScript>()._onPose == _onPose)
             {
-                Destroy(_allElements[i].gameObject);
-                _allElements.RemoveAt(i);
+                Destroy(_allAtoms[i].gameObject);
+                _allAtoms.RemoveAt(i);
             }
 
         }
@@ -506,18 +575,50 @@ public class NewMainGameplay : MonoBehaviour
         {
             _slimeInfo._slimeID = 1;
             Debug.Log("CARBONO");
+            StartCoroutine(TransormatioNumerator());
         }
         else if (_slimeInfo._elementsParticles[1] >= 2 && _slimeInfo._elementsParticles[2] >= 1)
         {
             _slimeInfo._slimeID = 2;
+          
             Debug.Log("AGUA");
+            StartCoroutine(TransormatioNumerator());
         }
         else if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[2] >= 2)
         {
             _slimeInfo._slimeID = 3;
+       
             Debug.Log("C02");
+            StartCoroutine(TransormatioNumerator());
         }
-        //StartCoroutine(TransformSlimeNumerator());
+    
+    }
+
+    public IEnumerator TransormatioNumerator()
+    {
+        _transformed = true;
+        StopMoveCoroutine();
+        _movementAvailable = false;
+        _transformAnimator.SetBool("Success", true);
+        yield return new WaitForSeconds(0.5f);
+        switch (_slimeInfo._slimeID)
+        {
+            case 0:
+                break;
+            case 1:
+                _slimeAnimator.SetInteger("ID", 4);
+                break;
+            case 2:
+                _slimeAnimator.SetInteger("ID", 1);
+                break;
+            case 3:
+                _slimeAnimator.SetInteger("ID", 2);
+                break;
+        }
+        yield return new WaitForSeconds(1);
+        _transformAnimator.SetBool("Success", false);
+        yield return new WaitForSeconds(0.5f);
+        _movementAvailable = true;
     }
 
     public void ExitDetection()
@@ -532,6 +633,8 @@ public class NewMainGameplay : MonoBehaviour
     public IEnumerator ExitNumerator()
     {
         _movementAvailable = false;
+        yield return new WaitForSeconds(1);
+
         MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
         MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
        

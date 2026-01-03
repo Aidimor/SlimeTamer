@@ -6,8 +6,10 @@ public class ObstaclesScript : MonoBehaviour
 {
     public int _id;
     public GameObject[] _allObstacles;
+    public ParticleSystem _fireParticle;
+    public ParticleSystem _smokeParticle;
     // Start is called before the first frame update
-   public void SetObstacle()
+    public void SetObstacle()
     {
         _allObstacles[_id].gameObject.SetActive(true);
     }
