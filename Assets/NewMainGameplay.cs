@@ -67,7 +67,7 @@ public class NewMainGameplay : MonoBehaviour
     public ParticleSystem _smoke;
 
     public List<int> _elementsID = new List<int>();
-
+    public List<bool> _elementsBool = new List<bool>();
 
     void Start()
     {
@@ -82,11 +82,18 @@ public class NewMainGameplay : MonoBehaviour
         SetElements();
         SetHazards();
         SetEntranceExit();
+
         _atomsObtained = 0;
+
         _onPose = _allStages[_idStage]._spawnPoint;
 
+        // 🔑 POSICIÓN CORRECTA
+        _slimeObject.GetComponent<RectTransform>().position =
+            _allPositions[_onPose].GetComponent<RectTransform>().position;
+       
         CalculateMoves();
     }
+
 
     void Update()
     {
@@ -122,6 +129,7 @@ public class NewMainGameplay : MonoBehaviour
             _backgroundImage[1].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
             _backgroundImage[2].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
             _allGrounds.Add(ground);
+        
         }
     }
 
@@ -147,7 +155,7 @@ public class NewMainGameplay : MonoBehaviour
             orb.ElementSetVoid();
             _allElements.Add(element);
             _elementsID.Add(data._onPlace);
-          
+            _elementsBool.Add(true);
         }
 
         for (int i = 0; i < _allStages[_idStage]._atomPlace.Length; i++)
@@ -388,8 +396,8 @@ public class NewMainGameplay : MonoBehaviour
     public void RestartLevel()
     {
         MainController.Instance._restartBeam.Play("RestartBeam");
-  
-        _slimeObject.GetComponent<RectTransform>().anchoredPosition = _allGrounds[_allStages[_idStage]._spawnPoint].GetComponent<RectTransform>().anchoredPosition;
+        _movementAvailable = false;
+     
         Debug.Log(_allStages[_idStage]._spawnPoint);
         for (int i = 0; i < _allGrounds.Count; i++)
         {
@@ -406,6 +414,7 @@ public class NewMainGameplay : MonoBehaviour
             Destroy(_allHazards[i]);
         }
         _allHazards.Clear();
+        _elementsBool.Clear();
         _slimeInfo._elementsParticles[0] = 0;
         _slimeInfo._elementsParticles[1] = 0;
         _slimeInfo._elementsParticles[2] = 0;
@@ -416,6 +425,7 @@ public class NewMainGameplay : MonoBehaviour
         _slimeInfo._slimeID = 0;
         _slimeAnimator.SetInteger("ID", 0);
         _transformed = false;
+        _movementAvailable = true;
         StartVoids();
     }
 
@@ -425,7 +435,7 @@ public class NewMainGameplay : MonoBehaviour
 
         _idStage++;
         yield return new WaitForSeconds(0.5f);
-
+        _elementsBool.Clear();
         for (int i = 0; i < _allGrounds.Count; i++)
             Destroy(_allGrounds[i]);
         _allGrounds.Clear();
@@ -489,7 +499,7 @@ public class NewMainGameplay : MonoBehaviour
                             _allHazards[i].GetComponent<ObstaclesScript>()._smokeParticle.Play();
                         }
                         Debug.Log("Fire");
-                
+                        _elementsBool.Clear();
                         break;
                 case NewGameEvent.Hazards.HazardsType.Hole:
                         if (_slimeInfo._slimeID != 3)
@@ -498,7 +508,7 @@ public class NewMainGameplay : MonoBehaviour
                         }                 
                             
                             Debug.Log("Hole");
-                  
+                        _elementsBool.Clear();
                         break;
                  case NewGameEvent.Hazards.HazardsType.Switch:                
                         Debug.Log("Switch");
@@ -514,66 +524,73 @@ public class NewMainGameplay : MonoBehaviour
     public void ElementDetection()
     {
         var ElementInfo = _allStages[_idStage];
-        //for (int i = 0; i < ElementInfo._elements.Length; i++)
-        //{
-        //    if (_onPose == ElementInfo._elements[i]._onPlace)
-        //    {
-        //        switch  (ElementInfo._elements[i]._elementType)
-        //        {
-        //            case NewGameEvent.Elements.ElementType.C:
-        //                _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
-        //                break;
-        //            case NewGameEvent.Elements.ElementType.H:
-        //                _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
-        //                break;
-        //            case NewGameEvent.Elements.ElementType.O:
-        //                _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
-        //                break;
-        //        }
-        //        _elementsID.RemoveAt(i);
-     
-        
-        //    }
-        //    if (!_transformed)
-        //    {
-        //        TransformSlimeVoid();
-        //    }
-        
-        //    StartCoroutine(ElementNumerator());
-
-        //}
-        if(_elementsID.Count > 0)
+        for (int i = 0; i < ElementInfo._elements.Length; i++)
         {
-            for (int i = 0; i < _elementsID.Count; i++)
+            if (_onPose == ElementInfo._elements[i]._onPlace && _elementsBool[i])
             {
-                if (_onPose == _elementsID[i])
+                switch (ElementInfo._elements[i]._elementType)
                 {
-                    switch (ElementInfo._elements[i]._elementType)
-                    {
-                        case NewGameEvent.Elements.ElementType.C:
-                            _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
-                            break;
-                        case NewGameEvent.Elements.ElementType.H:
-                            _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
-                            break;
-                        case NewGameEvent.Elements.ElementType.O:
-                            _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
-                            break;
-                    }
-                    _elementsID.RemoveAt(i);
-
-
+                    case NewGameEvent.Elements.ElementType.C:
+                        _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
+                        break;
+                    case NewGameEvent.Elements.ElementType.H:
+                        _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
+                        break;
+                    case NewGameEvent.Elements.ElementType.O:
+                        _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
+                        break;
                 }
+             
+                _elementsBool[i] = false;
                 if (!_transformed)
                 {
                     TransformSlimeVoid();
                 }
 
                 StartCoroutine(ElementNumerator());
+                break;
+                //_elementsID.RemoveAt(i);
+
+
             }
    
 
         }
+        //if(_elementsID.Count > 0)
+        //{
+
+
+        //    for (int i = 0; i < _elementsID.Count; i++)
+        //    {
+        //        if (_onPose == _elementsID[i])
+        //        {
+        //            int realID = i;
+        //            switch (ElementInfo._elements[i]._elementType)
+        //            {
+        //                case NewGameEvent.Elements.ElementType.C:
+        //                    _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
+        //                    break;
+        //                case NewGameEvent.Elements.ElementType.H:
+        //                    _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
+        //                    break;
+        //                case NewGameEvent.Elements.ElementType.O:
+        //                    _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
+        //                    break;
+        //            }
+        //            _elementsID.RemoveAt(i);
+
+
+        //        }
+        //        if (!_transformed)
+        //        {
+        //            TransformSlimeVoid();
+        //        }
+
+        //        StartCoroutine(ElementNumerator());
+        //    }
+
+
+        //}
 
 
     }
@@ -696,7 +713,7 @@ public class NewMainGameplay : MonoBehaviour
     {
         _movementAvailable = false;
         yield return new WaitForSeconds(1);
-
+        _elementsBool.Clear();
         MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
         MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
        
