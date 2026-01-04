@@ -70,7 +70,11 @@
     "tutorialhint": "Get a hint to solve the level",
     "tutorialmenu": "Press Enter to open the hint menu",
     "pressenter": "PRESS ENTER",
-    "hintmenu": "HINT MENU"
+    "hintmenu": "HINT MENU",
+"C2": "CARBON",
+"H20": "WATER",
+"CO2": "DIOXIDE CARBON"
+
   },
   "es": {
     "world": "Mundo",
@@ -128,7 +132,10 @@
     "tutorialhint": "Obtén una pista para resolver el nivel",
     "tutorialmenu": "Presiona Enter para sacar el menú de pistas",
     "pressenter": "PRESIONA ENTER",
-    "hintmenu": "MENÚ PISTAS"
+    "hintmenu": "MENÚ PISTAS",
+"C2": "CARBON",
+"H20": "AGUA",
+"CO2": "DIOXIDO DE CARBONO"
   }
 }
 

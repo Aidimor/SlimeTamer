@@ -6,6 +6,7 @@ using LoL;
 public class SlimeController : MonoBehaviour
 {
     [SerializeField] private MainGameplayScript _scriptMain;
+    [SerializeField] private NewMainGameplay _scriptNewMain;
     public int _slimeType; //0 = Null, 1 = Water, 2 = Air, 3 = Earth
     public Animator _slimeAnimator;
     public RawImage _slimeRawImage;
@@ -345,6 +346,9 @@ public class SlimeController : MonoBehaviour
     //    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._slimeJumping);
       
     //}
-
+    public void StepVoid()
+    {
+        _scriptNewMain._hitWalk.Play();
+    }
 
 }

@@ -2,6 +2,9 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
+using TMPro;
+using LoL;  // <- necesario para GameInitScript
+using LoLSDK;
 
 public class NewMainGameplay : MonoBehaviour
 {
@@ -55,7 +58,16 @@ public class NewMainGameplay : MonoBehaviour
     public Color _slimeMainColor;
     public Animator _transformAnimator;
     bool _transformed;
-   
+
+    public TextMeshProUGUI _formulaText;
+    public TextMeshProUGUI _nameText;
+
+    public ParticleSystem _hitWalk;
+    public ParticleSystem _waterWalk;
+    public ParticleSystem _smoke;
+
+    public List<int> _elementsID = new List<int>();
+
 
     void Start()
     {
@@ -134,6 +146,8 @@ public class NewMainGameplay : MonoBehaviour
             orb._quantity = data._quantity;
             orb.ElementSetVoid();
             _allElements.Add(element);
+            _elementsID.Add(data._onPlace);
+          
         }
 
         for (int i = 0; i < _allStages[_idStage]._atomPlace.Length; i++)
@@ -395,8 +409,10 @@ public class NewMainGameplay : MonoBehaviour
         _slimeInfo._elementsParticles[0] = 0;
         _slimeInfo._elementsParticles[1] = 0;
         _slimeInfo._elementsParticles[2] = 0;
+        _elementsID.Clear();
         MainController.Instance._saveLoadValues._totalAtoms -= _atomsObtained;
-
+        _waterWalk.Stop();
+        _smoke.Stop();
         _slimeInfo._slimeID = 0;
         _slimeAnimator.SetInteger("ID", 0);
         _transformed = false;
@@ -440,11 +456,13 @@ public class NewMainGameplay : MonoBehaviour
         // 🔑 POSICIÓN CORRECTA
         _slimeObject.GetComponent<RectTransform>().position =
             _allPositions[_onPose].GetComponent<RectTransform>().position;
-
+        _elementsID.Clear();
         StartVoids();          // recrea stage
         CalculateMoves();      // recalcula movimientos
         _slimeInfo._slimeID = 0;
         _slimeAnimator.SetInteger("ID", 0);
+        _waterWalk.Stop();
+        _smoke.Stop();
         yield return new WaitForSeconds(0.2f);
         _movementAvailable = true;
         _transformed = false;
@@ -496,29 +514,64 @@ public class NewMainGameplay : MonoBehaviour
     public void ElementDetection()
     {
         var ElementInfo = _allStages[_idStage];
-        for (int i = 0; i < ElementInfo._elements.Length; i++)
-        {
-            if (_onPose == ElementInfo._elements[i]._onPlace)
-            {
-                switch  (ElementInfo._elements[i]._elementType)
-                {
-                    case NewGameEvent.Elements.ElementType.C:
-                        _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
-                        break;
-                    case NewGameEvent.Elements.ElementType.H:
-                        _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
-                        break;
-                    case NewGameEvent.Elements.ElementType.O:
-                        _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
-                        break;
-                }
-            }
-            if (!_transformed)
-            {
-                TransformSlimeVoid();
-            }
+        //for (int i = 0; i < ElementInfo._elements.Length; i++)
+        //{
+        //    if (_onPose == ElementInfo._elements[i]._onPlace)
+        //    {
+        //        switch  (ElementInfo._elements[i]._elementType)
+        //        {
+        //            case NewGameEvent.Elements.ElementType.C:
+        //                _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
+        //                break;
+        //            case NewGameEvent.Elements.ElementType.H:
+        //                _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
+        //                break;
+        //            case NewGameEvent.Elements.ElementType.O:
+        //                _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
+        //                break;
+        //        }
+        //        _elementsID.RemoveAt(i);
+     
         
-            StartCoroutine(ElementNumerator());
+        //    }
+        //    if (!_transformed)
+        //    {
+        //        TransformSlimeVoid();
+        //    }
+        
+        //    StartCoroutine(ElementNumerator());
+
+        //}
+        if(_elementsID.Count > 0)
+        {
+            for (int i = 0; i < _elementsID.Count; i++)
+            {
+                if (_onPose == _elementsID[i])
+                {
+                    switch (ElementInfo._elements[i]._elementType)
+                    {
+                        case NewGameEvent.Elements.ElementType.C:
+                            _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
+                            break;
+                        case NewGameEvent.Elements.ElementType.H:
+                            _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
+                            break;
+                        case NewGameEvent.Elements.ElementType.O:
+                            _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
+                            break;
+                    }
+                    _elementsID.RemoveAt(i);
+
+
+                }
+                if (!_transformed)
+                {
+                    TransformSlimeVoid();
+                }
+
+                StartCoroutine(ElementNumerator());
+            }
+   
 
         }
 
@@ -575,20 +628,29 @@ public class NewMainGameplay : MonoBehaviour
         {
             _slimeInfo._slimeID = 1;
             Debug.Log("CARBONO");
+            _formulaText.text = "C2";
+            _nameText.text = GameInitScript.Instance.GetText("C2");
+    
             StartCoroutine(TransormatioNumerator());
         }
         else if (_slimeInfo._elementsParticles[1] >= 2 && _slimeInfo._elementsParticles[2] >= 1)
         {
             _slimeInfo._slimeID = 2;
-          
+            _formulaText.text = "H20";
+            _nameText.text = GameInitScript.Instance.GetText("H20");
             Debug.Log("AGUA");
+            _waterWalk.Play();
+            _smoke.Stop();
             StartCoroutine(TransormatioNumerator());
         }
         else if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[2] >= 2)
         {
             _slimeInfo._slimeID = 3;
-       
+            _formulaText.text = "C02";
             Debug.Log("C02");
+            _smoke.Play();
+            _waterWalk.Stop();
+            _nameText.text = GameInitScript.Instance.GetText("CO2");
             StartCoroutine(TransormatioNumerator());
         }
     
@@ -606,7 +668,7 @@ public class NewMainGameplay : MonoBehaviour
             case 0:
                 break;
             case 1:
-                _slimeAnimator.SetInteger("ID", 4);
+                _slimeAnimator.SetInteger("ID", 3);
                 break;
             case 2:
                 _slimeAnimator.SetInteger("ID", 1);
