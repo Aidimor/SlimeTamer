@@ -68,6 +68,7 @@ public class NewMainGameplay : MonoBehaviour
 
     public List<int> _elementsID = new List<int>();
     public List<bool> _elementsBool = new List<bool>();
+    
 
     void Start()
     {
@@ -186,16 +187,35 @@ public class NewMainGameplay : MonoBehaviour
             rt.localScale = Vector3.one;
 
             ObstaclesScript obs = hazard.GetComponent<ObstaclesScript>();
-
-            obs._id = data._hazards switch
+            switch (data._hazards)
             {
-                NewGameEvent.Hazards.HazardsType.Fire => 0,
-                NewGameEvent.Hazards.HazardsType.Hole => 1,
-                NewGameEvent.Hazards.HazardsType.Switch => 2,
-                _ => 3
-            };
+                case NewGameEvent.Hazards.HazardsType.Fire:
 
-            obs.SetObstacle();
+                    obs._id = 0;
+                    obs._allObstacles[0].SetActive(true);
+                    break;
+                case NewGameEvent.Hazards.HazardsType.Hole:
+                    obs._id = 1;
+                    obs._allObstacles[1].SetActive(true);
+                    break;
+                case NewGameEvent.Hazards.HazardsType.Switch:
+                    obs._id = 2;
+                    obs._allObstacles[2].SetActive(true);
+                    break;
+                case NewGameEvent.Hazards.HazardsType.Column:
+                    obs._id = 3;
+                    obs._allObstacles[4].SetActive(true);
+                    break;
+            }
+            //obs._id = data._hazards switch
+            //{
+            //    NewGameEvent.Hazards.HazardsType.Fire => 0,
+            //    NewGameEvent.Hazards.HazardsType.Hole => 1,
+            //    NewGameEvent.Hazards.HazardsType.Switch => 2,
+            //    NewGameEvent.Hazards.HazardsType.Column => 4
+            //};
+
+            //obs.SetObstacle();
             _allHazards.Add(hazard);
         }
     }
@@ -364,7 +384,17 @@ public class NewMainGameplay : MonoBehaviour
             if (place == _onPose - 1) _movesAvailable[3] = true;
         }
 
-   
+        for(int i = 0; i < _allStages[_idStage]._hazards.Length; i++)
+        {
+            if (_allStages[_idStage]._hazards[i]._hazards == NewGameEvent.Hazards.HazardsType.Column)
+            {
+                if(_onPose + 5 == _allStages[_idStage]._hazards[i]._onPlace && !_allStages[_idStage]._hazards[i]._finished) _movesAvailable[0] = false;
+                if (_onPose - 5 == _allStages[_idStage]._hazards[i]._onPlace && !_allStages[_idStage]._hazards[i]._finished) _movesAvailable[1] = false;
+                if (_onPose + 1 == _allStages[_idStage]._hazards[i]._onPlace && !_allStages[_idStage]._hazards[i]._finished) _movesAvailable[2] = false;
+                if (_onPose - 1 == _allStages[_idStage]._hazards[i]._onPlace && !_allStages[_idStage]._hazards[i]._finished) _movesAvailable[3] = false;
+
+            }
+        }
     }
 
     void LockCurrentPosition()
@@ -397,7 +427,10 @@ public class NewMainGameplay : MonoBehaviour
     {
         MainController.Instance._restartBeam.Play("RestartBeam");
         _movementAvailable = false;
-     
+        for (int i = 0; i < _allStages[_idStage]._hazards.Length; i++)
+        {
+            _allStages[_idStage]._hazards[i]._finished = false;
+        }
         Debug.Log(_allStages[_idStage]._spawnPoint);
         for (int i = 0; i < _allGrounds.Count; i++)
         {
@@ -432,7 +465,10 @@ public class NewMainGameplay : MonoBehaviour
     public IEnumerator NexttLevel()
     {
         _movementAvailable = false;
-
+        for(int i = 0; i < _allStages[_idStage]._hazards.Length; i++)
+        {
+            _allStages[_idStage]._hazards[i]._finished = false;
+        }
         _idStage++;
         yield return new WaitForSeconds(0.5f);
         _elementsBool.Clear();
@@ -499,7 +535,7 @@ public class NewMainGameplay : MonoBehaviour
                             _allHazards[i].GetComponent<ObstaclesScript>()._smokeParticle.Play();
                         }
                         Debug.Log("Fire");
-                        _elementsBool.Clear();
+               
                         break;
                 case NewGameEvent.Hazards.HazardsType.Hole:
                         if (_slimeInfo._slimeID != 3)
@@ -508,12 +544,41 @@ public class NewMainGameplay : MonoBehaviour
                         }                 
                             
                             Debug.Log("Hole");
-                        _elementsBool.Clear();
+                 
                         break;
-                 case NewGameEvent.Hazards.HazardsType.Switch:                
+                 case NewGameEvent.Hazards.HazardsType.Switch:
+                        if (_slimeInfo._slimeID == 1)
+                        {
+                            _allHazards[i].GetComponent<ObstaclesScript>().LevelPressed();
+                            for(int y = 0; y < _allHazards.Count; y++)
+                            {
+                                if(_allHazards[y].GetComponent<ObstaclesScript>()._id == 3)
+                                {
+                                    _allHazards[y].GetComponent<ObstaclesScript>()._allObstacles[4].GetComponent<Animator>().SetTrigger("Column");
+                                    for(int z = 0; z < HazardInfo._hazards.Length; z++)
+                                    {
+                                        HazardInfo._hazards[z]._finished = true;
+                                    }
+                                  
+                                }
+                            }
+
+                            //for (int y = 0; y < _allHazards.Count; y++)
+                            //{
+                            //    if (_allHazards[y].)
+                            //    {
+                   
+                            //        HazardInfo._hazards[i]._finished = true;
+                            //    }
+                            //}
+
+
+                        }
+                        
+                       
                         Debug.Log("Switch");
                         break;
-                 case NewGameEvent.Hazards.HazardsType.Switch2:
+                 case NewGameEvent.Hazards.HazardsType.Column:
                      break;
 
                 }
@@ -549,48 +614,15 @@ public class NewMainGameplay : MonoBehaviour
 
                 StartCoroutine(ElementNumerator());
                 break;
-                //_elementsID.RemoveAt(i);
+           
 
 
             }
    
 
         }
-        //if(_elementsID.Count > 0)
-        //{
-
-
-        //    for (int i = 0; i < _elementsID.Count; i++)
-        //    {
-        //        if (_onPose == _elementsID[i])
-        //        {
-        //            int realID = i;
-        //            switch (ElementInfo._elements[i]._elementType)
-        //            {
-        //                case NewGameEvent.Elements.ElementType.C:
-        //                    _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
-        //                    break;
-        //                case NewGameEvent.Elements.ElementType.H:
-        //                    _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
-        //                    break;
-        //                case NewGameEvent.Elements.ElementType.O:
-        //                    _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
-        //                    break;
-        //            }
-        //            _elementsID.RemoveAt(i);
-
-
-        //        }
-        //        if (!_transformed)
-        //        {
-        //            TransformSlimeVoid();
-        //        }
-
-        //        StartCoroutine(ElementNumerator());
-        //    }
-
-
-        //}
+  
+      
 
 
     }
@@ -610,7 +642,7 @@ public class NewMainGameplay : MonoBehaviour
 
     public void AtomDetection()
     {
-        //var AtomInfo = _allStages[_idStage];
+   
         for (int i = 0; i < _atomList.Count; i++)
         {
             if (_onPose == _atomList[i])
@@ -626,15 +658,15 @@ public class NewMainGameplay : MonoBehaviour
 
 
         }
-        for (int i = 0; i < _allAtoms.Count; i++)
-        {
-            if (_allAtoms[i].GetComponent<ElementOrbScript>()._onPose == _onPose)
-            {
-                Destroy(_allAtoms[i].gameObject);
-                _allAtoms.RemoveAt(i);
-            }
+        //for (int i = 0; i < _allAtoms.Count; i++)
+        //{
+        //    if (_allAtoms[i].GetComponent<AtomScript>()._onPose == _onPose)
+        //    {
+        //        Destroy(_allAtoms[i].gameObject);
+        //        _allAtoms.RemoveAt(i);
+        //    }
 
-        }
+        //}
 
     }
 

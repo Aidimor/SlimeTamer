@@ -8,9 +8,22 @@ public class ObstaclesScript : MonoBehaviour
     public GameObject[] _allObstacles;
     public ParticleSystem _fireParticle;
     public ParticleSystem _smokeParticle;
+
     // Start is called before the first frame update
-    public void SetObstacle()
+    //public void SetObstacle()
+    //{
+    //    _allObstacles[_id].gameObject.SetActive(true);
+    //}
+
+    public void LevelPressed()
     {
-        _allObstacles[_id].gameObject.SetActive(true);
+        StartCoroutine(LovePressedNumerator());
     }
-}
+
+    public IEnumerator LovePressedNumerator()
+    {
+        yield return new WaitForSeconds(1);
+        _allObstacles[2].SetActive(false);
+        _allObstacles[3].SetActive(true);
+    }
+    }

@@ -35,9 +35,10 @@ public class NewGameEvent : ScriptableObject
             Fire,
             Hole,
             Switch,
-            Switch2
+            Column
         }
         public HazardsType _hazards;
+        public bool _finished;
     }
     public Hazards[] _hazards;
 
