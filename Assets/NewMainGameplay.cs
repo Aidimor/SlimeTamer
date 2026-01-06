@@ -68,13 +68,24 @@ public class NewMainGameplay : MonoBehaviour
 
     public List<int> _elementsID = new List<int>();
     public List<bool> _elementsBool = new List<bool>();
-    
+    [System.Serializable]
+    public class TutorialAssets
+    {
+        public Animator _tutorialAnimator;
+        public TextMeshProUGUI _tutorialText;
+        public GameObject _arrowsParent;
+        public GameObject _elementsParent;
+        public GameObject _atomParent;
+        public TextMeshProUGUI _continueText;
+    }
+    public TutorialAssets _tutorialAssets;
 
     void Start()
     {
         StartVoids();
         MainController.Instance._bordersAnimator.SetBool("BorderOut", true);
         MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
+        _movementAvailable = false;
     }
 
     public void StartVoids()
@@ -93,6 +104,65 @@ public class NewMainGameplay : MonoBehaviour
             _allPositions[_onPose].GetComponent<RectTransform>().position;
        
         CalculateMoves();
+        StartCoroutine(StartGameNumerator());
+    }
+
+    public IEnumerator StartGameNumerator()
+    {
+        _tutorialAssets._continueText.gameObject.SetActive(false);
+        switch (_idStage)
+        {
+            case 0:
+                _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                _tutorialAssets._arrowsParent.SetActive(true);
+                _tutorialAssets._elementsParent.SetActive(false);
+                _tutorialAssets._atomParent.SetActive(false);
+                yield return new WaitForSeconds(1);
+                _tutorialAssets._continueText.gameObject.SetActive(true);
+                yield return new WaitForSeconds(0.25f);
+                while (!Input.GetButtonDown("Submit"))
+                {
+                    yield return null;
+                }
+                _tutorialAssets._continueText.gameObject.SetActive(false);
+                _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+             
+                break;
+            case 2:
+                _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                _tutorialAssets._arrowsParent.SetActive(false);
+                _tutorialAssets._elementsParent.SetActive(true);
+                _tutorialAssets._atomParent.SetActive(false);
+                yield return new WaitForSeconds(1);
+                _tutorialAssets._continueText.gameObject.SetActive(true);
+                yield return new WaitForSeconds(0.25f);
+                while (!Input.GetButtonDown("Submit"))
+                {
+                    yield return null;
+                }
+                _tutorialAssets._continueText.gameObject.SetActive(false);
+                _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+           
+                break;
+            case 5:
+                _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                _tutorialAssets._arrowsParent.SetActive(false);
+                _tutorialAssets._elementsParent.SetActive(false);
+                _tutorialAssets._atomParent.SetActive(true);
+                yield return new WaitForSeconds(1);
+                _tutorialAssets._continueText.gameObject.SetActive(true);
+                yield return new WaitForSeconds(0.25f);
+                while (!Input.GetButtonDown("Submit"))
+                {
+                    yield return null;
+                }
+                _tutorialAssets._continueText.gameObject.SetActive(false);
+                _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+
+                break;
+        }
+        yield return new WaitForSeconds(1);
+        _movementAvailable = true;
     }
 
 
@@ -510,7 +580,7 @@ public class NewMainGameplay : MonoBehaviour
         _waterWalk.Stop();
         _smoke.Stop();
         yield return new WaitForSeconds(0.2f);
-        _movementAvailable = true;
+     
         _transformed = false;
     }
 
