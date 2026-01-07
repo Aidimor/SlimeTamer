@@ -77,6 +77,7 @@ public class NewMainGameplay : MonoBehaviour
         public GameObject _elementsParent;
         public GameObject _atomParent;
         public TextMeshProUGUI _continueText;
+        public bool _tutorialDeployed;
     }
     public TutorialAssets _tutorialAssets;
 
@@ -110,59 +111,74 @@ public class NewMainGameplay : MonoBehaviour
     public IEnumerator StartGameNumerator()
     {
         _tutorialAssets._continueText.gameObject.SetActive(false);
-        switch (_idStage)
-        {
-            case 0:
-                _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
-                _tutorialAssets._arrowsParent.SetActive(true);
-                _tutorialAssets._elementsParent.SetActive(false);
-                _tutorialAssets._atomParent.SetActive(false);
-                yield return new WaitForSeconds(1);
-                _tutorialAssets._continueText.gameObject.SetActive(true);
-                yield return new WaitForSeconds(0.25f);
-                while (!Input.GetButtonDown("Submit"))
-                {
-                    yield return null;
-                }
-                _tutorialAssets._continueText.gameObject.SetActive(false);
-                _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
-             
-                break;
-            case 2:
-                _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
-                _tutorialAssets._arrowsParent.SetActive(false);
-                _tutorialAssets._elementsParent.SetActive(true);
-                _tutorialAssets._atomParent.SetActive(false);
-                yield return new WaitForSeconds(1);
-                _tutorialAssets._continueText.gameObject.SetActive(true);
-                yield return new WaitForSeconds(0.25f);
-                while (!Input.GetButtonDown("Submit"))
-                {
-                    yield return null;
-                }
-                _tutorialAssets._continueText.gameObject.SetActive(false);
-                _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
-           
-                break;
-            case 5:
-                _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
-                _tutorialAssets._arrowsParent.SetActive(false);
-                _tutorialAssets._elementsParent.SetActive(false);
-                _tutorialAssets._atomParent.SetActive(true);
-                yield return new WaitForSeconds(1);
-                _tutorialAssets._continueText.gameObject.SetActive(true);
-                yield return new WaitForSeconds(0.25f);
-                while (!Input.GetButtonDown("Submit"))
-                {
-                    yield return null;
-                }
-                _tutorialAssets._continueText.gameObject.SetActive(false);
-                _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
 
-                break;
+        //_slimeObject.GetComponent<RectTransform>().localScale = Vector3.zero;
+        if (!_tutorialAssets._tutorialDeployed)
+        {
+            switch (_idStage)
+            {
+                case 0:
+                    yield return new WaitForSeconds(1);
+                    _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                    _tutorialAssets._arrowsParent.SetActive(true);
+                    _tutorialAssets._elementsParent.SetActive(false);
+                    _tutorialAssets._atomParent.SetActive(false);
+                    yield return new WaitForSeconds(1);
+                    _tutorialAssets._continueText.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(0.25f);
+                    while (!Input.GetButtonDown("Submit"))
+                    {
+                        yield return null;
+                    }
+                    _tutorialAssets._continueText.gameObject.SetActive(false);
+                    _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+
+                    break;
+                case 2:
+                    yield return new WaitForSeconds(1);
+                    _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                    _tutorialAssets._arrowsParent.SetActive(false);
+                    _tutorialAssets._elementsParent.SetActive(true);
+                    _tutorialAssets._atomParent.SetActive(false);
+                    yield return new WaitForSeconds(1);
+                    _tutorialAssets._continueText.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(0.25f);
+                    while (!Input.GetButtonDown("Submit"))
+                    {
+                        yield return null;
+                    }
+                    _tutorialAssets._continueText.gameObject.SetActive(false);
+                    _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+
+                    break;
+                case 5:
+                    yield return new WaitForSeconds(1);
+                    _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                    _tutorialAssets._arrowsParent.SetActive(false);
+                    _tutorialAssets._elementsParent.SetActive(false);
+                    _tutorialAssets._atomParent.SetActive(true);
+                    yield return new WaitForSeconds(1);
+                    _tutorialAssets._continueText.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(0.25f);
+                    while (!Input.GetButtonDown("Submit"))
+                    {
+                        yield return null;
+                    }
+                    _tutorialAssets._continueText.gameObject.SetActive(false);
+                    _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+
+                    break;
+            }
         }
+  
+        _tutorialAssets._tutorialDeployed = true;
         yield return new WaitForSeconds(1);
+        _slimeObject.GetComponent<Animator>().Play("SlimeEnters");
+        yield return new WaitForSeconds(0.5f);
+   
         _movementAvailable = true;
+     
+ 
     }
 
 
@@ -496,6 +512,7 @@ public class NewMainGameplay : MonoBehaviour
     public void RestartLevel()
     {
         MainController.Instance._restartBeam.Play("RestartBeam");
+        _slimeObject.GetComponent<Animator>().Play("SlimeLeavesAnimation");
         _movementAvailable = false;
         for (int i = 0; i < _allStages[_idStage]._hazards.Length; i++)
         {
@@ -535,7 +552,8 @@ public class NewMainGameplay : MonoBehaviour
     public IEnumerator NexttLevel()
     {
         _movementAvailable = false;
-        for(int i = 0; i < _allStages[_idStage]._hazards.Length; i++)
+        _tutorialAssets._tutorialDeployed = false;
+        for (int i = 0; i < _allStages[_idStage]._hazards.Length; i++)
         {
             _allStages[_idStage]._hazards[i]._finished = false;
         }
@@ -807,6 +825,7 @@ public class NewMainGameplay : MonoBehaviour
         var ExitID= _allStages[_idStage]._exitPoint;
         if (_onPose == ExitID)
         {
+
             StartCoroutine(ExitNumerator());            
         }
     }
@@ -814,7 +833,11 @@ public class NewMainGameplay : MonoBehaviour
     public IEnumerator ExitNumerator()
     {
         _movementAvailable = false;
-        yield return new WaitForSeconds(1);
+        
+        yield return new WaitForSeconds(0.5f);
+        _slimeObject.GetComponent<Animator>().Play("SlimeLeavesAnimation");
+        _exitEntranceObjects[1].GetComponent<ExitScriptObject>()._exitParticle.Play();
+        yield return new WaitForSeconds(0.5f);
         _elementsBool.Clear();
         MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
         MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
@@ -822,6 +845,7 @@ public class NewMainGameplay : MonoBehaviour
         yield return new WaitForSeconds(1);
         StartCoroutine(NexttLevel());
         yield return new WaitForSeconds(1);
+    
         MainController.Instance._bordersAnimator.SetBool("BorderOut", true);
         MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
     }
