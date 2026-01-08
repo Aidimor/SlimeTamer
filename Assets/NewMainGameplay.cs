@@ -613,15 +613,15 @@ public class NewMainGameplay : MonoBehaviour
             _allStages[_stageId]._hazards[i]._finished = false;
         }
      
-        yield return new WaitForSeconds(0.5f);
+  
         _elementsBool.Clear();
         for (int i = 0; i < _allGrounds.Count; i++)
         {
             Destroy(_allGrounds[i]);
         }
-         
+ 
         _allGrounds.Clear();
-
+        //yield return new WaitForSeconds(100);
         for (int i = 0; i < _allElements.Count; i++)
         {
             Destroy(_allElements[i]);
@@ -665,6 +665,11 @@ public class NewMainGameplay : MonoBehaviour
         yield return new WaitForSeconds(0.2f);
      
         _transformed = false;
+
+        yield return new WaitForSeconds(0.5f);
+
+        MainController.Instance._bordersAnimator.SetBool("BorderOut", true);
+        MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
     }
 
 
@@ -920,10 +925,7 @@ public class NewMainGameplay : MonoBehaviour
        
         yield return new WaitForSeconds(1);
         StartCoroutine(NexttLevel());
-        yield return new WaitForSeconds(1);
-    
-        MainController.Instance._bordersAnimator.SetBool("BorderOut", true);
-        MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
+
     }
 
     public IEnumerator TransformSlimeNumerator()
