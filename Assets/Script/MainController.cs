@@ -47,6 +47,7 @@ public class MainController : MonoBehaviour
         public bool[] _slimeUnlocked = new bool[7];
         public bool _finalWorldUnlocked = false;
         public bool[] _progressSave = new bool[8];
+        public int _totalSteps;
         public int _totalAtoms;
         public int _progress = 0;
     }
@@ -103,6 +104,12 @@ public class MainController : MonoBehaviour
     public int _onWorldGlobal;
     public bool _introSpecial;
     private int _lastReportedProgress = 0;
+    [System.Serializable]
+    public class AllStagesData
+    {
+        public int[] _stageList;
+    }
+    public AllStagesData[] _allStagesData;
 
    
 

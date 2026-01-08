@@ -296,6 +296,7 @@ namespace LoL
                 {
                     json = request.downloadHandler.text;
                     Debug.Log("✅ language.json cargado desde StreamingAssets");
+                  
                 }
                 else
                 {
@@ -416,6 +417,7 @@ namespace LoL
                 };
 
                 Debug.Log("OnLoadGameSave: datos cargados desde SDK: " + JsonUtility.ToJson(loadedSave));
+            
             }
             else
             {

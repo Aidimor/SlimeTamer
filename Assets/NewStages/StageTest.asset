@@ -28,3 +28,6 @@ MonoBehaviour:
   _hazards:
   - _onPlace: 22
     _hazards: 1
+    _finished: 0
+  _atomPlace: 05000000
+  _stepsPlace: 04000000

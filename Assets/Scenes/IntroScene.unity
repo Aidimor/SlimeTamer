@@ -5065,6 +5065,7 @@ MonoBehaviour:
     _slimeUnlocked: 00000000000000
     _finalWorldUnlocked: 0
     _progressSave: 0000000000000000
+    _totalSteps: 0
     _totalAtoms: 0
     _progress: 0
   _pauseAssets:
@@ -5114,6 +5115,9 @@ MonoBehaviour:
     _slimeNameText: {fileID: 4514326512449363727}
   _onWorldGlobal: 0
   _introSpecial: 0
+  _allStagesData:
+  - _stageList: 00000000010000000200000003000000040000000500000006000000
+  - _stageList: 0500000006000000070000000800000009000000
 --- !u!224 &670792206
 RectTransform:
   m_ObjectHideFlags: 0

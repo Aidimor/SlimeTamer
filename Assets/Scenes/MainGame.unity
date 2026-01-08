@@ -36295,6 +36295,7 @@ RectTransform:
   - {fileID: 1518677767}
   - {fileID: 56283374}
   - {fileID: 1391390988}
+  - {fileID: 2006936768}
   - {fileID: 953356268}
   - {fileID: 18732273}
   - {fileID: 310401421674103894}
@@ -226593,7 +226594,6 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 837674570}
-  - {fileID: 2006936768}
   - {fileID: 1716071320}
   - {fileID: 796764875}
   - {fileID: 1628104500}
@@ -272839,6 +272839,7 @@ MonoBehaviour:
   _parent: {fileID: 1468435748}
   _elementPrefab: {fileID: 5309732986324711119, guid: d116fc950c5ceff4aa89dbec91b8f866, type: 3}
   _atomPrefab: {fileID: 5309732986324711119, guid: 68198a57ffc47484e819459ce0081be6, type: 3}
+  _stepsPrefab: {fileID: 5309732986324711119, guid: d9636c36f7a6db54caf2bee199de8a6c, type: 3}
   _hazardPrefab: {fileID: 3405589612252051776, guid: 29b9b0499eb44884db2f909fcb705005, type: 3}
   _entrancePrefab: {fileID: 6200660515124529202, guid: 252d7b94a393d4041829c030e5296d96, type: 3}
   _exitPrefab: {fileID: 4888735223859397862, guid: 4a9d29596e3a4464d888c80ef7f91e29, type: 3}
@@ -272855,12 +272856,19 @@ MonoBehaviour:
   _movesAvailable: 00000000
   _slimeInfo:
     _slimeID: 0
-    _elementsParticles: 000000000000000000000000
+    _elementsParticles: 00000000000000000000000000000000
     _allSlimeColors:
     - {r: 0.4056604, g: 0.4056604, b: 0.4056604, a: 1}
     - {r: 0.6415094, g: 0.3690966, b: 0, a: 1}
     - {r: 0, g: 1, b: 1, a: 0.5882353}
     - {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 0.47058824}
+    _quantityElementText:
+    - {fileID: 1910534585}
+    - {fileID: 23656973}
+    - {fileID: 1221362317}
+    - {fileID: 1151883860}
+    _stepsText: {fileID: 1965636310}
+    _atomsText: {fileID: 30785378}
   _allGroundsSprites:
   - {fileID: 2141548275, guid: a8e2705bdf123284187f5323b87ad6ef, type: 3}
   - {fileID: 1583339013, guid: a8e2705bdf123284187f5323b87ad6ef, type: 3}
@@ -272894,6 +272902,7 @@ MonoBehaviour:
     _elementsParent: {fileID: 1909989800}
     _atomParent: {fileID: 590735512}
     _continueText: {fileID: 1734471583}
+    _tutorialDeployed: 0
 --- !u!1 &1221362315
 GameObject:
   m_ObjectHideFlags: 0
@@ -318333,9 +318342,9 @@ RectTransform:
   - {fileID: 368180685}
   - {fileID: 319646091}
   - {fileID: 2081965844}
+  - {fileID: 698378382}
   - {fileID: 244522600}
   - {fileID: 732306419}
-  - {fileID: 698378382}
   - {fileID: 974873297}
   m_Father: {fileID: 196264676}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90}
@@ -458069,7 +458078,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &2006936768
 RectTransform:
   m_ObjectHideFlags: 0
@@ -458077,7 +458086,7 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2006936767}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
@@ -458085,11 +458094,11 @@ RectTransform:
   - {fileID: 2114386511}
   - {fileID: 1584249138}
   - {fileID: 637079290}
-  m_Father: {fileID: 987635605}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Father: {fileID: 196264676}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 7.2, y: 36.64}
+  m_AnchoredPosition: {x: 140, y: -8}
   m_SizeDelta: {x: 100, y: 100}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!1 &2011252649

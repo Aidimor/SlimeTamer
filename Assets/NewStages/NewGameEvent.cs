@@ -43,4 +43,5 @@ public class NewGameEvent : ScriptableObject
     public Hazards[] _hazards;
 
     public int[] _atomPlace;
+    public int[] _stepsPlace;
 }

@@ -28,12 +28,18 @@ MonoBehaviour:
   _hazards:
   - _onPlace: 5
     _hazards: 0
+    _finished: 0
   - _onPlace: 6
     _hazards: 0
+    _finished: 0
   - _onPlace: 7
     _hazards: 0
+    _finished: 0
   - _onPlace: 8
     _hazards: 0
+    _finished: 0
   - _onPlace: 9
     _hazards: 0
-  _atomPlace: 
+    _finished: 0
+  _atomPlace: 0500000006000000
+  _stepsPlace: 07000000
