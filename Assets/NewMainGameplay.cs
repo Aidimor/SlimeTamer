@@ -85,6 +85,7 @@ public class NewMainGameplay : MonoBehaviour
         public GameObject _arrowsParent;
         public GameObject _elementsParent;
         public GameObject _atomParent;
+        public GameObject _stepParent;
         public TextMeshProUGUI _continueText;
         public bool _tutorialDeployed;
     }
@@ -101,13 +102,14 @@ public class NewMainGameplay : MonoBehaviour
 
     public void StartVoids()
     {
-        StageCreationVoid();
-        SetElements();
-        SetAtoms();
         if (!_restarted)
         {
+            StageCreationVoid();
             SetSteps();
         }
+        SetElements();
+        SetAtoms();
+ 
      
         SetHazards();
         SetEntranceExit();
@@ -134,7 +136,7 @@ public class NewMainGameplay : MonoBehaviour
         //_slimeObject.GetComponent<RectTransform>().localScale = Vector3.zero;
         if (!_tutorialAssets._tutorialDeployed)
         {
-            switch (_idStage)
+            switch (MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage])
             {
                 case 0:
                     yield return new WaitForSeconds(1);
@@ -291,7 +293,7 @@ public class NewMainGameplay : MonoBehaviour
             rt.localScale = Vector3.one;
 
             _allAtoms.Add(atom);
-            _atomList.Add(_allStages[_idStage]._atomPlace[i]);
+            _atomList.Add(_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._atomPlace[i]);
         }
     }
 
@@ -446,8 +448,8 @@ public class NewMainGameplay : MonoBehaviour
         CalculateMoves();
         HazardDetection();
         ElementDetection();
-        AtomDetection();
-        StepDetection();
+        StartCoroutine(AtomDetection());
+        StartCoroutine(StepDetection());
         ExitDetection();
         if (restart)
         {
@@ -558,6 +560,7 @@ public class NewMainGameplay : MonoBehaviour
         var _realID = MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage];
         MainController.Instance._restartBeam.Play("RestartBeam");
         _slimeObject.GetComponent<Animator>().Play("SlimeLeavesAnimation");
+        StopMoveCoroutine();
         _movementAvailable = false;
         for (int i = 0; i < _allStages[_realID]._hazards.Length; i++)
         {
@@ -599,13 +602,14 @@ public class NewMainGameplay : MonoBehaviour
         _slimeInfo._slimeID = 0;
         _slimeAnimator.SetInteger("ID", 0);
         _transformed = false;
-        _movementAvailable = true;
+    
         StartVoids();
     }
 
     public IEnumerator NexttLevel()
     {
         var _stageId = MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage];
+        StopMoveCoroutine();
         _movementAvailable = false;
         _tutorialAssets._tutorialDeployed = false;
         for (int i = 0; i < _allStages[_stageId]._hazards.Length; i++)
@@ -656,6 +660,7 @@ public class NewMainGameplay : MonoBehaviour
         _slimeObject.GetComponent<RectTransform>().position =
             _allPositions[_onPose].GetComponent<RectTransform>().position;
         _elementsID.Clear();
+        yield return new WaitForSeconds(0.2f);
         StartVoids();          // recrea stage
         CalculateMoves();      // recalcula movimientos
         _slimeInfo._slimeID = 0;
@@ -720,19 +725,7 @@ public class NewMainGameplay : MonoBehaviour
                                   
                                 }
                             }
-
-                            //for (int y = 0; y < _allHazards.Count; y++)
-                            //{
-                            //    if (_allHazards[y].)
-                            //    {
-                   
-                            //        HazardInfo._hazards[i]._finished = true;
-                            //    }
-                            //}
-
-
-                        }
-                        
+                        }                       
                        
                         Debug.Log("Switch");
                         break;
@@ -798,19 +791,53 @@ public class NewMainGameplay : MonoBehaviour
         }
     }
 
-    public void AtomDetection()
+    public IEnumerator AtomDetection()
     {
 
         for (int i = 0; i < _atomList.Count; i++)
         {
             if (_onPose == _atomList[i])
             {
-                MainController.Instance._saveLoadValues._totalAtoms++;
-                Debug.Log("Atomo en: " + _atomList[i].ToString());
-                Destroy(_allAtoms[i]);
-                _allAtoms.RemoveAt(i);
-                _atomList.RemoveAt(i);
-                _atomsObtained++;
+         
+
+                if (MainController.Instance._onWorldGlobal == 0 && MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage] == 5)
+                {
+                    StopMoveCoroutine();
+                    _movementAvailable = false;
+                    yield return new WaitForSeconds(1);
+                    _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                    _tutorialAssets._arrowsParent.SetActive(false);
+                    _tutorialAssets._elementsParent.SetActive(false);
+                    _tutorialAssets._atomParent.SetActive(true);
+                    _tutorialAssets._stepParent.SetActive(false);
+                    yield return new WaitForSeconds(1);
+                    _tutorialAssets._continueText.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(0.25f);
+                    MainController.Instance._saveLoadValues._totalAtoms++;
+                    Debug.Log("Atomo en: " + _atomList[i].ToString());
+                    Destroy(_allAtoms[i]);
+                    _allAtoms.RemoveAt(i);
+                    _atomList.RemoveAt(i);
+                    _atomsObtained++;
+                    while (!Input.GetButtonDown("Submit"))
+                    {
+                        yield return null;
+                    }
+                    _tutorialAssets._continueText.gameObject.SetActive(false);
+                    _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+                    _movementAvailable = true;
+
+           
+                }
+                else
+                {
+                    MainController.Instance._saveLoadValues._totalAtoms++;
+                    Debug.Log("Atomo en: " + _atomList[i].ToString());
+                    Destroy(_allAtoms[i]);
+                    _allAtoms.RemoveAt(i);
+                    _atomList.RemoveAt(i);
+                    _atomsObtained++;
+                }
             }
 
 
@@ -819,18 +846,48 @@ public class NewMainGameplay : MonoBehaviour
 
     }
 
-    public void StepDetection()
+    public IEnumerator StepDetection()
     {
 
         for (int i = 0; i < _stepsList.Count; i++)
         {
             if (_onPose == _stepsList[i])
             {
-                MainController.Instance._saveLoadValues._totalSteps++;
+                if(MainController.Instance._onWorldGlobal == 0 && MainController.Instance._saveLoadValues._totalSteps <= 0)
+                {
+                    StopMoveCoroutine();
+                    _movementAvailable = false;
+                    yield return new WaitForSeconds(1);
+                    _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                    _tutorialAssets._arrowsParent.SetActive(false);
+                    _tutorialAssets._elementsParent.SetActive(false);
+                    _tutorialAssets._atomParent.SetActive(false);
+                    _tutorialAssets._stepParent.SetActive(true);
+                    yield return new WaitForSeconds(1);
+                    _tutorialAssets._continueText.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(0.25f);
+                              MainController.Instance._saveLoadValues._totalSteps++;
                 Debug.Log("Steps en: " + _stepsList[i].ToString());
                 Destroy(_allSteps[i]);
                 _allSteps.RemoveAt(i);
-                _stepsList.RemoveAt(i);             
+                _stepsList.RemoveAt(i);    
+                    while (!Input.GetButtonDown("Submit"))
+                    {
+                        yield return null;
+                    }
+                    _tutorialAssets._continueText.gameObject.SetActive(false);
+                    _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+                    _movementAvailable = true;
+                }
+                else
+                {
+                    MainController.Instance._saveLoadValues._totalSteps++;
+                    Debug.Log("Steps en: " + _stepsList[i].ToString());
+                    Destroy(_allSteps[i]);
+                    _allSteps.RemoveAt(i);
+                    _stepsList.RemoveAt(i);
+                }
+               
             }
 
 
@@ -903,7 +960,7 @@ public class NewMainGameplay : MonoBehaviour
 
     public void ExitDetection()
     {
-        var ExitID= _allStages[_idStage]._exitPoint;
+        var ExitID= _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._exitPoint;
         if (_onPose == ExitID)
         {
 
@@ -913,6 +970,7 @@ public class NewMainGameplay : MonoBehaviour
 
     public IEnumerator ExitNumerator()
     {
+        StopMoveCoroutine();
         _movementAvailable = false;
         
         yield return new WaitForSeconds(0.5f);

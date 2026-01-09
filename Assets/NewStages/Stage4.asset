@@ -12,26 +12,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06444818b2c5c5245a52126020660b89, type: 3}
   m_Name: Stage4
   m_EditorClassIdentifier: 
-  _spawnPoint: 12
-  _exitPoint: 16
-  _allPlaces: 0000000001000000020000000300000004000000050000000600000007000000090000000a0000000b0000000c0000000d0000000e0000000f0000001000000011000000120000001300000014000000150000001600000017000000
+  _spawnPoint: 15
+  _exitPoint: 9
+  _allPlaces: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f00000010000000
   _elements:
-  - _onPlace: 5
-    _elementType: 2
-    _quantity: 1
-  - _onPlace: 22
+  - _onPlace: 11
     _elementType: 1
     _quantity: 2
+  - _onPlace: 2
+    _elementType: 2
+    _quantity: 1
   _hazards:
-  - _onPlace: 15
+  - _onPlace: 3
     _hazards: 0
-  - _onPlace: 17
+  - _onPlace: 8
     _hazards: 0
-  - _onPlace: 20
+  - _onPlace: 14
     _hazards: 0
-  - _onPlace: 21
-    _hazards: 0
-  - _onPlace: 10
-    _hazards: 0
-  - _onPlace: 11
-    _hazards: 0
+  _atomPlace: 
