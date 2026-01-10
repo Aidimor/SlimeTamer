@@ -46,11 +46,11 @@ public class SlimeController : MonoBehaviour
     {
         // Actualizar parámetros en la instancia
 
-        fillAmount = Mathf.Lerp(fillAmount, _scriptMain._scriptRythm._elementsSelection.Count * 0.5f, 2 * Time.deltaTime);
-        _slimeRawImage.transform.localScale = Vector2.Lerp(_slimeRawImage.transform.localScale, new Vector2(2.5f, 2.5f), 3 * Time.deltaTime);
-        _slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_FillAmount", fillAmount);
-        _slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_FillColorA", _materialColors[1]);
-        _slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_FillColorB", _materialColors[2]);
+        //fillAmount = Mathf.Lerp(fillAmount, _scriptMain._scriptRythm._elementsSelection.Count * 0.5f, 2 * Time.deltaTime);
+        //_slimeRawImage.transform.localScale = Vector2.Lerp(_slimeRawImage.transform.localScale, new Vector2(2.5f, 2.5f), 3 * Time.deltaTime);
+        //_slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_FillAmount", fillAmount);
+        //_slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_FillColorA", _materialColors[1]);
+        //_slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_FillColorB", _materialColors[2]);
 
         if (_slimeAnimator.GetBool("Moving"))
         {

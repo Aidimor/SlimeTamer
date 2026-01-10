@@ -44,4 +44,34 @@ public class NewGameEvent : ScriptableObject
 
     public int[] _atomPlace;
     public int[] _stepsPlace;
+
+    [System.Serializable]
+    public class BossAssets
+    {
+       
+        public enum _Xposition
+        {
+            Left,
+            Center,
+            Right
+        }
+        public  _Xposition _xposition;
+        public enum _Yposition
+        {
+            Top,
+            Center,
+            Bot
+        }
+        public _Yposition _yposition;
+
+        [System.Serializable]
+        public class GroundAttacks
+        {
+            public int _groundID;
+            public int _attackCount;
+            public int _tentacleID;
+        }
+        public GroundAttacks[] _groundAttacks;
+    }
+    public BossAssets[] _bossAssets;
 }

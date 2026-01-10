@@ -16,6 +16,8 @@ public class NewMainGameplay : MonoBehaviour
     public List<GameObject> _allHazards = new List<GameObject>();
     public List<GameObject> _allAtoms = new List<GameObject>();
     public List<GameObject> _allSteps = new List<GameObject>();
+    public List<GameObject> _allAttacks = new List<GameObject>();
+    public List<int> _allCountAttacks = new List<int>();
     public Transform _parent;
 
     public GameObject _elementPrefab;
@@ -24,6 +26,7 @@ public class NewMainGameplay : MonoBehaviour
     public GameObject _hazardPrefab;
     public GameObject _entrancePrefab;
     public GameObject _exitPrefab;
+    public GameObject _bossAttackParent;
 
     public int _idStage;
 
@@ -86,12 +89,22 @@ public class NewMainGameplay : MonoBehaviour
         public GameObject _elementsParent;
         public GameObject _atomParent;
         public GameObject _stepParent;
+    
         public TextMeshProUGUI _continueText;
         public bool _tutorialDeployed;
     }
     public TutorialAssets _tutorialAssets;
     public bool _restarted;
+    public GameObject _bossUI;
 
+    [System.Serializable]
+    public class TentaclesAssets
+    {
+        public Animator _tentacle;
+        public Camera _tentacleCamera;
+    }
+    public TentaclesAssets[] _tentacleAssets;
+    public int _onCamera;
     void Start()
     {
         StartVoids();
@@ -109,8 +122,11 @@ public class NewMainGameplay : MonoBehaviour
         }
         SetElements();
         SetAtoms();
- 
-     
+        if(_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets.Length > 0)
+        {
+            SetBossAttacks();
+        }
+
         SetHazards();
         SetEntranceExit();
 
@@ -173,20 +189,20 @@ public class NewMainGameplay : MonoBehaviour
 
                     break;
                 case 5:
-                    yield return new WaitForSeconds(1);
-                    _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
-                    _tutorialAssets._arrowsParent.SetActive(false);
-                    _tutorialAssets._elementsParent.SetActive(false);
-                    _tutorialAssets._atomParent.SetActive(true);
-                    yield return new WaitForSeconds(1);
-                    _tutorialAssets._continueText.gameObject.SetActive(true);
-                    yield return new WaitForSeconds(0.25f);
-                    while (!Input.GetButtonDown("Submit"))
-                    {
-                        yield return null;
-                    }
-                    _tutorialAssets._continueText.gameObject.SetActive(false);
-                    _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+                    //yield return new WaitForSeconds(1);
+                    //_tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                    //_tutorialAssets._arrowsParent.SetActive(false);
+                    //_tutorialAssets._elementsParent.SetActive(false);
+                    //_tutorialAssets._atomParent.SetActive(true);
+                    //yield return new WaitForSeconds(1);
+                    //_tutorialAssets._continueText.gameObject.SetActive(true);
+                    //yield return new WaitForSeconds(0.25f);
+                    //while (!Input.GetButtonDown("Submit"))
+                    //{
+                    //    yield return null;
+                    //}
+                    //_tutorialAssets._continueText.gameObject.SetActive(false);
+                    //_tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
 
                     break;
             }
@@ -244,6 +260,61 @@ public class NewMainGameplay : MonoBehaviour
             _backgroundImage[2].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
             _allGrounds.Add(ground);
         
+        }
+
+        if(_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets.Length > 0)
+        {
+            _bossUI.SetActive(true);
+
+
+            switch (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets[0]._yposition)
+            {
+                case NewGameEvent.BossAssets._Yposition.Top:
+                    _bossUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(_bossUI.GetComponent<RectTransform>().anchoredPosition.x, -90f);
+                    _bossUI.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+                    break;
+                case NewGameEvent.BossAssets._Yposition.Center:
+                    _bossUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(_bossUI.GetComponent<RectTransform>().anchoredPosition.x, 0);
+                    _bossUI.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+                    break;
+                case NewGameEvent.BossAssets._Yposition.Bot:
+                    _bossUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(_bossUI.GetComponent<RectTransform>().anchoredPosition.x, 90f);
+                    _bossUI.GetComponent<RectTransform>().localScale = new Vector3(1, -1, 1);
+                    break;
+            }
+
+            switch (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets[0]._xposition)
+            {
+                case NewGameEvent.BossAssets._Xposition.Left:
+                    switch (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets[0]._yposition)
+                    {
+                        case NewGameEvent.BossAssets._Yposition.Top:
+                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 30);
+                            break;
+                        case NewGameEvent.BossAssets._Yposition.Bot:
+                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, -30);
+                            break;
+                    }
+                    break;
+                case NewGameEvent.BossAssets._Xposition.Center:
+                    _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 0);
+                    break;
+                case NewGameEvent.BossAssets._Xposition.Right:
+                    switch (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets[0]._yposition)
+                    {
+                        case NewGameEvent.BossAssets._Yposition.Top:
+                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, -30);
+                            break;
+                        case NewGameEvent.BossAssets._Yposition.Bot:
+                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 30);
+                            break;
+                    }
+                    break;
+            }
+        }
+        else
+        {
+            _bossUI.SetActive(false);
         }
     }
 
@@ -349,6 +420,101 @@ public class NewMainGameplay : MonoBehaviour
             _allHazards.Add(hazard);
         }
     }
+
+    void SetBossAttacks()
+    {
+        foreach (var data in _allStages[
+            MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]
+            ._stageList[_idStage]]
+            ._bossAssets[0]
+            ._groundAttacks)
+        {
+            GameObject bossAttacks = Instantiate(_bossAttackParent, _parent);
+
+            RectTransform rt = bossAttacks.GetComponent<RectTransform>();
+            rt.position = _allPositions[data._groundID]
+                .GetComponent<RectTransform>().position;
+            rt.localScale = Vector3.one;
+
+            _allAttacks.Add(bossAttacks);
+            _allCountAttacks.Add(data._attackCount);
+            bossAttacks.GetComponent<AtomScript>()._onTurnText.text =
+                data._attackCount.ToString("F0");
+            bossAttacks.GetComponent<AtomScript>()._tentacleRawImage[data._tentacleID].gameObject.SetActive(true);
+
+
+        }
+    }
+
+    public IEnumerator BossAttackTurn()
+    {
+        var CurrentGrounds = _allStages[
+            MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]
+            ._stageList[_idStage]]
+            ._bossAssets[0];
+        ReduceCounter();
+
+        for (int i = 0; i < _allCountAttacks.Count; i++)
+        {
+            switch (_allCountAttacks[i])
+            {
+                case -1:
+                    _allCountAttacks[i] = CurrentGrounds
+                        ._groundAttacks[i]._attackCount;
+                    break;
+
+                case 0:
+                    _tentacleAssets[_onCamera]._tentacle
+                        .SetTrigger("TentacleIn");
+
+                    //ReduceCounter();
+                    for (int y = 0; y < CurrentGrounds._groundAttacks.Length; y++)
+                    {
+                        if (_onPose == CurrentGrounds._groundAttacks[y]._groundID)
+                        {
+                            StopMoveCoroutine();
+                            yield return new WaitForSeconds(1f);
+                            switch(MainController.Instance._onWorldGlobal == 0 && !MainController.Instance._saveLoadValues._finalWorldUnlocked)
+                            {
+                                case false:
+                                    RestartLevel();
+                                    break;
+                                case true:
+                                    NextWorld();
+                                    break;                        
+
+                            }
+                        
+                            yield break;
+                        }
+                    }
+                    break;
+
+                case 1:
+                case 2:
+                case 3:
+                case 4:
+                  
+                    break;
+            }
+
+     
+        }
+    }
+
+    void ReduceCounter()
+    {
+        for (int i = 0; i < _allCountAttacks.Count; i++)
+        {
+            _allCountAttacks[i]--;
+            _allAttacks[i]
+      .GetComponent<AtomScript>()
+      ._onTurnText.text = _allCountAttacks[i].ToString();
+        }
+    }
+
+
+
 
     void SetEntranceExit()
     {
@@ -488,6 +654,10 @@ public class NewMainGameplay : MonoBehaviour
     public IEnumerator MoveNumerator()
     {
         _movementAvailable = false;
+        if (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets.Length > 0)
+        {
+          StartCoroutine(BossAttackTurn());
+        } 
         _slimeAnimator.SetBool("Moving", true);
 
         yield return new WaitForSeconds(0.5f);
@@ -589,6 +759,12 @@ public class NewMainGameplay : MonoBehaviour
             Destroy(_allAtoms[i]);
         }
         _allAtoms.Clear();
+        for (int i = 0; i < _allAttacks.Count; i++)
+        {
+            Destroy(_allAttacks[i]);
+        }
+        _allAttacks.Clear();
+        _allCountAttacks.Clear();
         _restarted = true;
         _allHazards.Clear();
         _elementsBool.Clear();
@@ -649,8 +825,12 @@ public class NewMainGameplay : MonoBehaviour
             Destroy(_exitEntranceObjects[i]);
         }
         _exitEntranceObjects.Clear();
-
-      
+        for (int i = 0; i < _allAttacks.Count; i++)
+        {
+            Destroy(_allAttacks[i]);
+        }
+        _allAttacks.Clear();
+        _allCountAttacks.Clear();
         _restarted = false;
         // NUEVO spawn
         _idStage++;
@@ -984,6 +1164,11 @@ public class NewMainGameplay : MonoBehaviour
         yield return new WaitForSeconds(1);
         StartCoroutine(NexttLevel());
 
+    }
+
+    public void NextWorld()
+    {
+        Debug.Log("SALES TUTORIAL");
     }
 
     public IEnumerator TransformSlimeNumerator()
