@@ -351,4 +351,14 @@ public class SlimeController : MonoBehaviour
         _scriptNewMain._hitWalk.Play();
     }
 
+    public void JumpSlime()
+    {
+        //_scriptNewMain._mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -2);
+    }
+
+    public void HeavyJumpSlime()
+    {
+        _scriptNewMain._mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 2);
+    }
+
 }

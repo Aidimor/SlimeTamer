@@ -77,6 +77,7 @@ public class NewMainGameplay : MonoBehaviour
     public ParticleSystem _hitWalk;
     public ParticleSystem _waterWalk;
     public ParticleSystem _smoke;
+    public ParticleSystem _deadSlimeParticle;
 
     public List<int> _elementsID = new List<int>();
     public List<bool> _elementsBool = new List<bool>();
@@ -105,6 +106,7 @@ public class NewMainGameplay : MonoBehaviour
     }
     public TentaclesAssets[] _tentacleAssets;
     public int _onCamera;
+    public GameObject _mainUI;
     void Start()
     {
         StartVoids();
@@ -231,6 +233,8 @@ public class NewMainGameplay : MonoBehaviour
         }
         _slimeInfo._atomsText.text = MainController.Instance._saveLoadValues._totalAtoms.ToString();
         _slimeInfo._stepsText.text = MainController.Instance._saveLoadValues._totalSteps.ToString();
+
+        _mainUI.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_mainUI.GetComponent<RectTransform>().anchoredPosition, new Vector2(0, 0), 2 * Time.deltaTime);
     }
 
     // ===================== STAGE =====================
@@ -473,7 +477,10 @@ public class NewMainGameplay : MonoBehaviour
                         if (_onPose == CurrentGrounds._groundAttacks[y]._groundID)
                         {
                             StopMoveCoroutine();
+                           _slimeObject.GetComponent<Animator>().Play("SlimeDies");
+                            _deadSlimeParticle.Play();
                             yield return new WaitForSeconds(1f);
+                          
                             switch(MainController.Instance._onWorldGlobal == 0 && !MainController.Instance._saveLoadValues._finalWorldUnlocked)
                             {
                                 case false:
@@ -548,55 +555,58 @@ public class NewMainGameplay : MonoBehaviour
             // Reset input
             if (Input.GetAxisRaw("Horizontal") == 0 &&
             Input.GetAxisRaw("Vertical") == 0)
-        {
-            _buttonPressed = false;
-        }
+            {
+                _buttonPressed = false;
+            }
 
-        if (_buttonPressed) return;
+            if (_buttonPressed) return;
 
-        if (Input.GetAxisRaw("Horizontal") > 0 &&
-            _movesAvailable[2] &&
-            _onPose != 4 &&
-            _onPose != 9 &&
-            _onPose != 14 &&
-            _onPose != 19 &&
-            _onPose != 24)
-        {
-                _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, -90);
-                MoveTo(_onPose + 1);
     
-        }
+                if (Input.GetAxisRaw("Horizontal") > 0 &&
+                    _movesAvailable[2] &&
+                    _onPose != 4 &&
+                    _onPose != 9 &&
+                    _onPose != 14 &&
+                    _onPose != 19 &&
+                    _onPose != 24)
+                {
+                    _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, -90);
+                    MoveTo(_onPose + 1);
+
+                }
 
 
-        else if (Input.GetAxisRaw("Horizontal") < 0 && _movesAvailable[3] &&
-            _onPose != 0 &&
-            _onPose != 5 &&
-            _onPose != 15 &&
-            _onPose != 20)
-        {
-                _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, 90);
-                MoveTo(_onPose - 1);
-    
-        }
-  
+                else if (Input.GetAxisRaw("Horizontal") < 0 && _movesAvailable[3] &&
+                    _onPose != 0 &&
+                    _onPose != 5 &&
+                    _onPose != 15 &&
+                    _onPose != 20)
+                {
+                    _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, 90);
+                    MoveTo(_onPose - 1);
+
+                }
 
 
-        else if (Input.GetAxisRaw("Vertical") > 0 && _movesAvailable[0])
-        {
-                _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, 0);
-                MoveTo(_onPose + 5); 
-      
-        }
-     
+
+                else if (Input.GetAxisRaw("Vertical") > 0 && _movesAvailable[0])
+                {
+                    _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, 0);
+                    MoveTo(_onPose + 5);
+
+                }
 
 
-        else if (Input.GetAxisRaw("Vertical") < 0 && _movesAvailable[1])
-        {
-                _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, 180);
-                MoveTo(_onPose - 5);
-  
-        }
-        }
+
+                else if (Input.GetAxisRaw("Vertical") < 0 && _movesAvailable[1])
+                {
+                    _slimeObject.GetComponent<RectTransform>().eulerAngles = new Vector3(0, 0, 180);
+                    MoveTo(_onPose - 5);
+
+                }
+            }
+
+        
 
     }
 
@@ -617,6 +627,7 @@ public class NewMainGameplay : MonoBehaviour
         StartCoroutine(AtomDetection());
         StartCoroutine(StepDetection());
         ExitDetection();
+
         if (restart)
         {
         
@@ -626,6 +637,42 @@ public class NewMainGameplay : MonoBehaviour
     }
 
     private Coroutine _moveCoroutine;
+
+    bool IsLocked()
+    {
+        if (MainController.Instance._saveLoadValues._totalSteps > 0)
+        {
+          
+            for (int i = 0; i < _allGrounds.Count; i++)
+            {
+                if (_allGrounds[i].GetComponent<StageGroundScript>()._id == _onPose)
+                {
+                    if (_allGrounds[i].GetComponent<StageGroundScript>()._lockedBool)
+                    {
+                        MainController.Instance._saveLoadValues._totalSteps--;
+                        //_allGrounds[i].GetComponent<StageGroundScript>()._lockImage.color = _lockedColors[2];
+                        break;
+                    }
+         
+                }
+            }
+            return false;
+        }
+  
+
+
+        foreach (GameObject g in _allGrounds)
+        {
+            StageGroundScript ground = g.GetComponent<StageGroundScript>();
+
+            if (ground._id == _onPose && ground._lockedBool)
+            {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
     public void StartMoveCoroutine()
     {
@@ -661,7 +708,7 @@ public class NewMainGameplay : MonoBehaviour
         _slimeAnimator.SetBool("Moving", true);
 
         yield return new WaitForSeconds(0.5f);
-
+     
         _slimeAnimator.SetBool("Moving", false);
 
         yield return new WaitForSeconds(0.3f);
@@ -707,23 +754,40 @@ public class NewMainGameplay : MonoBehaviour
 
             if (ground._id == _onPose)
             {
-                ground._lockedBool = true;
-                ground._lockImage.color = _lockedColors[1];
+                if (ground._lockedBool)
+                {
+                    if(MainController.Instance._saveLoadValues._totalSteps > 0)
+                    {
+                        ground._lockImage.color = _lockedColors[2];
+                    }
+                }
+                else
+                {
+                    ground._lockedBool = true;
+                    ground._lockImage.color = _lockedColors[1];
+                }
+         
                 return;
+            }
+        }
+
+        for (int i = 0; i < _allGrounds.Count; i++)
+        {
+            if (_allGrounds[i].GetComponent<StageGroundScript>()._id == _onPose)
+            {
+                if (_allGrounds[i].GetComponent<StageGroundScript>()._lockedBool)
+                {
+                    MainController.Instance._saveLoadValues._totalSteps--;
+                    _allGrounds[i].GetComponent<StageGroundScript>()._lockImage.color = _lockedColors[2];
+                    break;
+                }
+
             }
         }
     }
 
-    bool IsLocked()
-    {
-        foreach (GameObject g in _allGrounds)
-        {
-            StageGroundScript ground = g.GetComponent<StageGroundScript>();
-            if (ground._id == _onPose && ground._lockedBool)
-                return true;
-        }
-        return false;
-    }
+
+
 
     public void RestartLevel()
     {
@@ -1168,7 +1232,23 @@ public class NewMainGameplay : MonoBehaviour
 
     public void NextWorld()
     {
-        Debug.Log("SALES TUTORIAL");
+        StartCoroutine(NextWorldNumerator());
+    }
+
+    public IEnumerator NextWorldNumerator()
+    {
+        switch (MainController.Instance._onWorldGlobal)
+        {
+            case 0:
+                MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
+                MainController.Instance._onWorldGlobal = 3;
+                break;
+        }
+        MainController.Instance._introSpecial = true;
+        MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
+        yield return new WaitForSeconds(1);
+        MainController.Instance.LoadSceneByName("IntroScene");
+
     }
 
     public IEnumerator TransformSlimeNumerator()
