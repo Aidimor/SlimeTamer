@@ -107,6 +107,9 @@ public class NewMainGameplay : MonoBehaviour
     public TentaclesAssets[] _tentacleAssets;
     public int _onCamera;
     public GameObject _mainUI;
+
+    public ParticleSystem _sandStorm;
+    public ParticleSystem[] _windParticle;
     void Start()
     {
         StartVoids();

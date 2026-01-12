@@ -10,25 +10,37 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 06444818b2c5c5245a52126020660b89, type: 3}
-  m_Name: Dessert-1
+  m_Name: Dessert-3
   m_EditorClassIdentifier: 
-  _spawnPoint: 12
-  _exitPoint: 4
-  _allPlaces: 05000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e0000000f0000001000000004000000
+  _spawnPoint: 24
+  _exitPoint: 1
+  _allPlaces: 0000000001000000020000000300000004000000050000000600000007000000090000000d0000000e00000012000000130000001800000008000000
   _elements:
-  - _onPlace: 7
+  - _onPlace: 3
+    _elementType: 2
+    _quantity: 1
+  - _onPlace: 4
     _elementType: 2
     _quantity: 1
   - _onPlace: 13
-    _elementType: 1
-    _quantity: 1
-  - _onPlace: 16
-    _elementType: 1
+    _elementType: 0
     _quantity: 1
   _hazards:
-  - _onPlace: 9
+  - _onPlace: 2
     _hazards: 0
     _finished: 0
-  _atomPlace: 
+  - _onPlace: 5
+    _hazards: 1
+    _finished: 0
+  - _onPlace: 6
+    _hazards: 1
+    _finished: 0
+  - _onPlace: 7
+    _hazards: 1
+    _finished: 0
+  - _onPlace: 8
+    _hazards: 1
+    _finished: 0
+  _atomPlace: 00000000
   _stepsPlace: 
   _bossAssets: []

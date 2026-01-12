@@ -1,0 +1,31 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06444818b2c5c5245a52126020660b89, type: 3}
+  m_Name: Boss2
+  m_EditorClassIdentifier: 
+  _spawnPoint: 19
+  _exitPoint: 15
+  _allPlaces: 0a0000000b0000000c0000000d0000000e0000000f00000010000000110000001200000013000000160000001700000018000000
+  _elements: []
+  _hazards: []
+  _atomPlace: 0a000000
+  _stepsPlace: 
+  _bossAssets:
+  - _xposition: 0
+    _yposition: 2
+    _groundAttacks:
+    - _groundID: 12
+      _attackCount: 3
+      _tentacleID: 0
+    - _groundID: 16
+      _attackCount: 3
+      _tentacleID: 0
