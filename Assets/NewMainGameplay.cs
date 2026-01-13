@@ -110,12 +110,26 @@ public class NewMainGameplay : MonoBehaviour
 
     public ParticleSystem _sandStorm;
     public ParticleSystem[] _windParticle;
+    public ParticleSystem _snowParticle;
+    public int _movementsToSandStorm;
+
+    public int _turnsReturnToWater;
+    public bool _sandStormOn;
     void Start()
     {
         StartVoids();
         MainController.Instance._bordersAnimator.SetBool("BorderOut", true);
         MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
         _movementAvailable = false;
+        switch (MainController.Instance._onWorldGlobal)
+        {
+            case 2:
+                _snowParticle.Play();
+                break;
+            case 3:
+                _movementsToSandStorm = Random.Range(2, 4);
+                break;
+        }
     }
 
     public void StartVoids()
@@ -134,7 +148,7 @@ public class NewMainGameplay : MonoBehaviour
 
         SetHazards();
         SetEntranceExit();
-
+ 
         _atomsObtained = 0;
 
         _onPose = _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._spawnPoint;
@@ -214,6 +228,23 @@ public class NewMainGameplay : MonoBehaviour
         }
   
         _tutorialAssets._tutorialDeployed = true;
+
+        var StageInfo2 = MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal];
+
+        if (_idStage >= StageInfo2._stageList.Length - 1)
+        {
+            _exitEntranceObjects[1].GetComponent<ExitScriptObject>()._exitPlatforms[0].gameObject.SetActive(false);
+            _exitEntranceObjects[1].GetComponent<ExitScriptObject>()._exitPlatforms[1].gameObject.SetActive(true);
+
+            Debug.Log("normal");
+        }
+        else
+        {
+            _exitEntranceObjects[1].GetComponent<ExitScriptObject>()._exitPlatforms[0].gameObject.SetActive(true);
+            _exitEntranceObjects[1].GetComponent<ExitScriptObject>()._exitPlatforms[1].gameObject.SetActive(false);
+            Debug.Log("finalk");
+        }
+
         yield return new WaitForSeconds(1);
         _slimeObject.GetComponent<Animator>().Play("SlimeEnters");
         yield return new WaitForSeconds(0.5f);
@@ -279,45 +310,59 @@ public class NewMainGameplay : MonoBehaviour
                 case NewGameEvent.BossAssets._Yposition.Top:
                     _bossUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(_bossUI.GetComponent<RectTransform>().anchoredPosition.x, -90f);
                     _bossUI.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+
+                    switch (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets[0]._xposition)
+                    {
+                        case NewGameEvent.BossAssets._Xposition.Left:
+                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 45);
+                            break;
+                        case NewGameEvent.BossAssets._Xposition.Center:
+                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 0);
+
+                            break;
+                        case NewGameEvent.BossAssets._Xposition.Right:
+                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, -45);
+                            break;
+                    }
                     break;
                 case NewGameEvent.BossAssets._Yposition.Center:
                     _bossUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(_bossUI.GetComponent<RectTransform>().anchoredPosition.x, 0);
                     _bossUI.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+
+                    switch (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets[0]._xposition)
+                    {
+                        case NewGameEvent.BossAssets._Xposition.Left:
+                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 90);
+                            break;
+                        case NewGameEvent.BossAssets._Xposition.Center:
+                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 0);
+
+                            break;
+                        case NewGameEvent.BossAssets._Xposition.Right:
+                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, -90);
+                            break;
+                    }
                     break;
                 case NewGameEvent.BossAssets._Yposition.Bot:
                     _bossUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(_bossUI.GetComponent<RectTransform>().anchoredPosition.x, 90f);
                     _bossUI.GetComponent<RectTransform>().localScale = new Vector3(1, -1, 1);
+
+                    switch (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets[0]._xposition)
+                    {
+                        case NewGameEvent.BossAssets._Xposition.Left:
+                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, -45);
+                            break;
+                        case NewGameEvent.BossAssets._Xposition.Center:
+                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 0);
+
+                            break;
+                        case NewGameEvent.BossAssets._Xposition.Right:
+                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 45);
+                            break;
+                    }
                     break;
             }
 
-            switch (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets[0]._xposition)
-            {
-                case NewGameEvent.BossAssets._Xposition.Left:
-                    switch (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets[0]._yposition)
-                    {
-                        case NewGameEvent.BossAssets._Yposition.Top:
-                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 30);
-                            break;
-                        case NewGameEvent.BossAssets._Yposition.Bot:
-                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, -30);
-                            break;
-                    }
-                    break;
-                case NewGameEvent.BossAssets._Xposition.Center:
-                    _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 0);
-                    break;
-                case NewGameEvent.BossAssets._Xposition.Right:
-                    switch (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets[0]._yposition)
-                    {
-                        case NewGameEvent.BossAssets._Yposition.Top:
-                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, -30);
-                            break;
-                        case NewGameEvent.BossAssets._Yposition.Bot:
-                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 30);
-                            break;
-                    }
-                    break;
-            }
         }
         else
         {
@@ -527,9 +572,10 @@ public class NewMainGameplay : MonoBehaviour
 
 
     void SetEntranceExit()
-    {
+    {     
         CreateMarker(_entrancePrefab, _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._spawnPoint);
-        CreateMarker(_exitPrefab, _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._exitPoint);
+        CreateMarker(_exitPrefab, _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._exitPoint);       
+     
     }
 
     void CreateMarker(GameObject prefab, int place)
@@ -539,6 +585,8 @@ public class NewMainGameplay : MonoBehaviour
         rt.position = _allPositions[place].GetComponent<RectTransform>().position;
         rt.localScale = Vector3.one;
         _exitEntranceObjects.Add(obj);
+
+ 
     }
 
     // ===================== MOVEMENT =====================
@@ -711,7 +759,40 @@ public class NewMainGameplay : MonoBehaviour
         _slimeAnimator.SetBool("Moving", true);
 
         yield return new WaitForSeconds(0.5f);
-     
+        switch (MainController.Instance._onWorldGlobal)
+        {
+            case 3:
+                switch (_sandStormOn)
+                {
+                    case false:
+                        _movementsToSandStorm--;
+                        if (_movementsToSandStorm <= 0)
+                        {
+                            _sandStorm.Play();                           
+                            _movementsToSandStorm = Random.Range(3, 5);
+                            _sandStormOn = true;
+                        }
+                        break;
+                    case true:
+                        _sandStorm.Stop();
+                       
+                        _sandStormOn = false;
+                        break;
+                }
+
+                break;
+        }
+        if(_turnsReturnToWater < 0 && _slimeInfo._slimeID == 2)
+        {
+           
+            _turnsReturnToWater++;
+            if(_turnsReturnToWater >= 0)
+            {
+                _slimeInfo._slimeID = 4;
+                StartCoroutine(TransormatioNumerator());
+            }
+           
+        }
         _slimeAnimator.SetBool("Moving", false);
 
         yield return new WaitForSeconds(0.3f);
@@ -935,15 +1016,28 @@ public class NewMainGameplay : MonoBehaviour
                 switch (HazardInfo._hazards[i]._hazards)
             {
                 case NewGameEvent.Hazards.HazardsType.Fire:
-                      if(_slimeInfo._slimeID != 2)
+                        switch (_slimeInfo._slimeID)
                         {
-                            RestartLevel();
-                        }
-                        else
-                        {
-                            _allHazards[i].GetComponent<ObstaclesScript>()._fireParticle.Stop();
-                            _allHazards[i].GetComponent<ObstaclesScript>()._smokeParticle.Play();
-                        }
+                            case 0:
+                                RestartLevel();
+                                break;
+                            case 1:
+                                RestartLevel();
+                                break;
+                            case 2:
+                                _allHazards[i].GetComponent<ObstaclesScript>()._fireParticle.Stop();
+                                _allHazards[i].GetComponent<ObstaclesScript>()._smokeParticle.Play();
+                                break;
+                            case 3:
+                                RestartLevel();
+                                break;
+                            case 4:
+                                _allHazards[i].GetComponent<ObstaclesScript>()._fireParticle.Stop();
+                                _allHazards[i].GetComponent<ObstaclesScript>()._smokeParticle.Play();
+                                _slimeInfo._slimeID = 2;
+                                StartCoroutine(TransormatioNumerator());
+                                break;
+                        }  
                         Debug.Log("Fire");
                
                         break;
@@ -957,7 +1051,7 @@ public class NewMainGameplay : MonoBehaviour
                  
                         break;
                  case NewGameEvent.Hazards.HazardsType.Switch:
-                        if (_slimeInfo._slimeID == 1)
+                        if (_slimeInfo._slimeID == 1 || _slimeInfo._slimeID == 4)
                         {
                             _allHazards[i].GetComponent<ObstaclesScript>().LevelPressed();
                             for(int y = 0; y < _allHazards.Count; y++)
@@ -1146,24 +1240,40 @@ public class NewMainGameplay : MonoBehaviour
 
     public void TransformSlimeVoid()
     {
-        if(_slimeInfo._elementsParticles[0] >= 2)
+        if (_slimeInfo._elementsParticles[0] >= 2)
         {
             _slimeInfo._slimeID = 1;
             Debug.Log("CARBONO");
             _formulaText.text = "C2";
             _nameText.text = GameInitScript.Instance.GetText("C2");
-    
+
             StartCoroutine(TransormatioNumerator());
         }
         else if (_slimeInfo._elementsParticles[1] >= 2 && _slimeInfo._elementsParticles[2] >= 1)
         {
-            _slimeInfo._slimeID = 2;
-            _formulaText.text = "H20";
-            _nameText.text = GameInitScript.Instance.GetText("H20");
-            Debug.Log("AGUA");
-            _waterWalk.Play();
-            _smoke.Stop();
-            StartCoroutine(TransormatioNumerator());
+            switch (MainController.Instance._onWorldGlobal)
+            {
+                case 2:
+                    _slimeInfo._slimeID = 4;
+                    _formulaText.text = "H20";
+                    _nameText.text = GameInitScript.Instance.GetText("ICE");
+                    Debug.Log("HIELO");
+                    _waterWalk.Play();
+                    _smoke.Stop();
+                    StartCoroutine(TransormatioNumerator());
+                    _turnsReturnToWater = -1;
+                    break;
+                default:
+                    _slimeInfo._slimeID = 2;
+                    _formulaText.text = "H20";
+                    _nameText.text = GameInitScript.Instance.GetText("H20");
+                    Debug.Log("AGUA");
+                    _waterWalk.Play();
+                    _smoke.Stop();
+                    StartCoroutine(TransormatioNumerator());
+                    break;
+            }
+
         }
         else if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[2] >= 2)
         {
@@ -1175,7 +1285,7 @@ public class NewMainGameplay : MonoBehaviour
             _nameText.text = GameInitScript.Instance.GetText("CO2");
             StartCoroutine(TransormatioNumerator());
         }
-    
+
     }
 
     public IEnumerator TransormatioNumerator()
@@ -1198,6 +1308,9 @@ public class NewMainGameplay : MonoBehaviour
             case 3:
                 _slimeAnimator.SetInteger("ID", 2);
                 break;
+            case 4:
+                _slimeAnimator.SetInteger("ID", 5);
+                break;
         }
         yield return new WaitForSeconds(1);
         _transformAnimator.SetBool("Success", false);
@@ -1219,7 +1332,7 @@ public class NewMainGameplay : MonoBehaviour
     {
         StopMoveCoroutine();
         _movementAvailable = false;
-        
+
         yield return new WaitForSeconds(0.5f);
         _slimeObject.GetComponent<Animator>().Play("SlimeLeavesAnimation");
         _exitEntranceObjects[1].GetComponent<ExitScriptObject>()._exitParticle.Play();
@@ -1227,9 +1340,18 @@ public class NewMainGameplay : MonoBehaviour
         _elementsBool.Clear();
         MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
         MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
-       
+
         yield return new WaitForSeconds(1);
-        StartCoroutine(NexttLevel());
+        switch (_idStage == MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList.Length - 1)
+        {
+            case false:
+  
+                StartCoroutine(NexttLevel());
+                break;
+            case true:    
+                NextWorld();
+                break;
+        }
 
     }
 
@@ -1245,6 +1367,15 @@ public class NewMainGameplay : MonoBehaviour
             case 0:
                 MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
                 MainController.Instance._onWorldGlobal = 3;
+                break;
+            case 1:
+                MainController.Instance._onWorldGlobal = 0;
+                break;
+            case 2:
+                MainController.Instance._onWorldGlobal = 1;
+                break;
+            case 3:
+                MainController.Instance._onWorldGlobal = 2;
                 break;
         }
         MainController.Instance._introSpecial = true;

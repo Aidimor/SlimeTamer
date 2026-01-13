@@ -1,0 +1,43 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06444818b2c5c5245a52126020660b89, type: 3}
+  m_Name: SnowMap-3
+  m_EditorClassIdentifier: 
+  _spawnPoint: 14
+  _exitPoint: 1
+  _allPlaces: 0000000001000000050000000a0000000e0000000f000000100000001100000012000000130000001400000015000000160000001700000018000000
+  _elements:
+  - _onPlace: 24
+    _elementType: 1
+    _quantity: 1
+  - _onPlace: 19
+    _elementType: 1
+    _quantity: 1
+  - _onPlace: 17
+    _elementType: 2
+    _quantity: 1
+  _hazards:
+  - _onPlace: 0
+    _hazards: 3
+    _finished: 0
+  - _onPlace: 20
+    _hazards: 2
+    _finished: 0
+  - _onPlace: 15
+    _hazards: 0
+    _finished: 0
+  - _onPlace: 22
+    _hazards: 0
+    _finished: 0
+  _atomPlace: 
+  _stepsPlace: 
+  _bossAssets: []
