@@ -1,0 +1,41 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06444818b2c5c5245a52126020660b89, type: 3}
+  m_Name: Boss5(Forest)
+  m_EditorClassIdentifier: 
+  _spawnPoint: 0
+  _exitPoint: 20
+  _allPlaces: 00000000050000000600000007000000080000000a0000000b0000000c0000000d0000000f0000001000000011000000120000001400000015000000
+  _elements:
+  - _onPlace: 17
+    _elementType: 1
+    _quantity: 2
+  - _onPlace: 11
+    _elementType: 2
+    _quantity: 1
+  _hazards:
+  - _onPlace: 15
+    _hazards: 0
+    _finished: 0
+  - _onPlace: 21
+    _hazards: 0
+    _finished: 0
+  _atomPlace: 06000000
+  _stepsPlace: 
+  _bossAssets:
+  - _xposition: 2
+    _yposition: 0
+    _groundAttacks:
+    - _groundID: 13
+      _attackCount: 5
+      _tentacleID: 0
+  _wind: 2

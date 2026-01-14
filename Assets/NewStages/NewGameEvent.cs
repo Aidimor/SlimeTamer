@@ -74,4 +74,13 @@ public class NewGameEvent : ScriptableObject
         public GroundAttacks[] _groundAttacks;
     }
     public BossAssets[] _bossAssets;
+
+    [System.Serializable]
+    public enum Wind
+    {
+        Center,
+        Left,
+        Right
+    }
+    public Wind _wind;
 }

@@ -115,6 +115,7 @@ public class NewMainGameplay : MonoBehaviour
 
     public int _turnsReturnToWater;
     public bool _sandStormOn;
+    public int _turnToStorm;
     void Start()
     {
         StartVoids();
@@ -248,8 +249,8 @@ public class NewMainGameplay : MonoBehaviour
         yield return new WaitForSeconds(1);
         _slimeObject.GetComponent<Animator>().Play("SlimeEnters");
         yield return new WaitForSeconds(0.5f);
-   
-        _movementAvailable = true;
+        _turnToStorm = 5;
+             _movementAvailable = true;
      
  
     }
@@ -761,6 +762,62 @@ public class NewMainGameplay : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         switch (MainController.Instance._onWorldGlobal)
         {
+            case 1:
+                _turnToStorm--;
+                if(_turnToStorm <= 0)
+                {
+                    switch (_allStages[
+                  MainController.Instance._allStagesData[
+                      MainController.Instance._onWorldGlobal
+                  ]._stageList[_idStage]
+              ]._wind)
+                    {
+                        case NewGameEvent.Wind.Left:
+                            _windParticle[0].Play();
+                            yield return new WaitForSeconds(0.25f);
+
+                            if (_movesAvailable[2] &&
+                                _onPose != 4 &&
+                                _onPose != 9 &&
+                                _onPose != 14 &&
+                                _onPose != 19)
+                            {
+                                _onPose++;
+                            }
+
+                            yield return new WaitForSeconds(0.5f);
+                            break;
+
+                        case NewGameEvent.Wind.Right:
+                            _windParticle[1].Play();
+                            yield return new WaitForSeconds(0.25f);
+
+                            if (_movesAvailable[3] &&
+                                _onPose != 0 &&
+                                _onPose != 5 &&
+                                _onPose != 10 &&
+                                _onPose != 15 &&
+                                _onPose != 20)
+                            {
+                                _onPose--;
+                            }
+
+                            yield return new WaitForSeconds(0.5f);
+                            break;
+                    }
+
+                    _windParticle[0].Stop();
+                    _windParticle[1].Stop();
+                    CalculateMoves();
+                    AtomDetection();
+                    ElementDetection();
+                    HazardDetection();
+                    StepDetection();
+                    ExitDetection();
+                    _turnToStorm = 5;
+                }
+                   
+                break;
             case 3:
                 switch (_sandStormOn)
                 {
