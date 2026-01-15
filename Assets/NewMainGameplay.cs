@@ -11,6 +11,8 @@ public class NewMainGameplay : MonoBehaviour
     public Transform[] _allPositions;
     public GameObject[] _groundAssets;
     public NewGameEvent[] _allStages;
+    //public NewGameEvent[] _allNormalStages;
+    //public NewGameEvent[] _allBossStages;
     public List<GameObject> _allGrounds = new List<GameObject>();
     public List<GameObject> _allElements = new List<GameObject>();
     public List<GameObject> _allHazards = new List<GameObject>();
@@ -116,8 +118,15 @@ public class NewMainGameplay : MonoBehaviour
     public int _turnsReturnToWater;
     public bool _sandStormOn;
     public int _turnToStorm;
+    public bool _AtomsPanelOn;
+   
+    public int _onPoseJoystick;
+    public Vector2[] _allJoystickPoses;
+
+
+  
     void Start()
-    {
+    {   
         StartVoids();
         MainController.Instance._bordersAnimator.SetBool("BorderOut", true);
         MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
@@ -133,6 +142,8 @@ public class NewMainGameplay : MonoBehaviour
         }
     }
 
+
+
     public void StartVoids()
     {
         if (!_restarted)
@@ -142,8 +153,11 @@ public class NewMainGameplay : MonoBehaviour
         }
         SetElements();
         SetAtoms();
-        if(_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets.Length > 0)
-        {
+
+        var Main = MainController.Instance;
+        //if (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets.Length > 0)
+        if (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets.Length > 0)
+            {
             SetBossAttacks();
         }
 
@@ -152,7 +166,7 @@ public class NewMainGameplay : MonoBehaviour
  
         _atomsObtained = 0;
 
-        _onPose = _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._spawnPoint;
+        _onPose = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._spawnPoint;
 
         // 🔑 POSICIÓN CORRECTA
         _slimeObject.GetComponent<RectTransform>().position =
@@ -167,12 +181,13 @@ public class NewMainGameplay : MonoBehaviour
 
     public IEnumerator StartGameNumerator()
     {
+        var Main = MainController.Instance;
         _tutorialAssets._continueText.gameObject.SetActive(false);
 
         //_slimeObject.GetComponent<RectTransform>().localScale = Vector3.zero;
         if (!_tutorialAssets._tutorialDeployed)
         {
-            switch (MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage])
+            switch (Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage])
             {
                 case 0:
                     yield return new WaitForSeconds(1);
@@ -230,20 +245,17 @@ public class NewMainGameplay : MonoBehaviour
   
         _tutorialAssets._tutorialDeployed = true;
 
-        var StageInfo2 = MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal];
+        var StageInfo2 = Main._allTurnsInfo[Main._onWorldGlobal];
 
-        if (_idStage >= StageInfo2._stageList.Length - 1)
+        if (_idStage >= StageInfo2._stagesID.Count - 1)
         {
             _exitEntranceObjects[1].GetComponent<ExitScriptObject>()._exitPlatforms[0].gameObject.SetActive(false);
             _exitEntranceObjects[1].GetComponent<ExitScriptObject>()._exitPlatforms[1].gameObject.SetActive(true);
-
-            Debug.Log("normal");
         }
         else
         {
             _exitEntranceObjects[1].GetComponent<ExitScriptObject>()._exitPlatforms[0].gameObject.SetActive(true);
-            _exitEntranceObjects[1].GetComponent<ExitScriptObject>()._exitPlatforms[1].gameObject.SetActive(false);
-            Debug.Log("finalk");
+            _exitEntranceObjects[1].GetComponent<ExitScriptObject>()._exitPlatforms[1].gameObject.SetActive(false);    
         }
 
         yield return new WaitForSeconds(1);
@@ -258,7 +270,10 @@ public class NewMainGameplay : MonoBehaviour
 
     void Update()
     {
-     
+        if (!_AtomsPanelOn)
+        {
+
+  
             PlayerMovementController();
         _slimeMainColor = Color.Lerp(_slimeMainColor, _slimeInfo._allSlimeColors[_slimeInfo._slimeID], 2 * Time.deltaTime);
         _scriptSlime._slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_BaseColor", _slimeMainColor);
@@ -270,16 +285,117 @@ public class NewMainGameplay : MonoBehaviour
         _slimeInfo._stepsText.text = MainController.Instance._saveLoadValues._totalSteps.ToString();
 
         _mainUI.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_mainUI.GetComponent<RectTransform>().anchoredPosition, new Vector2(0, 0), 2 * Time.deltaTime);
+        }
+        if (Input.GetButtonDown("Pause") && MainController.Instance._saveLoadValues._pauseAvailable)
+        {
+            switch (_AtomsPanelOn)
+            {
+                case true:
+                    break;
+                case false:
+                    break;
+            }
+            _AtomsPanelOn = !_AtomsPanelOn;
+            MainController.Instance._AtomAnimator.SetBool("AtomsIn", _AtomsPanelOn);
+        }
+        else
+        {
+            AtomPanelController();
+        }
     }
+
+    public void AtomPanelController()
+    {
+        if (Input.GetAxisRaw("Vertical") > 0)
+        {
+            _onPoseJoystick = 1;
+        }
+        if (Input.GetAxisRaw("Vertical") < 0)
+        {
+            _onPoseJoystick = 2;
+        }
+        if (Input.GetAxisRaw("Horizontal") > 0)
+        {
+            _onPoseJoystick = 3;
+        }
+        if (Input.GetAxisRaw("Horizontal") < 0)
+        {
+            _onPoseJoystick = 4;
+        }
+
+        if(Input.GetAxisRaw("Horizontal") == 0 && Input.GetAxisRaw("Vertical") == 0)
+        {
+            _onPoseJoystick = 0;
+        }
+
+       MainController.Instance._joystickImage.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(MainController.Instance._joystickImage.GetComponent<RectTransform>().anchoredPosition,
+        _allJoystickPoses[_onPoseJoystick], 5 * Time.deltaTime);
+
+        for(int i = 0; i < 4; i++)
+        {
+            MainController.Instance._elementsQuantityText[i].text = _slimeInfo._elementsParticles[i].ToString();
+        }
+
+        MainController.Instance._atomQuantityText.text = MainController.Instance._saveLoadValues._totalAtoms.ToString();
+
+        if (Input.GetButtonDown("Submit") && !_transformed && MainController.Instance._saveLoadValues._totalAtoms > 0)
+        {
+            switch (_onPoseJoystick)
+            {
+                case 1:
+                    _slimeInfo._elementsParticles[0]++;
+                    MainController.Instance._saveLoadValues._totalAtoms--;
+                    if (!_transformed)
+                    {
+                        TransformSlimeVoid();
+           
+                    }
+                    break;
+                case 2:
+                    _slimeInfo._elementsParticles[1]++;
+                    MainController.Instance._saveLoadValues._totalAtoms--;
+                    if (!_transformed)
+                    {
+                        TransformSlimeVoid();
+              
+                    }
+                    break;
+                 
+                case 3:
+                    _slimeInfo._elementsParticles[2]++;
+                    MainController.Instance._saveLoadValues._totalAtoms--;
+                    if (!_transformed)
+                    {
+                        TransformSlimeVoid();
+                 
+                    }
+                    break;
+            
+                case 4:
+                    _slimeInfo._elementsParticles[3]++;
+                    MainController.Instance._saveLoadValues._totalAtoms--;
+                    if (!_transformed)
+                    {
+                        TransformSlimeVoid();
+          
+                    }
+                    break;
+            }
+        }
+  
+    }
+
 
     // ===================== STAGE =====================
 
     void StageCreationVoid()
     {
+        var Main = MainController.Instance;
         _allGrounds.Clear();
 
-        foreach (int place in _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._allPlaces)
-        {
+        //foreach (int place in _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._allPlaces)
+            foreach (int place in _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._allPlaces)
+            {
             GameObject ground = Instantiate(_groundAssets[0], _parent);
 
             RectTransform groundRT = ground.GetComponent<RectTransform>();
@@ -301,18 +417,18 @@ public class NewMainGameplay : MonoBehaviour
         
         }
 
-        if(_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets.Length > 0)
+        if(_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets.Length > 0)
         {
             _bossUI.SetActive(true);
 
 
-            switch (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets[0]._yposition)
+            switch (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets[0]._yposition)
             {
                 case NewGameEvent.BossAssets._Yposition.Top:
                     _bossUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(_bossUI.GetComponent<RectTransform>().anchoredPosition.x, -90f);
                     _bossUI.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
 
-                    switch (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets[0]._xposition)
+                    switch (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets[0]._xposition)
                     {
                         case NewGameEvent.BossAssets._Xposition.Left:
                             _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 45);
@@ -330,7 +446,7 @@ public class NewMainGameplay : MonoBehaviour
                     _bossUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(_bossUI.GetComponent<RectTransform>().anchoredPosition.x, 0);
                     _bossUI.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
 
-                    switch (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets[0]._xposition)
+                    switch (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets[0]._xposition)
                     {
                         case NewGameEvent.BossAssets._Xposition.Left:
                             _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 90);
@@ -348,7 +464,7 @@ public class NewMainGameplay : MonoBehaviour
                     _bossUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(_bossUI.GetComponent<RectTransform>().anchoredPosition.x, 90f);
                     _bossUI.GetComponent<RectTransform>().localScale = new Vector3(1, -1, 1);
 
-                    switch (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets[0]._xposition)
+                    switch (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets[0]._xposition)
                     {
                         case NewGameEvent.BossAssets._Xposition.Left:
                             _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, -45);
@@ -373,7 +489,8 @@ public class NewMainGameplay : MonoBehaviour
 
     void SetElements()
     {
-        foreach (var data in _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._elements)
+        var Main = MainController.Instance;
+        foreach (var data in _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._elements)
         {
             GameObject element = Instantiate(_elementPrefab, _parent);
             RectTransform rt = element.GetComponent<RectTransform>();
@@ -404,45 +521,48 @@ public class NewMainGameplay : MonoBehaviour
 
     void SetAtoms()
     {
-        for (int i = 0; i < _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._atomPlace.Length; i++)
+        var Main = MainController.Instance;
+        for (int i = 0; i < _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._atomPlace.Length; i++)
         {
             GameObject atom = Instantiate(_atomPrefab, _parent);
 
             RectTransform rt = atom.GetComponent<RectTransform>();
             RectTransform targetRT =
-                _allPositions[_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._atomPlace[i]]
+                _allPositions[_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._atomPlace[i]]
                 .GetComponent<RectTransform>();
 
             rt.position = targetRT.position;
             rt.localScale = Vector3.one;
 
             _allAtoms.Add(atom);
-            _atomList.Add(_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._atomPlace[i]);
+            _atomList.Add(_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._atomPlace[i]);
         }
     }
 
     void SetSteps()
     {
-        for (int i = 0; i < _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._stepsPlace.Length; i++)
+        var Main = MainController.Instance;
+        for (int i = 0; i < _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._stepsPlace.Length; i++)
         {
             GameObject steps = Instantiate(_stepsPrefab, _parent);
 
             RectTransform rt = steps.GetComponent<RectTransform>();
             RectTransform targetRT =
-                _allPositions[_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._stepsPlace[i]]
+                _allPositions[_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._stepsPlace[i]]
                 .GetComponent<RectTransform>();
 
             rt.position = targetRT.position;
             rt.localScale = Vector3.one;
 
             _allSteps.Add(steps);
-            _stepsList.Add(_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._stepsPlace[i]);
+            _stepsList.Add(_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._stepsPlace[i]);
         }
     }
 
     void SetHazards()
     {
-        foreach (var data in _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._hazards)
+        var Main = MainController.Instance;
+        foreach (var data in _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._hazards)
         {
             GameObject hazard = Instantiate(_hazardPrefab, _parent);
             RectTransform rt = hazard.GetComponent<RectTransform>();
@@ -476,9 +596,8 @@ public class NewMainGameplay : MonoBehaviour
 
     void SetBossAttacks()
     {
-        foreach (var data in _allStages[
-            MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]
-            ._stageList[_idStage]]
+        var Main = MainController.Instance;
+        foreach (var data in _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]
             ._bossAssets[0]
             ._groundAttacks)
         {
@@ -501,9 +620,8 @@ public class NewMainGameplay : MonoBehaviour
 
     public IEnumerator BossAttackTurn()
     {
-        var CurrentGrounds = _allStages[
-            MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]
-            ._stageList[_idStage]]
+        var Main = MainController.Instance;
+        var CurrentGrounds = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]
             ._bossAssets[0];
         ReduceCounter();
 
@@ -514,6 +632,10 @@ public class NewMainGameplay : MonoBehaviour
                 case -1:
                     _allCountAttacks[i] = CurrentGrounds
                         ._groundAttacks[i]._attackCount;
+
+                    _allAttacks[i]
+.GetComponent<AtomScript>()
+._onTurnText.text = _allCountAttacks[i].ToString();
                     break;
 
                 case 0:
@@ -523,8 +645,11 @@ public class NewMainGameplay : MonoBehaviour
                     //ReduceCounter();
                     for (int y = 0; y < CurrentGrounds._groundAttacks.Length; y++)
                     {
+                        Debug.Log(CurrentGrounds._groundAttacks[i]._groundID);
+                        Debug.Log("Pose: " + _onPose);
                         if (_onPose == CurrentGrounds._groundAttacks[y]._groundID)
                         {
+                            Debug.Log("SLIME MUERE");
                             StopMoveCoroutine();
                            _slimeObject.GetComponent<Animator>().Play("SlimeDies");
                             _deadSlimeParticle.Play();
@@ -573,9 +698,10 @@ public class NewMainGameplay : MonoBehaviour
 
 
     void SetEntranceExit()
-    {     
-        CreateMarker(_entrancePrefab, _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._spawnPoint);
-        CreateMarker(_exitPrefab, _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._exitPoint);       
+    {
+        var Main = MainController.Instance;
+        CreateMarker(_entrancePrefab, _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._spawnPoint);
+        CreateMarker(_exitPrefab, _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._exitPoint);       
      
     }
 
@@ -752,11 +878,12 @@ public class NewMainGameplay : MonoBehaviour
 
     public IEnumerator MoveNumerator()
     {
+        var Main = MainController.Instance;
         _movementAvailable = false;
-        if (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets.Length > 0)
-        {
-          StartCoroutine(BossAttackTurn());
-        } 
+        //if (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets.Length > 0)
+        //{
+        //    StartCoroutine(BossAttackTurn());
+        //}
         _slimeAnimator.SetBool("Moving", true);
 
         yield return new WaitForSeconds(0.5f);
@@ -766,11 +893,7 @@ public class NewMainGameplay : MonoBehaviour
                 _turnToStorm--;
                 if(_turnToStorm <= 0)
                 {
-                    switch (_allStages[
-                  MainController.Instance._allStagesData[
-                      MainController.Instance._onWorldGlobal
-                  ]._stageList[_idStage]
-              ]._wind)
+                    switch (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._wind)
                     {
                         case NewGameEvent.Wind.Left:
                             _windParticle[0].Play();
@@ -785,7 +908,8 @@ public class NewMainGameplay : MonoBehaviour
                                 _onPose++;
                             }
 
-                            yield return new WaitForSeconds(0.5f);
+                            yield return new WaitForSeconds(0.25f);
+                          
                             break;
 
                         case NewGameEvent.Wind.Right:
@@ -802,10 +926,11 @@ public class NewMainGameplay : MonoBehaviour
                                 _onPose--;
                             }
 
-                            yield return new WaitForSeconds(0.5f);
+                            yield return new WaitForSeconds(0.25f);
+                      
                             break;
                     }
-
+             
                     _windParticle[0].Stop();
                     _windParticle[1].Stop();
                     CalculateMoves();
@@ -839,7 +964,11 @@ public class NewMainGameplay : MonoBehaviour
 
                 break;
         }
-        if(_turnsReturnToWater < 0 && _slimeInfo._slimeID == 2)
+        if (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets.Length > 0)
+        {
+            StartCoroutine(BossAttackTurn());
+        }
+        if (_turnsReturnToWater < 0 && _slimeInfo._slimeID == 2)
         {
            
             _turnsReturnToWater++;
@@ -862,11 +991,12 @@ public class NewMainGameplay : MonoBehaviour
 
     void CalculateMoves()
     {
-        var _stageId = MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage];
+        var Main = MainController.Instance;
+        var _stageId = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
         for (int i = 0; i < 4; i++)
             _movesAvailable[i] = false;
 
-        foreach (int place in _allStages[_stageId]._allPlaces)
+        foreach (int place in _stageId._allPlaces)
         {
             if (place == _onPose + 5) _movesAvailable[0] = true;
             if (place == _onPose - 5) _movesAvailable[1] = true;
@@ -874,14 +1004,14 @@ public class NewMainGameplay : MonoBehaviour
             if (place == _onPose - 1) _movesAvailable[3] = true;
         }
 
-        for(int i = 0; i < _allStages[_stageId]._hazards.Length; i++)
+        for(int i = 0; i < _stageId._hazards.Length; i++)
         {
-            if (_allStages[_stageId]._hazards[i]._hazards == NewGameEvent.Hazards.HazardsType.Column)
+            if (_stageId._hazards[i]._hazards == NewGameEvent.Hazards.HazardsType.Column)
             {
-                if(_onPose + 5 == _allStages[_stageId]._hazards[i]._onPlace && !_allStages[_stageId]._hazards[i]._finished) _movesAvailable[0] = false;
-                if (_onPose - 5 == _allStages[_stageId]._hazards[i]._onPlace && !_allStages[_stageId]._hazards[i]._finished) _movesAvailable[1] = false;
-                if (_onPose + 1 == _allStages[_stageId]._hazards[i]._onPlace && !_allStages[_stageId]._hazards[i]._finished) _movesAvailable[2] = false;
-                if (_onPose - 1 == _allStages[_stageId]._hazards[i]._onPlace && !_allStages[_stageId]._hazards[i]._finished) _movesAvailable[3] = false;
+                if(_onPose + 5 == _stageId._hazards[i]._onPlace && !_stageId._hazards[i]._finished) _movesAvailable[0] = false;
+                if (_onPose - 5 == _stageId._hazards[i]._onPlace && !_stageId._hazards[i]._finished) _movesAvailable[1] = false;
+                if (_onPose + 1 == _stageId._hazards[i]._onPlace && !_stageId._hazards[i]._finished) _movesAvailable[2] = false;
+                if (_onPose - 1 == _stageId._hazards[i]._onPlace && !_stageId._hazards[i]._finished) _movesAvailable[3] = false;
 
             }
         }
@@ -932,16 +1062,17 @@ public class NewMainGameplay : MonoBehaviour
 
     public void RestartLevel()
     {
-        var _realID = MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage];
+        var Main = MainController.Instance;
+        var _realID = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
         MainController.Instance._restartBeam.Play("RestartBeam");
         _slimeObject.GetComponent<Animator>().Play("SlimeLeavesAnimation");
         StopMoveCoroutine();
         _movementAvailable = false;
-        for (int i = 0; i < _allStages[_realID]._hazards.Length; i++)
+        for (int i = 0; i < _realID._hazards.Length; i++)
         {
-            _allStages[_realID]._hazards[i]._finished = false;
+            _realID._hazards[i]._finished = false;
         }
-        Debug.Log(_allStages[_realID]._spawnPoint);
+        Debug.Log(_realID._spawnPoint);
         for (int i = 0; i < _allGrounds.Count; i++)
         {
             _allGrounds[i].GetComponent<StageGroundScript>()._lockedBool = false;
@@ -989,13 +1120,14 @@ public class NewMainGameplay : MonoBehaviour
 
     public IEnumerator NexttLevel()
     {
-        var _stageId = MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage];
+        var Main = MainController.Instance;
+        var _stageId = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
         StopMoveCoroutine();
         _movementAvailable = false;
         _tutorialAssets._tutorialDeployed = false;
-        for (int i = 0; i < _allStages[_stageId]._hazards.Length; i++)
+        for (int i = 0; i < _stageId._hazards.Length; i++)
         {
-            _allStages[_stageId]._hazards[i]._finished = false;
+            _stageId._hazards[i]._finished = false;
         }
      
   
@@ -1039,7 +1171,7 @@ public class NewMainGameplay : MonoBehaviour
         _restarted = false;
         // NUEVO spawn
         _idStage++;
-        _onPose = _allStages[_stageId]._spawnPoint;
+        _onPose = _stageId._spawnPoint;
 
         // 🔑 POSICIÓN CORRECTA
         _slimeObject.GetComponent<RectTransform>().position =
@@ -1065,7 +1197,8 @@ public class NewMainGameplay : MonoBehaviour
 
     public void HazardDetection()
     {
-        var HazardInfo = _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]];
+        var Main = MainController.Instance;
+        var HazardInfo = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
         for (int i = 0; i < HazardInfo._hazards.Length; i++)
         {
             if(_onPose == HazardInfo._hazards[i]._onPlace)
@@ -1137,7 +1270,8 @@ public class NewMainGameplay : MonoBehaviour
 
     public void ElementDetection()
     {
-        var ElementInfo = _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]];
+        var Main = MainController.Instance;
+        var ElementInfo = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
         for (int i = 0; i < ElementInfo._elements.Length; i++)
         {
             if (_onPose == ElementInfo._elements[i]._onPlace && _elementsBool[i])
@@ -1191,14 +1325,14 @@ public class NewMainGameplay : MonoBehaviour
 
     public IEnumerator AtomDetection()
     {
-
+        var Main = MainController.Instance;
         for (int i = 0; i < _atomList.Count; i++)
         {
             if (_onPose == _atomList[i])
             {
          
 
-                if (MainController.Instance._onWorldGlobal == 0 && MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage] == 5)
+                if (MainController.Instance._onWorldGlobal == 0 && Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage] == 5)
                 {
                     StopMoveCoroutine();
                     _movementAvailable = false;
@@ -1217,15 +1351,18 @@ public class NewMainGameplay : MonoBehaviour
                     _allAtoms.RemoveAt(i);
                     _atomList.RemoveAt(i);
                     _atomsObtained++;
-                    while (!Input.GetButtonDown("Submit"))
+                    while (!Input.GetButtonDown("Pause"))
                     {
                         yield return null;
                     }
                     _tutorialAssets._continueText.gameObject.SetActive(false);
                     _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
                     _movementAvailable = true;
+                    MainController.Instance._AtomAnimator.SetBool("AtomsIn", true);
+                    MainController.Instance._saveLoadValues._pauseAvailable = true;
+                    _AtomsPanelOn = true;
 
-           
+
                 }
                 else
                 {
@@ -1347,6 +1484,8 @@ public class NewMainGameplay : MonoBehaviour
 
     public IEnumerator TransormatioNumerator()
     {
+        MainController.Instance._AtomAnimator.SetBool("AtomsIn", false);
+        _AtomsPanelOn = false;
         _transformed = true;
         StopMoveCoroutine();
         _movementAvailable = false;
@@ -1377,7 +1516,8 @@ public class NewMainGameplay : MonoBehaviour
 
     public void ExitDetection()
     {
-        var ExitID= _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._exitPoint;
+        var Main = MainController.Instance;
+        var ExitID= _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._exitPoint;
         if (_onPose == ExitID)
         {
 
@@ -1387,6 +1527,7 @@ public class NewMainGameplay : MonoBehaviour
 
     public IEnumerator ExitNumerator()
     {
+        var Main = MainController.Instance;
         StopMoveCoroutine();
         _movementAvailable = false;
 
@@ -1399,7 +1540,7 @@ public class NewMainGameplay : MonoBehaviour
         MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
 
         yield return new WaitForSeconds(1);
-        switch (_idStage == MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList.Length - 1)
+        switch (_idStage == Main._allTurnsInfo[Main._onWorldGlobal]._stagesID.Count - 1)
         {
             case false:
   
@@ -1442,8 +1583,5 @@ public class NewMainGameplay : MonoBehaviour
 
     }
 
-    public IEnumerator TransformSlimeNumerator()
-    {
-        yield return new WaitForSeconds(0.2f);
-    }
+ 
 }

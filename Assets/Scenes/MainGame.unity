@@ -297679,7 +297679,6 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 0bd79461e061e8b49b4e0b5e03cdf713, type: 2}
   - {fileID: 11400000, guid: e2e3549a613a07743a86278af0e33932, type: 2}
   - {fileID: 11400000, guid: 689fe1861d2434344b0ce9aef63770e0, type: 2}
-  - {fileID: 11400000, guid: 9b7f674efae269d4e933d4732dc23eab, type: 2}
   - {fileID: 11400000, guid: 35b29a015955988458f449a14be966aa, type: 2}
   - {fileID: 11400000, guid: 63ee66f77707c2143bdec389f80b9130, type: 2}
   - {fileID: 11400000, guid: dd5c11dd401611644b7344cf79442d1f, type: 2}
@@ -297687,16 +297686,22 @@ MonoBehaviour:
   - {fileID: 11400000, guid: bf1eb7608cc96c34dbbbf7f184289169, type: 2}
   - {fileID: 11400000, guid: d6722b1a3f0f0e041956e41582705e78, type: 2}
   - {fileID: 11400000, guid: 4980036d9a0048e4ea4956d6bb9f00e6, type: 2}
-  - {fileID: 11400000, guid: bb446b4d120064e42b836b2164079334, type: 2}
-  - {fileID: 11400000, guid: 9cfb2090d3087b248ba09311f9a38e3d, type: 2}
   - {fileID: 11400000, guid: 40e6abab39d7f884098253505a6cf526, type: 2}
   - {fileID: 11400000, guid: e7517297834b3794c9a427644e00afaf, type: 2}
   - {fileID: 11400000, guid: 7c88bac9b7fbe4a478d16098991f5205, type: 2}
-  - {fileID: 11400000, guid: 5ded8de8f54508c4db4d8a86517a7a30, type: 2}
   - {fileID: 11400000, guid: b3a4a1787506b0144a5ce013e81405cc, type: 2}
   - {fileID: 11400000, guid: 57123c6730f240848920e1b5e5aed099, type: 2}
   - {fileID: 11400000, guid: 98de08470edcb654c8e451b0d4af44e7, type: 2}
   - {fileID: 11400000, guid: b3ec26b0ae4f70941b199677eec54c62, type: 2}
+  - {fileID: 11400000, guid: 029c999c3126a83409841f14573ff451, type: 2}
+  - {fileID: 11400000, guid: b565f975d95bb7f4e9b62e683d741607, type: 2}
+  - {fileID: 11400000, guid: 8031979f2fb4ef045b16f2e79e31ba9d, type: 2}
+  - {fileID: 11400000, guid: c1ac0505a77654047aa7568140cb940c, type: 2}
+  - {fileID: 11400000, guid: da1f0ddc2915a654e932670d379365d2, type: 2}
+  - {fileID: 11400000, guid: 9b7f674efae269d4e933d4732dc23eab, type: 2}
+  - {fileID: 11400000, guid: bb446b4d120064e42b836b2164079334, type: 2}
+  - {fileID: 11400000, guid: 9cfb2090d3087b248ba09311f9a38e3d, type: 2}
+  - {fileID: 11400000, guid: 5ded8de8f54508c4db4d8a86517a7a30, type: 2}
   - {fileID: 11400000, guid: 88790108308623d40a98d9de26ad2a0a, type: 2}
   - {fileID: 11400000, guid: 0429667a09778f640962646d9396e9f6, type: 2}
   _allGrounds: []
@@ -297800,6 +297805,20 @@ MonoBehaviour:
   _turnsReturnToWater: 0
   _sandStormOn: 0
   _turnToStorm: 0
+  _AtomsPanelOn: 0
+  _onPoseJoystick: 0
+  _allJoystickPoses:
+  - {x: 0, y: 0}
+  - {x: 0, y: 20}
+  - {x: 0, y: -20}
+  - {x: 20, y: 0}
+  - {x: -20, y: 0}
+  _allTurnsInfo:
+  - _stagesID: 
+  - _stagesID: 
+  - _stagesID: 
+  - _stagesID: 
+  - _stagesID: 
 --- !u!1 &1221362315
 GameObject:
   m_ObjectHideFlags: 0

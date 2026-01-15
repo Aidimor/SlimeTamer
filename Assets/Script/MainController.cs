@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using TMPro;
 using LoL;
 using LoLSDK;
+using System.Collections.Generic;
 
 // Clase simple de progreso
 [System.Serializable]
@@ -33,6 +34,7 @@ public class MainController : MonoBehaviour
     public Animator _bordersAnimator;
     public Animator _cinematicBorders;
     public Animator _restartBeam;
+    public Animator _AtomAnimator;
     public AudioSource _bgmAS;
     public AudioClip[] _allBGM;
     public Animator _currencyAnimator;
@@ -49,6 +51,7 @@ public class MainController : MonoBehaviour
         public bool[] _progressSave = new bool[8];
         public int _totalSteps;
         public int _totalAtoms;
+        public bool _pauseAvailable;
         public int _progress = 0;
     }
 
@@ -104,14 +107,23 @@ public class MainController : MonoBehaviour
     public int _onWorldGlobal;
     public bool _introSpecial;
     private int _lastReportedProgress = 0;
-    [System.Serializable]
-    public class AllStagesData
-    {
-        public int[] _stageList;
-    }
-    public AllStagesData[] _allStagesData;
+    //[System.Serializable]
+    //public class AllStagesData
+    //{
+    //    public int[] _stageList;
+    //}
+    //public AllStagesData[] _allStagesData;
 
-   
+    public Image _joystickImage;
+    public TextMeshProUGUI _atomQuantityText;
+    public TextMeshProUGUI[] _elementsQuantityText;
+
+    [System.Serializable]
+    public class AllTurnsInfo
+    {
+        public List<int> _stagesID = new List<int>();
+    }
+    public AllTurnsInfo[] _allTurnsInfo;
 
     void Awake()
     {
@@ -133,6 +145,7 @@ public class MainController : MonoBehaviour
         {
             GameInitScript.Instance.mainController = this;
         }
+        SetStagesID();
     }
 
     public void StartGameContent()
@@ -140,6 +153,7 @@ public class MainController : MonoBehaviour
         Debug.Log("🚀 MainController: Contenido iniciado.");
         Time.timeScale = 1f;
         UpdateCurrencyUI();
+      
     }
 
     public void UpdateCurrencyUI()
@@ -157,6 +171,53 @@ public class MainController : MonoBehaviour
         {
             _pauseAssets._allSlimeText[i].gameObject.SetActive(_saveLoadValues._slimeUnlocked[i + 1]);
         }
+    }
+
+    public void SetStagesID()
+    {
+
+        _allTurnsInfo[0]._stagesID = new List<int> { 0, 1, 2, 3, 4, 5 };
+        List<int> posiblesNumeros = new List<int> { 6, 7, 8, 9, 10, 11, 12, 16, 17, 18, 19 };
+
+        for (int i = 0; i < 6; i++)
+        {
+            int randomIndex = Random.Range(0, posiblesNumeros.Count);
+            _allTurnsInfo[1]._stagesID.Add(posiblesNumeros[randomIndex]);
+        }
+        _allTurnsInfo[1]._stagesID.Add(29);
+        _allTurnsInfo[1]._stagesID.Add(30);
+
+        _allTurnsInfo[2]._stagesID.Add(13);
+        for (int i = 0; i < 1; i++)
+        {
+            int randomIndex = Random.Range(0, posiblesNumeros.Count);
+            _allTurnsInfo[2]._stagesID.Add(posiblesNumeros[randomIndex]);
+        }
+        _allTurnsInfo[2]._stagesID.Add(14);
+        for (int i = 0; i < 2; i++)
+        {
+            int randomIndex = Random.Range(0, posiblesNumeros.Count);
+            _allTurnsInfo[2]._stagesID.Add(posiblesNumeros[randomIndex]);
+        }
+        _allTurnsInfo[2]._stagesID.Add(15);
+        _allTurnsInfo[2]._stagesID.Add(28);
+
+        for (int i = 0; i < 6; i++)
+        {
+            int randomIndex = Random.Range(0, posiblesNumeros.Count);
+            _allTurnsInfo[3]._stagesID.Add(posiblesNumeros[randomIndex]);
+        }
+        _allTurnsInfo[3]._stagesID.Add(26);
+
+
+
+        List<int> LastposiblesNumeros = new List<int> { 6, 7, 8, 9, 10, 11, 12, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
+        for (int i = 0; i < 10; i++)
+        {
+            int randomIndex = Random.Range(0, LastposiblesNumeros.Count);
+            _allTurnsInfo[4]._stagesID.Add(LastposiblesNumeros[randomIndex]);
+        }
+
     }
 
     public void LoadSceneByName(string sceneName) => SceneManager.LoadScene(sceneName);
