@@ -70,11 +70,10 @@ public class NewMainGameplay : MonoBehaviour
     public List<int> _atomList = new List<int>();
     public List<int> _stepsList = new List<int>();
     public Color _slimeMainColor;
-    public Animator _transformAnimator;
+    //public Animator _transformAnimator;
     bool _transformed;
 
-    public TextMeshProUGUI _formulaText;
-    public TextMeshProUGUI _nameText;
+
 
     public ParticleSystem _hitWalk;
     public ParticleSystem _waterWalk;
@@ -122,7 +121,7 @@ public class NewMainGameplay : MonoBehaviour
    
     public int _onPoseJoystick;
     public Vector2[] _allJoystickPoses;
-
+    public Animator _bossAnimator;
 
   
     void Start()
@@ -285,18 +284,22 @@ public class NewMainGameplay : MonoBehaviour
         _slimeInfo._stepsText.text = MainController.Instance._saveLoadValues._totalSteps.ToString();
 
         _mainUI.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_mainUI.GetComponent<RectTransform>().anchoredPosition, new Vector2(0, 0), 2 * Time.deltaTime);
+
+            if (Input.GetButtonDown("Submit") && _tutorialAssets._tutorialDeployed)
+            {
+                RestartLevel();
+            }
+        }
+        else
+        {
+          
         }
         if (Input.GetButtonDown("Pause") && MainController.Instance._saveLoadValues._pauseAvailable)
         {
-            switch (_AtomsPanelOn)
-            {
-                case true:
-                    break;
-                case false:
-                    break;
-            }
+    
             _AtomsPanelOn = !_AtomsPanelOn;
             MainController.Instance._AtomAnimator.SetBool("AtomsIn", _AtomsPanelOn);
+
         }
         else
         {
@@ -352,7 +355,7 @@ public class NewMainGameplay : MonoBehaviour
                     }
                     break;
                 case 2:
-                    _slimeInfo._elementsParticles[1]++;
+                    _slimeInfo._elementsParticles[3]++;
                     MainController.Instance._saveLoadValues._totalAtoms--;
                     if (!_transformed)
                     {
@@ -372,7 +375,7 @@ public class NewMainGameplay : MonoBehaviour
                     break;
             
                 case 4:
-                    _slimeInfo._elementsParticles[3]++;
+                    _slimeInfo._elementsParticles[1]++;
                     MainController.Instance._saveLoadValues._totalAtoms--;
                     if (!_transformed)
                     {
@@ -499,12 +502,22 @@ public class NewMainGameplay : MonoBehaviour
 
             ElementOrbScript orb = element.GetComponent<ElementOrbScript>();
             orb._onPose = data._onPlace;
-            orb.ID = data._elementType switch
+            switch (data._elementType)
             {
-                NewGameEvent.Elements.ElementType.C => 0,
-                NewGameEvent.Elements.ElementType.H => 1,
-                _ => 2
-            };
+                case NewGameEvent.Elements.ElementType.C:
+                    orb.ID = 0;
+                    break;
+                case NewGameEvent.Elements.ElementType.H:
+                    orb.ID = 1;
+                    break;
+                case NewGameEvent.Elements.ElementType.O:
+                    orb.ID = 2;
+                    break;
+                case NewGameEvent.Elements.ElementType.Fe:
+                    orb.ID = 3;
+                    break;
+            }
+
 
             orb._quantity = data._quantity;
             orb.ElementSetVoid();
@@ -624,7 +637,7 @@ public class NewMainGameplay : MonoBehaviour
         var CurrentGrounds = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]
             ._bossAssets[0];
         ReduceCounter();
-
+     
         for (int i = 0; i < _allCountAttacks.Count; i++)
         {
             switch (_allCountAttacks[i])
@@ -639,6 +652,7 @@ public class NewMainGameplay : MonoBehaviour
                     break;
 
                 case 0:
+                    _bossAnimator.SetTrigger("Attack");
                     _tentacleAssets[_onCamera]._tentacle
                         .SetTrigger("TentacleIn");
 
@@ -797,7 +811,7 @@ public class NewMainGameplay : MonoBehaviour
         _buttonPressed = true;
 
         bool restart = IsLocked();
-
+        Debug.Log("restart = " + restart);
         // 🔑 SIEMPRE recalcular
         CalculateMoves();
         HazardDetection();
@@ -818,39 +832,28 @@ public class NewMainGameplay : MonoBehaviour
 
     bool IsLocked()
     {
-        if (MainController.Instance._saveLoadValues._totalSteps > 0)
+        for (int i = 0; i < _allGrounds.Count; i++)
         {
-          
-            for (int i = 0; i < _allGrounds.Count; i++)
-            {
-                if (_allGrounds[i].GetComponent<StageGroundScript>()._id == _onPose)
-                {
-                    if (_allGrounds[i].GetComponent<StageGroundScript>()._lockedBool)
-                    {
-                        MainController.Instance._saveLoadValues._totalSteps--;
-                        //_allGrounds[i].GetComponent<StageGroundScript>()._lockImage.color = _lockedColors[2];
-                        break;
-                    }
-         
-                }
-            }
-            return false;
-        }
-  
-
-
-        foreach (GameObject g in _allGrounds)
-        {
-            StageGroundScript ground = g.GetComponent<StageGroundScript>();
+            StageGroundScript ground = _allGrounds[i].GetComponent<StageGroundScript>();
 
             if (ground._id == _onPose && ground._lockedBool)
             {
-                return true;
+                if (MainController.Instance._saveLoadValues._totalSteps > 0)
+                {
+                    MainController.Instance._saveLoadValues._totalSteps--;
+                    ground._lockImage.color = _lockedColors[2];
+                    return false; // estaba locked pero se desbloquea con pasos
+                }
+                else
+                {
+                    return true; // estaba locked y NO hay pasos
+                }
             }
         }
 
-        return false;
+        return false; // no se encontró locked
     }
+
 
     public void StartMoveCoroutine()
     {
@@ -1030,10 +1033,13 @@ public class NewMainGameplay : MonoBehaviour
                     if(MainController.Instance._saveLoadValues._totalSteps > 0)
                     {
                         ground._lockImage.color = _lockedColors[2];
+                       
                     }
+                 
+             
                 }
                 else
-                {
+                {                
                     ground._lockedBool = true;
                     ground._lockImage.color = _lockedColors[1];
                 }
@@ -1050,6 +1056,7 @@ public class NewMainGameplay : MonoBehaviour
                 {
                     MainController.Instance._saveLoadValues._totalSteps--;
                     _allGrounds[i].GetComponent<StageGroundScript>()._lockImage.color = _lockedColors[2];
+         
                     break;
                 }
 
@@ -1287,6 +1294,9 @@ public class NewMainGameplay : MonoBehaviour
                     case NewGameEvent.Elements.ElementType.O:
                         _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
                         break;
+                    case NewGameEvent.Elements.ElementType.Fe:
+                        _slimeInfo._elementsParticles[3] += ElementInfo._elements[i]._quantity;
+                        break;
                 }
              
                 _elementsBool[i] = false;
@@ -1434,12 +1444,12 @@ public class NewMainGameplay : MonoBehaviour
 
     public void TransformSlimeVoid()
     {
-        if (_slimeInfo._elementsParticles[0] >= 2)
+        if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[3] >= 1)
         {
             _slimeInfo._slimeID = 1;
-            Debug.Log("CARBONO");
-            _formulaText.text = "C2";
-            _nameText.text = GameInitScript.Instance.GetText("C2");
+            Debug.Log("Acero");
+           MainController.Instance._formulaText.text = "C+O";
+            MainController.Instance._nameText.text = GameInitScript.Instance.GetText("C2");
 
             StartCoroutine(TransormatioNumerator());
         }
@@ -1449,8 +1459,8 @@ public class NewMainGameplay : MonoBehaviour
             {
                 case 2:
                     _slimeInfo._slimeID = 4;
-                    _formulaText.text = "H20";
-                    _nameText.text = GameInitScript.Instance.GetText("ICE");
+                    MainController.Instance._formulaText.text = "H20";
+                    MainController.Instance._nameText.text = GameInitScript.Instance.GetText("ICE");
                     Debug.Log("HIELO");
                     _waterWalk.Play();
                     _smoke.Stop();
@@ -1459,8 +1469,8 @@ public class NewMainGameplay : MonoBehaviour
                     break;
                 default:
                     _slimeInfo._slimeID = 2;
-                    _formulaText.text = "H20";
-                    _nameText.text = GameInitScript.Instance.GetText("H20");
+                    MainController.Instance._formulaText.text = "H20";
+                    MainController.Instance._nameText.text = GameInitScript.Instance.GetText("H20");
                     Debug.Log("AGUA");
                     _waterWalk.Play();
                     _smoke.Stop();
@@ -1472,11 +1482,11 @@ public class NewMainGameplay : MonoBehaviour
         else if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[2] >= 2)
         {
             _slimeInfo._slimeID = 3;
-            _formulaText.text = "C02";
+            MainController.Instance._formulaText.text = "C02";
             Debug.Log("C02");
             _smoke.Play();
             _waterWalk.Stop();
-            _nameText.text = GameInitScript.Instance.GetText("CO2");
+            MainController.Instance._nameText.text = GameInitScript.Instance.GetText("CO2");
             StartCoroutine(TransormatioNumerator());
         }
 
@@ -1489,7 +1499,8 @@ public class NewMainGameplay : MonoBehaviour
         _transformed = true;
         StopMoveCoroutine();
         _movementAvailable = false;
-        _transformAnimator.SetBool("Success", true);
+        MainController.Instance._transformationAnimator.SetBool("Success", true);
+   
         yield return new WaitForSeconds(0.5f);
         switch (_slimeInfo._slimeID)
         {
@@ -1509,7 +1520,7 @@ public class NewMainGameplay : MonoBehaviour
                 break;
         }
         yield return new WaitForSeconds(1);
-        _transformAnimator.SetBool("Success", false);
+        MainController.Instance._transformationAnimator.SetBool("Success", false);
         yield return new WaitForSeconds(0.5f);
         _movementAvailable = true;
     }

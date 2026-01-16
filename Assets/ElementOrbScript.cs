@@ -19,7 +19,7 @@ public class ElementOrbScript : MonoBehaviour
 
     public void ElementSetVoid()
     {
-        _sprite.sprite = _allIcons[ID];
+        //_sprite.sprite = _allIcons[ID];
         _circle.color = _allColors[ID];
         _letter.color = _allColors[ID];
         if(_quantity > 0)
@@ -41,6 +41,9 @@ public class ElementOrbScript : MonoBehaviour
                 break;
             case 2:
                 _letter.text = "O";
+                break;
+            case 3:
+                _letter.text = "Fe";
                 break;
         }
     }

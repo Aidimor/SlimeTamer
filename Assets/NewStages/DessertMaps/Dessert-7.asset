@@ -17,7 +17,7 @@ MonoBehaviour:
   _allPlaces: 00000000050000000600000007000000080000000a0000000b0000000d0000000e000000120000001100000013000000160000001700000018000000
   _elements:
   - _onPlace: 19
-    _elementType: 0
+    _elementType: 1
     _quantity: 1
   - _onPlace: 24
     _elementType: 0
@@ -32,3 +32,4 @@ MonoBehaviour:
   _atomPlace: 
   _stepsPlace: 080000000a000000
   _bossAssets: []
+  _wind: 0

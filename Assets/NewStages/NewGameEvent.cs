@@ -19,7 +19,8 @@ public class NewGameEvent : ScriptableObject
         {
             C,
             H,
-            O
+            O,
+            Fe
         }
         public ElementType _elementType;
         public int _quantity;

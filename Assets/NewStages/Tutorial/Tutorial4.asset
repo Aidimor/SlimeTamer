@@ -20,11 +20,16 @@ MonoBehaviour:
     _elementType: 0
     _quantity: 1
   - _onPlace: 17
-    _elementType: 0
+    _elementType: 3
     _quantity: 1
   _hazards:
   - _onPlace: 23
     _hazards: 3
+    _finished: 0
   - _onPlace: 13
     _hazards: 2
+    _finished: 0
   _atomPlace: 
+  _stepsPlace: 
+  _bossAssets: []
+  _wind: 0
