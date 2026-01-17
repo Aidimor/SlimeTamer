@@ -1321,7 +1321,31 @@ public class NewMainGameplay : MonoBehaviour
                             StartCoroutine(RockNumerator());
                         }
                         break;
-            
+                    case NewGameEvent.Hazards.HazardsType.CenterElectricity:
+                        switch (_slimeInfo._slimeID)
+                        {
+                            case 1:
+                            case 2:
+                                StartCoroutine(ElectroNumerator());
+                                break;
+                            default:
+                              
+                                break;
+                        }
+
+                        break;
+                    case NewGameEvent.Hazards.HazardsType.Electricity:
+                        switch (_slimeInfo._slimeID)
+                        {
+                            case 1:
+                            case 2:
+                                break;
+                            default:
+                                RestartLevel();
+                                break;
+                        }
+                 
+                        break;
 
                 }
             }
@@ -1351,6 +1375,30 @@ public class NewMainGameplay : MonoBehaviour
             }      
         }
         _boulderSwitch._movingBoulder = true;
+        yield return new WaitForSeconds(1f);
+        _movementAvailable = true;
+    }
+    public IEnumerator ElectroNumerator()
+    {
+        _movementAvailable = false;
+        var Main = MainController.Instance;
+        var HazardInfo = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
+        yield return new WaitForSeconds(1);
+
+        _boulderSwitch._columnObject.GetComponent<ObstaclesScript>()._allObstacles[4].GetComponent<Animator>().SetTrigger("Column");
+        for (int z = 0; z < HazardInfo._hazards.Length; z++)
+        {
+            if (_allHazards[z].GetComponent<ObstaclesScript>()._id == 3)
+            {
+                HazardInfo._hazards[z]._finished = true;
+            }
+            if (_allHazards[z].GetComponent<ObstaclesScript>()._id == 7)
+            {
+                HazardInfo._hazards[z]._finished = true;
+                _allHazards[z].GetComponent<ObstaclesScript>()._electricityCenterParticle.Play();
+            }
+        }
+ 
         yield return new WaitForSeconds(1f);
         _movementAvailable = true;
     }

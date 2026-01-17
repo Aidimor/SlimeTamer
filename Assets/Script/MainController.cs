@@ -207,7 +207,7 @@ public class MainController : MonoBehaviour
         _allTurnsInfo[2]._stagesID.Add(15);
         _allTurnsInfo[2]._stagesID.Add(28);
 
-        _allTurnsInfo[3]._stagesID.Add(31);
+        _allTurnsInfo[3]._stagesID.Add(32);
         for (int i = 0; i < 6; i++)
         {
             int randomIndex = Random.Range(0, posiblesNumeros.Count);

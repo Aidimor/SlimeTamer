@@ -297497,6 +297497,7 @@ MonoBehaviour:
   - {fileID: 11400000, guid: 88790108308623d40a98d9de26ad2a0a, type: 2}
   - {fileID: 11400000, guid: 0429667a09778f640962646d9396e9f6, type: 2}
   - {fileID: 11400000, guid: 9d4bf8edbef94ce499fe83a7f0fe97ad, type: 2}
+  - {fileID: 11400000, guid: 2bacf7b8170bb5e40ab58967874809d7, type: 2}
   _allGrounds: []
   _allElements: []
   _allHazards: []
@@ -297605,6 +297606,11 @@ MonoBehaviour:
   - {x: 20, y: 0}
   - {x: -20, y: 0}
   _bossAnimator: {fileID: 424916561}
+  _boulderSwitch:
+    _boulder: {fileID: 0}
+    _movingBoulder: 0
+    _columnObject: {fileID: 0}
+    _switchPose: {fileID: 0}
 --- !u!1 &1221362315
 GameObject:
   m_ObjectHideFlags: 0
