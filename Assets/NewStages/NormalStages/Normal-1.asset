@@ -1,0 +1,45 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06444818b2c5c5245a52126020660b89, type: 3}
+  m_Name: Normal-1
+  m_EditorClassIdentifier: 
+  _spawnPoint: 2
+  _exitPoint: 5
+  _allPlaces: 02000000040000000500000007000000090000000a0000000c0000000c0000000d0000000e0000000f0000001300000014000000150000001600000017000000180000001100000012000000
+  _elements:
+  - _onPlace: 17
+    _elementType: 3
+    _quantity: 3
+  - _onPlace: 13
+    _elementType: 2
+    _quantity: 4
+  _hazards:
+  - _onPlace: 9
+    _hazards: 2
+    _rotation: 0
+    _finished: 0
+  - _onPlace: 4
+    _hazards: 4
+    _rotation: 0
+    _finished: 0
+  - _onPlace: 14
+    _hazards: 5
+    _rotation: 0
+    _finished: 0
+  - _onPlace: 22
+    _hazards: 3
+    _rotation: 0
+    _finished: 0
+  _atomPlace: 
+  _stepsPlace: 
+  _bossAssets: []
+  _wind: 0

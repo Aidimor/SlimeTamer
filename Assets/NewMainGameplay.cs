@@ -123,6 +123,19 @@ public class NewMainGameplay : MonoBehaviour
     public Vector2[] _allJoystickPoses;
     public Animator _bossAnimator;
 
+    [System.Serializable]
+    public class BoulderSwitch
+    {
+        public GameObject _boulder;
+     
+        public bool _movingBoulder;
+        public GameObject _columnObject;
+        public GameObject _switchPose;
+
+    }
+    public BoulderSwitch _boulderSwitch;
+
+
   
     void Start()
     {   
@@ -272,18 +285,18 @@ public class NewMainGameplay : MonoBehaviour
         if (!_AtomsPanelOn)
         {
 
-  
-            PlayerMovementController();
-        _slimeMainColor = Color.Lerp(_slimeMainColor, _slimeInfo._allSlimeColors[_slimeInfo._slimeID], 2 * Time.deltaTime);
-        _scriptSlime._slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_BaseColor", _slimeMainColor);
-        for(int i = 0; i < _slimeInfo._elementsParticles.Length; i++)
-        {
-            _slimeInfo._quantityElementText[i].text = _slimeInfo._elementsParticles[i].ToString();
-        }
-        _slimeInfo._atomsText.text = MainController.Instance._saveLoadValues._totalAtoms.ToString();
-        _slimeInfo._stepsText.text = MainController.Instance._saveLoadValues._totalSteps.ToString();
 
-        _mainUI.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_mainUI.GetComponent<RectTransform>().anchoredPosition, new Vector2(0, 0), 2 * Time.deltaTime);
+            PlayerMovementController();
+            _slimeMainColor = Color.Lerp(_slimeMainColor, _slimeInfo._allSlimeColors[_slimeInfo._slimeID], 2 * Time.deltaTime);
+            _scriptSlime._slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_BaseColor", _slimeMainColor);
+            for (int i = 0; i < _slimeInfo._elementsParticles.Length; i++)
+            {
+                _slimeInfo._quantityElementText[i].text = _slimeInfo._elementsParticles[i].ToString();
+            }
+            _slimeInfo._atomsText.text = MainController.Instance._saveLoadValues._totalAtoms.ToString();
+            _slimeInfo._stepsText.text = MainController.Instance._saveLoadValues._totalSteps.ToString();
+
+            _mainUI.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_mainUI.GetComponent<RectTransform>().anchoredPosition, new Vector2(0, 0), 2 * Time.deltaTime);
 
             if (Input.GetButtonDown("Submit") && _tutorialAssets._tutorialDeployed)
             {
@@ -292,11 +305,11 @@ public class NewMainGameplay : MonoBehaviour
         }
         else
         {
-          
+
         }
         if (Input.GetButtonDown("Pause") && MainController.Instance._saveLoadValues._pauseAvailable)
         {
-    
+
             _AtomsPanelOn = !_AtomsPanelOn;
             MainController.Instance._AtomAnimator.SetBool("AtomsIn", _AtomsPanelOn);
 
@@ -304,6 +317,11 @@ public class NewMainGameplay : MonoBehaviour
         else
         {
             AtomPanelController();
+        }
+
+        if (_boulderSwitch._movingBoulder){
+            _boulderSwitch._boulder.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_boulderSwitch._boulder.GetComponent<RectTransform>().anchoredPosition,
+               _boulderSwitch._switchPose.GetComponent<RectTransform>().anchoredPosition, 2 * Time.deltaTime);
         }
     }
 
@@ -597,10 +615,42 @@ public class NewMainGameplay : MonoBehaviour
                 case NewGameEvent.Hazards.HazardsType.Switch:
                     obs._id = 2;
                     obs._allObstacles[2].SetActive(true);
+                    _boulderSwitch._switchPose = hazard;
                     break;
                 case NewGameEvent.Hazards.HazardsType.Column:
                     obs._id = 3;
                     obs._allObstacles[4].SetActive(true);
+                    _boulderSwitch._columnObject = hazard;
+                    break;
+                case NewGameEvent.Hazards.HazardsType.MetalBall:
+                    obs._id = 4;
+                    obs._allObstacles[5].SetActive(true);
+
+                    //_allBoulders.Add(hazard);
+                    break;
+                case NewGameEvent.Hazards.HazardsType.MagnetoPlace:
+                    obs._id = 5;
+                    obs._gravityPoint.gameObject.SetActive(true);
+                    break;
+                case NewGameEvent.Hazards.HazardsType.Electricity:
+                    obs._id = 6;
+                    obs._electricityParticle.gameObject.SetActive(true);
+                    switch (data._rotation)
+                    {
+                        case NewGameEvent.Hazards.Rotation.Center:
+                            break;
+                        case NewGameEvent.Hazards.Rotation.Horizontal:
+                            hazard.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 90);
+                            break;
+                        case NewGameEvent.Hazards.Rotation.Vertical:
+                            hazard.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 0);
+                            break;
+                    }
+                    break;
+
+                case NewGameEvent.Hazards.HazardsType.CenterElectricity:
+                    obs._id = 7;
+                    obs._electricityCenterParticle.gameObject.SetActive(true);
                     break;
             }
             _allHazards.Add(hazard);
@@ -883,10 +933,6 @@ public class NewMainGameplay : MonoBehaviour
     {
         var Main = MainController.Instance;
         _movementAvailable = false;
-        //if (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets.Length > 0)
-        //{
-        //    StartCoroutine(BossAttackTurn());
-        //}
         _slimeAnimator.SetBool("Moving", true);
 
         yield return new WaitForSeconds(0.5f);
@@ -1269,10 +1315,44 @@ public class NewMainGameplay : MonoBehaviour
                         break;
                  case NewGameEvent.Hazards.HazardsType.Column:
                      break;
+                    case NewGameEvent.Hazards.HazardsType.MagnetoPlace:
+                        if (_slimeInfo._slimeID == 5)
+                        {                
+                            StartCoroutine(RockNumerator());
+                        }
+                        break;
+            
 
                 }
             }
         }
+    }
+
+    public IEnumerator RockNumerator()
+    {
+        _movementAvailable = false;
+        var Main = MainController.Instance;
+        var HazardInfo = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
+        yield return new WaitForSeconds(1);
+        for (int i = 0; i < HazardInfo._hazards.Length; i++)
+        {
+            if (_allHazards[i].GetComponent<ObstaclesScript>()._id == 4)
+            {
+                _boulderSwitch._boulder = _allHazards[i].gameObject;
+                break;
+            }
+        }
+        yield return new WaitForSeconds(0.25f);
+       _boulderSwitch._columnObject.GetComponent<ObstaclesScript>()._allObstacles[4].GetComponent<Animator>().SetTrigger("Column");
+        for (int z = 0; z < HazardInfo._hazards.Length; z++){
+            if(_allHazards[z].GetComponent<ObstaclesScript>()._id == 3)
+            {
+                HazardInfo._hazards[z]._finished = true;
+            }      
+        }
+        _boulderSwitch._movingBoulder = true;
+        yield return new WaitForSeconds(1f);
+        _movementAvailable = true;
     }
 
     public void ElementDetection()
@@ -1448,7 +1528,7 @@ public class NewMainGameplay : MonoBehaviour
         {
             _slimeInfo._slimeID = 1;
             Debug.Log("Acero");
-           MainController.Instance._formulaText.text = "C+O";
+           MainController.Instance._formulaText.text = "C+Fe";
             MainController.Instance._nameText.text = GameInitScript.Instance.GetText("C2");
 
             StartCoroutine(TransormatioNumerator());
@@ -1479,7 +1559,7 @@ public class NewMainGameplay : MonoBehaviour
             }
 
         }
-        else if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[2] >= 2)
+        else if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[3] >= 2)
         {
             _slimeInfo._slimeID = 3;
             MainController.Instance._formulaText.text = "C02";
@@ -1489,6 +1569,16 @@ public class NewMainGameplay : MonoBehaviour
             MainController.Instance._nameText.text = GameInitScript.Instance.GetText("CO2");
             StartCoroutine(TransormatioNumerator());
         }
+        else if (_slimeInfo._elementsParticles[2] >= 4 && _slimeInfo._elementsParticles[3] >= 3) {
+            _slimeInfo._slimeID = 5;
+            MainController.Instance._formulaText.text = "Magnatite";
+            Debug.Log("Fe3O4");
+            _smoke.Play();
+            _waterWalk.Stop();
+            MainController.Instance._nameText.text = GameInitScript.Instance.GetText("Fe3O4");
+            StartCoroutine(TransormatioNumerator());
+        }
+
 
     }
 
@@ -1517,6 +1607,9 @@ public class NewMainGameplay : MonoBehaviour
                 break;
             case 4:
                 _slimeAnimator.SetInteger("ID", 5);
+                break;
+            case 5:
+                _slimeAnimator.SetInteger("ID", 4);
                 break;
         }
         yield return new WaitForSeconds(1);

@@ -36,9 +36,21 @@ public class NewGameEvent : ScriptableObject
             Fire,
             Hole,
             Switch,
-            Column
+            Column,
+            MetalBall,
+            MagnetoPlace,
+            Electricity,
+            CenterElectricity
         }
         public HazardsType _hazards;
+        [System.Serializable]
+        public enum Rotation
+        {
+            Center,
+            Vertical,
+            Horizontal
+        }
+        public Rotation _rotation;
         public bool _finished;
     }
     public Hazards[] _hazards;

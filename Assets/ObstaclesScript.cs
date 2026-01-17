@@ -8,6 +8,10 @@ public class ObstaclesScript : MonoBehaviour
     public GameObject[] _allObstacles;
     public ParticleSystem _fireParticle;
     public ParticleSystem _smokeParticle;
+    public ParticleSystem _electricityParticle;
+    public ParticleSystem _electricityCenterParticle;
+    public ParticleSystem _gravityPoint;
+    public ParticleSystem _dustParticle;
 
     // Start is called before the first frame update
     //public void SetObstacle()
