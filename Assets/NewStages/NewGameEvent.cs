@@ -24,6 +24,7 @@ public class NewGameEvent : ScriptableObject
         }
         public ElementType _elementType;
         public int _quantity;
+        public bool _changed;
     }
     public Elements[] _elements;
 
@@ -54,6 +55,7 @@ public class NewGameEvent : ScriptableObject
         public bool _finished;
     }
     public Hazards[] _hazards;
+
 
     public int[] _atomPlace;
     public int[] _stepsPlace;

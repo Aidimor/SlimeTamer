@@ -67,7 +67,7 @@ public class NewMainGameplay : MonoBehaviour
 
     public Animator _slimeAnimator;
     public int _atomsObtained;
-    public List<int> _atomList = new List<int>();
+    //public List<int> _atomList = new List<int>();
     public List<int> _stepsList = new List<int>();
     public Color _slimeMainColor;
     //public Animator _transformAnimator;
@@ -298,7 +298,7 @@ public class NewMainGameplay : MonoBehaviour
 
             _mainUI.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_mainUI.GetComponent<RectTransform>().anchoredPosition, new Vector2(0, 0), 2 * Time.deltaTime);
 
-            if (Input.GetButtonDown("Submit") && _tutorialAssets._tutorialDeployed)
+            if (Input.GetButtonDown("Submit") && _tutorialAssets._tutorialDeployed && _tutorialAssets._tutorialAnimator.GetBool("TutorialIn") == false)
             {
                 RestartLevel();
             }
@@ -322,6 +322,12 @@ public class NewMainGameplay : MonoBehaviour
         if (_boulderSwitch._movingBoulder){
             _boulderSwitch._boulder.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_boulderSwitch._boulder.GetComponent<RectTransform>().anchoredPosition,
                _boulderSwitch._switchPose.GetComponent<RectTransform>().anchoredPosition, 2 * Time.deltaTime);
+        }
+
+
+        if (MainController.Instance._saveLoadValues._totalAtoms < 0)
+        {
+            MainController.Instance._saveLoadValues._totalAtoms = 0;
         }
     }
 
@@ -365,7 +371,8 @@ public class NewMainGameplay : MonoBehaviour
             {
                 case 1:
                     _slimeInfo._elementsParticles[0]++;
-                    MainController.Instance._saveLoadValues._totalAtoms--;
+                    if(MainController.Instance._saveLoadValues._totalAtoms > 0) { MainController.Instance._saveLoadValues._totalAtoms--; }
+                    
                     if (!_transformed)
                     {
                         TransformSlimeVoid();
@@ -374,7 +381,7 @@ public class NewMainGameplay : MonoBehaviour
                     break;
                 case 2:
                     _slimeInfo._elementsParticles[3]++;
-                    MainController.Instance._saveLoadValues._totalAtoms--;
+                    if (MainController.Instance._saveLoadValues._totalAtoms > 0) { MainController.Instance._saveLoadValues._totalAtoms--; }
                     if (!_transformed)
                     {
                         TransformSlimeVoid();
@@ -384,7 +391,7 @@ public class NewMainGameplay : MonoBehaviour
                  
                 case 3:
                     _slimeInfo._elementsParticles[2]++;
-                    MainController.Instance._saveLoadValues._totalAtoms--;
+                    if (MainController.Instance._saveLoadValues._totalAtoms > 0) { MainController.Instance._saveLoadValues._totalAtoms--; }
                     if (!_transformed)
                     {
                         TransformSlimeVoid();
@@ -394,7 +401,7 @@ public class NewMainGameplay : MonoBehaviour
             
                 case 4:
                     _slimeInfo._elementsParticles[1]++;
-                    MainController.Instance._saveLoadValues._totalAtoms--;
+                    if (MainController.Instance._saveLoadValues._totalAtoms > 0) { MainController.Instance._saveLoadValues._totalAtoms--; }
                     if (!_transformed)
                     {
                         TransformSlimeVoid();
@@ -511,38 +518,165 @@ public class NewMainGameplay : MonoBehaviour
     void SetElements()
     {
         var Main = MainController.Instance;
+ 
         foreach (var data in _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._elements)
         {
-            GameObject element = Instantiate(_elementPrefab, _parent);
-            RectTransform rt = element.GetComponent<RectTransform>();
-            rt.position = _allPositions[data._onPlace].GetComponent<RectTransform>().position;
-            rt.localScale = Vector3.one;
-
-            ElementOrbScript orb = element.GetComponent<ElementOrbScript>();
-            orb._onPose = data._onPlace;
-            switch (data._elementType)
+            switch (Main._onWorldGlobal)
             {
-                case NewGameEvent.Elements.ElementType.C:
-                    orb.ID = 0;
+                case 0:
+                    int random1 = Random.Range(0, 100);
+                    if (random1 < 70 && Main._saveLoadValues._finalWorldUnlocked)
+                    {
+
+
+                        // 🆕 NO existe → instanciar
+                        GameObject atom = Instantiate(_atomPrefab, _parent);
+
+                        RectTransform rta1 = atom.GetComponent<RectTransform>();
+                        RectTransform targetRT = _allPositions[data._onPlace].GetComponent<RectTransform>();
+
+                        data._changed = true;
+
+                        rta1.position = targetRT.position;
+                        rta1.localScale = Vector3.one;
+
+                        AtomScript atomScript = atom.GetComponent<AtomScript>();
+                        atomScript._quantity += data._quantity;
+                        atomScript._quantityText.text = data._quantity.ToString();
+                        atomScript._onPose = data._onPlace;
+                        _allAtoms.Add(atom);
+                        //_atomList.Add(data._onPlace);
+
+                    }
+                    else
+                    {
+                        GameObject element1 = Instantiate(_elementPrefab, _parent);
+                        RectTransform rt1 = element1.GetComponent<RectTransform>();
+                        rt1.position = _allPositions[data._onPlace].GetComponent<RectTransform>().position;
+                        rt1.localScale = Vector3.one;
+
+                        ElementOrbScript orb1 = element1.GetComponent<ElementOrbScript>();
+                        orb1._onPose = data._onPlace;
+                        switch (data._elementType)
+                        {
+                            case NewGameEvent.Elements.ElementType.C:
+                                orb1.ID = 0;
+                                break;
+                            case NewGameEvent.Elements.ElementType.H:
+                                orb1.ID = 1;
+                                break;
+                            case NewGameEvent.Elements.ElementType.O:
+                                orb1.ID = 2;
+                                break;
+                            case NewGameEvent.Elements.ElementType.Fe:
+                                orb1.ID = 3;
+                                break;
+                        }
+
+                        orb1._onPose = data._onPlace;
+                        orb1._quantity = data._quantity;
+                        orb1.ElementSetVoid();
+                        _allElements.Add(element1);
+                        _elementsID.Add(data._onPlace);
+                        _elementsBool.Add(true);
+                    }
                     break;
-                case NewGameEvent.Elements.ElementType.H:
-                    orb.ID = 1;
+                case 1:
+                    int random2 = Random.Range(0, 100);
+                    if (random2 < 35)
+                    {
+
+
+                        // 🆕 NO existe → instanciar
+                        GameObject atom = Instantiate(_atomPrefab, _parent);
+
+                        RectTransform rta1 = atom.GetComponent<RectTransform>();
+                        RectTransform targetRT = _allPositions[data._onPlace].GetComponent<RectTransform>();
+
+                        data._changed = true;
+
+                        rta1.position = targetRT.position;
+                        rta1.localScale = Vector3.one;
+
+                        AtomScript atomScript = atom.GetComponent<AtomScript>();
+                        atomScript._quantity += data._quantity;
+                        atomScript._quantityText.text = data._quantity.ToString();
+                        atomScript._onPose = data._onPlace;
+                        _allAtoms.Add(atom);
+                        //_atomList.Add(data._onPlace);
+
+                    }
+                    else
+                    {
+                        GameObject element1 = Instantiate(_elementPrefab, _parent);
+                        RectTransform rt1 = element1.GetComponent<RectTransform>();
+                        rt1.position = _allPositions[data._onPlace].GetComponent<RectTransform>().position;
+                        rt1.localScale = Vector3.one;
+
+                        ElementOrbScript orb1 = element1.GetComponent<ElementOrbScript>();
+                        orb1._onPose = data._onPlace;
+                        switch (data._elementType)
+                        {
+                            case NewGameEvent.Elements.ElementType.C:
+                                orb1.ID = 0;
+                                break;
+                            case NewGameEvent.Elements.ElementType.H:
+                                orb1.ID = 1;
+                                break;
+                            case NewGameEvent.Elements.ElementType.O:
+                                orb1.ID = 2;
+                                break;
+                            case NewGameEvent.Elements.ElementType.Fe:
+                                orb1.ID = 3;
+                                break;
+                        }
+
+                        orb1._onPose = data._onPlace;
+                        orb1._quantity = data._quantity;
+                        orb1.ElementSetVoid();
+                        _allElements.Add(element1);
+                        _elementsID.Add(data._onPlace);
+                        _elementsBool.Add(true);
+                    }
+                
                     break;
-                case NewGameEvent.Elements.ElementType.O:
-                    orb.ID = 2;
-                    break;
-                case NewGameEvent.Elements.ElementType.Fe:
-                    orb.ID = 3;
+                default:
+                    GameObject element = Instantiate(_elementPrefab, _parent);
+                    RectTransform rt = element.GetComponent<RectTransform>();
+                    rt.position = _allPositions[data._onPlace].GetComponent<RectTransform>().position;
+                    rt.localScale = Vector3.one;
+
+                    ElementOrbScript orb = element.GetComponent<ElementOrbScript>();
+                    orb._onPose = data._onPlace;
+                    switch (data._elementType)
+                    {
+                        case NewGameEvent.Elements.ElementType.C:
+                            orb.ID = 0;
+                            break;
+                        case NewGameEvent.Elements.ElementType.H:
+                            orb.ID = 1;
+                            break;
+                        case NewGameEvent.Elements.ElementType.O:
+                            orb.ID = 2;
+                            break;
+                        case NewGameEvent.Elements.ElementType.Fe:
+                            orb.ID = 3;
+                            break;
+                    }
+
+                    orb._onPose = data._onPlace;
+                    orb._quantity = data._quantity;
+                    orb.ElementSetVoid();
+                    _allElements.Add(element);
+                    _elementsID.Add(data._onPlace);
+                    _elementsBool.Add(true);
                     break;
             }
-
-
-            orb._quantity = data._quantity;
-            orb.ElementSetVoid();
-            _allElements.Add(element);
-            _elementsID.Add(data._onPlace);
-            _elementsBool.Add(true);
+    
         }
+
+   
+
 
 
 
@@ -553,24 +687,66 @@ public class NewMainGameplay : MonoBehaviour
     void SetAtoms()
     {
         var Main = MainController.Instance;
-        for (int i = 0; i < _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._atomPlace.Length; i++)
+
+        var stage =
+            _allStages[
+                Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]
+            ];
+
+        if (stage._atomPlace.Length == 0)
+            return;
+
+        for (int i = 0; i < stage._atomPlace.Length; i++)
         {
-            GameObject atom = Instantiate(_atomPrefab, _parent);
+            int pos = stage._atomPlace[i];
 
-            RectTransform rt = atom.GetComponent<RectTransform>();
-            RectTransform targetRT =
-                _allPositions[_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._atomPlace[i]]
-                .GetComponent<RectTransform>();
+            int atomIndex = -1;
 
-            rt.position = targetRT.position;
-            rt.localScale = Vector3.one;
+            // 🔍 Buscar si ya existe un átomo con ese id
+            for (int a = 0; a < _allAtoms.Count; a++)
+            {
+                if (_allAtoms[a].GetComponent<AtomScript>()._onPose == pos)
+                {
+                    atomIndex = a;
+                    break;
+                }
+            }
 
-            _allAtoms.Add(atom);
-            _atomList.Add(_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._atomPlace[i]);
+            if (atomIndex == -1)
+            {
+                // 🆕 NO existe → instanciar
+                GameObject atom = Instantiate(_atomPrefab, _parent);
+
+                RectTransform rt = atom.GetComponent<RectTransform>();
+                RectTransform targetRT = _allPositions[pos].GetComponent<RectTransform>();
+
+                rt.position = targetRT.position;
+                rt.localScale = Vector3.one;
+
+                AtomScript atomScript = atom.GetComponent<AtomScript>();
+                Debug.Log(pos);
+                atomScript._onPose = pos;
+                atomScript._quantity = 1;
+                atomScript._quantityText.text = "1";
+
+                _allAtoms.Add(atom);
+            }
+            else
+            {
+                // ➕ YA existe → aumentar cantidad
+                AtomScript atomScript = _allAtoms[atomIndex].GetComponent<AtomScript>();
+                atomScript._onPose = pos;
+                atomScript._quantity++;
+                atomScript._quantityText.text =
+                    atomScript._quantity.ToString();
+            }
         }
     }
 
-    void SetSteps()
+
+
+
+void SetSteps()
     {
         var Main = MainController.Instance;
         for (int i = 0; i < _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._stepsPlace.Length; i++)
@@ -1120,6 +1296,11 @@ public class NewMainGameplay : MonoBehaviour
         MainController.Instance._restartBeam.Play("RestartBeam");
         _slimeObject.GetComponent<Animator>().Play("SlimeLeavesAnimation");
         StopMoveCoroutine();
+        for(int i = 0; i < _realID._elements.Length; i++)
+        {
+            _realID._elements[i]._changed = false;
+        }
+  
         _movementAvailable = false;
         for (int i = 0; i < _realID._hazards.Length; i++)
         {
@@ -1153,6 +1334,9 @@ public class NewMainGameplay : MonoBehaviour
             Destroy(_allAttacks[i]);
         }
         _allAttacks.Clear();
+    
+
+     
         _allCountAttacks.Clear();
         _restarted = true;
         _allHazards.Clear();
@@ -1160,6 +1344,7 @@ public class NewMainGameplay : MonoBehaviour
         _slimeInfo._elementsParticles[0] = 0;
         _slimeInfo._elementsParticles[1] = 0;
         _slimeInfo._elementsParticles[2] = 0;
+        _slimeInfo._elementsParticles[3] = 0;
         _elementsID.Clear();
         MainController.Instance._saveLoadValues._totalAtoms -= _atomsObtained;
         _waterWalk.Stop();
@@ -1175,6 +1360,10 @@ public class NewMainGameplay : MonoBehaviour
     {
         var Main = MainController.Instance;
         var _stageId = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
+        for (int i = 0; i < _stageId._elements.Length; i++)
+        {
+            _stageId._elements[i]._changed = false;
+        }
         StopMoveCoroutine();
         _movementAvailable = false;
         _tutorialAssets._tutorialDeployed = false;
@@ -1206,11 +1395,20 @@ public class NewMainGameplay : MonoBehaviour
       
         _allHazards.Clear();
 
+       
+        for(int i = 0; i < _allAtoms.Count; i++)
+        {
+            Destroy(_allAtoms[i].gameObject);
+        }
+        _allAtoms.Clear();
+        
+
         _slimeInfo._elementsParticles[0] = 0;
         _slimeInfo._elementsParticles[1] = 0;
         _slimeInfo._elementsParticles[2] = 0;
+        _slimeInfo._elementsParticles[3] = 0;
 
-        for(int i = 0; i < _exitEntranceObjects.Count; i++)
+        for (int i = 0; i < _exitEntranceObjects.Count; i++)
         {
             Destroy(_exitEntranceObjects[i]);
         }
@@ -1409,32 +1607,38 @@ public class NewMainGameplay : MonoBehaviour
         var ElementInfo = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
         for (int i = 0; i < ElementInfo._elements.Length; i++)
         {
-            if (_onPose == ElementInfo._elements[i]._onPlace && _elementsBool[i])
+            if (!ElementInfo._elements[i]._changed)
             {
-                switch (ElementInfo._elements[i]._elementType)
-                {
-                    case NewGameEvent.Elements.ElementType.C:
-                        _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
-                        break;
-                    case NewGameEvent.Elements.ElementType.H:
-                        _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
-                        break;
-                    case NewGameEvent.Elements.ElementType.O:
-                        _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
-                        break;
-                    case NewGameEvent.Elements.ElementType.Fe:
-                        _slimeInfo._elementsParticles[3] += ElementInfo._elements[i]._quantity;
-                        break;
-                }
-             
-                _elementsBool[i] = false;
-                if (!_transformed)
-                {
-                    TransformSlimeVoid();
-                }
+                //if (_onPose == ElementInfo._elements[i]._onPlace && _elementsBool[i])
+                    if (_onPose == ElementInfo._elements[i]._onPlace)
+                    {
+                    switch (ElementInfo._elements[i]._elementType)
+                    {
+                        case NewGameEvent.Elements.ElementType.C:
+                            _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
+                            break;
+                        case NewGameEvent.Elements.ElementType.H:
+                            _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
+                            break;
+                        case NewGameEvent.Elements.ElementType.O:
+                            _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
+                            break;
+                        case NewGameEvent.Elements.ElementType.Fe:
+                            _slimeInfo._elementsParticles[3] += ElementInfo._elements[i]._quantity;
+                            break;
+                    }
 
-                StartCoroutine(ElementNumerator());
-                break;
+                    //_elementsBool[i] = false;
+                    if (!_transformed)
+                    {
+                        TransformSlimeVoid();
+                    }
+
+                    StartCoroutine(ElementNumerator());
+                    break;
+                }
+ 
+       
            
 
 
@@ -1464,9 +1668,9 @@ public class NewMainGameplay : MonoBehaviour
     public IEnumerator AtomDetection()
     {
         var Main = MainController.Instance;
-        for (int i = 0; i < _atomList.Count; i++)
+        for (int i = 0; i < _allAtoms.Count; i++)
         {
-            if (_onPose == _atomList[i])
+            if (_onPose == _allAtoms[i].GetComponent<AtomScript>()._onPose)
             {
          
 
@@ -1484,10 +1688,10 @@ public class NewMainGameplay : MonoBehaviour
                     _tutorialAssets._continueText.gameObject.SetActive(true);
                     yield return new WaitForSeconds(0.25f);
                     MainController.Instance._saveLoadValues._totalAtoms++;
-                    Debug.Log("Atomo en: " + _atomList[i].ToString());
+                    Debug.Log("Atomo en: " + _allAtoms[i].GetComponent<AtomScript>()._onPose.ToString());
                     Destroy(_allAtoms[i]);
                     _allAtoms.RemoveAt(i);
-                    _atomList.RemoveAt(i);
+                    //_atomList.RemoveAt(i);
                     _atomsObtained++;
                     while (!Input.GetButtonDown("Pause"))
                     {
@@ -1504,11 +1708,12 @@ public class NewMainGameplay : MonoBehaviour
                 }
                 else
                 {
-                    MainController.Instance._saveLoadValues._totalAtoms++;
-                    Debug.Log("Atomo en: " + _atomList[i].ToString());
+                  
+                    MainController.Instance._saveLoadValues._totalAtoms += _allAtoms[i].GetComponent<AtomScript>()._quantity;
+                    Debug.Log("Atomo en: " + _allAtoms[i].GetComponent<AtomScript>()._onPose.ToString());
                     Destroy(_allAtoms[i]);
                     _allAtoms.RemoveAt(i);
-                    _atomList.RemoveAt(i);
+                    //_atomList.RemoveAt(i);
                     _atomsObtained++;
                 }
             }
@@ -1607,7 +1812,7 @@ public class NewMainGameplay : MonoBehaviour
             }
 
         }
-        else if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[3] >= 2)
+        else if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[2] >= 2)
         {
             _slimeInfo._slimeID = 3;
             MainController.Instance._formulaText.text = "C02";

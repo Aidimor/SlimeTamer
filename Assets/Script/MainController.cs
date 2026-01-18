@@ -182,7 +182,7 @@ public class MainController : MonoBehaviour
     {
 
         _allTurnsInfo[0]._stagesID = new List<int> { 0, 1, 2, 3, 4, 5 };
-        List<int> posiblesNumeros = new List<int> { 6, 7, 8, 9, 10, 11, 12, 16, 17, 18, 19 };
+        List<int> posiblesNumeros = new List<int> { 6, 7, 8, 9, 10, 11, 12, 16, 18, 19 };
 
         for (int i = 0; i < 6; i++)
         {
@@ -204,6 +204,7 @@ public class MainController : MonoBehaviour
             int randomIndex = Random.Range(0, posiblesNumeros.Count);
             _allTurnsInfo[2]._stagesID.Add(posiblesNumeros[randomIndex]);
         }
+        _allTurnsInfo[2]._stagesID.Add(17);
         _allTurnsInfo[2]._stagesID.Add(15);
         _allTurnsInfo[2]._stagesID.Add(28);
 
