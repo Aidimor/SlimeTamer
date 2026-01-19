@@ -14,7 +14,7 @@ public class PortraitController : MonoBehaviour
     public GameObject _parent;
     public Image _logo;
     public int _OnPos;
-    public float[] _xPoses;
+    //public float[] _xPoses;
     public float _speed;
     public bool _pressed;
 
@@ -168,7 +168,7 @@ public class PortraitController : MonoBehaviour
         {
             _worldsParent.GetComponent<RectTransform>().anchoredPosition =
                 Vector2.MoveTowards(_worldsParent.GetComponent<RectTransform>().anchoredPosition,
-                new Vector2(0, _allWorlds[_scriptMainController._onWorldGlobal]._yPos),
+                new Vector2(_allWorlds[_scriptMainController._onWorldGlobal]._yPos, 50),
                 250f * Time.deltaTime);
 
             if (_worldsParent.GetComponent<RectTransform>().anchoredPosition.y ==
@@ -184,19 +184,19 @@ public class PortraitController : MonoBehaviour
 
     private void HandleMovement()
     {
-        if (!_changing)
-        {
-            var parentPos = _parent.GetComponent<RectTransform>().anchoredPosition;
-            _parent.GetComponent<RectTransform>().anchoredPosition =
-                Vector2.Lerp(parentPos, new Vector2(_xPoses[_OnPos], parentPos.y), _speed * Time.deltaTime);
-        }
+        //if (!_changing)
+        //{
+        //    var parentPos = _parent.GetComponent<RectTransform>().anchoredPosition;
+        //    _parent.GetComponent<RectTransform>().anchoredPosition =
+        //        Vector2.Lerp(parentPos, new Vector2(parentPos.x, _xPoses[_OnPos]), _speed * Time.deltaTime);
+        //}
 
         if (Input.GetAxisRaw("Horizontal") == 0) _pressed = false;
-        if (Input.GetAxisRaw("Vertical") == 0) _worldPressed = false;
+        //if (Input.GetAxisRaw("Vertical") == 0) _worldPressed = false;
 
         var worldPos = _worldsParent.GetComponent<RectTransform>().anchoredPosition;
         _worldsParent.GetComponent<RectTransform>().anchoredPosition =
-            Vector2.Lerp(worldPos, new Vector2(worldPos.x, _allWorlds[_onWorldPos]._yPos), 5 * Time.deltaTime);
+            Vector2.Lerp(worldPos, new Vector2(_allWorlds[_onWorldPos]._yPos, worldPos.y), 5 * Time.deltaTime);
 
         _worldBackgroundImage.color =
             Color.Lerp(_worldBackgroundImage.color, _allWorlds[_onWorldPos]._backgroundColor, 2 * Time.deltaTime);
@@ -206,18 +206,23 @@ public class PortraitController : MonoBehaviour
     {
         if (!_gameStarts)
         {
-            if (Input.GetAxisRaw("Vertical") < 0 && !_worldPressed && _onWorldPos < _allWorlds.Length - 1)
+            if (Input.GetAxisRaw("Horizontal") < 0 && !_worldPressed && _onWorldPos > 0)
+            {
+                _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._next);
+                _onWorldPos--;
+                _worldPressed = true;
+            }
+
+            if (Input.GetAxisRaw("Horizontal") > 0 && !_worldPressed && _onWorldPos < _allWorlds.Length - 1)
             {
                 _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._next);
                 _onWorldPos++;
                 _worldPressed = true;
             }
 
-            if (Input.GetAxisRaw("Vertical") > 0 && !_worldPressed && _onWorldPos > 0)
+            if(Input.GetAxisRaw("Horizontal") == 0)
             {
-                _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._next);
-                _onWorldPos--;
-                _worldPressed = true;
+                _worldPressed = false;
             }
 
             if (Input.GetButton("Submit") && _scriptMainController._saveLoadValues._worldsUnlocked[_onWorldPos])

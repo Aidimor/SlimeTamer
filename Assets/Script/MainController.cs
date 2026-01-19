@@ -53,6 +53,8 @@ public class MainController : MonoBehaviour
         public int _totalAtoms;
         public bool _pauseAvailable;
         public int _progress = 0;
+        public bool _restartTutorial;
+        public bool _elementTutorial;
     }
 
     public SaveLoadValues _saveLoadValues;
@@ -128,6 +130,7 @@ public class MainController : MonoBehaviour
     public Animator _transformationAnimator;
     public TextMeshProUGUI _formulaText;
     public TextMeshProUGUI _nameText;
+    public TextMeshProUGUI _atributeText;
     public RawImage _slimeRawImage;
 
     void Awake()

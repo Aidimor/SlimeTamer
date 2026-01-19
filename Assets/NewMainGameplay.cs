@@ -195,14 +195,18 @@ public class NewMainGameplay : MonoBehaviour
     {
         var Main = MainController.Instance;
         _tutorialAssets._continueText.gameObject.SetActive(false);
-
+        var gi = GameInitScript.Instance;
         //_slimeObject.GetComponent<RectTransform>().localScale = Vector3.zero;
         if (!_tutorialAssets._tutorialDeployed)
         {
             switch (Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage])
             {
                 case 0:
+        
                     yield return new WaitForSeconds(1);
+                    _tutorialAssets._tutorialText.text = gi.GetText("tutorial0");
+
+
                     _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
                     _tutorialAssets._arrowsParent.SetActive(true);
                     _tutorialAssets._elementsParent.SetActive(false);
@@ -219,20 +223,21 @@ public class NewMainGameplay : MonoBehaviour
 
                     break;
                 case 2:
-                    yield return new WaitForSeconds(1);
-                    _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
-                    _tutorialAssets._arrowsParent.SetActive(false);
-                    _tutorialAssets._elementsParent.SetActive(true);
-                    _tutorialAssets._atomParent.SetActive(false);
-                    yield return new WaitForSeconds(1);
-                    _tutorialAssets._continueText.gameObject.SetActive(true);
-                    yield return new WaitForSeconds(0.25f);
-                    while (!Input.GetButtonDown("Submit"))
-                    {
-                        yield return null;
-                    }
-                    _tutorialAssets._continueText.gameObject.SetActive(false);
-                    _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+                    //yield return new WaitForSeconds(1);
+                    //_tutorialAssets._tutorialText.text = gi.GetText("tutorial1");
+                    //_tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                    //_tutorialAssets._arrowsParent.SetActive(false);
+                    //_tutorialAssets._elementsParent.SetActive(true);
+                    //_tutorialAssets._atomParent.SetActive(false);
+                    //yield return new WaitForSeconds(1);
+                    //_tutorialAssets._continueText.gameObject.SetActive(true);
+                    //yield return new WaitForSeconds(0.25f);
+                    //while (!Input.GetButtonDown("Submit"))
+                    //{
+                    //    yield return null;
+                    //}
+                    //_tutorialAssets._continueText.gameObject.SetActive(false);
+                    //_tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
 
                     break;
                 case 5:
@@ -1041,7 +1046,7 @@ void SetSteps()
         // 🔑 SIEMPRE recalcular
         CalculateMoves();
         HazardDetection();
-        ElementDetection();
+        StartCoroutine(ElementDetection());
         StartCoroutine(AtomDetection());
         StartCoroutine(StepDetection());
         ExitDetection();
@@ -1049,7 +1054,7 @@ void SetSteps()
         if (restart)
         {
         
-         RestartLevel();
+        StartCoroutine(RestartLevel());
             // Aquí luego puedes resetear nivel, animar, etc.
         }
     }
@@ -1289,18 +1294,48 @@ void SetSteps()
 
 
 
-    public void RestartLevel()
+    public IEnumerator RestartLevel()
     {
         var Main = MainController.Instance;
         var _realID = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
+        if (!Main._saveLoadValues._restartTutorial)
+        {
+            StopMoveCoroutine();
+            _movementAvailable = false;
+            yield return new WaitForSeconds(1);
+            _tutorialAssets._arrowsParent.SetActive(false);
+            _tutorialAssets._atomParent.SetActive(false);
+            _tutorialAssets._elementsParent.SetActive(false);
+            _tutorialAssets._stepParent.SetActive(false);  
+            _tutorialAssets._tutorialText.text = GameInitScript.Instance.GetText("tutorial1");
+            _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+            _tutorialAssets._arrowsParent.SetActive(false);
+            _tutorialAssets._elementsParent.SetActive(false);
+            _tutorialAssets._atomParent.SetActive(true);
+            _tutorialAssets._stepParent.SetActive(false);
+            yield return new WaitForSeconds(1);
+            _tutorialAssets._continueText.gameObject.SetActive(true);
+            yield return new WaitForSeconds(0.25f);
+  
+            while (!Input.GetButtonDown("Submit"))
+            {
+                yield return null;
+            }
+            _tutorialAssets._continueText.gameObject.SetActive(false);
+            _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+            _movementAvailable = true; 
+            Main._saveLoadValues._restartTutorial = true;
+
+        }
+
         MainController.Instance._restartBeam.Play("RestartBeam");
         _slimeObject.GetComponent<Animator>().Play("SlimeLeavesAnimation");
         StopMoveCoroutine();
-        for(int i = 0; i < _realID._elements.Length; i++)
+        for (int i = 0; i < _realID._elements.Length; i++)
         {
             _realID._elements[i]._changed = false;
         }
-  
+
         _movementAvailable = false;
         for (int i = 0; i < _realID._hazards.Length; i++)
         {
@@ -1312,7 +1347,7 @@ void SetSteps()
             _allGrounds[i].GetComponent<StageGroundScript>()._lockedBool = false;
             _allGrounds[i].GetComponent<StageGroundScript>()._lockImage.color = _lockedColors[0];
         }
-        for(int i = 0; i < _allElements.Count; i++)
+        for (int i = 0; i < _allElements.Count; i++)
         {
             Destroy(_allElements[i]);
         }
@@ -1324,7 +1359,7 @@ void SetSteps()
         Destroy(_exitEntranceObjects[0]);
         Destroy(_exitEntranceObjects[1]);
         _exitEntranceObjects.Clear();
-        for(int i = 0; i < _allAtoms.Count; i++)
+        for (int i = 0; i < _allAtoms.Count; i++)
         {
             Destroy(_allAtoms[i]);
         }
@@ -1334,9 +1369,9 @@ void SetSteps()
             Destroy(_allAttacks[i]);
         }
         _allAttacks.Clear();
-    
 
-     
+
+
         _allCountAttacks.Clear();
         _restarted = true;
         _allHazards.Clear();
@@ -1352,7 +1387,7 @@ void SetSteps()
         _slimeInfo._slimeID = 0;
         _slimeAnimator.SetInteger("ID", 0);
         _transformed = false;
-    
+
         StartVoids();
     }
 
@@ -1601,54 +1636,75 @@ void SetSteps()
         _movementAvailable = true;
     }
 
-    public void ElementDetection()
+    public IEnumerator ElementDetection()
     {
         var Main = MainController.Instance;
         var ElementInfo = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
         for (int i = 0; i < ElementInfo._elements.Length; i++)
         {
-            if (!ElementInfo._elements[i]._changed)
-            {
-                //if (_onPose == ElementInfo._elements[i]._onPlace && _elementsBool[i])
+
+       
+                if (!ElementInfo._elements[i]._changed)
+                {
+                    //if (_onPose == ElementInfo._elements[i]._onPlace && _elementsBool[i])
                     if (_onPose == ElementInfo._elements[i]._onPlace)
                     {
+                    if (!Main._saveLoadValues._elementTutorial)
+                    {
+                        StopMoveCoroutine();
+                        _movementAvailable = false;
+                        var gi = GameInitScript.Instance;
+                        _tutorialAssets._tutorialText.text = gi.GetText("tutorial2");
+                        yield return new WaitForSeconds(1);
+                        _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                        _tutorialAssets._arrowsParent.SetActive(false);
+                        _tutorialAssets._elementsParent.SetActive(true);
+                        _tutorialAssets._atomParent.SetActive(false);
+                        _tutorialAssets._stepParent.SetActive(false);
+                        yield return new WaitForSeconds(1);
+                        _tutorialAssets._continueText.gameObject.SetActive(true);
+                        yield return new WaitForSeconds(0.25f);
+                        yield return new WaitForSeconds(0.25f);
+                        while (!Input.GetButtonDown("Submit"))
+                        {
+                            yield return null;
+                        }
+                        _tutorialAssets._continueText.gameObject.SetActive(false);
+                        _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+                        Main._saveLoadValues._elementTutorial = true;
+                    }
+
                     switch (ElementInfo._elements[i]._elementType)
-                    {
-                        case NewGameEvent.Elements.ElementType.C:
-                            _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
-                            break;
-                        case NewGameEvent.Elements.ElementType.H:
-                            _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
-                            break;
-                        case NewGameEvent.Elements.ElementType.O:
-                            _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
-                            break;
-                        case NewGameEvent.Elements.ElementType.Fe:
-                            _slimeInfo._elementsParticles[3] += ElementInfo._elements[i]._quantity;
-                            break;
-                    }
+                        {
+                            case NewGameEvent.Elements.ElementType.C:
+                                _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
+                                break;
+                            case NewGameEvent.Elements.ElementType.H:
+                                _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
+                                break;
+                            case NewGameEvent.Elements.ElementType.O:
+                                _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
+                                break;
+                            case NewGameEvent.Elements.ElementType.Fe:
+                                _slimeInfo._elementsParticles[3] += ElementInfo._elements[i]._quantity;
+                                break;
+                        }
 
-                    //_elementsBool[i] = false;
-                    if (!_transformed)
-                    {
-                        TransformSlimeVoid();
-                    }
+                        //_elementsBool[i] = false;
+                        if (!_transformed)
+                        {
+                            TransformSlimeVoid();
+                        }
 
-                    StartCoroutine(ElementNumerator());
-                    break;
-                }
- 
-       
-           
-
-
+                        StartCoroutine(ElementNumerator());
+                    _movementAvailable = true;
+                        break;
+                    }             
             }
+ 
    
 
-        }
-  
-      
-
+        }    
 
     }
     public IEnumerator ElementNumerator()
@@ -1783,7 +1839,7 @@ void SetSteps()
             Debug.Log("Acero");
            MainController.Instance._formulaText.text = "C+Fe";
             MainController.Instance._nameText.text = GameInitScript.Instance.GetText("C2");
-
+            MainController.Instance._atributeText.text = "Heavy Solid";
             StartCoroutine(TransormatioNumerator());
         }
         else if (_slimeInfo._elementsParticles[1] >= 2 && _slimeInfo._elementsParticles[2] >= 1)
@@ -1793,6 +1849,7 @@ void SetSteps()
                 case 2:
                     _slimeInfo._slimeID = 4;
                     MainController.Instance._formulaText.text = "H20";
+                    MainController.Instance._atributeText.text = "Heavy Liquid / Conductor";
                     MainController.Instance._nameText.text = GameInitScript.Instance.GetText("ICE");
                     Debug.Log("HIELO");
                     _waterWalk.Play();
@@ -1803,6 +1860,7 @@ void SetSteps()
                 default:
                     _slimeInfo._slimeID = 2;
                     MainController.Instance._formulaText.text = "H20";
+                    MainController.Instance._atributeText.text = "Light Liquid / Conductor";
                     MainController.Instance._nameText.text = GameInitScript.Instance.GetText("H20");
                     Debug.Log("AGUA");
                     _waterWalk.Play();
@@ -1816,6 +1874,7 @@ void SetSteps()
         {
             _slimeInfo._slimeID = 3;
             MainController.Instance._formulaText.text = "C02";
+            MainController.Instance._atributeText.text = "Light Gas";
             Debug.Log("C02");
             _smoke.Play();
             _waterWalk.Stop();
@@ -1824,6 +1883,7 @@ void SetSteps()
         }
         else if (_slimeInfo._elementsParticles[2] >= 4 && _slimeInfo._elementsParticles[3] >= 3) {
             _slimeInfo._slimeID = 5;
+            MainController.Instance._atributeText.text = "Light Solid / Magnetism";
             MainController.Instance._formulaText.text = "Magnatite";
             Debug.Log("Fe3O4");
             _smoke.Play();

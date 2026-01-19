@@ -78,6 +78,11 @@ namespace LoL
         public string SaveJson;
         [SerializeField] private TMP_Text _json;
 
+        [Header("Debug / Reset")]
+        public bool forceNewGame = true;
+
+        private bool _pendingForcedReset = false;
+
 
         // **********************************************
         // 🔥 FUNCIÓN START CON LÓGICA DE RE-APLICACIÓN
@@ -111,6 +116,23 @@ namespace LoL
                 Debug.Log("ℹ️ GameInitScript: Ya inicializado sin datos guardados. Forzando verificación de estado.");
                 CheckReadyState();
             }
+        }
+
+        private GameSaveState CreateDefaultGameState()
+        {
+            return new GameSaveState
+            {
+                _healthCoins = 3,
+                _hintCoins = 0,
+                _progress = 0,
+
+                _worldsUnlocked = new bool[] { true, false, false, false },
+                _elementsUnlocked = new bool[] { true, false, false },
+                _slimeUnlocked = new bool[] { true, false, false },
+
+                _finalWorldUnlocked = false,
+                _progressSave = new bool[8]
+            };
         }
 
 
@@ -328,7 +350,38 @@ namespace LoL
 
         private void ApplyLanguageJSON(string json)
         {
-            var root = JSON.Parse(json);
+            if (string.IsNullOrEmpty(json))
+            {
+                Debug.LogError("❌ Language JSON is null or empty");
+                languageReady = false;
+                CheckReadyState();
+                return;
+            }
+
+            json = json.Trim();
+
+            // Protección clave para WebGL / LoL
+            if (!json.StartsWith("{"))
+            {
+                Debug.LogError("❌ Invalid JSON received:\n" + json);
+                languageReady = false;
+                CheckReadyState();
+                return;
+            }
+
+            JSONNode root;
+            try
+            {
+                root = JSON.Parse(json);
+            }
+            catch (System.Exception e)
+            {
+                Debug.LogError("❌ JSON Parse failed:\n" + e.Message + "\n" + json);
+                languageReady = false;
+                CheckReadyState();
+                return;
+            }
+
             var langData = root[_languageCode];
 
             if (langData == null || langData.Count == 0)
@@ -337,14 +390,23 @@ namespace LoL
                 {
                     Debug.LogWarning($"⚠️ Idioma '{_languageCode}' no encontrado. Intentando fallback a 'en'.");
                     langData = root["en"];
-                    if (langData == null)
+
+                    if (langData == null || langData.Count == 0)
                     {
                         Debug.LogError("❌ Fallback a 'en' también falló.");
                         languageReady = false;
                         CheckReadyState();
                         return;
                     }
+
                     _languageCode = "en";
+                }
+                else
+                {
+                    Debug.LogError("❌ Idioma 'en' no existe en el JSON.");
+                    languageReady = false;
+                    CheckReadyState();
+                    return;
                 }
             }
 
@@ -354,9 +416,15 @@ namespace LoL
             foreach (KeyValuePair<string, JSONNode> pair in langData)
             {
                 string key = pair.Key;
-                string value = pair.Value;
+                string value = pair.Value.Value; // 👈 importante
+
                 _translations[key] = value;
-                _localizedItems[key] = new LocalizedItem { key = key, value = value, id = -1 };
+                _localizedItems[key] = new LocalizedItem
+                {
+                    key = key,
+                    value = value,
+                    id = -1
+                };
             }
 
             languageReady = true;
@@ -364,6 +432,7 @@ namespace LoL
 
             CheckReadyState();
         }
+
 
         void HandleLanguageDefs(string json)
         {
@@ -403,30 +472,57 @@ namespace LoL
         }
 
         // --- Tu método ya existente que aplica el GameSaveState al LoadedFullState
+        //private void OnLoadGameSave(GameSaveState loadedSave)
+        //{
+        //    Debug.Log($"OnLoadGameSave invoked. loadedSave == null? {loadedSave == null}");
+
+        //    if (loadedSave != null)
+        //    {
+        //        LoadedFullState = new GameFullState
+        //        {
+        //            data = loadedSave,
+        //            currentProgress = loadedSave._progress,
+        //            maximumProgress = Mathf.Max(loadedSave._progress, 8)
+        //        };
+
+        //        Debug.Log("OnLoadGameSave: datos cargados desde SDK: " + JsonUtility.ToJson(loadedSave));
+
+        //    }
+        //    else
+        //    {
+        //        LoadedFullState = null;
+        //        Debug.Log("OnLoadGameSave: no había datos (nueva partida).");
+        //    }
+
+        //    StartCoroutine(ApplyLoadedStateWhenReady());
+        //}
+
         private void OnLoadGameSave(GameSaveState loadedSave)
         {
-            Debug.Log($"OnLoadGameSave invoked. loadedSave == null? {loadedSave == null}");
-
-            if (loadedSave != null)
+            if (forceNewGame)
             {
-                LoadedFullState = new GameFullState
-                {
-                    data = loadedSave,
-                    currentProgress = loadedSave._progress,
-                    maximumProgress = Mathf.Max(loadedSave._progress, 8)
-                };
-
-                Debug.Log("OnLoadGameSave: datos cargados desde SDK: " + JsonUtility.ToJson(loadedSave));
-            
+                Debug.Log("🧨 FORZANDO NUEVA PARTIDA (ignorando save del SDK)");
+                loadedSave = CreateDefaultGameState();
+                _pendingForcedReset = true; // 👈 se guarda después
             }
-            else
+            else if (loadedSave == null)
             {
-                LoadedFullState = null;
-                Debug.Log("OnLoadGameSave: no había datos (nueva partida).");
+                Debug.Log("🆕 Nueva partida (no había save)");
+                loadedSave = CreateDefaultGameState();
+                _pendingForcedReset = true;
             }
+
+            LoadedFullState = new GameFullState
+            {
+                data = loadedSave,
+                currentProgress = loadedSave._progress,
+                maximumProgress = Mathf.Max(loadedSave._progress, 8)
+            };
 
             StartCoroutine(ApplyLoadedStateWhenReady());
         }
+
+
 
 
 
@@ -488,6 +584,14 @@ namespace LoL
             mc.UpdateCurrencyUI();
             stateLoaded = true;
             CheckReadyState();
+            // ⬇️ GUARDA SOLO CUANDO TODO YA ESTÁ LISTO (HARNESS SAFE)
+            if (_pendingForcedReset)
+            {
+                Debug.Log("💾 Guardando estado NUEVO después de StartGame");
+                LOLSDK.Instance.SaveState(LoadedFullState.data);
+                _pendingForcedReset = false;
+            }
+
         }
 
 
