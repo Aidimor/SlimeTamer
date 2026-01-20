@@ -136,6 +136,8 @@ public class NewMainGameplay : MonoBehaviour
     public BoulderSwitch _boulderSwitch;
 
     public bool itTransforms;
+
+
   
     void Start()
     {   
@@ -1120,6 +1122,27 @@ void SetSteps()
         switch (MainController.Instance._onWorldGlobal)
         {
             case 1:
+                switch (_sandStormOn)
+                {
+                    case false:
+                        _movementsToSandStorm--;
+                        if (_movementsToSandStorm <= 0)
+                        {
+                            _sandStorm.Play();
+                            _movementsToSandStorm = Random.Range(3, 5);
+                            _sandStormOn = true;
+                        }
+                        break;
+                    case true:
+                        _sandStorm.Stop();
+
+                        _sandStormOn = false;
+                        break;
+                }
+
+                break;
+            case 3:
+
                 _turnToStorm--;
                 if(_turnToStorm <= 0)
                 {
@@ -1173,26 +1196,7 @@ void SetSteps()
                 }
                    
                 break;
-            case 3:
-                switch (_sandStormOn)
-                {
-                    case false:
-                        _movementsToSandStorm--;
-                        if (_movementsToSandStorm <= 0)
-                        {
-                            _sandStorm.Play();                           
-                            _movementsToSandStorm = Random.Range(3, 5);
-                            _sandStormOn = true;
-                        }
-                        break;
-                    case true:
-                        _sandStorm.Stop();
-                       
-                        _sandStormOn = false;
-                        break;
-                }
-
-                break;
+   
         }
         if (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets.Length > 0)
         {
@@ -1495,17 +1499,17 @@ void SetSteps()
                         switch (_slimeInfo._slimeID)
                         {
                             case 0:
-                                RestartLevel();
+                                StartCoroutine(RestartLevel());
                                 break;
                             case 1:
-                                RestartLevel();
+                                StartCoroutine(RestartLevel());
                                 break;
                             case 2:
                                 _allHazards[i].GetComponent<ObstaclesScript>()._fireParticle.Stop();
                                 _allHazards[i].GetComponent<ObstaclesScript>()._smokeParticle.Play();
                                 break;
                             case 3:
-                                RestartLevel();
+                                StartCoroutine(RestartLevel());
                                 break;
                             case 4:
                                 _allHazards[i].GetComponent<ObstaclesScript>()._fireParticle.Stop();
@@ -1520,7 +1524,7 @@ void SetSteps()
                 case NewGameEvent.Hazards.HazardsType.Hole:
                         if (_slimeInfo._slimeID != 3)
                         {
-                           RestartLevel();
+                            StartCoroutine(RestartLevel());
                         }                 
                             
                             Debug.Log("Hole");
@@ -1574,7 +1578,7 @@ void SetSteps()
                             case 2:
                                 break;
                             default:
-                                RestartLevel();
+                                StartCoroutine(RestartLevel());
                                 break;
                         }
                  
@@ -1677,28 +1681,47 @@ void SetSteps()
                     switch (ElementInfo._elements[i]._elementType)
                         {
                             case NewGameEvent.Elements.ElementType.C:
-                                _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
+                            Main._elementAnimatorAssets._border.color = Main._elementsColor[0];
+                            Main._elementAnimatorAssets._elementText.color = Main._elementsColor[0];
+                            Main._elementAnimatorAssets._elementText.text = "C";
+                            Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
+                            _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
                                 break;
                             case NewGameEvent.Elements.ElementType.H:
-                                _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
+                            Main._elementAnimatorAssets._border.color = Main._elementsColor[1];
+                            Main._elementAnimatorAssets._elementText.color = Main._elementsColor[1];
+                            Main._elementAnimatorAssets._elementText.text = "H";
+                            Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
+                            _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
                                 break;
                             case NewGameEvent.Elements.ElementType.O:
-                                _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
+                            Main._elementAnimatorAssets._border.color = Main._elementsColor[2];
+                            Main._elementAnimatorAssets._elementText.color = Main._elementsColor[2];
+                            Main._elementAnimatorAssets._elementText.text = "O";
+                            Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
+                            _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
                                 break;
                             case NewGameEvent.Elements.ElementType.Fe:
-                                _slimeInfo._elementsParticles[3] += ElementInfo._elements[i]._quantity;
+                            Main._elementAnimatorAssets._border.color = Main._elementsColor[3];
+                            Main._elementAnimatorAssets._elementText.color = Main._elementsColor[3];
+                            Main._elementAnimatorAssets._elementText.text = "Fe";
+                            Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
+                            _slimeInfo._elementsParticles[3] += ElementInfo._elements[i]._quantity;
                                 break;
                         }
+                    
 
                     StartCoroutine(ElementNumerator());
                     if (!_transformed){
                 
                             TransformSlimeVoid();
                     }
+             
         
                    
                     if (!itTransforms)
                     {
+                    
                         _movementAvailable = true;
                     }
                
@@ -1959,8 +1982,19 @@ void SetSteps()
             MainController.Instance._nameText.text = GameInitScript.Instance.GetText("FE3O4");
             StartCoroutine(TransormatioNumerator());
         }
+        else
+        {
+            StartCoroutine(ElementAnimatorCourutine());
+        }
 
 
+    }
+
+    public IEnumerator ElementAnimatorCourutine()
+    {
+        MainController.Instance._elementAnimatorAssets._animator.Play("ElementIn");
+        yield return new WaitForSeconds(0.3f);
+        _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 4);
     }
 
     public IEnumerator TransormatioNumerator()
@@ -1973,6 +2007,7 @@ void SetSteps()
         MainController.Instance._transformationAnimator.SetBool("Success", true);
    
         yield return new WaitForSeconds(0.5f);
+        _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 4);
         switch (_slimeInfo._slimeID)
         {
             case 0:
@@ -2055,16 +2090,16 @@ void SetSteps()
         {
             case 0:
                 MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
-                MainController.Instance._onWorldGlobal = 3;
-                break;
-            case 1:
-                MainController.Instance._onWorldGlobal = 0;
-                break;
-            case 2:
                 MainController.Instance._onWorldGlobal = 1;
                 break;
-            case 3:
+            case 1:
                 MainController.Instance._onWorldGlobal = 2;
+                break;
+            case 2:
+                MainController.Instance._onWorldGlobal = 3;
+                break;
+            case 3:
+                MainController.Instance._onWorldGlobal = 4;
                 break;
         }
         MainController.Instance._introSpecial = true;
@@ -2074,5 +2109,10 @@ void SetSteps()
 
     }
 
- 
+    public void ShakeCamera()
+    {
+        _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 2);
+    }
+
+
 }

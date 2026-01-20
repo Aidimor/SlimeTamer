@@ -52,12 +52,6 @@ public class PortraitController : MonoBehaviour
     public void Awake()
     {
         Instance = this;
-        //if (Instance != null)
-        //{
-        //    Destroy(gameObject);
-        //    return;
-        //}
-
        
     }
     void OnEnable()
@@ -87,8 +81,7 @@ public class PortraitController : MonoBehaviour
             _logo.gameObject.SetActive(false);
             _frontMap.gameObject.SetActive(false);
         }
-        //_scriptMainController._currencyAssets[0]._quantityText.text = _scriptMainController._saveLoadValues._healthCoins.ToString();
-        //_scriptMainController._currencyAssets[1]._quantityText.text = _scriptMainController._saveLoadValues._hintCoins.ToString();
+
         StartCoroutine(StartsSceneNumerator());
     }
 
@@ -165,10 +158,10 @@ public class PortraitController : MonoBehaviour
         {
             _worldsParent.GetComponent<RectTransform>().anchoredPosition =
                 Vector2.MoveTowards(_worldsParent.GetComponent<RectTransform>().anchoredPosition,
-                new Vector2(_allWorlds[_scriptMainController._onWorldGlobal]._yPos, 50),
+                new Vector2(_allWorlds[_scriptMainController._onWorldGlobal]._yPos, -12),
                 250f * Time.deltaTime);
 
-            if (_worldsParent.GetComponent<RectTransform>().anchoredPosition.y ==
+            if (_worldsParent.GetComponent<RectTransform>().anchoredPosition.x ==
                 _allWorlds[_scriptMainController._onWorldGlobal]._yPos && !_gameStarts)
             {
                 StartCoroutine(StartGameSpecial());
@@ -181,15 +174,9 @@ public class PortraitController : MonoBehaviour
 
     private void HandleMovement()
     {
-        //if (!_changing)
-        //{
-        //    var parentPos = _parent.GetComponent<RectTransform>().anchoredPosition;
-        //    _parent.GetComponent<RectTransform>().anchoredPosition =
-        //        Vector2.Lerp(parentPos, new Vector2(parentPos.x, _xPoses[_OnPos]), _speed * Time.deltaTime);
-        //}
-
+ 
         if (Input.GetAxisRaw("Horizontal") == 0) _pressed = false;
-        //if (Input.GetAxisRaw("Vertical") == 0) _worldPressed = false;
+   
 
         var worldPos = _worldsParent.GetComponent<RectTransform>().anchoredPosition;
         _worldsParent.GetComponent<RectTransform>().anchoredPosition =
@@ -244,13 +231,14 @@ public class PortraitController : MonoBehaviour
         _gameStarts = true;
         _fallingSlime.Play();
         _logo.gameObject.SetActive(false);
-        //_parent.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -50f);
+    
         _slimeParent.SetActive(false);
         yield return new WaitForSeconds(3);
         _scriptMainController._bordersAnimator.SetBool("BorderOut", false);
 
         yield return new WaitForSeconds(1);
         _scriptMainController._introSpecial = false;
+   
         _scriptMainController.LoadSceneByName("MainGame");
     }
 
@@ -277,27 +265,4 @@ public class PortraitController : MonoBehaviour
 
     }
 
-    //public void botonBorrar()
-    //{
-    //    for(int i = 0; i < MainController.Instance._saveLoadValues._elementsUnlocked.Length; i++)
-    //    {
-    //        MainController.Instance._saveLoadValues._elementsUnlocked[i] = false;
-    //    }
-    //    for (int i = 0; i < MainController.Instance._saveLoadValues._worldsUnlocked.Length; i++)
-    //    {
-    //        MainController.Instance._saveLoadValues._worldsUnlocked[i] = false;
-    //    }
-    //    MainController.Instance._saveLoadValues._worldsUnlocked[0] = true;
-    //    for (int i = 0; i < MainController.Instance._saveLoadValues._slimeUnlocked.Length; i++)
-    //    {
-    //        MainController.Instance._saveLoadValues._slimeUnlocked[i] = false;
-    //    }
-    //    MainController.Instance._saveLoadValues._progress = 0;
-    //    MainController.Instance._saveLoadValues._finalWorldUnlocked = false;
-    //    MainController.Instance._saveLoadValues._hintCoins = 1;
-    //    MainController.Instance._currencyAssets[1]._quantityText.text = MainController.Instance._saveLoadValues._hintCoins.ToString("f0");
-    //    MainController.Instance._saveLoadValues._healthCoins = 1;
-    //    MainController.Instance._currencyAssets[0]._quantityText.text = MainController.Instance._saveLoadValues._hintCoins.ToString("f0");
-    //    GameInitScript.Instance.SaveGame();
-    //}
 }

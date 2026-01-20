@@ -142,6 +142,15 @@ public class MainController : MonoBehaviour
     public Color[] _elementsColor;
     public TextMeshProUGUI _continueText;
 
+    [System.Serializable]
+    public class ElementAnimatorAssets
+    {
+        public Animator _animator;
+        public TextMeshProUGUI _elementText;
+        public TextMeshProUGUI _quantityText;
+        public Image _border;
+    }
+    public ElementAnimatorAssets _elementAnimatorAssets;
 
     void Awake()
     {
@@ -194,16 +203,17 @@ public class MainController : MonoBehaviour
     public void SetStagesID()
     {
 
-        _allTurnsInfo[0]._stagesID = new List<int> { 0, 1, 2, 3, 4, 5 };
+        _allTurnsInfo[0]._stagesID = new List<int> {0, 1, 2, 3, 4};
         List<int> posiblesNumeros = new List<int> { 6, 7, 8, 9, 10, 11, 12, 16, 18, 19 };
 
+
+        _allTurnsInfo[1]._stagesID.Add(32);
         for (int i = 0; i < 6; i++)
         {
             int randomIndex = Random.Range(0, posiblesNumeros.Count);
             _allTurnsInfo[1]._stagesID.Add(posiblesNumeros[randomIndex]);
         }
-        _allTurnsInfo[1]._stagesID.Add(29);
-        _allTurnsInfo[1]._stagesID.Add(30);
+        _allTurnsInfo[1]._stagesID.Add(26);
 
         _allTurnsInfo[2]._stagesID.Add(13);
         for (int i = 0; i < 1; i++)
@@ -221,13 +231,19 @@ public class MainController : MonoBehaviour
         _allTurnsInfo[2]._stagesID.Add(15);
         _allTurnsInfo[2]._stagesID.Add(28);
 
-        _allTurnsInfo[3]._stagesID.Add(32);
+        _allTurnsInfo[3]._stagesID.Add(16);
+        _allTurnsInfo[3]._stagesID.Add(17);
+        _allTurnsInfo[3]._stagesID.Add(18);
+        _allTurnsInfo[3]._stagesID.Add(19);
         for (int i = 0; i < 6; i++)
         {
             int randomIndex = Random.Range(0, posiblesNumeros.Count);
             _allTurnsInfo[3]._stagesID.Add(posiblesNumeros[randomIndex]);
         }
-        _allTurnsInfo[3]._stagesID.Add(26);
+        _allTurnsInfo[3]._stagesID.Add(29);
+        _allTurnsInfo[3]._stagesID.Add(30);
+
+
 
 
     

@@ -73,5 +73,9 @@ public class SpecialAnimatorEvents : MonoBehaviour
         _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._stickyMudSound);
     }
 
+    public void HeavyJumpSlime()
+    {
+        _scriptMain._mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 2);
+    }
 
 }

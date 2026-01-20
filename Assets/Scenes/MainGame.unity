@@ -297622,9 +297622,9 @@ MonoBehaviour:
     _atomsText: {fileID: 30785378}
   _allGroundsSprites:
   - {fileID: 2141548275, guid: a8e2705bdf123284187f5323b87ad6ef, type: 3}
-  - {fileID: 1583339013, guid: a8e2705bdf123284187f5323b87ad6ef, type: 3}
-  - {fileID: -1623666566, guid: a8e2705bdf123284187f5323b87ad6ef, type: 3}
   - {fileID: -1188946006, guid: a8e2705bdf123284187f5323b87ad6ef, type: 3}
+  - {fileID: -1623666566, guid: a8e2705bdf123284187f5323b87ad6ef, type: 3}
+  - {fileID: 1583339013, guid: a8e2705bdf123284187f5323b87ad6ef, type: 3}
   _backgroundImage:
   - {fileID: 1959192608}
   - {fileID: 720418}
@@ -297685,6 +297685,7 @@ MonoBehaviour:
     _movingBoulder: 0
     _columnObject: {fileID: 0}
     _switchPose: {fileID: 0}
+  itTransforms: 0
 --- !u!1 &1221362315
 GameObject:
   m_ObjectHideFlags: 0
