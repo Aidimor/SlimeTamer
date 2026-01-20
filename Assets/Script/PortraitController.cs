@@ -133,7 +133,7 @@ public class PortraitController : MonoBehaviour
 
         for (int i = 0; i < _allWorlds.Length; i++)
         {
-            int displayNumber = _allWorlds.Length - i;
+            int displayNumber = i + 1;
 
             var world = _allWorlds[i];
             if (world._worldText != null && !string.IsNullOrEmpty(world.key))
@@ -145,9 +145,6 @@ public class PortraitController : MonoBehaviour
         for (int i = 0; i < _allWorlds.Length; i++)
         {
             var world = _allWorlds[i];
-
-            //if (world._worldText != null && !string.IsNullOrEmpty(world.key))
-            //    world._worldText.text = gi.GetText(world.key) + " " + (i + 1);
 
             if (world._lockedText != null)
                 world._lockedText.text = gi.GetText("locked");

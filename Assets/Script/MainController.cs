@@ -128,10 +128,20 @@ public class MainController : MonoBehaviour
     public AllTurnsInfo[] _allTurnsInfo;
 
     public Animator _transformationAnimator;
-    public TextMeshProUGUI _formulaText;
+
     public TextMeshProUGUI _nameText;
     public TextMeshProUGUI _atributeText;
     public RawImage _slimeRawImage;
+    [System.Serializable]
+    public class ElementsCircles {
+        public Image _cirlce;
+        public TextMeshProUGUI _elementLetters;
+        public TextMeshProUGUI _quantity;
+    }
+    public ElementsCircles[] _elementsCircles;
+    public Color[] _elementsColor;
+    public TextMeshProUGUI _continueText;
+
 
     void Awake()
     {

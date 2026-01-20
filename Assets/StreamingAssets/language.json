@@ -63,17 +63,19 @@
     "locked": "LOCKED",
     "tutorial0": "Use keyboard arrows to move.",
     "tutorial1": "If you step on a purple square it will restart the stage",
-    "tutorial2": "Add a second element to transform the slime",
-    "tutorial3": "Use different particles to create different slime variants",
-    "tutorial4": "Choose the correct one to advance in your adventure!",
+    "tutorial2": "Collect Atoms and transform into a new chemical compound to complete the stage",
+    "tutorial3": "You can step back into purple squares if you have enough Step Coins",
+    "tutorial4": "You can make your own formula if the stage does not have enough elements, if you have enough atoms",
     "tutorialhealth": "Get an extra life",
     "tutorialhint": "Get a hint to solve the level",
     "tutorialmenu": "Press Enter to open the hint menu",
     "pressenter": "PRESS ENTER",
     "hintmenu": "HINT MENU",
-"C2": "CARBON",
-"H20": "WATER",
-"CO2": "DIOXIDE CARBON"
+"FC": "IRON SLIME",
+"H20": "WATER SLIME",
+"ICE": "ICE SLIME",
+"CO2": "DIOXIDE CARBON SLIME",
+"FE3O4": "MAGNATITE SLIME"
 
 
   },

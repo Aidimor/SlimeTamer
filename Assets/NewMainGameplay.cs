@@ -135,7 +135,7 @@ public class NewMainGameplay : MonoBehaviour
     }
     public BoulderSwitch _boulderSwitch;
 
-
+    public bool itTransforms;
   
     void Start()
     {   
@@ -1690,15 +1690,24 @@ void SetSteps()
                                 break;
                         }
 
-                        //_elementsBool[i] = false;
-                        if (!_transformed)
-                        {
+                    StartCoroutine(ElementNumerator());
+                    if (!_transformed){
+                
                             TransformSlimeVoid();
-                        }
+                    }
+        
+                   
+                    if (!itTransforms)
+                    {
+                        _movementAvailable = true;
+                    }
+               
 
-                        StartCoroutine(ElementNumerator());
-                    _movementAvailable = true;
-                        break;
+
+
+
+
+                    break;
                     }             
             }
  
@@ -1733,6 +1742,8 @@ void SetSteps()
                 if (MainController.Instance._onWorldGlobal == 0 && Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage] == 5)
                 {
                     StopMoveCoroutine();
+                    var gi = GameInitScript.Instance;
+                    _tutorialAssets._tutorialText.text = gi.GetText("tutorial4");
                     _movementAvailable = false;
                     yield return new WaitForSeconds(1);
                     _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
@@ -1791,6 +1802,8 @@ void SetSteps()
                 {
                     StopMoveCoroutine();
                     _movementAvailable = false;
+                    var gi = GameInitScript.Instance;
+                    _tutorialAssets._tutorialText.text = gi.GetText("tutorial3");
                     yield return new WaitForSeconds(1);
                     _tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
                     _tutorialAssets._arrowsParent.SetActive(false);
@@ -1833,12 +1846,23 @@ void SetSteps()
 
     public void TransformSlimeVoid()
     {
+        var Main = MainController.Instance;
         if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[3] >= 1)
         {
-            _slimeInfo._slimeID = 1;
-            Debug.Log("Acero");
-           MainController.Instance._formulaText.text = "C+Fe";
-            MainController.Instance._nameText.text = GameInitScript.Instance.GetText("C2");
+            itTransforms = true;
+            _slimeInfo._slimeID = 1;      
+
+            Main._elementsCircles[0]._cirlce.color = Main._elementsColor[0];
+            Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[0];
+            Main._elementsCircles[0]._elementLetters.text = "C";
+            Main._elementsCircles[0]._quantity.text = "";
+
+            Main._elementsCircles[1]._cirlce.color = Main._elementsColor[3];
+            Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[3];
+            Main._elementsCircles[1]._elementLetters.text = "Fe";
+            Main._elementsCircles[1]._quantity.text = "";
+
+            MainController.Instance._nameText.text = GameInitScript.Instance.GetText("FC");
             MainController.Instance._atributeText.text = "Heavy Solid";
             StartCoroutine(TransormatioNumerator());
         }
@@ -1847,22 +1871,44 @@ void SetSteps()
             switch (MainController.Instance._onWorldGlobal)
             {
                 case 2:
+                    itTransforms = true;
                     _slimeInfo._slimeID = 4;
-                    MainController.Instance._formulaText.text = "H20";
+
+                    Main._elementsCircles[0]._cirlce.color = Main._elementsColor[1];
+                    Main._elementsCircles[0]._elementLetters.text = "H";
+                    Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[1];
+                    Main._elementsCircles[0]._quantity.text = "2";
+
+                    Main._elementsCircles[1]._cirlce.color = Main._elementsColor[2];
+                    Main._elementsCircles[1]._elementLetters.text = "O";
+                    Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[2];
+                    Main._elementsCircles[1]._quantity.text = "";
+
                     MainController.Instance._atributeText.text = "Heavy Liquid / Conductor";
                     MainController.Instance._nameText.text = GameInitScript.Instance.GetText("ICE");
-                    Debug.Log("HIELO");
+               
                     _waterWalk.Play();
                     _smoke.Stop();
                     StartCoroutine(TransormatioNumerator());
                     _turnsReturnToWater = -1;
                     break;
                 default:
+                    itTransforms = true;
                     _slimeInfo._slimeID = 2;
-                    MainController.Instance._formulaText.text = "H20";
+
+                    Main._elementsCircles[0]._cirlce.color = Main._elementsColor[1];
+                    Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[1];
+                    Main._elementsCircles[0]._elementLetters.text = "H";
+                    Main._elementsCircles[0]._quantity.text = "2";
+
+                    Main._elementsCircles[1]._cirlce.color = Main._elementsColor[2];
+                    Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[2];
+                    Main._elementsCircles[1]._elementLetters.text = "0";
+                    Main._elementsCircles[1]._quantity.text = "";
+
                     MainController.Instance._atributeText.text = "Light Liquid / Conductor";
                     MainController.Instance._nameText.text = GameInitScript.Instance.GetText("H20");
-                    Debug.Log("AGUA");
+            
                     _waterWalk.Play();
                     _smoke.Stop();
                     StartCoroutine(TransormatioNumerator());
@@ -1872,23 +1918,45 @@ void SetSteps()
         }
         else if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[2] >= 2)
         {
+            itTransforms = true;
             _slimeInfo._slimeID = 3;
-            MainController.Instance._formulaText.text = "C02";
-            MainController.Instance._atributeText.text = "Light Gas";
-            Debug.Log("C02");
+
+            Main._elementsCircles[0]._cirlce.color = Main._elementsColor[0];
+            Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[0];
+            Main._elementsCircles[0]._elementLetters.text = "C";
+            Main._elementsCircles[0]._quantity.text = "";
+
+            Main._elementsCircles[1]._cirlce.color = Main._elementsColor[2];
+            Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[2];
+            Main._elementsCircles[1]._elementLetters.text = "0";
+            Main._elementsCircles[1]._quantity.text = "2";
+
+            MainController.Instance._atributeText.text = "Light Gas";    
             _smoke.Play();
             _waterWalk.Stop();
             MainController.Instance._nameText.text = GameInitScript.Instance.GetText("CO2");
             StartCoroutine(TransormatioNumerator());
         }
         else if (_slimeInfo._elementsParticles[2] >= 4 && _slimeInfo._elementsParticles[3] >= 3) {
+            itTransforms = true;
             _slimeInfo._slimeID = 5;
+
+            Main._elementsCircles[1]._cirlce.color = Main._elementsColor[0];
+            Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[0];
+            Main._elementsCircles[1]._elementLetters.text = "C";
+            Main._elementsCircles[1]._quantity.text = "4";
+
+            Main._elementsCircles[0]._cirlce.color = Main._elementsColor[3];
+            Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[3];
+            Main._elementsCircles[0]._elementLetters.text = "Fe";
+            Main._elementsCircles[0]._quantity.text = "3";
+
             MainController.Instance._atributeText.text = "Light Solid / Magnetism";
-            MainController.Instance._formulaText.text = "Magnatite";
+      
             Debug.Log("Fe3O4");
             _smoke.Play();
             _waterWalk.Stop();
-            MainController.Instance._nameText.text = GameInitScript.Instance.GetText("Fe3O4");
+            MainController.Instance._nameText.text = GameInitScript.Instance.GetText("FE3O4");
             StartCoroutine(TransormatioNumerator());
         }
 
@@ -1926,6 +1994,12 @@ void SetSteps()
                 break;
         }
         yield return new WaitForSeconds(1);
+        MainController.Instance._continueText.gameObject.SetActive(true);
+        while (!Input.GetButtonDown("Submit"))
+        {
+            yield return null;
+        }
+        MainController.Instance._continueText.gameObject.SetActive(false);
         MainController.Instance._transformationAnimator.SetBool("Success", false);
         yield return new WaitForSeconds(0.5f);
         _movementAvailable = true;
