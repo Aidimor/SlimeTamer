@@ -55,6 +55,8 @@ public class MainController : MonoBehaviour
         public int _progress = 0;
         public bool _restartTutorial;
         public bool _elementTutorial;
+        public bool _restartAvailable;
+        public bool _hazardTutorial;
     }
 
     public SaveLoadValues _saveLoadValues;
@@ -152,6 +154,32 @@ public class MainController : MonoBehaviour
     }
     public ElementAnimatorAssets _elementAnimatorAssets;
 
+    [System.Serializable]
+    public class TutorialAssets
+    {
+        public Animator _tutorialAnimator;
+        public TextMeshProUGUI _tutorialText;
+        public GameObject _arrowsParent;
+        public GameObject _elementsParent;
+        public GameObject _atomParent;
+        public GameObject _stepParent;
+
+        public TextMeshProUGUI _continueText;
+        public bool _tutorialDeployed;
+    }
+    public TutorialAssets _tutorialAssets;
+
+    [System.Serializable]
+    public class WorldAssets
+    {
+        public Animator _worldAnimator;
+        public Image _background;
+        public TextMeshProUGUI _worldName;
+        public Color[] _worldColors;
+ 
+    }
+    public WorldAssets _worldAssets;
+
     void Awake()
     {
         if (Instance == null)
@@ -207,13 +235,20 @@ public class MainController : MonoBehaviour
         List<int> posiblesNumeros = new List<int> { 6, 7, 8, 9, 10, 11, 12, 16, 18, 19 };
 
 
-        _allTurnsInfo[1]._stagesID.Add(32);
-        for (int i = 0; i < 6; i++)
-        {
-            int randomIndex = Random.Range(0, posiblesNumeros.Count);
-            _allTurnsInfo[1]._stagesID.Add(posiblesNumeros[randomIndex]);
-        }
-        _allTurnsInfo[1]._stagesID.Add(26);
+        _allTurnsInfo[1]._stagesID.Add(6);
+        _allTurnsInfo[1]._stagesID.Add(7);
+        _allTurnsInfo[1]._stagesID.Add(8);
+        _allTurnsInfo[1]._stagesID.Add(9);
+        _allTurnsInfo[1]._stagesID.Add(10);
+        _allTurnsInfo[1]._stagesID.Add(11);
+        _allTurnsInfo[1]._stagesID.Add(12);
+
+        //for (int i = 0; i < 6; i++)
+        //{
+        //    int randomIndex = Random.Range(0, posiblesNumeros.Count);
+        //    _allTurnsInfo[1]._stagesID.Add(posiblesNumeros[randomIndex]);
+        //}
+        //_allTurnsInfo[1]._stagesID.Add(26);
 
         _allTurnsInfo[2]._stagesID.Add(13);
         for (int i = 0; i < 1; i++)
@@ -255,6 +290,8 @@ public class MainController : MonoBehaviour
         }
 
     }
+
+ 
 
     public void LoadSceneByName(string sceneName) => SceneManager.LoadScene(sceneName);
 

@@ -19,25 +19,33 @@ MonoBehaviour:
   - _onPlace: 11
     _elementType: 1
     _quantity: 1
+    _changed: 1
   - _onPlace: 12
     _elementType: 2
     _quantity: 1
+    _changed: 1
   - _onPlace: 13
     _elementType: 1
     _quantity: 1
+    _changed: 1
   _hazards:
   - _onPlace: 5
     _hazards: 0
+    _rotation: 0
     _finished: 0
   - _onPlace: 6
     _hazards: 0
+    _rotation: 0
     _finished: 0
   - _onPlace: 8
     _hazards: 0
+    _rotation: 0
     _finished: 0
   - _onPlace: 9
     _hazards: 0
+    _rotation: 0
     _finished: 0
   _atomPlace: 
   _stepsPlace: 0100000003000000
   _bossAssets: []
+  _wind: 0
