@@ -57,6 +57,7 @@ public class MainController : MonoBehaviour
         public bool _elementTutorial;
         public bool _restartAvailable;
         public bool _hazardTutorial;
+        public bool _atomTutorial;
     }
 
     public SaveLoadValues _saveLoadValues;
@@ -139,8 +140,10 @@ public class MainController : MonoBehaviour
         public Image _cirlce;
         public TextMeshProUGUI _elementLetters;
         public TextMeshProUGUI _quantity;
+   
     }
     public ElementsCircles[] _elementsCircles;
+    public TextMeshProUGUI[] _dataTexts;
     public Color[] _elementsColor;
     public TextMeshProUGUI _continueText;
 
@@ -152,6 +155,7 @@ public class MainController : MonoBehaviour
         public TextMeshProUGUI _quantityText;
         public Image _border;
         public Image _center;
+      
     }
     public ElementAnimatorAssets _elementAnimatorAssets;
 

@@ -48,6 +48,7 @@ public class PortraitController : MonoBehaviour
     public TextMeshProUGUI _quitar;
     public int _quitarID;
     public static PortraitController Instance;
+    public int _worldsUnlocked;
 
     public void Awake()
     {
@@ -82,6 +83,8 @@ public class PortraitController : MonoBehaviour
             _frontMap.gameObject.SetActive(false);
         }
 
+ 
+
         StartCoroutine(StartsSceneNumerator());
     }
 
@@ -90,6 +93,15 @@ public class PortraitController : MonoBehaviour
         yield return new WaitForSeconds(1);
         MainController.Instance._currencyAssets[0]._quantityText.text = MainController.Instance._saveLoadValues._healthCoins.ToString("f0");
         MainController.Instance._currencyAssets[1]._quantityText.text = MainController.Instance._saveLoadValues._hintCoins.ToString("f0");
+
+        var Main = MainController.Instance._saveLoadValues;
+        for (int i = 0; i < Main._worldsUnlocked.Length; i++)
+        {
+            if (Main._worldsUnlocked[i])
+            {
+                _worldsUnlocked++;
+            }
+        }
     }
 
     void OnDisable()
@@ -197,7 +209,7 @@ public class PortraitController : MonoBehaviour
                 _worldPressed = true;
             }
 
-            if (Input.GetAxisRaw("Horizontal") > 0 && !_worldPressed && _onWorldPos < _allWorlds.Length - 1)
+            if (Input.GetAxisRaw("Horizontal") > 0 && !_worldPressed && _onWorldPos < _worldsUnlocked - 1)
             {
                 _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._next);
                 _onWorldPos++;

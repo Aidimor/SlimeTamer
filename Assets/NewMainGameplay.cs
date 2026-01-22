@@ -1843,6 +1843,32 @@ void SetSteps()
 
                     if (ElementInfo._elements[i]._emptyAtom)
                     {
+                        if (!Main._saveLoadValues._atomTutorial)
+                        {
+                            StopMoveCoroutine();
+                            _movementAvailable = false;
+                            var gi = GameInitScript.Instance;
+                            Main._tutorialAssets._tutorialText.text = gi.GetText("tutorialatom");
+                            yield return new WaitForSeconds(1);
+                            Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                            Main._tutorialAssets._arrowsParent.SetActive(false);
+                            Main._tutorialAssets._elementsParent.SetActive(false);
+                            Main._tutorialAssets._atomParent.SetActive(true);
+                            Main._tutorialAssets._stepParent.SetActive(false);
+                            yield return new WaitForSeconds(1);
+                            Main._tutorialAssets._continueText.gameObject.SetActive(true);
+                            yield return new WaitForSeconds(0.25f);
+                            yield return new WaitForSeconds(0.25f);
+                            while (!Input.GetButtonDown("Submit"))
+                            {
+                                yield return null;
+                            }
+                            Main._tutorialAssets._continueText.gameObject.SetActive(false);
+                            Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+                            Main._saveLoadValues._atomTutorial = true;
+                        }
+
+
                         Main._elementAnimatorAssets._border.color = Color.white;
                         Main._elementAnimatorAssets._elementText.color = Color.white;
                         Main._elementAnimatorAssets._elementText.text = "";
@@ -2061,8 +2087,11 @@ void SetSteps()
             Main._elementsCircles[1]._elementLetters.text = "Fe";
             Main._elementsCircles[1]._quantity.text = "";
 
+            Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("iron1");
+            Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("iron2");
+
             MainController.Instance._nameText.text = GameInitScript.Instance.GetText("FC");
-            MainController.Instance._atributeText.text = "Heavy Solid";
+            MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("FCextra");
             StartCoroutine(TransormatioNumerator());
         }
         else if (_slimeInfo._elementsParticles[1] >= 2 && _slimeInfo._elementsParticles[2] >= 1)
@@ -2083,7 +2112,10 @@ void SetSteps()
                     Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[2];
                     Main._elementsCircles[1]._quantity.text = "";
 
-                    MainController.Instance._atributeText.text = "Heavy Liquid / Conductor";
+                    Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("snow1");
+                    Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("snow2");
+
+                    MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("ICEextra");
                     MainController.Instance._nameText.text = GameInitScript.Instance.GetText("ICE");
                
                     _waterWalk.Play();
@@ -2105,7 +2137,10 @@ void SetSteps()
                     Main._elementsCircles[1]._elementLetters.text = "0";
                     Main._elementsCircles[1]._quantity.text = "";
 
-                    MainController.Instance._atributeText.text = "Light Liquid / Conductor";
+                    Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("water1");
+                    Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("water2");
+
+                    MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("H20extra");
                     MainController.Instance._nameText.text = GameInitScript.Instance.GetText("H20");
             
                     _waterWalk.Play();
@@ -2130,7 +2165,10 @@ void SetSteps()
             Main._elementsCircles[1]._elementLetters.text = "0";
             Main._elementsCircles[1]._quantity.text = "2";
 
-            MainController.Instance._atributeText.text = "Light Gas";    
+            Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("dioxide1");
+            Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("dioxide2");
+
+            MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("CO2extra");
             _smoke.Play();
             _waterWalk.Stop();
             MainController.Instance._nameText.text = GameInitScript.Instance.GetText("CO2");
@@ -2150,8 +2188,11 @@ void SetSteps()
             Main._elementsCircles[0]._elementLetters.text = "Fe";
             Main._elementsCircles[0]._quantity.text = "3";
 
-            MainController.Instance._atributeText.text = "Light Solid / Magnetism";
-      
+            Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("magnatite1");
+            Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("magnatite2");
+
+            MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("FE3O4extra");
+
             Debug.Log("Fe3O4");
             _smoke.Play();
             _waterWalk.Stop();
@@ -2176,6 +2217,7 @@ void SetSteps()
 
     public IEnumerator TransormatioNumerator()
     {
+        var Main = MainController.Instance;
         MainController.Instance._AtomAnimator.SetBool("AtomsIn", false);
         _AtomsPanelOn = false;
         _transformed = true;
@@ -2218,7 +2260,7 @@ void SetSteps()
         {
 
             var gi = GameInitScript.Instance;
-            var Main = MainController.Instance;
+
             Main._tutorialAssets._tutorialText.text = gi.GetText("tutorial6");  
             Main._tutorialAssets._arrowsParent.SetActive(false);
             Main._tutorialAssets._elementsParent.SetActive(false);
@@ -2241,7 +2283,7 @@ void SetSteps()
         {
 
             var gi = GameInitScript.Instance;
-            var Main = MainController.Instance;
+   
             Main._tutorialAssets._tutorialText.text = gi.GetText("tutorial6");
             Main._tutorialAssets._arrowsParent.SetActive(false);
             Main._tutorialAssets._elementsParent.SetActive(false);
@@ -2343,6 +2385,8 @@ void SetSteps()
     {
         _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 2);
     }
+
+
 
 
 }
