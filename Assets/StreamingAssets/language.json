@@ -77,7 +77,12 @@
 "H20": "WATER SLIME",
 "ICE": "ICE SLIME",
 "CO2": "DIOXIDE CARBON SLIME",
-"FE3O4": "MAGNATITE SLIME"
+"FE3O4": "MAGNATITE SLIME",
+"hazard1": "Sandstorm approaching ",
+"hazard2": "The wind is too cold it can change the results of the formula ",
+"hazard3": "Strong winds can change your position ",
+"hazard4": "Sand Storm approaching ",
+"hazard5": "Not ready yet ",
 
 
   },

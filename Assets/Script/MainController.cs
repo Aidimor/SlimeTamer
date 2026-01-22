@@ -151,6 +151,7 @@ public class MainController : MonoBehaviour
         public TextMeshProUGUI _elementText;
         public TextMeshProUGUI _quantityText;
         public Image _border;
+        public Image _center;
     }
     public ElementAnimatorAssets _elementAnimatorAssets;
 
@@ -176,6 +177,7 @@ public class MainController : MonoBehaviour
         public Image _background;
         public TextMeshProUGUI _worldName;
         public Color[] _worldColors;
+
  
     }
     public WorldAssets _worldAssets;

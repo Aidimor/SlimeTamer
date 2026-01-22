@@ -126,7 +126,7 @@ public class NewMainGameplay : MonoBehaviour
     public Animator _electroAnimator;
 
     public bool _worldNameShown;
-  
+    public bool _stageHazardOn;
     void Start()
     {   
         StartVoids();
@@ -154,7 +154,7 @@ public class NewMainGameplay : MonoBehaviour
             SetSteps();
         }
         SetElements();
-        SetAtoms();
+        //SetAtoms();
 
         var Main = MainController.Instance;
         //if (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets.Length > 0)
@@ -256,6 +256,24 @@ public class NewMainGameplay : MonoBehaviour
                     }
                     Main._tutorialAssets._continueText.gameObject.SetActive(false);
                     Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+                }
+
+                if (!_stageHazardOn)
+                {
+                    yield return new WaitForSeconds(1);
+                    Main._tutorialAssets._tutorialText.text = gi.GetText(("hazard") + Main._onWorldGlobal.ToString());
+                    Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                    Main._tutorialAssets._arrowsParent.SetActive(false);
+                    Main._tutorialAssets._elementsParent.SetActive(false);
+                    Main._tutorialAssets._atomParent.SetActive(false);
+                    Main._tutorialAssets._stepParent.SetActive(false);
+     
+               
+                    yield return new WaitForSeconds(2f);
+       
+                
+                    Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+                    _stageHazardOn = true;
                 }
          
 
@@ -551,7 +569,7 @@ public class NewMainGameplay : MonoBehaviour
                         atomScript._quantityText.text = data._quantity.ToString();
                         atomScript._onPose = data._onPlace;
                         _allAtoms.Add(atom);
-                        //_atomList.Add(data._onPlace);
+                        data._emptyAtom = true;
 
                     }
                     else
@@ -585,11 +603,12 @@ public class NewMainGameplay : MonoBehaviour
                         _allElements.Add(element1);
                         _elementsID.Add(data._onPlace);
                         _elementsBool.Add(true);
+                        data._emptyAtom = false;
                     }
                     break;
                 case 3:
                     int random1 = Random.Range(0, 100);
-                    if (random1 < 60)
+                    if (random1 < 50)
                     {
 
 
@@ -609,7 +628,7 @@ public class NewMainGameplay : MonoBehaviour
                         atomScript._quantityText.text = data._quantity.ToString();
                         atomScript._onPose = data._onPlace;
                         _allAtoms.Add(atom);
-                        //_atomList.Add(data._onPlace);
+                        data._emptyAtom = true;
 
                     }
                     else
@@ -643,11 +662,12 @@ public class NewMainGameplay : MonoBehaviour
                         _allElements.Add(element1);
                         _elementsID.Add(data._onPlace);
                         _elementsBool.Add(true);
+                        data._emptyAtom = false;
                     }
                     break;
                 case 2:
                     int random2 = Random.Range(0, 100);
-                    if (random2 < 35)
+                    if (random2 < 20)
                     {
 
 
@@ -666,7 +686,9 @@ public class NewMainGameplay : MonoBehaviour
                         atomScript._quantity += data._quantity;
                         atomScript._quantityText.text = data._quantity.ToString();
                         atomScript._onPose = data._onPlace;
+                        data._emptyAtom = true;
                         _allAtoms.Add(atom);
+
                         //_atomList.Add(data._onPlace);
 
                     }
@@ -694,7 +716,7 @@ public class NewMainGameplay : MonoBehaviour
                                 orb1.ID = 3;
                                 break;
                         }
-
+                        data._emptyAtom = false;
                         orb1._onPose = data._onPlace;
                         orb1._quantity = data._quantity;
                         orb1.ElementSetVoid();
@@ -734,6 +756,7 @@ public class NewMainGameplay : MonoBehaviour
                     _allElements.Add(element);
                     _elementsID.Add(data._onPlace);
                     _elementsBool.Add(true);
+                    data._emptyAtom = false;
                     break;
             }
     
@@ -748,64 +771,64 @@ public class NewMainGameplay : MonoBehaviour
 
     }
 
-    void SetAtoms()
-    {
-        var Main = MainController.Instance;
+    //void SetAtoms()
+    //{
+    //    var Main = MainController.Instance;
 
-        var stage =
-            _allStages[
-                Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]
-            ];
+    //    var stage =
+    //        _allStages[
+    //            Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]
+    //        ];
 
-        if (stage._atomPlace.Length == 0)
-            return;
+    //    if (stage._atomPlace.Length == 0)
+    //        return;
 
-        for (int i = 0; i < stage._atomPlace.Length; i++)
-        {
-            int pos = stage._atomPlace[i];
+    //    for (int i = 0; i < stage._atomPlace.Length; i++)
+    //    {
+    //        int pos = stage._atomPlace[i];
 
-            int atomIndex = -1;
+    //        int atomIndex = -1;
 
-            // 🔍 Buscar si ya existe un átomo con ese id
-            for (int a = 0; a < _allAtoms.Count; a++)
-            {
-                if (_allAtoms[a].GetComponent<AtomScript>()._onPose == pos)
-                {
-                    atomIndex = a;
-                    break;
-                }
-            }
+    //        // 🔍 Buscar si ya existe un átomo con ese id
+    //        for (int a = 0; a < _allAtoms.Count; a++)
+    //        {
+    //            if (_allAtoms[a].GetComponent<AtomScript>()._onPose == pos)
+    //            {
+    //                atomIndex = a;
+    //                break;
+    //            }
+    //        }
 
-            if (atomIndex == -1)
-            {
-                // 🆕 NO existe → instanciar
-                GameObject atom = Instantiate(_atomPrefab, _parent);
+    //        if (atomIndex == -1)
+    //        {
+    //            // 🆕 NO existe → instanciar
+    //            GameObject atom = Instantiate(_atomPrefab, _parent);
 
-                RectTransform rt = atom.GetComponent<RectTransform>();
-                RectTransform targetRT = _allPositions[pos].GetComponent<RectTransform>();
+    //            RectTransform rt = atom.GetComponent<RectTransform>();
+    //            RectTransform targetRT = _allPositions[pos].GetComponent<RectTransform>();
 
-                rt.position = targetRT.position;
-                rt.localScale = Vector3.one;
+    //            rt.position = targetRT.position;
+    //            rt.localScale = Vector3.one;
 
-                AtomScript atomScript = atom.GetComponent<AtomScript>();
-                Debug.Log(pos);
-                atomScript._onPose = pos;
-                atomScript._quantity = 1;
-                atomScript._quantityText.text = "1";
+    //            AtomScript atomScript = atom.GetComponent<AtomScript>();
+    //            Debug.Log(pos);
+    //            atomScript._onPose = pos;
+    //            atomScript._quantity = 1;
+    //            atomScript._quantityText.text = "1";
 
-                _allAtoms.Add(atom);
-            }
-            else
-            {
-                // ➕ YA existe → aumentar cantidad
-                AtomScript atomScript = _allAtoms[atomIndex].GetComponent<AtomScript>();
-                atomScript._onPose = pos;
-                atomScript._quantity++;
-                atomScript._quantityText.text =
-                    atomScript._quantity.ToString();
-            }
-        }
-    }
+    //            _allAtoms.Add(atom);
+    //        }
+    //        else
+    //        {
+    //            // ➕ YA existe → aumentar cantidad
+    //            AtomScript atomScript = _allAtoms[atomIndex].GetComponent<AtomScript>();
+    //            atomScript._onPose = pos;
+    //            atomScript._quantity++;
+    //            atomScript._quantityText.text =
+    //                atomScript._quantity.ToString();
+    //        }
+    //    }
+    //}
 
 
 
@@ -1783,6 +1806,7 @@ void SetSteps()
     {
         var Main = MainController.Instance;
         var ElementInfo = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
+        Main._elementAnimatorAssets._center.gameObject.SetActive(false);
         for (int i = 0; i < ElementInfo._elements.Length; i++)
         {
 
@@ -1817,37 +1841,50 @@ void SetSteps()
                         Main._saveLoadValues._elementTutorial = true;
                     }
 
-                    switch (ElementInfo._elements[i]._elementType)
+                    if (ElementInfo._elements[i]._emptyAtom)
+                    {
+                        Main._elementAnimatorAssets._border.color = Color.white;
+                        Main._elementAnimatorAssets._elementText.color = Color.white;
+                        Main._elementAnimatorAssets._elementText.text = "";
+                        Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
+                        _atomsObtained += ElementInfo._elements[i]._quantity;
+                        Main._elementAnimatorAssets._center.gameObject.SetActive(true);
+                    }
+                    else
+                    {
+                        switch (ElementInfo._elements[i]._elementType)
                         {
                             case NewGameEvent.Elements.ElementType.C:
-                            Main._elementAnimatorAssets._border.color = Main._elementsColor[0];
-                            Main._elementAnimatorAssets._elementText.color = Main._elementsColor[0];
-                            Main._elementAnimatorAssets._elementText.text = "C";
-                            Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
-                            _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
+                                Main._elementAnimatorAssets._border.color = Main._elementsColor[0];
+                                Main._elementAnimatorAssets._elementText.color = Main._elementsColor[0];
+                                Main._elementAnimatorAssets._elementText.text = "C";
+                                Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
+                                _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
                                 break;
                             case NewGameEvent.Elements.ElementType.H:
-                            Main._elementAnimatorAssets._border.color = Main._elementsColor[1];
-                            Main._elementAnimatorAssets._elementText.color = Main._elementsColor[1];
-                            Main._elementAnimatorAssets._elementText.text = "H";
-                            Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
-                            _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
+                                Main._elementAnimatorAssets._border.color = Main._elementsColor[1];
+                                Main._elementAnimatorAssets._elementText.color = Main._elementsColor[1];
+                                Main._elementAnimatorAssets._elementText.text = "H";
+                                Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
+                                _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
                                 break;
                             case NewGameEvent.Elements.ElementType.O:
-                            Main._elementAnimatorAssets._border.color = Main._elementsColor[2];
-                            Main._elementAnimatorAssets._elementText.color = Main._elementsColor[2];
-                            Main._elementAnimatorAssets._elementText.text = "O";
-                            Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
-                            _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
+                                Main._elementAnimatorAssets._border.color = Main._elementsColor[2];
+                                Main._elementAnimatorAssets._elementText.color = Main._elementsColor[2];
+                                Main._elementAnimatorAssets._elementText.text = "O";
+                                Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
+                                _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
                                 break;
                             case NewGameEvent.Elements.ElementType.Fe:
-                            Main._elementAnimatorAssets._border.color = Main._elementsColor[3];
-                            Main._elementAnimatorAssets._elementText.color = Main._elementsColor[3];
-                            Main._elementAnimatorAssets._elementText.text = "Fe";
-                            Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
-                            _slimeInfo._elementsParticles[3] += ElementInfo._elements[i]._quantity;
+                                Main._elementAnimatorAssets._border.color = Main._elementsColor[3];
+                                Main._elementAnimatorAssets._elementText.color = Main._elementsColor[3];
+                                Main._elementAnimatorAssets._elementText.text = "Fe";
+                                Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
+                                _slimeInfo._elementsParticles[3] += ElementInfo._elements[i]._quantity;
                                 break;
                         }
+                    }
+    
 
                     ElementInfo._elements[i]._changed = true;
                     StartCoroutine(ElementNumerator());
@@ -2122,7 +2159,7 @@ void SetSteps()
             StartCoroutine(TransormatioNumerator());
         }
         else
-        {
+        {       
             StartCoroutine(ElementAnimatorCourutine());
         }
 
@@ -2131,6 +2168,7 @@ void SetSteps()
 
     public IEnumerator ElementAnimatorCourutine()
     {
+
         MainController.Instance._elementAnimatorAssets._animator.Play("ElementIn");
         yield return new WaitForSeconds(0.3f);
         _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 4);
@@ -2198,6 +2236,31 @@ void SetSteps()
             MainController.Instance._saveLoadValues._hazardTutorial = true;
             yield return new WaitForSeconds(1);
         }
+
+        if (!MainController.Instance._saveLoadValues._hazardTutorial)
+        {
+
+            var gi = GameInitScript.Instance;
+            var Main = MainController.Instance;
+            Main._tutorialAssets._tutorialText.text = gi.GetText("tutorial6");
+            Main._tutorialAssets._arrowsParent.SetActive(false);
+            Main._tutorialAssets._elementsParent.SetActive(false);
+            Main._tutorialAssets._atomParent.SetActive(false);
+            Main._tutorialAssets._stepParent.SetActive(false);
+            Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+            yield return new WaitForSeconds(1);
+            Main._tutorialAssets._continueText.gameObject.SetActive(true);
+            while (!Input.GetButtonDown("Submit"))
+            {
+                yield return null;
+            }
+            Main._tutorialAssets._continueText.gameObject.SetActive(false);
+            Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+            MainController.Instance._saveLoadValues._hazardTutorial = true;
+            yield return new WaitForSeconds(1);
+        }
+        yield return new WaitForSeconds(1);
+
 
 
         _movementAvailable = true;

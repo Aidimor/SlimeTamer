@@ -25,6 +25,7 @@ public class NewGameEvent : ScriptableObject
         public ElementType _elementType;
         public int _quantity;
         public bool _changed;
+        public bool _emptyAtom;
     }
     public Elements[] _elements;
 
@@ -57,7 +58,7 @@ public class NewGameEvent : ScriptableObject
     public Hazards[] _hazards;
 
 
-    public int[] _atomPlace;
+    //public int[] _atomPlace;
     public int[] _stepsPlace;
 
     [System.Serializable]
