@@ -126,9 +126,9 @@ namespace LoL
                 _hintCoins = 0,
                 _progress = 0,
 
-                _worldsUnlocked = new bool[] { true, false, false, false },
-                _elementsUnlocked = new bool[] { true, false, false },
-                _slimeUnlocked = new bool[] { true, false, false },
+                _worldsUnlocked = new bool[] { true, false, false, false, false },
+                //_elementsUnlocked = new bool[] { true, false, false },
+                //_slimeUnlocked = new bool[] { true, false, false },
 
                 _finalWorldUnlocked = false,
                 _progressSave = new bool[8]

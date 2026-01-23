@@ -55,6 +55,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ID: 0
+  _quantity: 0
   _onPose: 0
   _onTurnText: {fileID: 0}
   _tentacleRawImage: []
@@ -76,7 +77,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &3785440826375593058
 RectTransform:
   m_ObjectHideFlags: 0
@@ -5327,7 +5328,7 @@ ParticleSystem:
       serializedVersion: 2
       minMaxState: 0
       minColor: {r: 1, g: 1, b: 1, a: 1}
-      maxColor: {r: 1, g: 1, b: 1, a: 0.19607843}
+      maxColor: {r: 1, g: 1, b: 1, a: 0.09803922}
       maxGradient:
         serializedVersion: 2
         key0: {r: 1, g: 1, b: 1, a: 1}

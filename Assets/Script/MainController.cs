@@ -256,21 +256,18 @@ public class MainController : MonoBehaviour
         //}
         //_allTurnsInfo[1]._stagesID.Add(26);
 
-        _allTurnsInfo[2]._stagesID.Add(13);
-        for (int i = 0; i < 1; i++)
-        {
-            int randomIndex = Random.Range(0, posiblesNumeros.Count);
-            _allTurnsInfo[2]._stagesID.Add(posiblesNumeros[randomIndex]);
-        }
+        _allTurnsInfo[2]._stagesID.Add(13);   
         _allTurnsInfo[2]._stagesID.Add(14);
-        for (int i = 0; i < 2; i++)
-        {
-            int randomIndex = Random.Range(0, posiblesNumeros.Count);
-            _allTurnsInfo[2]._stagesID.Add(posiblesNumeros[randomIndex]);
-        }
-        _allTurnsInfo[2]._stagesID.Add(17);
         _allTurnsInfo[2]._stagesID.Add(15);
-        _allTurnsInfo[2]._stagesID.Add(28);
+
+        //for (int i = 0; i < 2; i++)
+        //{
+        //    int randomIndex = Random.Range(0, posiblesNumeros.Count);
+        //    _allTurnsInfo[2]._stagesID.Add(posiblesNumeros[randomIndex]);
+        //}
+        //_allTurnsInfo[2]._stagesID.Add(17);
+        //_allTurnsInfo[2]._stagesID.Add(15);
+        //_allTurnsInfo[2]._stagesID.Add(28);
 
         _allTurnsInfo[3]._stagesID.Add(16);
         _allTurnsInfo[3]._stagesID.Add(17);

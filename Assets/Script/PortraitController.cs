@@ -50,6 +50,13 @@ public class PortraitController : MonoBehaviour
     public static PortraitController Instance;
     public int _worldsUnlocked;
 
+  
+    public Animator _comicAnimator;
+    public Image _comicStrip;
+
+    public Sprite[] _allComicStrips;
+
+
     public void Awake()
     {
         Instance = this;

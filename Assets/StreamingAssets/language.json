@@ -62,7 +62,7 @@
     "dialoge8": "The winds are on your side!",
     "locked": "LOCKED",
     "tutorial0": "Use keyboard arrows to move.",
-    "tutorial1": "If you step on a purple square it will restart the stage",
+    "tutorial1": "If you step on a purple square or a hazard it will restart the stage",
     "tutorial2": "Collect Atoms and transform into a new chemical compound to complete the stage",
     "tutorial3": "You can step back into purple squares if you have enough Step Coins",
     "tutorial4": "You can make your own formula if the stage does not have enough elements, if you have enough atoms",

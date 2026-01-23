@@ -127,6 +127,7 @@ public class NewMainGameplay : MonoBehaviour
 
     public bool _worldNameShown;
     public bool _stageHazardOn;
+    public Color _lastStageColor;
     void Start()
     {   
         StartVoids();
@@ -379,8 +380,8 @@ public class NewMainGameplay : MonoBehaviour
             _onPoseJoystick = 0;
         }
 
-       MainController.Instance._joystickImage.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(MainController.Instance._joystickImage.GetComponent<RectTransform>().anchoredPosition,
-        _allJoystickPoses[_onPoseJoystick], 5 * Time.deltaTime);
+       MainController.Instance._joystickImage.GetComponent<RectTransform>().anchoredPosition = Vector2.MoveTowards(MainController.Instance._joystickImage.GetComponent<RectTransform>().anchoredPosition,
+        _allJoystickPoses[_onPoseJoystick], 500);
 
         for(int i = 0; i < 4; i++)
         {
@@ -462,11 +463,31 @@ public class NewMainGameplay : MonoBehaviour
             ground.GetComponent<Image>().sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
             _backgroundImage[0].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
             _backgroundImage[0].color = _backgroundColor[MainController.Instance._onWorldGlobal];
+            //_backgroundImage[1].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
+            //_backgroundImage[2].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
+            switch (MainController.Instance._onWorldGlobal)
+            {
+                default:
+                    _backgroundImage[1].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
+                    _backgroundImage[2].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
+                    break;
+                case 4:
+                    List<int> posiblesNumeros = new List<int> { 0, 3 };
+                    int randomIndex = Random.Range(0, posiblesNumeros.Count);
+                    _backgroundImage[1].sprite = _allGroundsSprites[0];
+                    _backgroundImage[2].sprite = _allGroundsSprites[0];
+                    _backgroundImage[1].color = _lastStageColor;
+                    _backgroundImage[2].color = _lastStageColor;
+                    ground.GetComponent<Image>().sprite = _allGroundsSprites[posiblesNumeros[randomIndex]];
+                    _backgroundImage[0].color = _backgroundColor[MainController.Instance._onWorldGlobal];
+                    ground.GetComponent<Image>().color = _lastStageColor;
+                    break;
+            }
 
-            _backgroundImage[1].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
-            _backgroundImage[2].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
+
+
             _allGrounds.Add(ground);
-        
+
         }
 
         if(_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets.Length > 0)
@@ -771,69 +792,7 @@ public class NewMainGameplay : MonoBehaviour
 
     }
 
-    //void SetAtoms()
-    //{
-    //    var Main = MainController.Instance;
-
-    //    var stage =
-    //        _allStages[
-    //            Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]
-    //        ];
-
-    //    if (stage._atomPlace.Length == 0)
-    //        return;
-
-    //    for (int i = 0; i < stage._atomPlace.Length; i++)
-    //    {
-    //        int pos = stage._atomPlace[i];
-
-    //        int atomIndex = -1;
-
-    //        // 🔍 Buscar si ya existe un átomo con ese id
-    //        for (int a = 0; a < _allAtoms.Count; a++)
-    //        {
-    //            if (_allAtoms[a].GetComponent<AtomScript>()._onPose == pos)
-    //            {
-    //                atomIndex = a;
-    //                break;
-    //            }
-    //        }
-
-    //        if (atomIndex == -1)
-    //        {
-    //            // 🆕 NO existe → instanciar
-    //            GameObject atom = Instantiate(_atomPrefab, _parent);
-
-    //            RectTransform rt = atom.GetComponent<RectTransform>();
-    //            RectTransform targetRT = _allPositions[pos].GetComponent<RectTransform>();
-
-    //            rt.position = targetRT.position;
-    //            rt.localScale = Vector3.one;
-
-    //            AtomScript atomScript = atom.GetComponent<AtomScript>();
-    //            Debug.Log(pos);
-    //            atomScript._onPose = pos;
-    //            atomScript._quantity = 1;
-    //            atomScript._quantityText.text = "1";
-
-    //            _allAtoms.Add(atom);
-    //        }
-    //        else
-    //        {
-    //            // ➕ YA existe → aumentar cantidad
-    //            AtomScript atomScript = _allAtoms[atomIndex].GetComponent<AtomScript>();
-    //            atomScript._onPose = pos;
-    //            atomScript._quantity++;
-    //            atomScript._quantityText.text =
-    //                atomScript._quantity.ToString();
-    //        }
-    //    }
-    //}
-
-
-
-
-void SetSteps()
+    void SetSteps()
     {
         var Main = MainController.Instance;
         for (int i = 0; i < _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._stepsPlace.Length; i++)
@@ -1209,7 +1168,7 @@ void SetSteps()
                         if (_movementsToSandStorm <= 0)
                         {
                             _sandStorm.Play();
-                            _movementsToSandStorm = Random.Range(3, 5);
+                            _movementsToSandStorm = Random.Range(5, 7);
                             _sandStormOn = true;
                         }
                         break;
@@ -1284,12 +1243,59 @@ void SetSteps()
         }
         if (_turnsReturnToWater < 0 && _slimeInfo._slimeID == 2)
         {
+            var MainHazards = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
+            bool OnFire = false;
+           for (int i = 0; i < MainHazards._hazards.Length; i++)
+            {
+                if(_onPose == MainHazards._hazards[i]._onPlace)
+                {
            
-            _turnsReturnToWater++;
+                    if(MainHazards._hazards[i]._hazards == NewGameEvent.Hazards.HazardsType.Fire)
+                    {
+                        OnFire = true;                  
+                    }
+                }
+         
+            }
+
+            switch (OnFire)
+            {
+                case false:
+                    _turnsReturnToWater++;
+                    break;
+                case true:
+                    Debug.Log("No Suma");
+                    break;
+            }
+          
             if(_turnsReturnToWater >= 0)
             {
+                //_slimeInfo._slimeID = 4;
+                //StartCoroutine(TransormatioNumerator());
+
+                itTransforms = true;
                 _slimeInfo._slimeID = 4;
+
+                Main._elementsCircles[0]._cirlce.color = Main._elementsColor[1];
+                Main._elementsCircles[0]._elementLetters.text = "H";
+                Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[1];
+                Main._elementsCircles[0]._quantity.text = "2";
+
+                Main._elementsCircles[1]._cirlce.color = Main._elementsColor[2];
+                Main._elementsCircles[1]._elementLetters.text = "O";
+                Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[2];
+                Main._elementsCircles[1]._quantity.text = "";
+
+                Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("snow1");
+                Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("snow2");
+
+                MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("ICEextra");
+                MainController.Instance._nameText.text = GameInitScript.Instance.GetText("ICE");
+
+                _waterWalk.Play();
+                _smoke.Stop();
                 StartCoroutine(TransormatioNumerator());
+                _turnsReturnToWater = -1;
             }
            
         }
@@ -1664,8 +1670,30 @@ void SetSteps()
                             case 4:
                                 _allHazards[i].GetComponent<ObstaclesScript>()._fireParticle.Stop();
                                 _allHazards[i].GetComponent<ObstaclesScript>()._smokeParticle.Play();
+
+                                itTransforms = true;
                                 _slimeInfo._slimeID = 2;
+
+                                Main._elementsCircles[0]._cirlce.color = Main._elementsColor[1];
+                                Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[1];
+                                Main._elementsCircles[0]._elementLetters.text = "H";
+                                Main._elementsCircles[0]._quantity.text = "2";
+
+                                Main._elementsCircles[1]._cirlce.color = Main._elementsColor[2];
+                                Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[2];
+                                Main._elementsCircles[1]._elementLetters.text = "0";
+                                Main._elementsCircles[1]._quantity.text = "";
+
+                                Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("water1");
+                                Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("water2");
+
+                                MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("H20extra");
+                                MainController.Instance._nameText.text = GameInitScript.Instance.GetText("H20");
+
+                                _waterWalk.Play();
+                                _smoke.Stop();
                                 StartCoroutine(TransormatioNumerator());
+
                                 break;
                         }  
                         Debug.Log("Fire");
@@ -1866,9 +1894,10 @@ void SetSteps()
                             Main._tutorialAssets._continueText.gameObject.SetActive(false);
                             Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
                             Main._saveLoadValues._atomTutorial = true;
+                            Main._saveLoadValues._pauseAvailable = true;
                         }
 
-
+                        _movementAvailable = true;
                         Main._elementAnimatorAssets._border.color = Color.white;
                         Main._elementAnimatorAssets._elementText.color = Color.white;
                         Main._elementAnimatorAssets._elementText.text = "";
@@ -2276,7 +2305,7 @@ void SetSteps()
             Main._tutorialAssets._continueText.gameObject.SetActive(false);
             Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
             MainController.Instance._saveLoadValues._hazardTutorial = true;
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.5f);
         }
 
         if (!MainController.Instance._saveLoadValues._hazardTutorial)
@@ -2299,9 +2328,9 @@ void SetSteps()
             Main._tutorialAssets._continueText.gameObject.SetActive(false);
             Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
             MainController.Instance._saveLoadValues._hazardTutorial = true;
-            yield return new WaitForSeconds(1);
+            yield return new WaitForSeconds(0.5f);
         }
-        yield return new WaitForSeconds(1);
+    
 
 
 
@@ -2331,6 +2360,11 @@ void SetSteps()
         yield return new WaitForSeconds(0.25f);
         _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 2);
         yield return new WaitForSeconds(0.25f);
+        for(int i = 0; i < _allSteps.Count; i++)
+        {
+            Destroy(_allSteps[i].gameObject);
+        }
+        _allSteps.Clear();
         _elementsBool.Clear();
         MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
         MainController.Instance._cinematicBorders.SetBool("FadeIn", true);

@@ -14,20 +14,23 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _spawnPoint: 3
   _exitPoint: 15
-  _allPlaces: 0000000001000000030000000600000007000000080000000a0000000b0000000c0000000d0000000f0000001000000012000000130000001400000015000000160000001700000018000000
+  _allPlaces: 0300000007000000080000000a0000000b0000000c0000000d0000000f0000001000000012000000130000001400000015000000160000001700000018000000
   _elements:
   - _onPlace: 7
     _elementType: 0
     _quantity: 1
     _changed: 0
+    _emptyAtom: 0
   - _onPlace: 18
     _elementType: 2
     _quantity: 1
     _changed: 0
+    _emptyAtom: 0
   - _onPlace: 24
     _elementType: 2
     _quantity: 1
     _changed: 0
+    _emptyAtom: 0
   _hazards:
   - _onPlace: 21
     _hazards: 1
@@ -41,15 +44,6 @@ MonoBehaviour:
     _hazards: 1
     _rotation: 0
     _finished: 0
-  - _onPlace: 6
-    _hazards: 1
-    _rotation: 0
-    _finished: 0
-  - _onPlace: 1
-    _hazards: 1
-    _rotation: 0
-    _finished: 0
-  _atomPlace: 
   _stepsPlace: 0a0000000000000000000000000000000000000000000000
   _bossAssets: []
   _wind: 0
