@@ -52,13 +52,13 @@ public class SlimeController : MonoBehaviour
         //_slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_FillColorA", _materialColors[1]);
         //_slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_FillColorB", _materialColors[2]);
 
-        if (_slimeAnimator.GetBool("Moving"))
-        {
+        //if (_slimeAnimator.GetBool("Moving"))
+        //{
 
-            RectTransform rt = _scriptMain._slimeParent.GetComponent<RectTransform>();
-            rt.anchoredPosition += Vector2.right * _slimeSpeed * Time.deltaTime;
+        //    RectTransform rt = _scriptMain._slimeParent.GetComponent<RectTransform>();
+        //    rt.anchoredPosition += Vector2.right * _slimeSpeed * Time.deltaTime;
 
-        }
+        //}
     }
 
     public void ChangeSlime()
@@ -241,7 +241,7 @@ public class SlimeController : MonoBehaviour
                                     yield return new WaitForSeconds(0.5f);
                                     StartCoroutine(_scriptMain.GameEndsNumerator());
                                     yield break;
-                                    break;
+                      
                                 case GameEvent.EventType.BossFight3:
                               
                                     break;

@@ -128,6 +128,11 @@ public class NewMainGameplay : MonoBehaviour
     public bool _worldNameShown;
     public bool _stageHazardOn;
     public Color _lastStageColor;
+
+    public bool earthquakeOn;
+
+    Coroutine earthquakeRoutine;
+
     void Start()
     {   
         StartVoids();
@@ -149,38 +154,116 @@ public class NewMainGameplay : MonoBehaviour
 
     public void StartVoids()
     {
+        var Main = MainController.Instance;
+
+        // ==========================
+        // 🔴 VALIDACIONES BASE
+        // ==========================
+
+        if (Main == null ||
+            Main._allTurnsInfo == null ||
+            Main._onWorldGlobal < 0 ||
+            Main._onWorldGlobal >= Main._allTurnsInfo.Length)
+        {
+            Debug.LogError("MainController o TurnsInfo inválido en StartVoids");
+            return;
+        }
+
+        int stageIndex = Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage];
+
+        if (stageIndex < 0 || stageIndex >= _allStages.Length)
+        {
+            Debug.LogError("stageIndex fuera de rango en StartVoids");
+            return;
+        }
+
+        var stage = _allStages[stageIndex];
+
+        if (stage == null)
+        {
+            Debug.LogError("Stage NULL en StartVoids");
+            return;
+        }
+
+        // ==========================
+        // 🧱 CREACIÓN DE STAGE
+        // ==========================
+
         if (!_restarted)
         {
             StageCreationVoid();
             SetSteps();
         }
+
         SetElements();
         //SetAtoms();
 
-        var Main = MainController.Instance;
-        //if (_allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._bossAssets.Length > 0)
-        if (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets.Length > 0)
-            {
+        // ==========================
+        // 🐲 BOSS
+        // ==========================
+
+        if (stage._bossAssets != null && stage._bossAssets.Length > 0 && stage._bossAssets[0] != null)
+        {
             SetBossAttacks();
         }
 
+        // ==========================
+        // ⚠️ HAZARDS / ENTRADAS
+        // ==========================
+
         SetHazards();
         SetEntranceExit();
- 
+
+        // ==========================
+        // 🧪 VARIABLES DE JUEGO
+        // ==========================
+
         _atomsObtained = 0;
 
-        _onPose = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._spawnPoint;
+        _onPose = stage._spawnPoint;
 
-        // 🔑 POSICIÓN CORRECTA
-        _slimeObject.GetComponent<RectTransform>().position =
-            _allPositions[_onPose].GetComponent<RectTransform>().position;
+        // ==========================
+        // 🟢 SLIME (SEGURO)
+        // ==========================
 
-        _slimeObject.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 180f);
+        if (_slimeObject == null)
+        {
+            Debug.LogError("_slimeObject es NULL en StartVoids");
+            return;
+        }
 
+        if (_onPose < 0 || _onPose >= _allPositions.Length)
+        {
+            Debug.LogError("SpawnPoint fuera de rango en StartVoids");
+            return;
+        }
+
+        if (_allPositions[_onPose] == null)
+        {
+            Debug.LogError($"_allPositions[{_onPose}] es NULL");
+            return;
+        }
+
+        RectTransform slimeRT = _slimeObject.GetComponent<RectTransform>();
+        RectTransform spawnRT = _allPositions[_onPose].GetComponent<RectTransform>();
+
+        if (slimeRT == null || spawnRT == null)
+        {
+            Debug.LogError("RectTransform NULL en slime o spawn");
+            return;
+        }
+
+        slimeRT.position = spawnRT.position;
+        slimeRT.localEulerAngles = new Vector3(0, 0, 180f);
+
+        // ==========================
+        // ▶️ INICIO DE JUEGO
+        // ==========================
 
         CalculateMoves();
         StartCoroutine(StartGameNumerator());
     }
+
 
     public IEnumerator StartGameNumerator()
     {
@@ -446,9 +529,19 @@ public class NewMainGameplay : MonoBehaviour
         var Main = MainController.Instance;
         _allGrounds.Clear();
 
-        //foreach (int place in _allStages[MainController.Instance._allStagesData[MainController.Instance._onWorldGlobal]._stageList[_idStage]]._allPlaces)
-            foreach (int place in _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._allPlaces)
-            {
+        int stageIndex = Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage];
+        var stage = _allStages[stageIndex];
+
+        // 🔴 PROTECCIÓN CRÍTICA
+        if (stage == null)
+        {
+            Debug.LogError("Stage es NULL en StageCreationVoid");
+            _bossUI.SetActive(false);
+            return;
+        }
+
+        foreach (int place in stage._allPlaces)
+        {
             GameObject ground = Instantiate(_groundAssets[0], _parent);
 
             RectTransform groundRT = ground.GetComponent<RectTransform>();
@@ -460,105 +553,113 @@ public class NewMainGameplay : MonoBehaviour
             StageGroundScript g = ground.GetComponent<StageGroundScript>();
             g._id = place;
             g._lockedBool = false;
-            ground.GetComponent<Image>().sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
-            _backgroundImage[0].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
-            _backgroundImage[0].color = _backgroundColor[MainController.Instance._onWorldGlobal];
-            //_backgroundImage[1].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
-            //_backgroundImage[2].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
-            switch (MainController.Instance._onWorldGlobal)
+
+            Image groundImage = ground.GetComponent<Image>();
+            groundImage.sprite = _allGroundsSprites[Main._onWorldGlobal];
+
+            _backgroundImage[0].sprite = _allGroundsSprites[Main._onWorldGlobal];
+            _backgroundImage[0].color = _backgroundColor[Main._onWorldGlobal];
+
+            switch (Main._onWorldGlobal)
             {
                 default:
-                    _backgroundImage[1].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
-                    _backgroundImage[2].sprite = _allGroundsSprites[MainController.Instance._onWorldGlobal];
+                    _backgroundImage[1].sprite = _allGroundsSprites[Main._onWorldGlobal];
+                    _backgroundImage[2].sprite = _allGroundsSprites[Main._onWorldGlobal];
                     break;
+
                 case 4:
                     List<int> posiblesNumeros = new List<int> { 0, 3 };
                     int randomIndex = Random.Range(0, posiblesNumeros.Count);
+
                     _backgroundImage[1].sprite = _allGroundsSprites[0];
                     _backgroundImage[2].sprite = _allGroundsSprites[0];
                     _backgroundImage[1].color = _lastStageColor;
                     _backgroundImage[2].color = _lastStageColor;
-                    ground.GetComponent<Image>().sprite = _allGroundsSprites[posiblesNumeros[randomIndex]];
-                    _backgroundImage[0].color = _backgroundColor[MainController.Instance._onWorldGlobal];
-                    ground.GetComponent<Image>().color = _lastStageColor;
+
+                    groundImage.sprite = _allGroundsSprites[posiblesNumeros[randomIndex]];
+                    groundImage.color = _lastStageColor;
                     break;
             }
 
-
-
             _allGrounds.Add(ground);
-
         }
 
-        if(_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets.Length > 0)
+        // ==========================
+        // 🐲 BOSS UI (SEGURO)
+        // ==========================
+
+        Debug.Log(stage._bossAssets == null ? "bossAssets NULL" : stage._bossAssets.Length.ToString());
+
+        if (stage._bossAssets != null && stage._bossAssets.Length > 0 && stage._bossAssets[0] != null)
         {
             _bossUI.SetActive(true);
 
+            var boss = stage._bossAssets[0];
+            RectTransform bossRT = _bossUI.GetComponent<RectTransform>();
 
-            switch (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets[0]._yposition)
+            switch (boss._yposition)
             {
                 case NewGameEvent.BossAssets._Yposition.Top:
-                    _bossUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(_bossUI.GetComponent<RectTransform>().anchoredPosition.x, -90f);
-                    _bossUI.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+                    bossRT.anchoredPosition = new Vector2(bossRT.anchoredPosition.x, -90f);
+                    bossRT.localScale = Vector3.one;
 
-                    switch (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets[0]._xposition)
+                    switch (boss._xposition)
                     {
                         case NewGameEvent.BossAssets._Xposition.Left:
-                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 45);
+                            bossRT.localEulerAngles = new Vector3(0, 0, 45);
                             break;
                         case NewGameEvent.BossAssets._Xposition.Center:
-                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 0);
-
+                            bossRT.localEulerAngles = Vector3.zero;
                             break;
                         case NewGameEvent.BossAssets._Xposition.Right:
-                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, -45);
+                            bossRT.localEulerAngles = new Vector3(0, 0, -45);
                             break;
                     }
                     break;
+
                 case NewGameEvent.BossAssets._Yposition.Center:
-                    _bossUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(_bossUI.GetComponent<RectTransform>().anchoredPosition.x, 0);
-                    _bossUI.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+                    bossRT.anchoredPosition = new Vector2(bossRT.anchoredPosition.x, 0);
+                    bossRT.localScale = Vector3.one;
 
-                    switch (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets[0]._xposition)
+                    switch (boss._xposition)
                     {
                         case NewGameEvent.BossAssets._Xposition.Left:
-                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 90);
+                            bossRT.localEulerAngles = new Vector3(0, 0, 90);
                             break;
                         case NewGameEvent.BossAssets._Xposition.Center:
-                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 0);
-
+                            bossRT.localEulerAngles = Vector3.zero;
                             break;
                         case NewGameEvent.BossAssets._Xposition.Right:
-                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, -90);
+                            bossRT.localEulerAngles = new Vector3(0, 0, -90);
                             break;
                     }
                     break;
-                case NewGameEvent.BossAssets._Yposition.Bot:
-                    _bossUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(_bossUI.GetComponent<RectTransform>().anchoredPosition.x, 90f);
-                    _bossUI.GetComponent<RectTransform>().localScale = new Vector3(1, -1, 1);
 
-                    switch (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets[0]._xposition)
+                case NewGameEvent.BossAssets._Yposition.Bot:
+                    bossRT.anchoredPosition = new Vector2(bossRT.anchoredPosition.x, 90f);
+                    bossRT.localScale = new Vector3(1, -1, 1);
+
+                    switch (boss._xposition)
                     {
                         case NewGameEvent.BossAssets._Xposition.Left:
-                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, -45);
+                            bossRT.localEulerAngles = new Vector3(0, 0, -45);
                             break;
                         case NewGameEvent.BossAssets._Xposition.Center:
-                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 0);
-
+                            bossRT.localEulerAngles = Vector3.zero;
                             break;
                         case NewGameEvent.BossAssets._Xposition.Right:
-                            _bossUI.GetComponent<RectTransform>().localEulerAngles = new Vector3(0, 0, 45);
+                            bossRT.localEulerAngles = new Vector3(0, 0, 45);
                             break;
                     }
                     break;
             }
-
         }
         else
         {
             _bossUI.SetActive(false);
         }
     }
+
 
     void SetElements()
     {
@@ -795,22 +896,82 @@ public class NewMainGameplay : MonoBehaviour
     void SetSteps()
     {
         var Main = MainController.Instance;
-        for (int i = 0; i < _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._stepsPlace.Length; i++)
+
+        // ==========================
+        // 🔴 VALIDACIONES CRÍTICAS
+        // ==========================
+
+        if (Main == null ||
+            Main._allTurnsInfo == null ||
+            Main._onWorldGlobal < 0 ||
+            Main._onWorldGlobal >= Main._allTurnsInfo.Length)
         {
+            Debug.LogError("TurnsInfo inválido en SetSteps");
+            return;
+        }
+
+        int stageIndex = Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage];
+
+        if (stageIndex < 0 || stageIndex >= _allStages.Length)
+        {
+            Debug.LogError("stageIndex fuera de rango en SetSteps");
+            return;
+        }
+
+        var stage = _allStages[stageIndex];
+
+        if (stage == null)
+        {
+            Debug.LogError("Stage NULL en SetSteps");
+            return;
+        }
+
+        if (stage._stepsPlace == null || stage._stepsPlace.Length == 0)
+        {
+            // No es error: simplemente no hay steps
+            return;
+        }
+
+        // ==========================
+        // 🪜 CREACIÓN DE STEPS
+        // ==========================
+
+        for (int i = 0; i < stage._stepsPlace.Length; i++)
+        {
+            int placeIndex = stage._stepsPlace[i];
+
+            if (placeIndex < 0 || placeIndex >= _allPositions.Length)
+            {
+                Debug.LogWarning($"Place inválido en SetSteps: {placeIndex}");
+                continue;
+            }
+
+            if (_allPositions[placeIndex] == null)
+            {
+                Debug.LogWarning($"_allPositions[{placeIndex}] es NULL");
+                continue;
+            }
+
             GameObject steps = Instantiate(_stepsPrefab, _parent);
 
             RectTransform rt = steps.GetComponent<RectTransform>();
-            RectTransform targetRT =
-                _allPositions[_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._stepsPlace[i]]
-                .GetComponent<RectTransform>();
+            RectTransform targetRT = _allPositions[placeIndex].GetComponent<RectTransform>();
+
+            if (rt == null || targetRT == null)
+            {
+                Debug.LogWarning("RectTransform NULL en steps");
+                Destroy(steps);
+                continue;
+            }
 
             rt.position = targetRT.position;
             rt.localScale = Vector3.one;
 
             _allSteps.Add(steps);
-            _stepsList.Add(_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._stepsPlace[i]);
+            _stepsList.Add(placeIndex);
         }
     }
+
 
     void SetHazards()
     {
@@ -1083,7 +1244,7 @@ public class NewMainGameplay : MonoBehaviour
         _buttonPressed = true;
 
         bool restart = IsLocked();
-        Debug.Log("restart = " + restart);
+        //Debug.Log("restart = " + restart);
         // 🔑 SIEMPRE recalcular
         CalculateMoves();
         HazardDetection();
@@ -1154,16 +1315,62 @@ public class NewMainGameplay : MonoBehaviour
     public IEnumerator MoveNumerator()
     {
         var Main = MainController.Instance;
+
+        // ==========================
+        // 🔴 VALIDACIONES BASE
+        // ==========================
+
+        if (Main == null ||
+            Main._allTurnsInfo == null ||
+            Main._onWorldGlobal < 0 ||
+            Main._onWorldGlobal >= Main._allTurnsInfo.Length)
+        {
+            Debug.LogError("Main o TurnsInfo inválido en MoveNumerator");
+            yield break;
+        }
+
+        int stageIndex = Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage];
+
+        if (stageIndex < 0 || stageIndex >= _allStages.Length)
+        {
+            Debug.LogError("stageIndex fuera de rango en MoveNumerator");
+            yield break;
+        }
+
+        var stage = _allStages[stageIndex];
+
+        if (stage == null)
+        {
+            Debug.LogError("Stage NULL en MoveNumerator");
+            yield break;
+        }
+
+        if (_slimeAnimator == null)
+        {
+            Debug.LogError("_slimeAnimator es NULL");
+            yield break;
+        }
+
+        // ==========================
+        // ▶️ INICIO MOVIMIENTO
+        // ==========================
+
         _movementAvailable = false;
         _slimeAnimator.SetBool("Moving", true);
 
         yield return new WaitForSeconds(0.5f);
-        switch (MainController.Instance._onWorldGlobal)
+
+        // ==========================
+        // 🌍 EFECTOS POR MUNDO
+        // ==========================
+
+        switch (Main._onWorldGlobal)
         {
             case 1:
-                switch (_sandStormOn)
+                if (_sandStorm != null)
                 {
-                    case false:
+                    if (!_sandStormOn)
+                    {
                         _movementsToSandStorm--;
                         if (_movementsToSandStorm <= 0)
                         {
@@ -1171,140 +1378,153 @@ public class NewMainGameplay : MonoBehaviour
                             _movementsToSandStorm = Random.Range(5, 7);
                             _sandStormOn = true;
                         }
-                        break;
-                    case true:
-                        _sandStorm.Stop();
-
-                        _sandStormOn = false;
-                        break;
-                }
-
-                break;
-            case 3:
-
-                _turnToStorm--;
-                if(_turnToStorm <= 0)
-                {
-                    switch (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._wind)
-                    {
-                        case NewGameEvent.Wind.Left:
-                            _windParticle[0].Play();
-                            yield return new WaitForSeconds(0.25f);
-
-                            if (_movesAvailable[2] &&
-                                _onPose != 4 &&
-                                _onPose != 9 &&
-                                _onPose != 14 &&
-                                _onPose != 19)
-                            {
-                                _onPose++;
-                            }
-
-                            yield return new WaitForSeconds(0.25f);
-                          
-                            break;
-
-                        case NewGameEvent.Wind.Right:
-                            _windParticle[1].Play();
-                            yield return new WaitForSeconds(0.25f);
-
-                            if (_movesAvailable[3] &&
-                                _onPose != 0 &&
-                                _onPose != 5 &&
-                                _onPose != 10 &&
-                                _onPose != 15 &&
-                                _onPose != 20)
-                            {
-                                _onPose--;
-                            }
-
-                            yield return new WaitForSeconds(0.25f);
-                      
-                            break;
                     }
-             
-                    _windParticle[0].Stop();
-                    _windParticle[1].Stop();
+                    else
+                    {
+                        _sandStorm.Stop();
+                        _sandStormOn = false;
+                    }
+                }
+                break;
+
+            case 3:
+                _turnToStorm--;
+
+                if (_turnToStorm <= 0)
+                {
+                    if (stage._wind != null)
+                    {
+                        switch (stage._wind)
+                        {
+                            case NewGameEvent.Wind.Left:
+                                if (_windParticle != null && _windParticle.Length > 0 && _windParticle[0] != null)
+                                    _windParticle[0].Play();
+
+                                yield return new WaitForSeconds(0.25f);
+
+                                if (_movesAvailable != null &&
+                                    _movesAvailable.Length > 2 &&
+                                    _movesAvailable[2] &&
+                                    _onPose != 4 && _onPose != 9 && _onPose != 14 && _onPose != 19)
+                                {
+                                    _onPose++;
+                                }
+
+                                yield return new WaitForSeconds(0.25f);
+                                break;
+
+                            case NewGameEvent.Wind.Right:
+                                if (_windParticle != null && _windParticle.Length > 1 && _windParticle[1] != null)
+                                    _windParticle[1].Play();
+
+                                yield return new WaitForSeconds(0.25f);
+
+                                if (_movesAvailable != null &&
+                                    _movesAvailable.Length > 3 &&
+                                    _movesAvailable[3] &&
+                                    _onPose != 0 && _onPose != 5 && _onPose != 10 && _onPose != 15 && _onPose != 20)
+                                {
+                                    _onPose--;
+                                }
+
+                                yield return new WaitForSeconds(0.25f);
+                                break;
+                        }
+                    }
+
+                    if (_windParticle != null)
+                    {
+                        if (_windParticle.Length > 0 && _windParticle[0] != null) _windParticle[0].Stop();
+                        if (_windParticle.Length > 1 && _windParticle[1] != null) _windParticle[1].Stop();
+                    }
+
                     CalculateMoves();
                     AtomDetection();
                     StartCoroutine(ElementDetection());
                     HazardDetection();
                     StepDetection();
                     ExitDetection();
+
                     _turnToStorm = 5;
                 }
-                   
                 break;
-   
         }
-        if (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._bossAssets.Length > 0)
+
+        // ==========================
+        // 🐲 TURNO DE BOSS
+        // ==========================
+
+        if (stage._bossAssets != null && stage._bossAssets.Length > 0 && stage._bossAssets[0] != null)
         {
             StartCoroutine(BossAttackTurn());
         }
-        if (_turnsReturnToWater < 0 && _slimeInfo._slimeID == 2)
+
+        // ==========================
+        // 🔥 RETORNO A AGUA / HIELO
+        // ==========================
+
+        if (_slimeInfo != null && _turnsReturnToWater < 0 && _slimeInfo._slimeID == 2)
         {
-            var MainHazards = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
-            bool OnFire = false;
-           for (int i = 0; i < MainHazards._hazards.Length; i++)
+            if (stage._hazards != null)
             {
-                if(_onPose == MainHazards._hazards[i]._onPlace)
+                bool onFire = false;
+
+                for (int i = 0; i < stage._hazards.Length; i++)
                 {
-           
-                    if(MainHazards._hazards[i]._hazards == NewGameEvent.Hazards.HazardsType.Fire)
+                    if (stage._hazards[i] != null &&
+                        _onPose == stage._hazards[i]._onPlace &&
+                        stage._hazards[i]._hazards == NewGameEvent.Hazards.HazardsType.Fire)
                     {
-                        OnFire = true;                  
+                        onFire = true;
+                        break;
                     }
                 }
-         
-            }
 
-            switch (OnFire)
-            {
-                case false:
+                if (!onFire)
                     _turnsReturnToWater++;
-                    break;
-                case true:
-                    Debug.Log("No Suma");
-                    break;
             }
-          
-            if(_turnsReturnToWater >= 0)
-            {
-                //_slimeInfo._slimeID = 4;
-                //StartCoroutine(TransormatioNumerator());
 
+            if (_turnsReturnToWater >= 0)
+            {
                 itTransforms = true;
                 _slimeInfo._slimeID = 4;
 
-                Main._elementsCircles[0]._cirlce.color = Main._elementsColor[1];
-                Main._elementsCircles[0]._elementLetters.text = "H";
-                Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[1];
-                Main._elementsCircles[0]._quantity.text = "2";
+                if (Main._elementsCircles != null && Main._elementsCircles.Length >= 2)
+                {
+                    Main._elementsCircles[0]._cirlce.color = Main._elementsColor[1];
+                    Main._elementsCircles[0]._elementLetters.text = "H";
+                    Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[1];
+                    Main._elementsCircles[0]._quantity.text = "2";
 
-                Main._elementsCircles[1]._cirlce.color = Main._elementsColor[2];
-                Main._elementsCircles[1]._elementLetters.text = "O";
-                Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[2];
-                Main._elementsCircles[1]._quantity.text = "";
+                    Main._elementsCircles[1]._cirlce.color = Main._elementsColor[2];
+                    Main._elementsCircles[1]._elementLetters.text = "O";
+                    Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[2];
+                    Main._elementsCircles[1]._quantity.text = "";
+                }
 
-                Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("snow1");
-                Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("snow2");
+                Main._dataTexts[0].text = GameInitScript.Instance.GetText("snow1");
+                Main._dataTexts[1].text = GameInitScript.Instance.GetText("snow2");
 
                 MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("ICEextra");
                 MainController.Instance._nameText.text = GameInitScript.Instance.GetText("ICE");
 
-                _waterWalk.Play();
-                _smoke.Stop();
+                if (_waterWalk != null) _waterWalk.Play();
+                if (_smoke != null) _smoke.Stop();
+
                 StartCoroutine(TransormatioNumerator());
                 _turnsReturnToWater = -1;
             }
-           
         }
+
+        // ==========================
+        // ▶️ FIN MOVIMIENTO
+        // ==========================
+
         _slimeAnimator.SetBool("Moving", false);
-
         yield return new WaitForSeconds(0.3f);
-
         _movementAvailable = true;
     }
+
 
 
     // ===================== LOGIC =====================
@@ -1615,6 +1835,28 @@ public class NewMainGameplay : MonoBehaviour
         _allAttacks.Clear();
         _allCountAttacks.Clear();
         _restarted = false;
+
+        if(Main._onWorldGlobal == 0 && _idStage == 1)
+        {
+            ComicController.Instance._imagesID.Add(3);
+            ComicController.Instance._imagesID.Add(4);
+            ComicController.Instance._imagesID.Add(5);
+            ComicController.Instance._imagesID.Add(6);
+            ComicController.Instance._waitSeconds = 2;
+            ComicController.Instance._comicOn = true;
+            StartCoroutine(ComicController.Instance.ComicStripOn());
+            while (ComicController.Instance._comicOn)
+            {
+                yield return null;
+            }
+            MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
+            yield return new WaitForSeconds(0.5f);
+            ComicController.Instance._continueParent.gameObject.SetActive(false);
+            ComicController.Instance._comicAnimator.SetBool("ComicOn", false);
+            earthquakeOn = true;
+            StartEarthquake();
+
+        }
         // NUEVO spawn
         _idStage++;
         _onPose = _stageId._spawnPoint;
@@ -2395,21 +2637,25 @@ public class NewMainGameplay : MonoBehaviour
             case 0:
                 MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
                 MainController.Instance._onWorldGlobal = 1;
-               
+                MainController.Instance._saveLoadValues._worldsUnlocked[1] = true;
                 break;
             case 1:
                 MainController.Instance._onWorldGlobal = 2;
+                MainController.Instance._saveLoadValues._worldsUnlocked[2] = true;
                 break;
             case 2:
                 MainController.Instance._onWorldGlobal = 3;
+                MainController.Instance._saveLoadValues._worldsUnlocked[3] = true;
                 break;
             case 3:
                 MainController.Instance._onWorldGlobal = 4;
+                MainController.Instance._saveLoadValues._worldsUnlocked[4] = true;
                 break;
         }
         MainController.Instance._saveLoadValues._restartAvailable = true;
         MainController.Instance._introSpecial = true;
         MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
+        //MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
         yield return new WaitForSeconds(1);
         MainController.Instance.LoadSceneByName("IntroScene");
 
@@ -2418,6 +2664,41 @@ public class NewMainGameplay : MonoBehaviour
     public void ShakeCamera()
     {
         _mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 2);
+    }
+
+    public void StartEarthquake()
+    {
+        if (earthquakeRoutine == null)
+            earthquakeRoutine = StartCoroutine(EarthquakeCoroutine());
+    }
+
+    public void StopEarthquake()
+    {
+        if (earthquakeRoutine != null)
+        {
+            StopCoroutine(earthquakeRoutine);
+            earthquakeRoutine = null;
+        }
+
+        // reset position
+        _mainUI.GetComponent<RectTransform>().anchoredPosition = Vector2.zero;
+    }
+
+    IEnumerator EarthquakeCoroutine()
+    {
+        RectTransform rt = _mainUI.GetComponent<RectTransform>();
+
+        while (earthquakeOn)
+        {
+            float x = Random.Range(-2f, 2f);
+            //float y = Random.Range(-2f, 2f);
+
+            rt.anchoredPosition = new Vector2(x, rt.anchoredPosition.y);
+
+            yield return new WaitForSeconds(0.1f); // once per second
+        }
+
+        rt.anchoredPosition = Vector2.zero;
     }
 
 

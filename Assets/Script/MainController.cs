@@ -237,17 +237,18 @@ public class MainController : MonoBehaviour
     public void SetStagesID()
     {
 
-        _allTurnsInfo[0]._stagesID = new List<int> {0, 1, 2, 3, 4};
+        //_allTurnsInfo[0]._stagesID = new List<int> {0, 1, 2, 3, 4};
+        _allTurnsInfo[0]._stagesID = new List<int> { 0};
         List<int> posiblesNumeros = new List<int> { 6, 7, 8, 9, 10, 11, 12, 16, 18, 19 };
 
 
         _allTurnsInfo[1]._stagesID.Add(6);
-        _allTurnsInfo[1]._stagesID.Add(7);
-        _allTurnsInfo[1]._stagesID.Add(8);
-        _allTurnsInfo[1]._stagesID.Add(9);
-        _allTurnsInfo[1]._stagesID.Add(10);
-        _allTurnsInfo[1]._stagesID.Add(11);
-        _allTurnsInfo[1]._stagesID.Add(12);
+        //_allTurnsInfo[1]._stagesID.Add(7);
+        //_allTurnsInfo[1]._stagesID.Add(8);
+        //_allTurnsInfo[1]._stagesID.Add(9);
+        //_allTurnsInfo[1]._stagesID.Add(10);
+        //_allTurnsInfo[1]._stagesID.Add(11);
+        //_allTurnsInfo[1]._stagesID.Add(12);
 
         //for (int i = 0; i < 6; i++)
         //{

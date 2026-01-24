@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 using LoL;
-using LoL;  // <- necesario para GameInitScript
+
 using LoLSDK;
 
 public class RythmFusionScript : MonoBehaviour
@@ -594,7 +594,7 @@ public class RythmFusionScript : MonoBehaviour
         _movingSelector.Play("MovingSelectorOn");
         _scriptSlime._slimeRawImage.transform.localScale = new Vector2(4f, 4f);
         _elementsInfo[_onElement]._elementOrb.transform.localScale = new Vector2(2f, 2f);
-        _elementsInfo[customStep]._releaseParticles.startColor = _halfColors[_onElement];
+        //_elementsInfo[customStep]._releaseParticles.startColor = _halfColors[_onElement];
         _elementsInfo[customStep]._releaseParticles.Play();
         _chooseSound.Play();
         _elementsSelection.Add(_onElement);

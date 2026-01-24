@@ -25,9 +25,7 @@ public class PortraitController : MonoBehaviour
         public float _yPos;
         public Color _backgroundColor;
         public TextMeshProUGUI _worldText;
-        public GameObject _spaceButton;
-        public GameObject _lockedParemt;
-        public TextMeshProUGUI _lockedText;
+
         [Header("Idioma")]
         public string key;
     }
@@ -54,7 +52,7 @@ public class PortraitController : MonoBehaviour
     public Animator _comicAnimator;
     public Image _comicStrip;
 
-    public Sprite[] _allComicStrips;
+
 
 
     public void Awake()
@@ -64,6 +62,7 @@ public class PortraitController : MonoBehaviour
     }
     void OnEnable()
     {
+
         SceneManager.sceneLoaded += OnSceneLoaded;
 
         if (SceneManager.GetActiveScene().isLoaded)
@@ -80,12 +79,12 @@ public class PortraitController : MonoBehaviour
         {
             //_scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._falling);
             _falling = true;
-            for (int i = 0; i < _allWorlds.Length; i++)
-            {
-                _allWorlds[i]._worldText.gameObject.SetActive(false);
-                _allWorlds[i]._spaceButton.gameObject.SetActive(false);
-                _allWorlds[i]._lockedParemt.gameObject.SetActive(false);
-            }
+            //for (int i = 0; i < _allWorlds.Length; i++)
+            //{
+            //    _allWorlds[i]._worldText.gameObject.SetActive(false);
+            //    _allWorlds[i]._spaceButton.gameObject.SetActive(false);
+            //    _allWorlds[i]._lockedParemt.gameObject.SetActive(false);
+            //}
             _logo.gameObject.SetActive(false);
             _frontMap.gameObject.SetActive(false);
         }
@@ -105,7 +104,7 @@ public class PortraitController : MonoBehaviour
         for (int i = 0; i < Main._worldsUnlocked.Length; i++)
         {
             if (Main._worldsUnlocked[i])
-            {
+            {         
                 _worldsUnlocked++;
             }
         }
@@ -154,13 +153,13 @@ public class PortraitController : MonoBehaviour
 
 
 
-        for (int i = 0; i < _allWorlds.Length; i++)
-        {
-            var world = _allWorlds[i];
+        //for (int i = 0; i < _allWorlds.Length; i++)
+        //{
+        //    var world = _allWorlds[i];
 
-            if (world._lockedText != null)
-                world._lockedText.text = gi.GetText("locked");
-        }
+        //    if (world._lockedText != null)
+        //        world._lockedText.text = gi.GetText("locked");
+        //}
     }
 
     void Update()
@@ -171,7 +170,7 @@ public class PortraitController : MonoBehaviour
         {
             HandleMovement();
             HandleWorldSelection();
-            UpdateWorldUnlocks();
+            //UpdateWorldUnlocks();
         }
         else if (_falling)
         {
@@ -235,30 +234,31 @@ public class PortraitController : MonoBehaviour
         }
     }
 
-    private void UpdateWorldUnlocks()
-    {
-        for (int i = 0; i < _scriptMainController._saveLoadValues._worldsUnlocked.Length; i++)
-        {
-            _allWorlds[i]._lockedParemt.SetActive(!_scriptMainController._saveLoadValues._worldsUnlocked[i]);
-            _allWorlds[i]._spaceButton.SetActive(_scriptMainController._saveLoadValues._worldsUnlocked[i]);
-        }
-    }
+    //private void UpdateWorldUnlocks()
+    //{
+    //    for (int i = 0; i < _scriptMainController._saveLoadValues._worldsUnlocked.Length; i++)
+    //    {
+    //        _allWorlds[i]._lockedParemt.SetActive(!_scriptMainController._saveLoadValues._worldsUnlocked[i]);
+    //        _allWorlds[i]._spaceButton.SetActive(_scriptMainController._saveLoadValues._worldsUnlocked[i]);
+    //    }
+    //}
 
     public IEnumerator StartGameSpecial()
     {
 
-        _gameStarts = true;
-        _fallingSlime.Play();
-        _logo.gameObject.SetActive(false);
-    
-        _slimeParent.SetActive(false);
-        yield return new WaitForSeconds(3);
-        _scriptMainController._bordersAnimator.SetBool("BorderOut", false);
+        _gameStarts = true;    
+ 
+   
+        _frontMap.SetActive(true);
+       
 
         yield return new WaitForSeconds(1);
+        MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
+        _onWorldPos = MainController.Instance._onWorldGlobal;
+        MainController.Instance._saveLoadValues._worldsUnlocked[_onWorldPos] = true;
         _scriptMainController._introSpecial = false;
-   
-        _scriptMainController.LoadSceneByName("MainGame");
+        _logo.gameObject.SetActive(true);
+        _gameStarts = false;
     }
 
     public IEnumerator StartGame()
@@ -277,7 +277,43 @@ public class PortraitController : MonoBehaviour
         yield return new WaitForSeconds(2);
 
         _scriptMainController._bordersAnimator.SetBool("BorderOut", false);
-        yield return new WaitForSeconds(2);
+        _scriptMainController._cinematicBorders.SetBool("FadeIn", false);
+        yield return new WaitForSeconds(1);
+        switch (_scriptMainController._onWorldGlobal)
+        {
+            case 0:
+                ComicController.Instance._imagesID.Add(0);
+                ComicController.Instance._imagesID.Add(1);
+                ComicController.Instance._imagesID.Add(2);
+                ComicController.Instance._waitSeconds = 4;
+                break;
+            case 1:
+                ComicController.Instance._imagesID.Add(7);
+                ComicController.Instance._imagesID.Add(8);
+                ComicController.Instance._waitSeconds = 4;
+                break;
+            case 2:
+                ComicController.Instance._imagesID.Add(9);
+                ComicController.Instance._imagesID.Add(10);
+                ComicController.Instance._imagesID.Add(11);
+                ComicController.Instance._waitSeconds = 4;
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+        }
+
+        StartCoroutine(ComicController.Instance.ComicStripOn());
+        ComicController.Instance._comicOn = true;
+        while (ComicController.Instance._comicOn)
+        {
+            yield return null;
+        }
+        _scriptMainController._bordersAnimator.SetBool("BorderOut", false);
+        yield return new WaitForSeconds(1);
+        ComicController.Instance._continueParent.SetActive(false);
+        ComicController.Instance._comicAnimator.SetBool("ComicOn", false);
         _scriptMainController.LoadSceneByName("MainGame");
 
 

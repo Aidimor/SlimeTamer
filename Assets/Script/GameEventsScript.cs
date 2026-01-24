@@ -327,7 +327,7 @@ public class GameEventsScript : MonoBehaviour
                     _scriptMain._scriptSlime._slimeAnimator.SetBool("Moving", false);
 
                     // Llama al QuestionHandler para mostrar la pregunta y reportar progreso
-                    _questionHandler.StartStageQuestionary();
+                    //_questionHandler.StartStageQuestionary();
                     break;
 
 
