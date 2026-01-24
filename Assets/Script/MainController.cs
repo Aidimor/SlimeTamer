@@ -140,7 +140,7 @@ public class MainController : MonoBehaviour
         public Image _cirlce;
         public TextMeshProUGUI _elementLetters;
         public TextMeshProUGUI _quantity;
-   
+
     }
     public ElementsCircles[] _elementsCircles;
     public TextMeshProUGUI[] _dataTexts;
@@ -155,7 +155,7 @@ public class MainController : MonoBehaviour
         public TextMeshProUGUI _quantityText;
         public Image _border;
         public Image _center;
-      
+
     }
     public ElementAnimatorAssets _elementAnimatorAssets;
 
@@ -182,9 +182,21 @@ public class MainController : MonoBehaviour
         public TextMeshProUGUI _worldName;
         public Color[] _worldColors;
 
- 
+
     }
     public WorldAssets _worldAssets;
+
+    [System.Serializable]
+    public class ExitAssets
+    {
+        public Animator _exitAnimator;
+        public GameObject[] _parentOptions;
+        public TextMeshProUGUI[] _textOptions;  
+        public int _pos;
+        public bool _exitPanelOn;
+        public bool _moves;
+    }
+    public ExitAssets _exitAssets;
 
     void Awake()
     {

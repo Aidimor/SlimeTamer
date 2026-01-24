@@ -396,8 +396,11 @@ public class NewMainGameplay : MonoBehaviour
         if (!_AtomsPanelOn)
         {
 
-
-            PlayerMovementController();
+            if (!MainController.Instance._exitAssets._exitPanelOn)
+            {
+                PlayerMovementController();
+            }
+   
             _slimeMainColor = Color.Lerp(_slimeMainColor, _slimeInfo._allSlimeColors[_slimeInfo._slimeID], 2 * Time.deltaTime);
             _scriptSlime._slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_BaseColor", _slimeMainColor);
             for (int i = 0; i < _slimeInfo._elementsParticles.Length; i++)
@@ -413,6 +416,8 @@ public class NewMainGameplay : MonoBehaviour
             {
                 SpecialRestartLevel();
             }
+
+
         }
    
         if (Input.GetButtonDown("Pause") && MainController.Instance._saveLoadValues._pauseAvailable)
@@ -436,6 +441,16 @@ public class NewMainGameplay : MonoBehaviour
         if (MainController.Instance._saveLoadValues._totalAtoms < 0)
         {
             MainController.Instance._saveLoadValues._totalAtoms = 0;
+        }
+        if (MainController.Instance._exitAssets._exitPanelOn)
+        {
+            ExitPanelController();
+      
+        }
+
+        if (Input.GetButtonDown("Cancel"))
+        {
+            StartCoroutine(ExitPanelNumerator());
         }
     }
 
@@ -521,6 +536,91 @@ public class NewMainGameplay : MonoBehaviour
   
     }
 
+    public IEnumerator ExitPanelNumerator()
+    {
+
+        switch (MainController.Instance._exitAssets._exitPanelOn)
+        {
+            case false:
+                MainController.Instance._exitAssets._exitPanelOn = true;
+                MainController.Instance._exitAssets._exitAnimator.SetBool("ExitEnter", true);
+                MainController.Instance._exitAssets._pos = 0;
+                for (int i = 0; i < 3; i++)
+                {
+                    MainController.Instance._exitAssets._parentOptions[i].GetComponent<RectTransform>().localScale = new Vector2(1f, 1f);
+                }
+                MainController.Instance._exitAssets._parentOptions[MainController.Instance._exitAssets._pos].GetComponent<RectTransform>().localScale = new Vector2(1.2f, 1.2f);
+                break;
+            case true:
+                MainController.Instance._exitAssets._exitAnimator.SetBool("ExitEnter", false);
+                yield return new WaitForSeconds(1);
+                MainController.Instance._exitAssets._exitPanelOn = false;
+                break;
+        }
+
+    
+    }
+
+   void ExitPanelController()
+    {
+
+        if (Input.GetButtonDown("Submit"))
+        {
+            switch (MainController.Instance._exitAssets._pos)
+            {
+                case 0:
+                    MainController.Instance._exitAssets._exitAnimator.SetBool("ExitEnter", false);      
+                    MainController.Instance._exitAssets._exitPanelOn = false;
+                    break;
+                case 1:
+                    StartCoroutine(NormalExitNumerator());
+                    break;
+                case 2:
+                    break;
+            }
+        }
+
+        if(Input.GetAxisRaw("Vertical") < 0 && MainController.Instance._exitAssets._pos < 2 && !MainController.Instance._exitAssets._moves)
+        {
+            MainController.Instance._exitAssets._pos++;
+            MainController.Instance._exitAssets._moves = true;
+            for(int i = 0; i < 3; i++)
+            {
+                MainController.Instance._exitAssets._parentOptions[i].GetComponent<RectTransform>().localScale = new Vector2(1f, 1f);
+            }
+            MainController.Instance._exitAssets._parentOptions[MainController.Instance._exitAssets._pos].GetComponent<RectTransform>().localScale = new Vector2(1.2f, 1.2f);
+        }
+
+        if (Input.GetAxisRaw("Vertical") > 0 && MainController.Instance._exitAssets._pos > 0 && !MainController.Instance._exitAssets._moves)
+        {
+            MainController.Instance._exitAssets._pos--;
+            MainController.Instance._exitAssets._moves = true;
+            for (int i = 0; i < 3; i++)
+            {
+                MainController.Instance._exitAssets._parentOptions[i].GetComponent<RectTransform>().localScale = new Vector2(1f, 1f);
+            }
+            MainController.Instance._exitAssets._parentOptions[MainController.Instance._exitAssets._pos].GetComponent<RectTransform>().localScale = new Vector2(1.2f, 1.2f);
+        }
+
+        if(Input.GetAxisRaw("Vertical") == 0)
+        {
+            MainController.Instance._exitAssets._moves = false;
+        }
+
+    }
+
+    IEnumerator NormalExitNumerator()
+    {
+        //MainController.Instance._saveLoadValues._restartAvailable = true;
+        MainController.Instance._introSpecial = false;
+        MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
+        //MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
+        yield return new WaitForSeconds(1);
+        MainController.Instance._exitAssets._exitAnimator.SetBool("ExitEnter", false);
+        MainController.Instance._exitAssets._exitPanelOn = false;
+        yield return new WaitForSeconds(1);
+        MainController.Instance.LoadSceneByName("IntroScene");
+    }
 
     // ===================== STAGE =====================
 
