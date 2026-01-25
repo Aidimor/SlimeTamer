@@ -132,6 +132,7 @@ public class NewMainGameplay : MonoBehaviour
     public bool earthquakeOn;
 
     Coroutine earthquakeRoutine;
+    public ParticleSystem _crumbleParticle;
 
     void Start()
     {   
@@ -1202,10 +1203,10 @@ public class NewMainGameplay : MonoBehaviour
                             _deadSlimeParticle.Play();
                             yield return new WaitForSeconds(1f);
                           
-                            switch(MainController.Instance._onWorldGlobal == 0 && !MainController.Instance._saveLoadValues._finalWorldUnlocked)
+                            switch(MainController.Instance._onWorldGlobal == 1)
                             {
                                 case false:
-                                    RestartLevel();
+                                    StartCoroutine(RestartLevel());
                                     break;
                                 case true:
                                     NextWorld();
@@ -1957,6 +1958,70 @@ public class NewMainGameplay : MonoBehaviour
             StartEarthquake();
 
         }
+
+        if (Main._onWorldGlobal == 1 && _idStage == 6)
+        {
+            ComicController.Instance._imagesID.Add(12);
+            ComicController.Instance._imagesID.Add(13);
+ 
+            ComicController.Instance._waitSeconds = 3;
+            ComicController.Instance._comicOn = true;
+            StartCoroutine(ComicController.Instance.ComicStripOn());
+            while (ComicController.Instance._comicOn)
+            {
+                yield return null;
+            }
+            MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
+            yield return new WaitForSeconds(0.5f);
+            ComicController.Instance._continueParent.gameObject.SetActive(false);
+            ComicController.Instance._comicAnimator.SetBool("ComicOn", false);
+            earthquakeOn = true;
+            StartEarthquake();
+
+        }
+
+        if (Main._onWorldGlobal == 3 && _idStage == 1)
+        {
+            ComicController.Instance._imagesID.Add(17);
+            ComicController.Instance._imagesID.Add(18);
+            ComicController.Instance._imagesID.Add(19);
+            ComicController.Instance._waitSeconds = 3;
+            ComicController.Instance._comicOn = true;
+            StartCoroutine(ComicController.Instance.ComicStripOn());
+            while (ComicController.Instance._comicOn)
+            {
+                yield return null;
+            }
+            MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
+            yield return new WaitForSeconds(0.5f);
+            ComicController.Instance._continueParent.gameObject.SetActive(false);
+            ComicController.Instance._comicAnimator.SetBool("ComicOn", false);
+            earthquakeOn = true;
+            StartEarthquake();
+
+        }
+
+
+        if (Main._onWorldGlobal == 4 && _idStage == 1)
+        {
+            ComicController.Instance._imagesID.Add(23);
+            ComicController.Instance._imagesID.Add(24);
+
+            ComicController.Instance._waitSeconds = 3;
+            ComicController.Instance._comicOn = true;
+            StartCoroutine(ComicController.Instance.ComicStripOn());
+            while (ComicController.Instance._comicOn)
+            {
+                yield return null;
+            }
+            MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
+            yield return new WaitForSeconds(0.5f);
+            ComicController.Instance._continueParent.gameObject.SetActive(false);
+            ComicController.Instance._comicAnimator.SetBool("ComicOn", false);
+            earthquakeOn = true;
+            StartEarthquake();
+
+        }
         // NUEVO spawn
         _idStage++;
         _onPose = _stageId._spawnPoint;
@@ -2588,6 +2653,7 @@ public class NewMainGameplay : MonoBehaviour
 
     public IEnumerator TransormatioNumerator()
     {
+   
         var Main = MainController.Instance;
         MainController.Instance._AtomAnimator.SetBool("AtomsIn", false);
         _AtomsPanelOn = false;
@@ -2768,6 +2834,7 @@ public class NewMainGameplay : MonoBehaviour
 
     public void StartEarthquake()
     {
+        _crumbleParticle.Play();
         if (earthquakeRoutine == null)
             earthquakeRoutine = StartCoroutine(EarthquakeCoroutine());
     }

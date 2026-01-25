@@ -299,8 +299,16 @@ public class PortraitController : MonoBehaviour
                 ComicController.Instance._waitSeconds = 4;
                 break;
             case 3:
+                ComicController.Instance._imagesID.Add(14);
+                ComicController.Instance._imagesID.Add(15);
+                ComicController.Instance._imagesID.Add(16);
+                ComicController.Instance._waitSeconds = 4;
                 break;
             case 4:
+                ComicController.Instance._imagesID.Add(20);
+                ComicController.Instance._imagesID.Add(21);
+                ComicController.Instance._imagesID.Add(22);
+                ComicController.Instance._waitSeconds = 4;
                 break;
         }
 
