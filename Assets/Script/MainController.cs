@@ -7,13 +7,13 @@ using LoLSDK;
 using System.Collections.Generic;
 
 // Clase simple de progreso
-[System.Serializable]
-public class Progress
-{
-    public int currentProgress;
-    public int maxProgress = 8;
-    public int score = 100;
-}
+//[System.Serializable]
+//public class Progress
+//{
+//    public int currentProgress;
+//    public int maxProgress = 8;
+//    //public int score = 100;
+//}
 
 public class MainController : MonoBehaviour
 {
@@ -22,7 +22,7 @@ public class MainController : MonoBehaviour
     public bool _newGameplay;
 
     // --- SISTEMA CENTRALIZADO DE PROGRESO ---
-    public Progress progress = new Progress();
+    //public Progress progress = new Progress();
 
     // --- Referencias a Scripts ---
     public PortraitController _scriptPortrait;
@@ -43,7 +43,7 @@ public class MainController : MonoBehaviour
     public class SaveLoadValues
     {
         public bool[] _worldsUnlocked = new bool[4] { true, false, false, false };
-        //public bool[] _progressSave = new bool[8];
+        public bool[] _progressSave = new bool[8];
         public int _totalSteps;
         public int _totalAtoms;
         public bool _pauseAvailable;
@@ -53,6 +53,9 @@ public class MainController : MonoBehaviour
         public bool _restartAvailable;
         public bool _hazardTutorial;
         public bool _atomTutorial;
+
+        public int currentProgress;
+        public int maxProgress = 8;
     }
 
     public SaveLoadValues _saveLoadValues;
@@ -306,7 +309,7 @@ public class MainController : MonoBehaviour
 
 
         List<int> LastposiblesNumeros = new List<int> { 6, 7, 8, 9, 10, 11, 12, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
-        for (int i = 0; i < 10; i++)
+        for (int i = 0; i < 1; i++)
         {
             int randomIndex = Random.Range(0, LastposiblesNumeros.Count);
             _allTurnsInfo[4]._stagesID.Add(LastposiblesNumeros[randomIndex]);
@@ -375,7 +378,7 @@ public class MainController : MonoBehaviour
         }
 
         // Recalcular progreso
-        _saveLoadValues._progress = 0;
+        SetIntProgress();
         //for (int i = 0; i < _saveLoadValues._progressSave.Length; i++)
         //{
         //    if (_saveLoadValues._progressSave[i])
@@ -383,11 +386,11 @@ public class MainController : MonoBehaviour
         //}
 
         // Sincronizar con Progress
-        progress.currentProgress = _saveLoadValues._progress;
+        //progress.currentProgress = _saveLoadValues._progress;
 
-        // Actualizar en LoadedFullState si existe
-        if (GameInitScript.Instance.LoadedFullState != null)
-            GameInitScript.Instance.LoadedFullState.currentProgress = _saveLoadValues._progress;
+        //// Actualizar en LoadedFullState si existe
+        //if (GameInitScript.Instance.LoadedFullState != null)
+        //    GameInitScript.Instance.LoadedFullState.currentProgress = _saveLoadValues._progress;
 
         GameInitScript.Instance.SaveGame();
         Debug.Log("💾 Guardado OK.");
@@ -417,5 +420,17 @@ public class MainController : MonoBehaviour
         UpdateCurrencyUI();
         SaveProgress();
         Debug.Log($"Monedas forzadas: Health={health}, Hint={hint}");
+    }
+
+    public void SetIntProgress()
+    {
+        _saveLoadValues._progress = 0;
+        for(int i = 0; i < _saveLoadValues._progressSave.Length; i++)
+        {
+            if (_saveLoadValues._progressSave[i])
+            {
+                _saveLoadValues._progress++;
+            }
+        }
     }
 }

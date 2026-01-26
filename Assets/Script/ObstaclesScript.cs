@@ -26,9 +26,12 @@ public class ObstaclesScript : MonoBehaviour
 
     public IEnumerator LovePressedNumerator()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(0.5f);
+        MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._dissapearing);
         MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._platform);
         _allObstacles[2].SetActive(false);
         _allObstacles[3].SetActive(true);
+        
+  
     }
     }

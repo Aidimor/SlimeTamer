@@ -70,7 +70,7 @@ public class ComicController : MonoBehaviour
         var GJ = GameInitScript.Instance;
         string key = "continue";
         string text = GameInitScript.Instance.GetText(key);
-        _continuar.text = GJ.GetText(text);
+        _continuar.text = GJ.GetText("continue");
  
         _comicAnimator.SetBool("ComicOn", true);
         MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
@@ -108,6 +108,7 @@ public class ComicController : MonoBehaviour
             }
             _comicImage.sprite = _allComics[_imagesID[i]];
             _comicAnimator.SetTrigger("NextImage");
+            MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._slimeJumping);
             yield return new WaitForSeconds(_waitSeconds);
         }     
         LOLSDK.Instance.SpeakText(key);

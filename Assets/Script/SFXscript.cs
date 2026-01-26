@@ -27,7 +27,11 @@ public class SFXscript : MonoBehaviour
     public AudioClip _melting;
     public AudioClip _platform;
     public AudioClip _dissapearing;
-
+    public AudioClip _ice;
+    public AudioClip _comicFlip;
+    public AudioClip _co2;
+    public AudioClip _magnetism;
+    public AudioClip _iron;
     
 
     public AudioClip _stickyMudSound;

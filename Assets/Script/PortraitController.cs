@@ -51,7 +51,7 @@ public class PortraitController : MonoBehaviour
   
     public Animator _comicAnimator;
     public Image _comicStrip;
-
+    public TextMeshProUGUI[] _textTutorials;
 
 
 
@@ -68,7 +68,7 @@ public class PortraitController : MonoBehaviour
         if (SceneManager.GetActiveScene().isLoaded)
             OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
 
-        if (_scriptMainController != null)
+        if (_scriptMainController != null && MainController.Instance._onWorldGlobal != 4)
         {
             _scriptMainController._scriptMusic._audioBGM.clip = _scriptMainController._scriptMusic._allThemes[0];
             _scriptMainController._scriptMusic._audioBGM.Play();
@@ -89,8 +89,8 @@ public class PortraitController : MonoBehaviour
             _frontMap.gameObject.SetActive(false);
         }
 
- 
 
+        _onWorldPos = MainController.Instance._onWorldGlobal;
         StartCoroutine(StartsSceneNumerator());
     }
 
@@ -123,7 +123,7 @@ public class PortraitController : MonoBehaviour
             _scriptMainController = mainControllerObj.GetComponent<MainController>();
             if (_scriptMainController != null)
             {
-                _scriptMainController._bordersAnimator.SetBool("BorderOut", true);
+                
                 StartCoroutine(UpdateWorldTexts());
             }
         }
@@ -150,15 +150,17 @@ public class PortraitController : MonoBehaviour
             //if (world._worldText != null && !string.IsNullOrEmpty(world.key))
                 //world._worldText.text = gi.GetText(world.key) + " " + displayNumber;
             world._worldText.text = gi.GetText("WorldName" + (i + 1)).ToString();
-            Debug.Log(gi.GetText("WorldName" + (i + 1)).ToString());
+    
         }
 
         MainController.Instance._exitAssets._textOptions[0].text = GameInitScript.Instance.GetText("pause1");
         MainController.Instance._exitAssets._textOptions[1].text = GameInitScript.Instance.GetText("pause2");
         MainController.Instance._exitAssets._textOptions[2].text = GameInitScript.Instance.GetText("pause3");
+        _textTutorials[0].text = GameInitScript.Instance.GetText("movewith");
+        _textTutorials[1].text = GameInitScript.Instance.GetText("pressbutton");
+        yield return new WaitForSeconds(0.5f);
 
-
-
+        _scriptMainController._bordersAnimator.SetBool("BorderOut", true);
         //for (int i = 0; i < _allWorlds.Length; i++)
         //{
         //    var world = _allWorlds[i];

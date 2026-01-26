@@ -27,7 +27,7 @@
     "pause2": "Main Menu",
     "pause3": "Exit Game",
     "continue": "PRESS SPACE TO CONTINUE",
-    "entrance": "Entrace",
+    "entrance": "Entrance",
    "element1": "Carbon",
    "element2": "Hydrogen",
    "element3": "Oxygen",
@@ -69,7 +69,12 @@
 "dioxide1": "Humans and animals breathe it out",
 "dioxide2": "Besides being a heavy gas if another gas is below it will float",
 "magnatite1": "It has been found in meteorites",
-"magnatite2": "Magnetic recording materials"
+"magnatite2": "Magnetic recording materials",
+"endgame": "To be continued...",
+"movewith": "Use the arrows to move",
+"pressbutton": "Press Space to choose",
+"fusion1": "Press ENTER",
+"fusion2": "Fusion"
 }
 "es": {
   "world": "Mundo",
@@ -135,7 +140,12 @@
   "dioxide2": "Además de ser un gas pesado, si otro gas está debajo de él, flotará",
 
   "magnatite1": "Se ha encontrado en meteoritos",
-  "magnatite2": "Materiales de grabación magnética"
+  "magnatite2": "Materiales de grabación magnética",
+"endgame": "Continuara...",
+"movewith": "Muevente con las flechas",
+"pressbutton": "Presiona Espacio para elegir",
+"fusion1": "Presionar Enter",
+"fusion2": "Fusion"
 }
 
 

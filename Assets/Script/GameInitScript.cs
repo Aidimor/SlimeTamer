@@ -124,9 +124,7 @@ namespace LoL
         private GameSaveState CreateDefaultGameState()
         {
             return new GameSaveState
-            {
-                //_healthCoins = 3,
-                //_hintCoins = 0,
+            {      
                 _progress = 0,
                 _totalSteps = 0,
                 _totalAtoms = 0,
@@ -134,16 +132,11 @@ namespace LoL
                 _atomTutorial = false,
                 _elementTutorial = false,
                 _hazardTutorial = false,
-                _restartTutorial = false,
-
-                //_totalSteps = 0;
+                _restartTutorial = false,      
               
                 _worldsUnlocked = new bool[] { true, false, false, false, false },
-                //_elementsUnlocked = new bool[] { true, false, false },
-                //_slimeUnlocked = new bool[] { true, false, false },
-
-                //_finalWorldUnlocked = false,
-                _progressSave = new bool[8]
+      
+                _progressSave = new bool[] {false, false, false, false,false, false, false, false}
             };
         }
 
@@ -622,6 +615,14 @@ namespace LoL
                     saveValues._worldsUnlocked = new bool[state._worldsUnlocked.Length];
                 System.Array.Copy(state._worldsUnlocked, saveValues._worldsUnlocked, state._worldsUnlocked.Length);
             }
+            if (state._progressSave != null)
+            {
+                // Solo re-dimensiona si el array del saveValues es null o tiene un tamaño diferente
+                if (saveValues._progressSave == null || saveValues._progressSave.Length != state._progressSave.Length)
+                    saveValues._progressSave = new bool[state._progressSave.Length];
+                System.Array.Copy(state._progressSave, saveValues._progressSave, state._progressSave.Length);
+            }
+
 
             saveValues._totalAtoms = state._totalAtoms;
             saveValues._totalSteps = state._totalSteps;
@@ -673,10 +674,13 @@ namespace LoL
                 _restartAvailable = saveValues._restartAvailable,
                 _restartTutorial = saveValues._restartTutorial,
                 _totalSteps = saveValues._totalSteps,
-                _worldsUnlocked = saveValues._worldsUnlocked 
+                _worldsUnlocked = saveValues._worldsUnlocked,
+                _progressSave = saveValues._progressSave
                 
 
         };
+
+       
 
             try
             {

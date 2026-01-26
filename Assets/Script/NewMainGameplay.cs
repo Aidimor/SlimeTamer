@@ -137,6 +137,11 @@ public class NewMainGameplay : MonoBehaviour
     public TextMeshProUGUI _escapeText;
     public TextMeshProUGUI _exitText;
     public bool _gameStarts;
+    public ParticleSystem _lowAirLeft;
+    public ParticleSystem _lowAirRight;
+
+    public GameObject _fusionParent;
+    public TextMeshProUGUI[] _fusionMenuTexts;
     void Start()
     {   
         StartVoids();
@@ -220,7 +225,13 @@ public class NewMainGameplay : MonoBehaviour
 
         SetHazards();
         SetEntranceExit();
-        _exitEntranceObjects[0].GetComponent<ExitScriptObject>()._entranceText.text = GameInitScript.Instance.GetText("Entrace");
+        _exitEntranceObjects[0].GetComponent<ExitScriptObject>()._entranceText.text = GameInitScript.Instance.GetText("entrance");
+        _fusionMenuTexts[0].text = GameInitScript.Instance.GetText("fusion1");
+        _fusionMenuTexts[1].text = GameInitScript.Instance.GetText("fusion2");
+        if (MainController.Instance._saveLoadValues._atomTutorial)
+        {
+            _fusionParent.gameObject.SetActive(true);
+        }
         // ==========================
         // 🧪 VARIABLES DE JUEGO
         // ==========================
@@ -279,6 +290,19 @@ public class NewMainGameplay : MonoBehaviour
         var gi = GameInitScript.Instance;
         ResetAllHazards();
         //_slimeObject.GetComponent<RectTransform>().localScale = Vector3.zero;
+        switch (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._wind)
+        {
+            case NewGameEvent.Wind.Center:
+                break;
+            case NewGameEvent.Wind.Left:
+                Main._scriptSFX._windSetVolume = 0.2f;
+                _lowAirLeft.Play();
+                break;
+            case NewGameEvent.Wind.Right:
+                _lowAirRight.Play();
+                Main._scriptSFX._windSetVolume = 0.2f;
+                break;
+        }
 
 
         switch (Main._onWorldGlobal)
@@ -326,6 +350,8 @@ public class NewMainGameplay : MonoBehaviour
                 break;
             case 1:
             case 2:
+    
+                break;
             case 3:
                 if(_idStage == 0)
                 {
@@ -459,7 +485,11 @@ public class NewMainGameplay : MonoBehaviour
         }
         else
         {
-            AtomPanelController();
+            if (!MainController.Instance._exitAssets._exitPanelOn)
+            {
+                AtomPanelController();
+            }
+      
         }
 
         if (_boulderSwitch._movingBoulder){
@@ -568,7 +598,7 @@ public class NewMainGameplay : MonoBehaviour
 
     public IEnumerator ExitPanelNumerator()
     {
-
+        MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._chooseElement);
         switch (MainController.Instance._exitAssets._exitPanelOn)
         {
             case false:
@@ -596,6 +626,7 @@ public class NewMainGameplay : MonoBehaviour
 
         if (Input.GetButtonDown("Submit"))
         {
+            MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._chooseElement);
             switch (MainController.Instance._exitAssets._pos)
             {
                 case 0:
@@ -619,6 +650,7 @@ public class NewMainGameplay : MonoBehaviour
                 MainController.Instance._exitAssets._parentOptions[i].GetComponent<RectTransform>().localScale = new Vector2(1f, 1f);
             }
             MainController.Instance._exitAssets._parentOptions[MainController.Instance._exitAssets._pos].GetComponent<RectTransform>().localScale = new Vector2(1.2f, 1.2f);
+            MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._next);
         }
 
         if (Input.GetAxisRaw("Vertical") > 0 && MainController.Instance._exitAssets._pos > 0 && !MainController.Instance._exitAssets._moves)
@@ -630,6 +662,7 @@ public class NewMainGameplay : MonoBehaviour
                 MainController.Instance._exitAssets._parentOptions[i].GetComponent<RectTransform>().localScale = new Vector2(1f, 1f);
             }
             MainController.Instance._exitAssets._parentOptions[MainController.Instance._exitAssets._pos].GetComponent<RectTransform>().localScale = new Vector2(1.2f, 1.2f);
+            MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._next);
         }
 
         if(Input.GetAxisRaw("Vertical") == 0)
@@ -644,10 +677,14 @@ public class NewMainGameplay : MonoBehaviour
         //MainController.Instance._saveLoadValues._restartAvailable = true;
         MainController.Instance._introSpecial = false;
         MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
+        _AtomsPanelOn = false;
+        MainController.Instance._AtomAnimator.SetBool("AtomsIn", false);
         //MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
         yield return new WaitForSeconds(1);
         MainController.Instance._exitAssets._exitAnimator.SetBool("ExitEnter", false);
         MainController.Instance._exitAssets._exitPanelOn = false;
+        MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[0];
+        MainController.Instance._scriptMusic._audioBGM.Play();
         yield return new WaitForSeconds(1);
         MainController.Instance.LoadSceneByName("IntroScene");
     }
@@ -1504,6 +1541,7 @@ public class NewMainGameplay : MonoBehaviour
                         _movementsToSandStorm--;
                         if (_movementsToSandStorm <= 0)
                         {
+                            Main._scriptSFX._windSetVolume = 0.75f;
                             _sandStorm.Play();
                             _movementsToSandStorm = Random.Range(5, 7);
                             _sandStormOn = true;
@@ -1511,6 +1549,7 @@ public class NewMainGameplay : MonoBehaviour
                     }
                     else
                     {
+                        Main._scriptSFX._windSetVolume = 0f;
                         _sandStorm.Stop();
                         _sandStormOn = false;
                     }
@@ -1529,6 +1568,7 @@ public class NewMainGameplay : MonoBehaviour
                             case NewGameEvent.Wind.Left:
                                 if (_windParticle != null && _windParticle.Length > 0 && _windParticle[0] != null)
                                     _windParticle[0].Play();
+                        
 
                                 yield return new WaitForSeconds(0.25f);
 
@@ -1537,15 +1577,19 @@ public class NewMainGameplay : MonoBehaviour
                                     _movesAvailable[2] &&
                                     _onPose != 4 && _onPose != 9 && _onPose != 14 && _onPose != 19)
                                 {
+                                    Main._scriptSFX._strongWindSetVolume = 0.7f;
+                                    Main._scriptSFX._strongWind.volume = 0.7f;
                                     _onPose++;
                                 }
 
                                 yield return new WaitForSeconds(0.25f);
+                                Main._scriptSFX._strongWindSetVolume = 0;
                                 break;
 
                             case NewGameEvent.Wind.Right:
                                 if (_windParticle != null && _windParticle.Length > 1 && _windParticle[1] != null)
                                     _windParticle[1].Play();
+                         
 
                                 yield return new WaitForSeconds(0.25f);
 
@@ -1554,10 +1598,13 @@ public class NewMainGameplay : MonoBehaviour
                                     _movesAvailable[3] &&
                                     _onPose != 0 && _onPose != 5 && _onPose != 10 && _onPose != 15 && _onPose != 20)
                                 {
+                                    Main._scriptSFX._strongWindSetVolume = 0.7f;
+                                    Main._scriptSFX._strongWind.volume = 0.7f;
                                     _onPose--;
                                 }
-
+                          
                                 yield return new WaitForSeconds(0.25f);
+                                Main._scriptSFX._strongWindSetVolume = 0f;
                                 break;
                         }
                     }
@@ -1736,6 +1783,7 @@ public class NewMainGameplay : MonoBehaviour
 
     public IEnumerator RestartLevel()
     {
+     
         var Main = MainController.Instance;
         Main._scriptSFX.PlaySound(Main._scriptSFX._failSound);
         var _realID = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
@@ -1769,7 +1817,7 @@ public class NewMainGameplay : MonoBehaviour
             Main._saveLoadValues._restartTutorial = true;
 
         }
-
+        MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._failSound);
         MainController.Instance._restartBeam.Play("RestartBeam");
         _slimeObject.GetComponent<Animator>().Play("SlimeLeavesAnimation");
         StopMoveCoroutine();
@@ -1836,6 +1884,7 @@ public class NewMainGameplay : MonoBehaviour
 
     public void SpecialRestartLevel()
     {
+   
         var Main = MainController.Instance;
         var _realID = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
 
@@ -2053,6 +2102,8 @@ public class NewMainGameplay : MonoBehaviour
             StartEarthquake();
 
         }
+
+
         // NUEVO spawn
         _idStage++;
         _onPose = _stageId._spawnPoint;
@@ -2069,7 +2120,17 @@ public class NewMainGameplay : MonoBehaviour
         _waterWalk.Stop();
         _smoke.Stop();
         yield return new WaitForSeconds(0.2f);
-     
+        switch (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._wind)
+        {
+            case NewGameEvent.Wind.Center:
+                break;
+            case NewGameEvent.Wind.Left:
+                _lowAirLeft.Play();
+                break;
+            case NewGameEvent.Wind.Right:
+                _lowAirRight.Play();
+                break;
+        }
         _transformed = false;
         MainController.Instance.SaveProgress();
         yield return new WaitForSeconds(0.5f);
@@ -2160,7 +2221,8 @@ public class NewMainGameplay : MonoBehaviour
                                     {
                                         HazardInfo._hazards[z]._finished = true;
                                     }
-                                    MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._dissapearing);
+                         
+                    
 
 
                                 }
@@ -2305,6 +2367,7 @@ public class NewMainGameplay : MonoBehaviour
                         {
                             yield return null;
                         }
+                        SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
                         Main._tutorialAssets._continueText.gameObject.SetActive(false);
                         Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
                         Main._saveLoadValues._elementTutorial = true;
@@ -2332,6 +2395,8 @@ public class NewMainGameplay : MonoBehaviour
                             {
                                 yield return null;
                             }
+                            _fusionParent.gameObject.SetActive(true);
+                            SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
                             Main._tutorialAssets._continueText.gameObject.SetActive(false);
                             Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
                             Main._saveLoadValues._atomTutorial = true;
@@ -2389,16 +2454,17 @@ public class NewMainGameplay : MonoBehaviour
                                 LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element4"));
                                 break;
                         }
-                        SFXscript.Instance.PlaySound(SFXscript.Instance._slimeRelease);
+                 
                     }
-              
+                    SFXscript.Instance.PlaySound(SFXscript.Instance._slimeRelease);
 
                     ElementInfo._elements[i]._changed = true;
                     StartCoroutine(ElementNumerator());
                     if (!_transformed){
-                
-                            TransformSlimeVoid();
+          
+                        TransformSlimeVoid();
                     }
+                 
              
         
                    
@@ -2528,6 +2594,7 @@ public class NewMainGameplay : MonoBehaviour
                     {
                         yield return null;
                     }
+                    Main._scriptSFX.PlaySound(Main._scriptSFX._stickyMudSound);
                     Main._tutorialAssets._continueText.gameObject.SetActive(false);
                     Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
                     _movementAvailable = true;
@@ -2539,6 +2606,7 @@ public class NewMainGameplay : MonoBehaviour
                     Destroy(_allSteps[i]);
                     _allSteps.RemoveAt(i);
                     _stepsList.RemoveAt(i);
+                    Main._scriptSFX.PlaySound(Main._scriptSFX._stickyMudSound);
                 }
                
             }
@@ -2553,6 +2621,7 @@ public class NewMainGameplay : MonoBehaviour
     public void TransformSlimeVoid()
     {
         var Main = MainController.Instance;
+    
         if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[3] >= 1)
         {
             itTransforms = true;
@@ -2700,6 +2769,7 @@ public class NewMainGameplay : MonoBehaviour
     {
    
         var Main = MainController.Instance;
+        SFXscript.Instance.PlaySound(SFXscript.Instance._slimeCharge);
         MainController.Instance._AtomAnimator.SetBool("AtomsIn", false);
         _AtomsPanelOn = false;
         _transformed = true;
@@ -2714,19 +2784,25 @@ public class NewMainGameplay : MonoBehaviour
             case 0:
                 break;
             case 1:
+                MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._iron);
                 _slimeAnimator.SetInteger("ID", 3);
                 break;
             case 2:
+                MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._melting);
                 _slimeAnimator.SetInteger("ID", 1);
                 break;
             case 3:
+                MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._co2);
                 _slimeAnimator.SetInteger("ID", 2);
                 break;
             case 4:
+                MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._frozen);
                 _slimeAnimator.SetInteger("ID", 5);
                 break;
             case 5:
+                MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._magnetism);
                 _slimeAnimator.SetInteger("ID", 4);
+         
                 break;
         }
         yield return new WaitForSeconds(1);
@@ -2735,6 +2811,7 @@ public class NewMainGameplay : MonoBehaviour
         {
             yield return null;
         }
+        SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
         MainController.Instance._continueText.gameObject.SetActive(false);
         MainController.Instance._transformationAnimator.SetBool("Success", false);
         yield return new WaitForSeconds(0.5f);
@@ -2755,6 +2832,7 @@ public class NewMainGameplay : MonoBehaviour
             {
                 yield return null;
             }
+            SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
             Main._tutorialAssets._continueText.gameObject.SetActive(false);
             Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
             MainController.Instance._saveLoadValues._hazardTutorial = true;
@@ -2778,6 +2856,7 @@ public class NewMainGameplay : MonoBehaviour
             {
                 yield return null;
             }
+            SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
             Main._tutorialAssets._continueText.gameObject.SetActive(false);
             Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
             MainController.Instance._saveLoadValues._hazardTutorial = true;
@@ -2816,7 +2895,7 @@ public class NewMainGameplay : MonoBehaviour
         {
             case false:
                 SFXscript.Instance.PlaySound(SFXscript.Instance._jump);
-
+                SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
                 break;
             case true:
                 SFXscript.Instance.PlaySound(SFXscript.Instance._slimeCharge);
@@ -2879,6 +2958,29 @@ public class NewMainGameplay : MonoBehaviour
                 MainController.Instance._onWorldGlobal = 4;
                 MainController.Instance._saveLoadValues._worldsUnlocked[4] = true;
                 break;
+            case 4:
+                if (MainController.Instance._onWorldGlobal == 4 && _idStage == MainController.Instance._allTurnsInfo[4]._stagesID.Count - 1)
+                {
+                    ComicController.Instance._imagesID.Add(25);
+                    ComicController.Instance._imagesID.Add(26);
+                    ComicController.Instance._imagesID.Add(27);
+                    ComicController.Instance._waitSeconds = 2;
+                    ComicController.Instance._comicOn = true;
+                    StartCoroutine(ComicController.Instance.ComicStripOn());
+                    while (ComicController.Instance._comicOn)
+                    {
+                        yield return null;
+                    }
+                    MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
+                    yield return new WaitForSeconds(0.5f);
+                    ComicController.Instance._continuar.text = GameInitScript.Instance.GetText("endgame");
+                    ComicController.Instance._continueParent.gameObject.SetActive(false);
+                    ComicController.Instance._comicAnimator.SetBool("ComicOn", false);
+    
+                    LOLSDK.Instance.CompleteGame();
+                }
+           
+                break;
         }
         MainController.Instance._saveLoadValues._restartAvailable = true;
         MainController.Instance._introSpecial = true;
@@ -2886,6 +2988,27 @@ public class NewMainGameplay : MonoBehaviour
         MainController.Instance.SaveProgress();
 
         //MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
+        _AtomsPanelOn = false;
+        MainController.Instance._AtomAnimator.SetBool("AtomsIn", false);
+        switch (MainController.Instance._onWorldGlobal)
+        {
+            case 0:
+         
+                break;
+            case 1:
+                MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[0];
+                break;
+            case 2:
+                MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[0];
+                break;
+            case 3:             
+                break;
+            case 4:
+                MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[0];
+                MainController.Instance._onWorldGlobal = 0;
+                break;
+        }
+        MainController.Instance._scriptMusic._audioBGM.Play();
         yield return new WaitForSeconds(1);
         MainController.Instance.LoadSceneByName("IntroScene");
 
