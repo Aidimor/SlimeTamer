@@ -22,16 +22,19 @@ namespace LoL
     [System.Serializable]
     public class GameSaveState
     {
-        public int _healthCoins;
-        public int _hintCoins;
-
         // 🔥 VARIABLES DESBLOQUEADAS Y HABILITADAS 🔥
         public int _progress; // Progreso actual (ej. nivel o mundo completado)
         public bool[] _worldsUnlocked;
-        public bool[] _elementsUnlocked;
-        public bool[] _slimeUnlocked;
-        public bool _finalWorldUnlocked;
         public bool[] _progressSave;
+
+        public int _totalSteps;
+        public int _totalAtoms;
+        public bool _pauseAvailable;
+        public bool _restartTutorial;
+        public bool _elementTutorial;
+        public bool _restartAvailable;
+        public bool _hazardTutorial;
+        public bool _atomTutorial;
     }
 
     // 🔥 CLASE HELPER REQUERIDA POR LOL
@@ -122,15 +125,24 @@ namespace LoL
         {
             return new GameSaveState
             {
-                _healthCoins = 3,
-                _hintCoins = 0,
+                //_healthCoins = 3,
+                //_hintCoins = 0,
                 _progress = 0,
+                _totalSteps = 0,
+                _totalAtoms = 0,
+                _pauseAvailable = false,
+                _atomTutorial = false,
+                _elementTutorial = false,
+                _hazardTutorial = false,
+                _restartTutorial = false,
 
+                //_totalSteps = 0;
+              
                 _worldsUnlocked = new bool[] { true, false, false, false, false },
                 //_elementsUnlocked = new bool[] { true, false, false },
                 //_slimeUnlocked = new bool[] { true, false, false },
 
-                _finalWorldUnlocked = false,
+                //_finalWorldUnlocked = false,
                 _progressSave = new bool[8]
             };
         }
@@ -546,7 +558,7 @@ namespace LoL
                 if (LoadedFullState != null && LoadedFullState.data != null)
                 {
                     GameSaveState loadedData = LoadedFullState.data;
-                    Debug.Log($"DIAGNÓSTICO INIT: Valor cargado del SDK (Persistente): {loadedData._healthCoins}");
+                    //Debug.Log($"DIAGNÓSTICO INIT: Valor cargado del SDK (Persistente): {loadedData._healthCoins}");
 
                     // Aplicación del estado (protegida)
                     try
@@ -597,9 +609,6 @@ namespace LoL
 
         private void ApplyLoadedState(GameSaveState state, MainController mc)
         {
-            // 1. Aplicar datos lógicos al MainController
-            mc._saveLoadValues._healthCoins = state._healthCoins;
-            mc._saveLoadValues._hintCoins = state._hintCoins;
             mc._saveLoadValues._progress = state._progress;
 
             // Asegurar que los arrays de destino existan o re-dimensionarlos si el guardado trae datos.
@@ -614,34 +623,15 @@ namespace LoL
                 System.Array.Copy(state._worldsUnlocked, saveValues._worldsUnlocked, state._worldsUnlocked.Length);
             }
 
-            if (state._elementsUnlocked != null)
-            {
-                if (saveValues._elementsUnlocked == null || saveValues._elementsUnlocked.Length != state._elementsUnlocked.Length)
-                    saveValues._elementsUnlocked = new bool[state._elementsUnlocked.Length];
-                System.Array.Copy(state._elementsUnlocked, saveValues._elementsUnlocked, state._elementsUnlocked.Length);
-            }
+            saveValues._totalAtoms = state._totalAtoms;
+            saveValues._totalSteps = state._totalSteps;
+            saveValues._pauseAvailable = state._pauseAvailable;
+            saveValues._restartTutorial = state._restartTutorial;
+            saveValues._hazardTutorial = state._hazardTutorial;
+            saveValues._elementTutorial = state._elementTutorial;
+            saveValues._restartAvailable = state._restartAvailable;
+            saveValues._atomTutorial = state._atomTutorial;
 
-            if (state._slimeUnlocked != null)
-            {
-                if (saveValues._slimeUnlocked == null || saveValues._slimeUnlocked.Length != state._slimeUnlocked.Length)
-                    saveValues._slimeUnlocked = new bool[state._slimeUnlocked.Length];
-                System.Array.Copy(state._slimeUnlocked, saveValues._slimeUnlocked, state._slimeUnlocked.Length);
-            }
-
-            if (state._progressSave != null)
-            {
-                if (saveValues._progressSave == null || saveValues._progressSave.Length != state._progressSave.Length)
-                    saveValues._progressSave = new bool[state._progressSave.Length];
-                System.Array.Copy(state._progressSave, saveValues._progressSave, state._progressSave.Length);
-            }
-
-            saveValues._finalWorldUnlocked = state._finalWorldUnlocked;
-
-            // 2. DEBUG DE VERIFICACIÓN FINAL
-            Debug.Log($"✅ Aplicando Estado FINAL al MainController. Health: {saveValues._healthCoins}, Hint: {saveValues._hintCoins}, Progress: {saveValues._progress}");
-
-            // 3. ACTUALIZAR UI
-            //PortraitController.Instance.botonBorrar();
             mc.UpdateCurrencyUI();
         }
 
@@ -674,29 +664,33 @@ namespace LoL
 
             GameSaveState gameState = new GameSaveState
             {
-                _healthCoins = saveValues._healthCoins,
-                _hintCoins = saveValues._hintCoins,
                 _progress = saveValues._progress,
-                _worldsUnlocked = saveValues._worldsUnlocked,
-                _elementsUnlocked = saveValues._elementsUnlocked,
-                _slimeUnlocked = saveValues._slimeUnlocked,
-                _finalWorldUnlocked = saveValues._finalWorldUnlocked,
-                _progressSave = saveValues._progressSave
-            };
+                _totalAtoms = saveValues._totalAtoms,
+                _pauseAvailable = saveValues._pauseAvailable,
+                _atomTutorial = saveValues._atomTutorial,
+                _elementTutorial = saveValues._elementTutorial,
+                _hazardTutorial = saveValues._hazardTutorial,
+                _restartAvailable = saveValues._restartAvailable,
+                _restartTutorial = saveValues._restartTutorial,
+                _totalSteps = saveValues._totalSteps,
+                _worldsUnlocked = saveValues._worldsUnlocked 
+                
+
+        };
 
             try
             {
                 // Guarda el objeto "raw" directamente (igual que el ejemplo Cooking)
                 LOLSDK.Instance.SaveState(gameState);
-                Debug.Log($"💾 Estado RAW guardado en LoLSDK. Health: {gameState._healthCoins}, Progress: {gameState._progress}");
+                //Debug.Log($"💾 Estado RAW guardado en LoLSDK. Health: {gameState._healthCoins}, Progress: {gameState._progress}");
             }
             catch (System.Exception e)
             {
                 Debug.LogError("SaveGame: Exception when calling SaveState: " + e);
             }
 
-            // Reportar el progreso por separado (si lo necesitas)
-            ReportProgressToTeacherApp(gameState._progress, /*maxProgress*/ 8);
+            //// Reportar el progreso por separado (si lo necesitas)
+            //ReportProgressToTeacherApp(gameState._progress, /*maxProgress*/ 8);
         }
 
 

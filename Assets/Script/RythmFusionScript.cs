@@ -63,30 +63,30 @@ public class RythmFusionScript : MonoBehaviour
     void Start()
     {
         UpdateWorldTexts();
-        switch (_scriptMain._scriptMain._onWorldGlobal)
-        {
-            case 0:
-                switch (_scriptMain._scriptMain._saveLoadValues._finalWorldUnlocked)
-                {
-                    case false:
-                        _bpm = 100;
-                        break;
-                    case true:
-                        _bpm = 160;
-                        break;
-                }
+        //switch (_scriptMain._scriptMain._onWorldGlobal)
+        //{
+        //    case 0:
+        //        switch (_scriptMain._scriptMain._saveLoadValues._finalWorldUnlocked)
+        //        {
+        //            case false:
+        //                _bpm = 100;
+        //                break;
+        //            case true:
+        //                _bpm = 160;
+        //                break;
+        //        }
          
-                break;
-            case 1:
-                _bpm = 150;
-                break;
-            case 2:
-                _bpm = 135;
-                break;
-            case 3:
-                _bpm = 120;
-                break;
-        }
+        //        break;
+        //    case 1:
+        //        _bpm = 150;
+        //        break;
+        //    case 2:
+        //        _bpm = 135;
+        //        break;
+        //    case 3:
+        //        _bpm = 120;
+        //        break;
+        //}
 
         for (int i = 0; i < 4; i++)
         {
@@ -111,36 +111,36 @@ public class RythmFusionScript : MonoBehaviour
 
     void Update()
     {
-        if (Input.GetButtonDown("Submit") && !_buttonPressed && _canPress && !_scriptMain._scriptMain._pauseAssets._pause && !_scriptMain._tutorialAssets._tutorialOn)
-        {
-            switch (_onElement)
-            {
-                case 0:
-                    _elementsInfo[0]._imageColor.color = _halfColors[0];
-                    break;
-                case 1:
-                    if (_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[1])
-                    {
-                        _elementsInfo[1]._imageColor.color = _halfColors[1];
-                        ChooseElementVoid();
-                    }
-                    break;
-                case 2:
-                    if (_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[2])
-                    {
-                        _elementsInfo[2]._imageColor.color = _halfColors[2];
-                        ChooseElementVoid();
-                    }
-                    break;
-                case 3:
-                    if (_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[3])
-                    {
-                        _elementsInfo[3]._imageColor.color = _halfColors[3];
-                        ChooseElementVoid();
-                    }
-                    break;
-            }
-        }
+        //if (Input.GetButtonDown("Submit") && !_buttonPressed && _canPress && !_scriptMain._scriptMain._pauseAssets._pause && !_scriptMain._tutorialAssets._tutorialOn)
+        //{
+        //    switch (_onElement)
+        //    {
+        //        case 0:
+        //            _elementsInfo[0]._imageColor.color = _halfColors[0];
+        //            break;
+        //        case 1:
+        //            if (_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[1])
+        //            {
+        //                _elementsInfo[1]._imageColor.color = _halfColors[1];
+        //                ChooseElementVoid();
+        //            }
+        //            break;
+        //        case 2:
+        //            if (_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[2])
+        //            {
+        //                _elementsInfo[2]._imageColor.color = _halfColors[2];
+        //                ChooseElementVoid();
+        //            }
+        //            break;
+        //        case 3:
+        //            if (_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[3])
+        //            {
+        //                _elementsInfo[3]._imageColor.color = _halfColors[3];
+        //                ChooseElementVoid();
+        //            }
+        //            break;
+        //    }
+        //}
 
         for (int i = 0; i < _elementsInfo.Length; i++)
         {
@@ -188,11 +188,11 @@ public class RythmFusionScript : MonoBehaviour
             availableElements.RemoveAt(rand);
         }
 
-        for (int i = 0; i < n; i++)
-        {
-            _elementsInfo[i]._parent.SetActive(true);
-            _elementsInfo[i]._elementOrb.SetActive(_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[i]);
-        }
+        //for (int i = 0; i < n; i++)
+        //{
+        //    _elementsInfo[i]._parent.SetActive(true);
+        //    _elementsInfo[i]._elementOrb.SetActive(_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[i]);
+        //}
      
     }
 

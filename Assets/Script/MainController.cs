@@ -43,12 +43,7 @@ public class MainController : MonoBehaviour
     public class SaveLoadValues
     {
         public bool[] _worldsUnlocked = new bool[4] { true, false, false, false };
-        public bool[] _elementsUnlocked = new bool[4];
-        public int _healthCoins = 1;
-        public int _hintCoins = 1;
-        public bool[] _slimeUnlocked = new bool[7];
-        public bool _finalWorldUnlocked = false;
-        public bool[] _progressSave = new bool[8];
+        //public bool[] _progressSave = new bool[8];
         public int _totalSteps;
         public int _totalAtoms;
         public bool _pauseAvailable;
@@ -155,6 +150,7 @@ public class MainController : MonoBehaviour
         public TextMeshProUGUI _quantityText;
         public Image _border;
         public Image _center;
+        public TextMeshProUGUI _elementName;
 
     }
     public ElementAnimatorAssets _elementAnimatorAssets;
@@ -219,6 +215,8 @@ public class MainController : MonoBehaviour
             GameInitScript.Instance.mainController = this;
         }
         SetStagesID();
+
+
     }
 
     public void StartGameContent()
@@ -237,13 +235,13 @@ public class MainController : MonoBehaviour
             return;
         }
 
-        _currencyAssets[0]._quantityText.text = _saveLoadValues._healthCoins.ToString("f0");
-        _currencyAssets[1]._quantityText.text = _saveLoadValues._hintCoins.ToString("f0");
+        //_currencyAssets[0]._quantityText.text = _saveLoadValues._healthCoins.ToString("f0");
+        //_currencyAssets[1]._quantityText.text = _saveLoadValues._hintCoins.ToString("f0");
 
-        for(int i = 0; i < _pauseAssets._allSlimeText.Length; i++)
-        {
-            _pauseAssets._allSlimeText[i].gameObject.SetActive(_saveLoadValues._slimeUnlocked[i + 1]);
-        }
+        //for(int i = 0; i < _pauseAssets._allSlimeText.Length; i++)
+        //{
+        //    _pauseAssets._allSlimeText[i].gameObject.SetActive(_saveLoadValues._slimeUnlocked[i + 1]);
+        //}
     }
 
     public void SetStagesID()
@@ -328,10 +326,10 @@ public class MainController : MonoBehaviour
         if (pauseAnimator != null)
             pauseAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
 
-        if (_pauseAssets._hintAvailable && _saveLoadValues._hintCoins > 0)
-            _pauseAssets._optionsText[1].color = Color.white;
-        else
-            _pauseAssets._optionsText[1].color = Color.gray;
+        //if (_pauseAssets._hintAvailable && _saveLoadValues._hintCoins > 0)
+        //    _pauseAssets._optionsText[1].color = Color.white;
+        //else
+        //    _pauseAssets._optionsText[1].color = Color.gray;
 
         if (!_pauseAssets._pause)
         {
@@ -378,11 +376,11 @@ public class MainController : MonoBehaviour
 
         // Recalcular progreso
         _saveLoadValues._progress = 0;
-        for (int i = 0; i < _saveLoadValues._progressSave.Length; i++)
-        {
-            if (_saveLoadValues._progressSave[i])
-                _saveLoadValues._progress++;
-        }
+        //for (int i = 0; i < _saveLoadValues._progressSave.Length; i++)
+        //{
+        //    if (_saveLoadValues._progressSave[i])
+        //        _saveLoadValues._progress++;
+        //}
 
         // Sincronizar con Progress
         progress.currentProgress = _saveLoadValues._progress;
@@ -414,8 +412,8 @@ public class MainController : MonoBehaviour
 
     public void SetCoinsAndSave(int health, int hint)
     {
-        _saveLoadValues._healthCoins = health;
-        _saveLoadValues._hintCoins = hint;
+        //_saveLoadValues._healthCoins = health;
+        //_saveLoadValues._hintCoins = hint;
         UpdateCurrencyUI();
         SaveProgress();
         Debug.Log($"Monedas forzadas: Health={health}, Hint={hint}");

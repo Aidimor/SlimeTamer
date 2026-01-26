@@ -24,6 +24,11 @@ public class SFXscript : MonoBehaviour
     public AudioClip _slimeArrives;
     public AudioClip _slimeDead;
     public AudioClip _flameOn;
+    public AudioClip _melting;
+    public AudioClip _platform;
+    public AudioClip _dissapearing;
+
+    
 
     public AudioClip _stickyMudSound;
     public AudioClip _bossAttack;
@@ -44,9 +49,21 @@ public class SFXscript : MonoBehaviour
     public float _chargeAttackVolume;
     public float _chargeAttackPitch;
 
+    public static SFXscript Instance;
+
     private void Awake()
     {
          audioSource = GetComponent<AudioSource>();
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+            return;
+        }
     }
 
 

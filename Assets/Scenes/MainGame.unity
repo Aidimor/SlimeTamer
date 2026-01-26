@@ -301072,6 +301072,8 @@ MonoBehaviour:
   _lastStageColor: {r: 1, g: 0.36862746, b: 0.3647059, a: 1}
   earthquakeOn: 0
   _crumbleParticle: {fileID: 812771006}
+  _escapeText: {fileID: 981063523}
+  _exitText: {fileID: 1861262695}
 --- !u!1 &1221362315
 GameObject:
   m_ObjectHideFlags: 0

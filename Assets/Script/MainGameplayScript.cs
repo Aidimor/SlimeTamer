@@ -320,12 +320,12 @@ public class MainGameplayScript : MonoBehaviour
                         _scriptMain.SetPause(); // Reanudar
                         break;
                     case 1:
-                        if (!_scriptMain._pauseAssets._hintBought && _scriptMain._pauseAssets._hintAvailable && _scriptMain._saveLoadValues._hintCoins > 0)
-                        {
-                            _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._chooseElement);
-                            HintVoid();
-                            //_scriptMain.SetPause(); // Reanudar
-                        }
+                        //if (!_scriptMain._pauseAssets._hintBought && _scriptMain._pauseAssets._hintAvailable && _scriptMain._saveLoadValues._hintCoins > 0)
+                        //{
+                        //    _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._chooseElement);
+                        //    HintVoid();
+                        //    //_scriptMain.SetPause(); // Reanudar
+                        //}
      
                         // Otra acción (reiniciar, menú, etc.)
                         break;
@@ -524,7 +524,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
 
         _scriptMain._pauseAssets._hintBought = true;        
       
-        _scriptMain._saveLoadValues._hintCoins--;
+        //_scriptMain._saveLoadValues._hintCoins--;
         _scriptMain._pauseAssets._hintAvailable = false;
         _hintSub._hintAvailable = true;
     }
@@ -832,13 +832,13 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         yield return new WaitForSeconds(1);
         _shopAssets._onShop = true;
 
-        if(_scriptMain._onWorldGlobal == 0 && !_scriptMain._saveLoadValues._finalWorldUnlocked)
-        {
-            _tutorialAssets._tutorialParent2.SetActive(true);
-            _tutorialAssets._coinTextTutorial.text = GameInitScript.Instance.GetText("tutorialhealth");
-            _tutorialAssets._hintTextTutorial.text = GameInitScript.Instance.GetText("tutorialhint");
-            yield return new WaitForSeconds(1);
-        }
+        //if(_scriptMain._onWorldGlobal == 0 && !_scriptMain._saveLoadValues._finalWorldUnlocked)
+        //{
+        //    _tutorialAssets._tutorialParent2.SetActive(true);
+        //    _tutorialAssets._coinTextTutorial.text = GameInitScript.Instance.GetText("tutorialhealth");
+        //    _tutorialAssets._hintTextTutorial.text = GameInitScript.Instance.GetText("tutorialhint");
+        //    yield return new WaitForSeconds(1);
+        //}
         _tutorialAssets._shopPressSpace.text = GameInitScript.Instance.GetText("press");
         _tutorialAssets._shopPressSpace.gameObject.SetActive(true);
 
@@ -851,41 +851,41 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         _tutorialAssets._shopPressSpace.gameObject.SetActive(false);
         _shopAssets._parent.SetBool("ShopIn", false);
         yield return new WaitForSeconds(1);
-        if (_scriptMain._onWorldGlobal == 0 && !_scriptMain._saveLoadValues._finalWorldUnlocked)
-        {
-            string key = "tutorialmenu";
-            string text = GameInitScript.Instance.GetText(key);
-            string speakKey = key;
-            LOLSDK.Instance.SpeakText(speakKey);
+        //if (_scriptMain._onWorldGlobal == 0 && !_scriptMain._saveLoadValues._finalWorldUnlocked)
+        //{
+        //    string key = "tutorialmenu";
+        //    string text = GameInitScript.Instance.GetText(key);
+        //    string speakKey = key;
+        //    LOLSDK.Instance.SpeakText(speakKey);
 
-            _tutorialAssets._tutorialParent3.SetActive(true);
-            _tutorialAssets._description.gameObject.SetActive(true);
-            _tutorialAssets._description.text = GameInitScript.Instance.GetText("tutorialmenu");
-            yield return new WaitForSeconds(1);
+        //    _tutorialAssets._tutorialParent3.SetActive(true);
+        //    _tutorialAssets._description.gameObject.SetActive(true);
+        //    _tutorialAssets._description.text = GameInitScript.Instance.GetText("tutorialmenu");
+        //    yield return new WaitForSeconds(1);
 
-            _tutorialAssets._pressSpace.text = GameInitScript.Instance.GetText("pressenter");
-            _tutorialAssets._pressSpace.gameObject.SetActive(true);
+        //    _tutorialAssets._pressSpace.text = GameInitScript.Instance.GetText("pressenter");
+        //    _tutorialAssets._pressSpace.gameObject.SetActive(true);
 
-            while (!Input.GetButtonDown("Pause"))
-            {
-                yield return null;
-            }
-        }
-        _tutorialAssets._tutorialParent3.SetActive(false);
-        _tutorialAssets._description.gameObject.SetActive(false);
-        while (_shopAssets._onShop)
-        {
-            yield return null;
-        }
-        switch (_shopAssets._onOption)
-        {
-            case 0:
-                _scriptMain._saveLoadValues._healthCoins++;
-                break;
-            case 1:
-                _scriptMain._saveLoadValues._hintCoins++;
-                break;
-        }
+        //    while (!Input.GetButtonDown("Pause"))
+        //    {
+        //        yield return null;
+        //    }
+        //}
+        //_tutorialAssets._tutorialParent3.SetActive(false);
+        //_tutorialAssets._description.gameObject.SetActive(false);
+        //while (_shopAssets._onShop)
+        //{
+        //    yield return null;
+        //}
+        //switch (_shopAssets._onOption)
+        //{
+        //    case 0:
+        //        _scriptMain._saveLoadValues._healthCoins++;
+        //        break;
+        //    case 1:
+        //        _scriptMain._saveLoadValues._hintCoins++;
+        //        break;
+        //}
         MainController.Instance.UpdateCurrencyUI();
   
         yield return new WaitForSeconds(1);
@@ -921,7 +921,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._slimeDead);
         yield return new WaitForSeconds(0.2f);
         _scriptMain._scriptSFX._fireSetVolume = 0;
-        _scriptMain._saveLoadValues._healthCoins--;
+        //_scriptMain._saveLoadValues._healthCoins--;
 
         for (int i = 0; i < 4M; i++)
         {
@@ -980,16 +980,16 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         _scriptMain._scriptSFX._windSetVolume = 0;
  
         _scriptSlime._slimeRawImage.gameObject.SetActive(true);
-        if(_scriptMain._saveLoadValues._healthCoins > 0)
-        {
+        //if(_scriptMain._saveLoadValues._healthCoins > 0)
+        //{
 
-            StartCoroutine(_scriptEvents.StartLevelNumerator());
-            _dead = false;
-        }
-        else
-        {
-            StartCoroutine(GameOverNumerator());
-        }
+        //    StartCoroutine(_scriptEvents.StartLevelNumerator());
+        //    _dead = false;
+        //}
+        //else
+        //{
+        //    StartCoroutine(GameOverNumerator());
+        //}
  
     }
     public IEnumerator ExitPauseNumerator()
@@ -1033,11 +1033,11 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         switch (_scriptMain._gameOverAssets._onPos)
         {
             case 0:
-                MainController.Instance._saveLoadValues._healthCoins = 1;
-                MainController.Instance._saveLoadValues._hintCoins = 1;
+                //MainController.Instance._saveLoadValues._healthCoins = 1;
+                //MainController.Instance._saveLoadValues._hintCoins = 1;
                 MainController.Instance.SaveProgress();
                 _scriptMain._scriptMusic.PlayMusic(0);
-                _scriptMain._saveLoadValues._healthCoins = 1;
+                //_scriptMain._saveLoadValues._healthCoins = 1;
                 _scriptMain.LoadSceneByName("IntroScene");
                 break;
         }
@@ -1124,7 +1124,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
     public IEnumerator GameEndsNumerator()
     {
         MainController.Instance._introSpecial = false;
-        _scriptMain._saveLoadValues._progressSave[7] = true;
+        //scriptMain._saveLoadValues._progressSave[7] = true;
 
         _endGameAssets._parent.SetActive(true);
         _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._roar);

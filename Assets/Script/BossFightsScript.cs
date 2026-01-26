@@ -139,7 +139,7 @@ public class BossFightsScript : MonoBehaviour
         _scriptMain._scriptMain._cinematicBorders.SetBool("FadeIn", true);
         yield return new WaitForSeconds(2f);
 
-        _scriptMain._scriptMain._saveLoadValues._progressSave[6] = true;
+        //_scriptMain._scriptMain._saveLoadValues._progressSave[6] = true;
 
 
         _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._whip);

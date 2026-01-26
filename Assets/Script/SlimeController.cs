@@ -76,7 +76,7 @@ public class SlimeController : MonoBehaviour
 
         // Cambiar animación
         _slimeAnimator.SetInteger("ID", _slimeType);
-        _scriptMain._scriptMain._saveLoadValues._slimeUnlocked[_slimeType] = true;
+        //_scriptMain._scriptMain._saveLoadValues._slimeUnlocked[_slimeType] = true;
 
         // Cambiar color en la instancia del material
         _slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_BaseColor", _slimeAssets[_slimeType]._mainColor);
@@ -353,12 +353,14 @@ public class SlimeController : MonoBehaviour
 
     public void JumpSlime()
     {
+        SFXscript.Instance.PlaySound(SFXscript.Instance._slimeJumping);
         //_scriptNewMain._mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -2);
     }
 
     public void HeavyJumpSlime()
     {
         _scriptNewMain._mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 2);
+        SFXscript.Instance.PlaySound(SFXscript.Instance._explosion);
     }
 
 }

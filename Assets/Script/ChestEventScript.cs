@@ -13,26 +13,26 @@ public class ChestEventScript : MonoBehaviour
         switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._chestItems[0])
         {
             case GameEvent.ChestItems.Water:          
-                 _scriptMain._scriptMain._saveLoadValues._progressSave[0] = true;              
+                 //_scriptMain._scriptMain._saveLoadValues._progressSave[0] = true;              
                 _scriptMain._scriptFusion._elementsOptions[0]._unlocked = true;
                 _scriptMain._itemGotPanel._itemObject[0].SetActive(true);
                 _scriptMain._itemGotPanel.key = "description1";
-                _scriptMain._scriptMain._saveLoadValues._elementsUnlocked[1] = true;
+                //_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[1] = true;
                 
                 break;
             case GameEvent.ChestItems.Air:
-                _scriptMain._scriptMain._saveLoadValues._progressSave[1] = true;
+                //_scriptMain._scriptMain._saveLoadValues._progressSave[1] = true;
                 _scriptMain._scriptFusion._elementsOptions[1]._unlocked = true;
                 _scriptMain._itemGotPanel._itemObject[1].SetActive(true);
                 _scriptMain._itemGotPanel.key = "description2";
-                _scriptMain._scriptMain._saveLoadValues._elementsUnlocked[2] = true;
+                //_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[2] = true;
                 break;
             case GameEvent.ChestItems.Earth:
-                _scriptMain._scriptMain._saveLoadValues._progressSave[2] = true;
+                //_scriptMain._scriptMain._saveLoadValues._progressSave[2] = true;
                 _scriptMain._scriptFusion._elementsOptions[2]._unlocked = true;
                 _scriptMain._itemGotPanel._itemObject[2].SetActive(true);
                 _scriptMain._itemGotPanel.key = "description3";
-                _scriptMain._scriptMain._saveLoadValues._elementsUnlocked[3] = true;
+                //_scriptMain._scriptMain._saveLoadValues._elementsUnlocked[3] = true;
                 break;
         }
         _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._newElement);

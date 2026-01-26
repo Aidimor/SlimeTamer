@@ -24471,6 +24471,7 @@ MonoBehaviour:
   - {fileID: 5841427109714442838}
   - {fileID: 3189861882365386987}
   _exitParticle: {fileID: 2515128256933857038}
+  _entranceText: {fileID: 9140752869548298250}
 --- !u!1 &6047720543339857011
 GameObject:
   m_ObjectHideFlags: 0

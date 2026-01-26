@@ -54,27 +54,27 @@ public class GameEventsScript : MonoBehaviour
         switch (_scriptMain._scriptMain._onWorldGlobal)
         {
             case 0:
-                switch (_scriptMain._scriptMain._saveLoadValues._finalWorldUnlocked)
-                {
-                    case false:
-                        _scriptMain._GamesList.Add(0);
-                        _scriptMain._GamesList.Add(11);
-                        _scriptMain._GamesList.Add(20);
-                        _scriptMain._GamesList.Add(6);
-                        _scriptMain._GamesList.Add(3);             
-                        _scriptMain._GamesList.Add(13);
-                        break;
-                    case true:
-                        _scriptMain._GamesList.Add(0);          
-                        List<int> posiblesNumeros0 = new List<int> { 4, 5, 7, 15, 17, 18 };
-                        for (int i = 0; i < 10; i++)
-                        {
-                            int randomIndex = Random.Range(0, posiblesNumeros0.Count);
-                            _scriptMain._GamesList.Add(posiblesNumeros0[randomIndex]);
-                        }
-                        _scriptMain._GamesList.Add(16);
-                        break;
-                }
+                //switch (_scriptMain._scriptMain._saveLoadValues._finalWorldUnlocked)
+                //{
+                //    case false:
+                //        _scriptMain._GamesList.Add(0);
+                //        _scriptMain._GamesList.Add(11);
+                //        _scriptMain._GamesList.Add(20);
+                //        _scriptMain._GamesList.Add(6);
+                //        _scriptMain._GamesList.Add(3);             
+                //        _scriptMain._GamesList.Add(13);
+                //        break;
+                //    case true:
+                //        _scriptMain._GamesList.Add(0);          
+                //        List<int> posiblesNumeros0 = new List<int> { 4, 5, 7, 15, 17, 18 };
+                //        for (int i = 0; i < 10; i++)
+                //        {
+                //            int randomIndex = Random.Range(0, posiblesNumeros0.Count);
+                //            _scriptMain._GamesList.Add(posiblesNumeros0[randomIndex]);
+                //        }
+                //        _scriptMain._GamesList.Add(16);
+                //        break;
+                //}
 
                 StartCoroutine(StartLevelNumerator()); 
                 break;
