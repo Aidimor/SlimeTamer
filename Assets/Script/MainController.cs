@@ -44,6 +44,14 @@ public class MainController : MonoBehaviour
     {
         public bool[] _worldsUnlocked = new bool[4] { true, false, false, false };
         public bool[] _progressSave = new bool[8];
+        //1 - Start the game
+        //2 - Tutorial Passed
+        //3 - Dessert Level
+        //4 - Snow Level
+        //5 - Forest Level
+        //6 - Castle Level
+        //7 - Boss Beaten Endgame
+        //8 - Corrrect Element Fusion
         public int _totalSteps;
         public int _totalAtoms;
         public bool _pauseAvailable;
@@ -196,6 +204,21 @@ public class MainController : MonoBehaviour
         public bool _moves;
     }
     public ExitAssets _exitAssets;
+
+
+    [System.Serializable]
+    public class AtomPanelInfo
+    {
+        public TextMeshProUGUI[] _textInfo;
+        [System.Serializable]
+        public class FusionElementsAssets
+        {
+            public TextMeshProUGUI _name;
+            public TextMeshProUGUI _extra;
+        }
+        public FusionElementsAssets[] _fusionElementAssets;
+    }
+    public AtomPanelInfo _atomPanelInfo;
 
     void Awake()
     {

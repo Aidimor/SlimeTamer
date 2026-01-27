@@ -142,6 +142,8 @@ public class NewMainGameplay : MonoBehaviour
 
     public GameObject _fusionParent;
     public TextMeshProUGUI[] _fusionMenuTexts;
+
+    public bool _correctFusion;
     void Start()
     {   
         StartVoids();
@@ -308,6 +310,7 @@ public class NewMainGameplay : MonoBehaviour
         switch (Main._onWorldGlobal)
         {
             case 0:
+                MainController.Instance._saveLoadValues._progressSave[1] = true;
                 if (_idStage == 0)
                 {
                     if (!_worldNameShown)
@@ -349,11 +352,14 @@ public class NewMainGameplay : MonoBehaviour
 
                 break;
             case 1:
+                MainController.Instance._saveLoadValues._progressSave[2] = true;
+                break;
             case 2:
-    
+                MainController.Instance._saveLoadValues._progressSave[3] = true;
                 break;
             case 3:
-                if(_idStage == 0)
+                MainController.Instance._saveLoadValues._progressSave[4] = true;
+                if (_idStage == 0)
                 {
                     if (!_worldNameShown)
                     {
@@ -416,6 +422,9 @@ public class NewMainGameplay : MonoBehaviour
                 }
          
 
+                break;
+            case 4:
+                MainController.Instance._saveLoadValues._progressSave[5] = true;
                 break;
 
 
@@ -519,18 +528,22 @@ public class NewMainGameplay : MonoBehaviour
         if (Input.GetAxisRaw("Vertical") > 0)
         {
             _onPoseJoystick = 1;
+            MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._next);
         }
         if (Input.GetAxisRaw("Vertical") < 0)
         {
             _onPoseJoystick = 2;
+            MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._next);
         }
         if (Input.GetAxisRaw("Horizontal") > 0)
         {
             _onPoseJoystick = 3;
+            MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._next);
         }
         if (Input.GetAxisRaw("Horizontal") < 0)
         {
             _onPoseJoystick = 4;
+            MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._next);
         }
 
         if(Input.GetAxisRaw("Horizontal") == 0 && Input.GetAxisRaw("Vertical") == 0)
@@ -558,8 +571,9 @@ public class NewMainGameplay : MonoBehaviour
                     
                     if (!_transformed)
                     {
-                        TransformSlimeVoid();
-           
+                        TransformSpecialSlimeVoid();
+
+
                     }
                     break;
                 case 2:
@@ -567,8 +581,8 @@ public class NewMainGameplay : MonoBehaviour
                     if (MainController.Instance._saveLoadValues._totalAtoms > 0) { MainController.Instance._saveLoadValues._totalAtoms--; }
                     if (!_transformed)
                     {
-                        TransformSlimeVoid();
-              
+                        TransformSpecialSlimeVoid();
+
                     }
                     break;
                  
@@ -577,8 +591,8 @@ public class NewMainGameplay : MonoBehaviour
                     if (MainController.Instance._saveLoadValues._totalAtoms > 0) { MainController.Instance._saveLoadValues._totalAtoms--; }
                     if (!_transformed)
                     {
-                        TransformSlimeVoid();
-                 
+                        TransformSpecialSlimeVoid();
+
                     }
                     break;
             
@@ -587,8 +601,8 @@ public class NewMainGameplay : MonoBehaviour
                     if (MainController.Instance._saveLoadValues._totalAtoms > 0) { MainController.Instance._saveLoadValues._totalAtoms--; }
                     if (!_transformed)
                     {
-                        TransformSlimeVoid();
-          
+                        TransformSpecialSlimeVoid();
+
                     }
                     break;
             }
@@ -1260,10 +1274,10 @@ public class NewMainGameplay : MonoBehaviour
                     for (int y = 0; y < CurrentGrounds._groundAttacks.Length; y++)
                     {
                         Debug.Log(CurrentGrounds._groundAttacks[i]._groundID);
-                        Debug.Log("Pose: " + _onPose);
+                        //Debug.Log("Pose: " + _onPose);
                         if (_onPose == CurrentGrounds._groundAttacks[y]._groundID)
                         {
-                            Debug.Log("SLIME MUERE");
+                            //Debug.Log("SLIME MUERE");
                             StopMoveCoroutine();
                            _slimeObject.GetComponent<Animator>().Play("SlimeDies");
                             _deadSlimeParticle.Play();
@@ -1275,6 +1289,10 @@ public class NewMainGameplay : MonoBehaviour
                                     StartCoroutine(RestartLevel());
                                     break;
                                 case true:
+                                    Main._scriptSFX.PlaySound(Main._scriptSFX._slimeDead);
+                                    MainController.Instance._scriptSFX._windSetVolume = 0;
+                                    MainController.Instance._scriptSFX._strongWindSetVolume = 0;
+                                    MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
                                     NextWorld();
                                     break;                        
 
@@ -2757,6 +2775,148 @@ public class NewMainGameplay : MonoBehaviour
 
     }
 
+    public void TransformSpecialSlimeVoid()
+    {
+        var Main = MainController.Instance;
+        Main._saveLoadValues._progressSave[7] = true;
+        Debug.Log("CORRECT FUSION");
+        if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[3] >= 1)
+        {
+            itTransforms = true;
+            _slimeInfo._slimeID = 1;
+
+            Main._elementsCircles[0]._cirlce.color = Main._elementsColor[0];
+            Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[0];
+            Main._elementsCircles[0]._elementLetters.text = "C";
+            Main._elementsCircles[0]._quantity.text = "";
+
+            Main._elementsCircles[1]._cirlce.color = Main._elementsColor[3];
+            Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[3];
+            Main._elementsCircles[1]._elementLetters.text = "Fe";
+            Main._elementsCircles[1]._quantity.text = "";
+
+            Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("iron1");
+            Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("iron2");
+
+            MainController.Instance._nameText.text = GameInitScript.Instance.GetText("FC");
+            MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("FCextra");
+            StartCoroutine(TransormatioNumerator());
+        }
+        else if (_slimeInfo._elementsParticles[1] >= 2 && _slimeInfo._elementsParticles[2] >= 1)
+        {
+            switch (MainController.Instance._onWorldGlobal)
+            {
+                case 2:
+                    itTransforms = true;
+                    _slimeInfo._slimeID = 4;
+
+                    Main._elementsCircles[0]._cirlce.color = Main._elementsColor[1];
+                    Main._elementsCircles[0]._elementLetters.text = "H";
+                    Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[1];
+                    Main._elementsCircles[0]._quantity.text = "2";
+
+                    Main._elementsCircles[1]._cirlce.color = Main._elementsColor[2];
+                    Main._elementsCircles[1]._elementLetters.text = "O";
+                    Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[2];
+                    Main._elementsCircles[1]._quantity.text = "";
+
+                    Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("snow1");
+                    Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("snow2");
+
+                    MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("ICEextra");
+                    MainController.Instance._nameText.text = GameInitScript.Instance.GetText("ICE");
+
+                    _waterWalk.Play();
+                    _smoke.Stop();
+                    StartCoroutine(TransormatioNumerator());
+                    _turnsReturnToWater = -1;
+                    break;
+                default:
+                    itTransforms = true;
+                    _slimeInfo._slimeID = 2;
+
+                    Main._elementsCircles[0]._cirlce.color = Main._elementsColor[1];
+                    Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[1];
+                    Main._elementsCircles[0]._elementLetters.text = "H";
+                    Main._elementsCircles[0]._quantity.text = "2";
+
+                    Main._elementsCircles[1]._cirlce.color = Main._elementsColor[2];
+                    Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[2];
+                    Main._elementsCircles[1]._elementLetters.text = "0";
+                    Main._elementsCircles[1]._quantity.text = "";
+
+                    Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("water1");
+                    Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("water2");
+
+                    MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("H20extra");
+                    MainController.Instance._nameText.text = GameInitScript.Instance.GetText("H20");
+
+                    _waterWalk.Play();
+                    _smoke.Stop();
+                    StartCoroutine(TransormatioNumerator());
+                    break;
+            }
+
+        }
+        else if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[2] >= 2)
+        {
+            itTransforms = true;
+            _slimeInfo._slimeID = 3;
+
+            Main._elementsCircles[0]._cirlce.color = Main._elementsColor[0];
+            Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[0];
+            Main._elementsCircles[0]._elementLetters.text = "C";
+            Main._elementsCircles[0]._quantity.text = "";
+
+            Main._elementsCircles[1]._cirlce.color = Main._elementsColor[2];
+            Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[2];
+            Main._elementsCircles[1]._elementLetters.text = "0";
+            Main._elementsCircles[1]._quantity.text = "2";
+
+            Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("dioxide1");
+            Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("dioxide2");
+
+            MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("CO2extra");
+            _smoke.Play();
+            _waterWalk.Stop();
+            MainController.Instance._nameText.text = GameInitScript.Instance.GetText("CO2");
+            StartCoroutine(TransormatioNumerator());
+        }
+        else if (_slimeInfo._elementsParticles[2] >= 4 && _slimeInfo._elementsParticles[3] >= 3)
+        {
+            itTransforms = true;
+            _slimeInfo._slimeID = 5;
+
+            Main._elementsCircles[1]._cirlce.color = Main._elementsColor[0];
+            Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[0];
+            Main._elementsCircles[1]._elementLetters.text = "C";
+            Main._elementsCircles[1]._quantity.text = "4";
+
+            Main._elementsCircles[0]._cirlce.color = Main._elementsColor[3];
+            Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[3];
+            Main._elementsCircles[0]._elementLetters.text = "Fe";
+            Main._elementsCircles[0]._quantity.text = "3";
+
+            Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("magnatite1");
+            Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("magnatite2");
+
+            MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("FE3O4extra");
+
+            Debug.Log("Fe3O4");
+            _smoke.Play();
+            _waterWalk.Stop();
+            MainController.Instance._nameText.text = GameInitScript.Instance.GetText("FE3O4");
+            StartCoroutine(TransormatioNumerator());
+        }
+        else
+        {
+            StartCoroutine(ElementAnimatorCourutine());
+        }
+
+
+    }
+
+
     public IEnumerator ElementAnimatorCourutine()
     {
 
@@ -2974,6 +3134,7 @@ public class NewMainGameplay : MonoBehaviour
                     MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
                     yield return new WaitForSeconds(0.5f);
                     ComicController.Instance._continuar.text = GameInitScript.Instance.GetText("endgame");
+                    MainController.Instance._saveLoadValues._progressSave[6] = true;
                     ComicController.Instance._continueParent.gameObject.SetActive(false);
                     ComicController.Instance._comicAnimator.SetBool("ComicOn", false);
     

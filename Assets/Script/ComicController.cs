@@ -91,6 +91,14 @@ public class ComicController : MonoBehaviour
                 SFXscript.Instance._strongWindSetVolume = 0.2f;
             }
 
+            if (MainController.Instance._onWorldGlobal == 1 && _imagesID[i] == 13)
+            {
+                MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[2];
+                MainController.Instance._scriptMusic._audioBGM.Play();
+                SFXscript.Instance._fireSetVolume = 0.2f;
+                SFXscript.Instance._strongWindSetVolume = 0.2f;
+            }
+
             if (MainController.Instance._onWorldGlobal == 3 && _imagesID[i] == 18)
             {
                 MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[6];

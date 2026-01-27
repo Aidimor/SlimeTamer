@@ -44,6 +44,6 @@ MonoBehaviour:
     _hazards: 1
     _rotation: 0
     _finished: 0
-  _stepsPlace: 0a0000000000000000000000000000000000000000000000
+  _stepsPlace: 0a000000
   _bossAssets: []
   _wind: 0

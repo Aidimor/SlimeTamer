@@ -32,6 +32,7 @@ public class SFXscript : MonoBehaviour
     public AudioClip _co2;
     public AudioClip _magnetism;
     public AudioClip _iron;
+    public AudioClip _snowMoving;
     
 
     public AudioClip _stickyMudSound;

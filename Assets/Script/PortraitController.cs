@@ -158,6 +158,25 @@ public class PortraitController : MonoBehaviour
         MainController.Instance._exitAssets._textOptions[2].text = GameInitScript.Instance.GetText("pause3");
         _textTutorials[0].text = GameInitScript.Instance.GetText("movewith");
         _textTutorials[1].text = GameInitScript.Instance.GetText("pressbutton");
+
+
+        MainController.Instance._atomPanelInfo._textInfo[0].text = GameInitScript.Instance.GetText("movewith");
+        MainController.Instance._atomPanelInfo._textInfo[1].text = GameInitScript.Instance.GetText("pressbutton");
+
+
+        MainController.Instance._atomPanelInfo._fusionElementAssets[0]._name.text = GameInitScript.Instance.GetText("CO2");
+        MainController.Instance._atomPanelInfo._fusionElementAssets[0]._extra.text = GameInitScript.Instance.GetText("CO2extra");
+
+        MainController.Instance._atomPanelInfo._fusionElementAssets[1]._name.text = GameInitScript.Instance.GetText("H20");
+        MainController.Instance._atomPanelInfo._fusionElementAssets[1]._extra.text = GameInitScript.Instance.GetText("H20extra");
+
+        MainController.Instance._atomPanelInfo._fusionElementAssets[2]._name.text = GameInitScript.Instance.GetText("FC");
+        MainController.Instance._atomPanelInfo._fusionElementAssets[2]._extra.text = GameInitScript.Instance.GetText("FCextra");
+
+        MainController.Instance._atomPanelInfo._fusionElementAssets[3]._name.text = GameInitScript.Instance.GetText("FE3O4");
+        MainController.Instance._atomPanelInfo._fusionElementAssets[3]._extra.text = GameInitScript.Instance.GetText("FE3O4extra");
+
+
         yield return new WaitForSeconds(0.5f);
 
         _scriptMainController._bordersAnimator.SetBool("BorderOut", true);
@@ -327,6 +346,7 @@ public class PortraitController : MonoBehaviour
         {
             yield return null;
         }
+        MainController.Instance._saveLoadValues._progressSave[0] = true;
         _scriptMainController._bordersAnimator.SetBool("BorderOut", false);
         yield return new WaitForSeconds(1);
         ComicController.Instance._continueParent.SetActive(false);
