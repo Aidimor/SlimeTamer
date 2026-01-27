@@ -55,14 +55,14 @@ public class MainController : MonoBehaviour
         public int _totalSteps;
         public int _totalAtoms;
         public bool _pauseAvailable;
-        public int _progress = 0;
+    
         public bool _restartTutorial;
         public bool _elementTutorial;
         public bool _restartAvailable;
         public bool _hazardTutorial;
         public bool _atomTutorial;
 
-        public int currentProgress;
+        public int _progress;
         public int maxProgress = 8;
     }
 
@@ -279,30 +279,24 @@ public class MainController : MonoBehaviour
 
 
         _allTurnsInfo[1]._stagesID.Add(6);
-        _allTurnsInfo[1]._stagesID.Add(7);
-        _allTurnsInfo[1]._stagesID.Add(8);
-        _allTurnsInfo[1]._stagesID.Add(9);
-        _allTurnsInfo[1]._stagesID.Add(10);
-        _allTurnsInfo[1]._stagesID.Add(11);
-        //_allTurnsInfo[1]._stagesID.Add(12);
+        _allTurnsInfo[1]._stagesID.Add(7);     
+        _allTurnsInfo[1]._stagesID.Add(12);
+        //_allTurnsInfo[1]._stagesID.Add(11);
         _allTurnsInfo[1]._stagesID.Add(26);
         _allTurnsInfo[1]._stagesID.Add(25);
 
-        //for (int i = 0; i < 6; i++)
-        //{
-        //    int randomIndex = Random.Range(0, posiblesNumeros.Count);
-        //    _allTurnsInfo[1]._stagesID.Add(posiblesNumeros[randomIndex]);
-        //}
-        //_allTurnsInfo[1]._stagesID.Add(26);
 
-        _allTurnsInfo[2]._stagesID.Add(13);
-        _allTurnsInfo[2]._stagesID.Add(Random.Range(6, 12));
-        _allTurnsInfo[2]._stagesID.Add(14);
-        _allTurnsInfo[2]._stagesID.Add(Random.Range(6, 12));
-        _allTurnsInfo[2]._stagesID.Add(28);
-        _allTurnsInfo[2]._stagesID.Add(15);
-        _allTurnsInfo[2]._stagesID.Add(26);
-        _allTurnsInfo[2]._stagesID.Add(26);
+        //_allTurnsInfo[2]._stagesID.Add(13);
+        //_allTurnsInfo[2]._stagesID.Add(Random.Range(6, 12));
+        //_allTurnsInfo[2]._stagesID.Add(14);
+        //_allTurnsInfo[2]._stagesID.Add(Random.Range(6, 12));
+        //_allTurnsInfo[2]._stagesID.Add(28);
+        _allTurnsInfo[2]._stagesID.Add(8);
+        _allTurnsInfo[2]._stagesID.Add(9);
+  
+
+        //_allTurnsInfo[2]._stagesID.Add(26);
+        //_allTurnsInfo[2]._stagesID.Add(26);
 
         //for (int i = 0; i < 2; i++)
         //{
@@ -414,6 +408,7 @@ public class MainController : MonoBehaviour
         //// Actualizar en LoadedFullState si existe
         //if (GameInitScript.Instance.LoadedFullState != null)
         //    GameInitScript.Instance.LoadedFullState.currentProgress = _saveLoadValues._progress;
+        SubmitProgressToLoL(_saveLoadValues._progress);
 
         GameInitScript.Instance.SaveGame();
         Debug.Log("💾 Guardado OK.");
@@ -429,9 +424,10 @@ public class MainController : MonoBehaviour
 
         int maxProgress = 8;
         if (currentProgress < _lastReportedProgress)
-            currentProgress = _lastReportedProgress;
+            //currentProgress = _lastReportedProgress;
+        currentProgress = _saveLoadValues._progress;
 
-        _lastReportedProgress = currentProgress;
+        //_lastReportedProgress = currentProgress;
 
         LOLSDK.Instance.SubmitProgress(currentProgress, maxProgress, score);
     }

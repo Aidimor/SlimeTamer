@@ -143,7 +143,8 @@ public class NewMainGameplay : MonoBehaviour
     public GameObject _fusionParent;
     public TextMeshProUGUI[] _fusionMenuTexts;
 
-    public bool _correctFusion;
+
+    bool joystickEnUso = false;
     void Start()
     {   
         StartVoids();
@@ -494,7 +495,7 @@ public class NewMainGameplay : MonoBehaviour
         }
         else
         {
-            if (!MainController.Instance._exitAssets._exitPanelOn)
+            if (!MainController.Instance._exitAssets._exitPanelOn && _AtomsPanelOn)
             {
                 AtomPanelController();
             }
@@ -525,33 +526,29 @@ public class NewMainGameplay : MonoBehaviour
 
     public void AtomPanelController()
     {
-        if (Input.GetAxisRaw("Vertical") > 0)
+        float h = Input.GetAxisRaw("Horizontal");
+        float v = Input.GetAxisRaw("Vertical");
+
+        if ((h != 0 || v != 0) && !joystickEnUso)
         {
-            _onPoseJoystick = 1;
-            MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._next);
-        }
-        if (Input.GetAxisRaw("Vertical") < 0)
-        {
-            _onPoseJoystick = 2;
-            MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._next);
-        }
-        if (Input.GetAxisRaw("Horizontal") > 0)
-        {
-            _onPoseJoystick = 3;
-            MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._next);
-        }
-        if (Input.GetAxisRaw("Horizontal") < 0)
-        {
-            _onPoseJoystick = 4;
-            MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._next);
+            joystickEnUso = true;
+
+            if (v > 0) _onPoseJoystick = 1;
+            else if (v < 0) _onPoseJoystick = 2;
+            else if (h > 0) _onPoseJoystick = 3;
+            else if (h < 0) _onPoseJoystick = 4;
+
+            MainController.Instance._scriptSFX
+                .PlaySound(MainController.Instance._scriptSFX._next);
         }
 
-        if(Input.GetAxisRaw("Horizontal") == 0 && Input.GetAxisRaw("Vertical") == 0)
+        if (h == 0 && v == 0)
         {
+            joystickEnUso = false;
             _onPoseJoystick = 0;
         }
 
-       MainController.Instance._joystickImage.GetComponent<RectTransform>().anchoredPosition = Vector2.MoveTowards(MainController.Instance._joystickImage.GetComponent<RectTransform>().anchoredPosition,
+        MainController.Instance._joystickImage.GetComponent<RectTransform>().anchoredPosition = Vector2.MoveTowards(MainController.Instance._joystickImage.GetComponent<RectTransform>().anchoredPosition,
         _allJoystickPoses[_onPoseJoystick], 500);
 
         for(int i = 0; i < 4; i++)
@@ -699,6 +696,7 @@ public class NewMainGameplay : MonoBehaviour
         MainController.Instance._exitAssets._exitPanelOn = false;
         MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[0];
         MainController.Instance._scriptMusic._audioBGM.Play();
+        MainController.Instance.SaveProgress();
         yield return new WaitForSeconds(1);
         MainController.Instance.LoadSceneByName("IntroScene");
     }
@@ -1280,6 +1278,7 @@ public class NewMainGameplay : MonoBehaviour
                             //Debug.Log("SLIME MUERE");
                             StopMoveCoroutine();
                            _slimeObject.GetComponent<Animator>().Play("SlimeDies");
+                            Main._scriptSFX.PlaySound(Main._scriptSFX._slimeDead);
                             _deadSlimeParticle.Play();
                             yield return new WaitForSeconds(1f);
                           
@@ -1289,7 +1288,7 @@ public class NewMainGameplay : MonoBehaviour
                                     StartCoroutine(RestartLevel());
                                     break;
                                 case true:
-                                    Main._scriptSFX.PlaySound(Main._scriptSFX._slimeDead);
+                      
                                     MainController.Instance._scriptSFX._windSetVolume = 0;
                                     MainController.Instance._scriptSFX._strongWindSetVolume = 0;
                                     MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
@@ -1749,6 +1748,15 @@ public class NewMainGameplay : MonoBehaviour
                 if (_onPose - 1 == _stageId._hazards[i]._onPlace && !_stageId._hazards[i]._finished) _movesAvailable[3] = false;
 
             }
+
+            if (_stageId._hazards[i]._hazards == NewGameEvent.Hazards.HazardsType.MetalBall)
+            {
+                if (_onPose + 5 == _stageId._hazards[i]._onPlace && !_stageId._hazards[i]._finished) _movesAvailable[0] = false;
+                if (_onPose - 5 == _stageId._hazards[i]._onPlace && !_stageId._hazards[i]._finished) _movesAvailable[1] = false;
+                if (_onPose + 1 == _stageId._hazards[i]._onPlace && !_stageId._hazards[i]._finished) _movesAvailable[2] = false;
+                if (_onPose - 1 == _stageId._hazards[i]._onPlace && !_stageId._hazards[i]._finished) _movesAvailable[3] = false;
+
+            }
         }
     }
 
@@ -1905,7 +1913,7 @@ public class NewMainGameplay : MonoBehaviour
    
         var Main = MainController.Instance;
         var _realID = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
-
+        Main._scriptSFX.PlaySound(Main._scriptSFX._slimeDead);
         MainController.Instance._restartBeam.Play("RestartBeam");
         _slimeObject.GetComponent<Animator>().Play("SlimeLeavesAnimation");
         StopMoveCoroutine();
@@ -2125,6 +2133,15 @@ public class NewMainGameplay : MonoBehaviour
         // NUEVO spawn
         _idStage++;
         _onPose = _stageId._spawnPoint;
+
+        for(int i = 0; i < _allSteps.Count; i++)
+        {
+            Destroy(_allSteps[i]);
+        }
+        _allSteps.Clear();
+        _stepsList.Clear();
+
+
 
         // 🔑 POSICIÓN CORRECTA
         _slimeObject.GetComponent<RectTransform>().position =
@@ -2779,12 +2796,13 @@ public class NewMainGameplay : MonoBehaviour
     {
         var Main = MainController.Instance;
         Main._saveLoadValues._progressSave[7] = true;
+        Main._scriptSFX.PlaySound(Main._scriptSFX._slimeRelease);
         Debug.Log("CORRECT FUSION");
         if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[3] >= 1)
         {
             itTransforms = true;
             _slimeInfo._slimeID = 1;
-
+    
             Main._elementsCircles[0]._cirlce.color = Main._elementsColor[0];
             Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[0];
             Main._elementsCircles[0]._elementLetters.text = "C";
@@ -3146,7 +3164,7 @@ public class NewMainGameplay : MonoBehaviour
         MainController.Instance._saveLoadValues._restartAvailable = true;
         MainController.Instance._introSpecial = true;
         MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
-        MainController.Instance.SaveProgress();
+
 
         //MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
         _AtomsPanelOn = false;
@@ -3169,6 +3187,7 @@ public class NewMainGameplay : MonoBehaviour
                 MainController.Instance._onWorldGlobal = 0;
                 break;
         }
+        MainController.Instance.SaveProgress();
         MainController.Instance._scriptMusic._audioBGM.Play();
         yield return new WaitForSeconds(1);
         MainController.Instance.LoadSceneByName("IntroScene");

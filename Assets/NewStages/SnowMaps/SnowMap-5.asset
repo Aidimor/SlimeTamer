@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 06444818b2c5c5245a52126020660b89, type: 3}
-  m_Name: Dessert-7
+  m_Name: SnowMap-5
   m_EditorClassIdentifier: 
   _spawnPoint: 14
   _exitPoint: 0
