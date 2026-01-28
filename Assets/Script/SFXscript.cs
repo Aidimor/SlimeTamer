@@ -34,7 +34,8 @@ public class SFXscript : MonoBehaviour
     public AudioClip _iron;
     public AudioClip _snowMoving;
     public AudioClip _electricity;
-    
+    public AudioClip _c02Move;
+
 
     public AudioClip _stickyMudSound;
     public AudioClip _bossAttack;
@@ -54,6 +55,8 @@ public class SFXscript : MonoBehaviour
     public AudioSource _chargeAttack;
     public float _chargeAttackVolume;
     public float _chargeAttackPitch;
+
+
 
     public static SFXscript Instance;
 

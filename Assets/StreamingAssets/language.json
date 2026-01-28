@@ -14,68 +14,85 @@
       "tutorial": 100
     }
   },
-  "en": {
-    "world": "World",  
-    "WorldName1": "ROYAL CASTLE",
-    "WorldName2": "ENDLESS DESSERT",
-    "WorldName3": "SNOWY MOUNTAIN",
-    "WorldName4": "WINDY FOREST",
-    "WorldName5": "CURSED CASTLE",
-    "escape": "Press Escape",
-    "exitmenu": "Exit",
-    "pause1": "Resume",
-    "pause2": "Main Menu",
-    "pause3": "Exit Game",
-    "continue": "PRESS SPACE TO CONTINUE",
-    "entrance": "Entrance",
-   "element1": "Carbon",
-   "element2": "Hydrogen",
-   "element3": "Oxygen",
-   "element4": "Iron",
+"en": {
+  "world": "World",
+  "WorldName1": "ROYAL CASTLE",
+  "WorldName2": "ENDLESS DESERT",
+  "WorldName3": "SNOWY MOUNTAIN",
+  "WorldName4": "WINDY FOREST",
+  "WorldName5": "CURSED CASTLE",
 
-    "tutorial0": "Use keyboard arrows to move.",
-    "tutorial1": "If you step on a purple square or a hazard it will restart the stage",
-    "tutorial2": "Collect Atoms and transform into a new chemical compound to complete the stage",
-    "tutorial3": "You can step back into purple squares if you have enough Step Coins",
-    "tutorial4": "You can make your own formula if the stage does not have enough elements, if you have enough atoms",
-    "tutorial5": "Press Space to restart the stage",
-    "tutorial6": "Transform into differnt slime types to sort any hazard in the way",
-    "tutorialatom": "You've got a blank atom, now you can choose the element you want and create a new chemical compound",
-    "tutorialhint": "Get a hint to solve the level",
-    "tutorialmenu": "Press Enter to open the hint menu",
-    "pressenter": "PRESS ENTER",
-    "hintmenu": "HINT MENU",
-"FC": "IRON",
-"H20": "WATER",
-"ICE": "Compact Snow",
-"CO2": "DIOXIDE CARBON",
-"FE3O4": "MAGNATITE",
-"FCextra": "Heavy Solid",
-"H20extra": "Light Liquid",
-"ICEextra": "Compact Liquid",
-"CO2extra": "Heavy Gas",
-"FE3O4extra": "Light Solid",
-"hazard1": "Sandstorm approaching ",
-"hazard2": "The wind is too cold it can change the results of the formula ",
-"hazard3": "Strong winds can change your position ",
-"hazard4": "Sand Storm approaching ",
-"hazard5": "Not ready yet ",
-"iron1": "Earth’s core is mostly iron",
-"iron2": "Good conductor of heat and electricity",
-"water1": "Required for all known life",
-"water2": "Absorbs heat and is a good conductor of electricity",
-"snow1": "Snow can absorbs sound",
-"snow2": "Besides being snow it is so compacted that has augmented its own weight",
-"dioxide1": "Humans and animals breathe it out",
-"dioxide2": "Besides being a heavy gas if another gas is below it will float",
-"magnatite1": "It has been found in meteorites",
-"magnatite2": "Magnetic recording materials",
-"endgame": "To be continued...",
-"movewith": "Use the arrows to move",
-"pressbutton": "Press Espace to choose",
-"fusion1": "Press ENTER",
-"fusion2": "Fusion"
+  "escape": "Press Escape",
+  "exitmenu": "Exit",
+  "pause1": "Resume",
+  "pause2": "Main Menu",
+  "pause3": "Exit Game",
+  "continue": "PRESS SPACE TO CONTINUE",
+
+  "entrance": "Entrance",
+
+  "element1": "Carbon",
+  "element2": "Hydrogen",
+  "element3": "Oxygen",
+  "element4": "Iron",
+
+  "tutorial0": "Use the arrow keys to move.",
+  "tutorial1": "If you step on a purple square or a hazard, the stage will restart.",
+  "tutorial2": "Collect atoms and transform into a new chemical compound to complete the stage.",
+  "tutorial3": "You can step back onto purple squares if you have enough Step Coins.",
+  "tutorial4": "You can create your own formula if the stage does not have enough elements and you have enough atoms.",
+  "tutorial5": "Press Space to restart the stage.",
+  "tutorial6": "Transform into different slime types to overcome any hazard in your way.",
+
+  "tutorialatom": "You've got a blank atom. Now you can choose the element you want and create a new chemical compound.",
+  "tutorialhint": "Get a hint to solve the level.",
+  "tutorialmenu": "Press Enter to open the hint menu",
+
+  "pressenter": "PRESS ENTER",
+  "hintmenu": "HINT MENU",
+
+  "FC": "IRON",
+  "H2O": "WATER",
+  "ICE": "COMPACT SNOW",
+  "CO2": "CARBON DIOXIDE",
+  "FE3O4": "MAGNETITE",
+
+  "FCextra": "Heavy Solid",
+  "H2Oextra": "Light Liquid",
+  "ICEextra": "Compact Solid",
+  "CO2extra": "Heavy Gas",
+  "FE3O4extra": "Light Solid",
+
+  "hazard1": "Sandstorm approaching",
+  "hazard2": "The wind is too cold and can change the results of the formula.",
+  "hazard3": "Strong winds can change your position.",
+  "hazard4": "Sandstorm approaching",
+  "hazard5": "Not ready yet",
+
+  "iron1": "Earth’s core is mostly iron.",
+  "iron2": "A good conductor of heat and electricity.",
+
+  "water1": "Required for all known life.",
+  "water2": "Absorbs heat and is a good conductor of electricity.",
+
+  "snow1": "Snow can absorb sound.",
+  "snow2": "It is so compacted that its weight has increased.",
+
+  "dioxide1": "Humans and animals breathe it out.",
+  "dioxide2": "Being a heavy gas, it can float above lighter gases.",
+
+  "magnetite1": "It has been found in meteorites.",
+  "magnetite2": "Used in magnetic recording materials.",
+
+  "endgame": "To be continued...",
+
+  "movewith": "Use the arrow keys to move.",
+  "pressbutton": "Press the spacebar to choose.",
+
+  "fusion1": "Press Enter",
+  "fusion2": "Fusion"
 }
+
 "es": {
   "world": "Mundo",
   "WorldName1": "CASTILLO REAL",
@@ -83,12 +100,14 @@
   "WorldName3": "MONTAÑA NEVADA",
   "WorldName4": "BOSQUE VENTOSO",
   "WorldName5": "CASTILLO MALDITO",
+
   "escape": "Presiona Escape",
   "exitmenu": "Salir",
   "pause1": "Reanudar",
   "pause2": "Menú Principal",
   "pause3": "Salir del Juego",
   "continue": "PRESIONA ESPACIO PARA CONTINUAR",
+
   "entrance": "Entrada",
 
   "element1": "Carbono",
@@ -97,55 +116,60 @@
   "element4": "Hierro",
 
   "tutorial0": "Usa las flechas del teclado para moverte.",
-  "tutorial1": "Si pisas un cuadro morado o un peligro, el nivel se reiniciará",
-  "tutorial2": "Recolecta átomos y transfórmate en un nuevo compuesto químico para completar el nivel",
-  "tutorial3": "Puedes volver a pisar cuadros morados si tienes suficientes Monedas de Paso",
-  "tutorial4": "Puedes crear tu propia fórmula si el nivel no tiene suficientes elementos, siempre que tengas suficientes átomos",
-  "tutorial5": "Presiona Espacio para reiniciar el nivel",
-  "tutorial6": "Transfórmate en diferentes tipos de slime para superar cualquier peligro en el camino",
-  "tutorialatom": "Has obtenido un átomo en blanco, ahora puedes elegir el elemento que quieras y crear un nuevo compuesto químico",
-  "tutorialhint": "Obtén una pista para resolver el nivel",
+  "tutorial1": "Si pisas un cuadro morado o un peligro, la fase se reiniciará.",
+  "tutorial2": "Recolecta átomos y transfórmate en un nuevo compuesto químico para completar la fase.",
+  "tutorial3": "Puedes volver a pisar cuadros morados si tienes suficientes Monedas de Paso.",
+  "tutorial4": "Puedes crear tu propia fórmula si la fase no tiene suficientes elementos y tienes los átomos necesarios.",
+  "tutorial5": "Presiona Espacio para reiniciar la fase.",
+  "tutorial6": "Transfórmate en diferentes tipos de slime para superar cualquier peligro en tu camino.",
+
+  "tutorialatom": "Has obtenido un átomo vacío. Ahora puedes elegir el elemento que quieras y crear un nuevo compuesto químico.",
+  "tutorialhint": "Obtén una pista para resolver el nivel.",
   "tutorialmenu": "Presiona Enter para abrir el menú de pistas",
+
   "pressenter": "PRESIONA ENTER",
   "hintmenu": "MENÚ DE PISTAS",
 
   "FC": "HIERRO",
-  "H20": "AGUA",
+  "H2O": "AGUA",
   "ICE": "NIEVE COMPACTA",
   "CO2": "DIÓXIDO DE CARBONO",
   "FE3O4": "MAGNETITA",
 
   "FCextra": "Sólido Pesado",
-  "H20extra": "Líquido Ligero",
-  "ICEextra": "Líquido Compacto",
+  "H2Oextra": "Líquido Ligero",
+  "ICEextra": "Sólido Compacto",
   "CO2extra": "Gas Pesado",
   "FE3O4extra": "Sólido Ligero",
 
-  "hazard1": "Tormenta de arena aproximándose",
-  "hazard2": "El viento es demasiado frío, puede cambiar los resultados de la fórmula",
-  "hazard3": "Vientos fuertes pueden cambiar tu posición",
-  "hazard4": "Tormenta de arena aproximándose",
+  "hazard1": "Se aproxima una tormenta de arena",
+  "hazard2": "El viento es demasiado frío y puede cambiar el resultado de la fórmula.",
+  "hazard3": "Los vientos fuertes pueden cambiar tu posición.",
+  "hazard4": "Se aproxima una tormenta de arena",
   "hazard5": "Aún no está listo",
 
-  "iron1": "El núcleo de la Tierra es mayormente hierro",
-  "iron2": "Buen conductor del calor y la electricidad",
+  "iron1": "El núcleo de la Tierra está compuesto principalmente de hierro.",
+  "iron2": "Buen conductor de calor y electricidad.",
 
-  "water1": "Requerida para toda la vida conocida",
-  "water2": "Absorbe calor y es un buen conductor de la electricidad",
+  "water1": "Necesaria para toda forma de vida conocida.",
+  "water2": "Absorbe calor y es una buena conductora de electricidad.",
 
-  "snow1": "La nieve puede absorber el sonido",
-  "snow2": "Además de ser nieve, está tan compactada que ha aumentado su propio peso",
+  "snow1": "La nieve puede absorber el sonido.",
+  "snow2": "Está tan compactada que su peso ha aumentado.",
 
-  "dioxide1": "Los humanos y animales lo exhalan",
-  "dioxide2": "Además de ser un gas pesado, si otro gas está debajo de él, flotará",
+  "dioxide1": "Los humanos y animales lo exhalan.",
+  "dioxide2": "Al ser un gas pesado, puede flotar sobre gases más ligeros.",
 
-  "magnatite1": "Se ha encontrado en meteoritos",
-  "magnatite2": "Materiales de grabación magnética",
-"endgame": "Continuara...",
-"movewith": "Muevente con las flechas",
-"pressbutton": "Presiona Espacio para elegir",
-"fusion1": "Presionar Enter",
-"fusion2": "Fusion"
+  "magnetite1": "Ha sido encontrada en meteoritos.",
+  "magnetite2": "Usada en materiales de grabación magnética.",
+
+  "endgame": "Continuará...",
+
+  "movewith": "Usa las flechas para moverte.",
+  "pressbutton": "Presiona la barra espaciadora para elegir.",
+
+  "fusion1": "Presiona Enter",
+  "fusion2": "Fusión"
 }
 
 

@@ -228,6 +228,7 @@ public class MainController : MonoBehaviour
         public bool _timerOn;
     }
     public FinalTimerAssets _finalTimerAssets;
+    public TextMeshProUGUI _continuarTutorial;
 
     void Awake()
     {

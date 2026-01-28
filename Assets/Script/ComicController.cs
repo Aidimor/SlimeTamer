@@ -42,29 +42,31 @@ public class ComicController : MonoBehaviour
 
     public IEnumerator ComicStripOn()
     {
-  
+
+        var Main = MainController.Instance._scriptMusic;
         if (MainController.Instance != null)
         {
             switch (MainController.Instance._onWorldGlobal)
             {
                 case 0:
-                    MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[1];
+
+                    Main.PlayMusic(1);
                     break;
                 case 1:
-                    MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[3];
+                    Main.PlayMusic(3);
                     break;
                 case 2:
-                    MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[4];
+                    Main.PlayMusic(4);
                     break;
                 case 3:
-                    MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[5];
+                    Main.PlayMusic(5);
                     break;
                 case 4:
-                    MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[6];
+                    Main.PlayMusic(6);
                     break;
             }
 
-            MainController.Instance._scriptMusic._audioBGM.Play();
+ 
         }
 
         var GJ = GameInitScript.Instance;
@@ -85,32 +87,28 @@ public class ComicController : MonoBehaviour
 
             if (MainController.Instance._onWorldGlobal == 0 && _imagesID[i] == 4)
             {
-                MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[2];
-                MainController.Instance._scriptMusic._audioBGM.Play();
+                Main.PlayMusic(2);
                 SFXscript.Instance._fireSetVolume = 0.2f;
                 SFXscript.Instance._strongWindSetVolume = 0.2f;
             }
 
             if (MainController.Instance._onWorldGlobal == 1 && _imagesID[i] == 13)
             {
-                MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[2];
-                MainController.Instance._scriptMusic._audioBGM.Play();
+                Main.PlayMusic(2);
                 SFXscript.Instance._fireSetVolume = 0.2f;
                 SFXscript.Instance._strongWindSetVolume = 0.2f;
             }
 
             if (MainController.Instance._onWorldGlobal == 3 && _imagesID[i] == 18)
             {
-                MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[6];
-                MainController.Instance._scriptMusic._audioBGM.Play();
+                Main.PlayMusic(6);
                 SFXscript.Instance._fireSetVolume = 0.2f;
                 SFXscript.Instance._strongWindSetVolume = 0.2f;
             }
 
             if (MainController.Instance._onWorldGlobal == 4 && _imagesID[i] == 24)
             {
-                MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[7];
-                MainController.Instance._scriptMusic._audioBGM.Play();
+                Main.PlayMusic(7);
                 SFXscript.Instance._fireSetVolume = 0.2f;
                 SFXscript.Instance._strongWindSetVolume = 0.2f;
             }

@@ -165,6 +165,8 @@ public class NewMainGameplay : MonoBehaviour
         _escapeText.text = GameInitScript.Instance.GetText("escape");
         _exitText.text = GameInitScript.Instance.GetText("exitmenu");
         MainController.Instance._tutorialAssets._continueText.text = GameInitScript.Instance.GetText("continue");
+        //MainController.Instance._atomPanelInfo._fusionElementAssets[1]._name.text = GameInitScript.Instance.GetText("H2O");
+        //MainController.Instance._atomPanelInfo._fusionElementAssets[1]._extra.text = GameInitScript.Instance.GetText("H2Oextra");
     }
 
 
@@ -354,7 +356,7 @@ public class NewMainGameplay : MonoBehaviour
                     string speakKey = key;
                     yield return new WaitForSeconds(0.2f);
                     LOLSDK.Instance.SpeakText(speakKey);
-
+                    SFXscript.Instance.PlaySound(SFXscript.Instance._next);
                     Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
                     Main._tutorialAssets._arrowsParent.SetActive(true);
                     Main._tutorialAssets._elementsParent.SetActive(false);
@@ -400,7 +402,7 @@ public class NewMainGameplay : MonoBehaviour
                     string speakKey = key;
                     yield return new WaitForSeconds(0.2f);
                     LOLSDK.Instance.SpeakText(speakKey);
-
+                    SFXscript.Instance.PlaySound(SFXscript.Instance._next);
                     Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
                     Main._tutorialAssets._arrowsParent.SetActive(false);
                     Main._tutorialAssets._elementsParent.SetActive(false);
@@ -428,7 +430,7 @@ public class NewMainGameplay : MonoBehaviour
                     string speakKey = key;
                     yield return new WaitForSeconds(0.2f);
                     LOLSDK.Instance.SpeakText(speakKey);
-
+                    SFXscript.Instance.PlaySound(SFXscript.Instance._next);
                     Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
                     Main._tutorialAssets._arrowsParent.SetActive(false);
                     Main._tutorialAssets._elementsParent.SetActive(false);
@@ -756,8 +758,7 @@ public class NewMainGameplay : MonoBehaviour
         yield return new WaitForSeconds(1);
         MainController.Instance._exitAssets._exitAnimator.SetBool("ExitEnter", false);
         MainController.Instance._exitAssets._exitPanelOn = false;
-        MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[0];
-        MainController.Instance._scriptMusic._audioBGM.Play();
+        MainController.Instance._scriptMusic.PlayMusic(0);
         MainController.Instance.SaveProgress();
         yield return new WaitForSeconds(1);
         MainController.Instance.LoadSceneByName("IntroScene");
@@ -912,7 +913,7 @@ public class NewMainGameplay : MonoBehaviour
             {
                 case 4:
                     int random3 = Random.Range(0, 100);
-                    if (random3 < 90)
+                    if (random3 < 75)
                     {
 
 
@@ -1088,6 +1089,66 @@ public class NewMainGameplay : MonoBehaviour
                         _elementsBool.Add(true);
                     }
                 
+                    break;
+                case 1:
+                    int random4 = Random.Range(0, 100);
+                    if (random4 < 10)
+                    {
+
+
+                        // 🆕 NO existe → instanciar
+                        GameObject atom = Instantiate(_atomPrefab, _parent);
+
+                        RectTransform rta1 = atom.GetComponent<RectTransform>();
+                        RectTransform targetRT = _allPositions[data._onPlace].GetComponent<RectTransform>();
+
+                        data._changed = true;
+
+                        rta1.position = targetRT.position;
+                        rta1.localScale = Vector3.one;
+
+                        AtomScript atomScript = atom.GetComponent<AtomScript>();
+                        atomScript._quantity += data._quantity;
+                        atomScript._quantityText.text = data._quantity.ToString();
+                        atomScript._onPose = data._onPlace;
+                        data._emptyAtom = true;
+                        _allAtoms.Add(atom);
+
+                        //_atomList.Add(data._onPlace);
+
+                    }
+                    else
+                    {
+                        GameObject element1 = Instantiate(_elementPrefab, _parent);
+                        RectTransform rt1 = element1.GetComponent<RectTransform>();
+                        rt1.position = _allPositions[data._onPlace].GetComponent<RectTransform>().position;
+                        rt1.localScale = Vector3.one;
+
+                        ElementOrbScript orb1 = element1.GetComponent<ElementOrbScript>();
+                        orb1._onPose = data._onPlace;
+                        switch (data._elementType)
+                        {
+                            case NewGameEvent.Elements.ElementType.C:
+                                orb1.ID = 0;
+                                break;
+                            case NewGameEvent.Elements.ElementType.H:
+                                orb1.ID = 1;
+                                break;
+                            case NewGameEvent.Elements.ElementType.O:
+                                orb1.ID = 2;
+                                break;
+                            case NewGameEvent.Elements.ElementType.Fe:
+                                orb1.ID = 3;
+                                break;
+                        }
+                        data._emptyAtom = false;
+                        orb1._onPose = data._onPlace;
+                        orb1._quantity = data._quantity;
+                        orb1.ElementSetVoid();
+                        _allElements.Add(element1);
+                        _elementsID.Add(data._onPlace);
+                        _elementsBool.Add(true);
+                    }
                     break;
                 default:
                     GameObject element = Instantiate(_elementPrefab, _parent);
@@ -2158,7 +2219,7 @@ public class NewMainGameplay : MonoBehaviour
 
         }
 
-        if (Main._onWorldGlobal == 1 && _idStage == 5)
+        if (Main._onWorldGlobal == 1 && _idStage == 4)
         {
             ComicController.Instance._imagesID.Add(12);
             ComicController.Instance._imagesID.Add(13);
@@ -2839,8 +2900,8 @@ public class NewMainGameplay : MonoBehaviour
                     Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("water1");
                     Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("water2");
 
-                    MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("H20extra");
-                    MainController.Instance._nameText.text = GameInitScript.Instance.GetText("H20");
+                    MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("H2Oextra");
+                    MainController.Instance._nameText.text = GameInitScript.Instance.GetText("H2O");
             
                     _waterWalk.Play();
                     _smoke.Stop();
@@ -3293,15 +3354,15 @@ public class NewMainGameplay : MonoBehaviour
          
                 break;
             case 1:
-                MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[0];
+                //MainController.Instance._scriptMusic.PlayMusic(0);
                 break;
             case 2:
-                MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[0];
+                MainController.Instance._scriptMusic.PlayMusic(0);
                 break;
             case 3:             
                 break;
             case 4:
-                MainController.Instance._scriptMusic._audioBGM.clip = MainController.Instance._scriptMusic._allThemes[0];
+                MainController.Instance._scriptMusic.PlayMusic(0);
                 MainController.Instance._onWorldGlobal = 0;
                 break;
         }
@@ -3391,10 +3452,9 @@ public class NewMainGameplay : MonoBehaviour
         MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
         MainController.Instance._saveLoadValues._totalSteps += _stepsCollected;
         MainController.Instance.SaveProgress();
-        MainController.Instance._scriptMusic._audioBGM.Play();
+      
         Main._finalTimerAssets._timerText.gameObject.SetActive(false);
-        Main._scriptMusic._audioBGM.clip = Main._scriptMusic._allThemes[6];
-        Main._scriptMusic._audioBGM.Play();
+        Main._scriptMusic.PlayMusic(6);
         yield return new WaitForSeconds(1);
         Main._cinematicBorders.SetBool("FadeIn", false);
         MainController.Instance.LoadSceneByName("IntroScene");

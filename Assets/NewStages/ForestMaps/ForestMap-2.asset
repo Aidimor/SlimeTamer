@@ -15,17 +15,7 @@ MonoBehaviour:
   _spawnPoint: 20
   _exitPoint: 5
   _allPlaces: 010000000200000003000000050000000600000007000000080000000d0000000e00000012000000130000001400000015000000160000001700000018000000
-  _elements:
-  - _onPlace: 18
-    _elementType: 0
-    _quantity: 1
-    _changed: 0
-    _emptyAtom: 1
-  - _onPlace: 1
-    _elementType: 2
-    _quantity: 2
-    _changed: 0
-    _emptyAtom: 0
+  _elements: []
   _hazards:
   - _onPlace: 3
     _hazards: 1
@@ -35,6 +25,6 @@ MonoBehaviour:
     _hazards: 1
     _rotation: 0
     _finished: 0
-  _stepsPlace: 
+  _stepsPlace: 02000000
   _bossAssets: []
   _wind: 1

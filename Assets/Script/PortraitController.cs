@@ -70,8 +70,7 @@ public class PortraitController : MonoBehaviour
 
         if (_scriptMainController != null && MainController.Instance._onWorldGlobal != 4)
         {
-            _scriptMainController._scriptMusic._audioBGM.clip = _scriptMainController._scriptMusic._allThemes[0];
-            _scriptMainController._scriptMusic._audioBGM.Play();
+            MainController.Instance._scriptMusic.PlayMusic(0);
         }
 
         StartCoroutine(UpdateWorldTexts());
@@ -167,8 +166,8 @@ public class PortraitController : MonoBehaviour
         MainController.Instance._atomPanelInfo._fusionElementAssets[0]._name.text = GameInitScript.Instance.GetText("CO2");
         MainController.Instance._atomPanelInfo._fusionElementAssets[0]._extra.text = GameInitScript.Instance.GetText("CO2extra");
 
-        MainController.Instance._atomPanelInfo._fusionElementAssets[1]._name.text = GameInitScript.Instance.GetText("H20");
-        MainController.Instance._atomPanelInfo._fusionElementAssets[1]._extra.text = GameInitScript.Instance.GetText("H20extra");
+        MainController.Instance._atomPanelInfo._fusionElementAssets[1]._name.text = GameInitScript.Instance.GetText("H2O");
+        MainController.Instance._atomPanelInfo._fusionElementAssets[1]._extra.text = GameInitScript.Instance.GetText("H2Oextra");
 
         MainController.Instance._atomPanelInfo._fusionElementAssets[2]._name.text = GameInitScript.Instance.GetText("FC");
         MainController.Instance._atomPanelInfo._fusionElementAssets[2]._extra.text = GameInitScript.Instance.GetText("FCextra");
@@ -176,6 +175,7 @@ public class PortraitController : MonoBehaviour
         MainController.Instance._atomPanelInfo._fusionElementAssets[3]._name.text = GameInitScript.Instance.GetText("FE3O4");
         MainController.Instance._atomPanelInfo._fusionElementAssets[3]._extra.text = GameInitScript.Instance.GetText("FE3O4extra");
 
+        MainController.Instance._continuarTutorial.text = GameInitScript.Instance.GetText("continue");
 
         yield return new WaitForSeconds(0.5f);
 

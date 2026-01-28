@@ -368,4 +368,9 @@ public class SlimeController : MonoBehaviour
         SFXscript.Instance.PlaySound(SFXscript.Instance._snowMoving);
     }
 
+    public void co2MovingSlime()
+    {
+        SFXscript.Instance.PlaySound(SFXscript.Instance._c02Move);
+    }
+
 }

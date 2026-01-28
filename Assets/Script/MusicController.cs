@@ -1,43 +1,37 @@
-using UnityEngine;
+Ôªøusing UnityEngine;
 
 public class MusicController : MonoBehaviour
 {
     public AudioSource _audioBGM;
     public AudioClip[] _allThemes;
 
-    private AudioClip _currentClip; // Guarda la canciÛn que est· sonando
-
-    void Start()
+    void Awake()
     {
         _audioBGM = GetComponent<AudioSource>();
+        _audioBGM.loop = true; // opcional pero com√∫n en BGM
     }
 
-    // Llamas a esta funciÛn para reproducir m˙sica
     public void PlayMusic(int themeIndex)
     {
         if (themeIndex < 0 || themeIndex >= _allThemes.Length)
         {
-            Debug.LogWarning("El Ìndice de m˙sica est· fuera de rango.");
+            Debug.LogWarning("√çndice de m√∫sica fuera de rango");
             return;
         }
 
         AudioClip newClip = _allThemes[themeIndex];
 
-        // Si es diferente a la que suena actualmente
-        if (_currentClip != newClip)
+        //  Si ya es el mismo clip, NO lo reinicies
+        if (_audioBGM.clip == newClip)
         {
-            _currentClip = newClip;
-            _audioBGM.clip = _currentClip;
-            _audioBGM.Play();
-        }
-        else
-        {
-            // Si ya est· sonando, no hagas nada
             if (!_audioBGM.isPlaying)
-            {
-                // Pero si se detuvo, reprod˙cela de nuevo
                 _audioBGM.Play();
-            }
+
+            return;
         }
+
+        // üëâ Solo si es diferente
+        _audioBGM.clip = newClip;
+        _audioBGM.Play();
     }
 }
