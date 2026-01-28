@@ -12,28 +12,23 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06444818b2c5c5245a52126020660b89, type: 3}
   m_Name: SnowMap-5
   m_EditorClassIdentifier: 
-  _spawnPoint: 14
-  _exitPoint: 0
-  _allPlaces: 00000000050000000600000007000000080000000a0000000b0000000d0000000e000000120000001100000013000000160000001700000018000000
+  _spawnPoint: 20
+  _exitPoint: 14
+  _allPlaces: 05000000060000000a0000000b0000000c0000000d0000000e0000000f000000100000001400000015000000
   _elements:
-  - _onPlace: 19
-    _elementType: 0
+  - _onPlace: 12
+    _elementType: 1
     _quantity: 1
-    _changed: 0
-  - _onPlace: 24
-    _elementType: 3
+  - _onPlace: 6
+    _elementType: 1
     _quantity: 1
-    _changed: 0
+  - _onPlace: 16
+    _elementType: 2
+    _quantity: 1
   _hazards:
-  - _onPlace: 22
-    _hazards: 2
-    _rotation: 0
-    _finished: 1
-  - _onPlace: 5
-    _hazards: 3
-    _rotation: 0
-    _finished: 1
+  - _onPlace: 13
+    _hazards: 0
+    _finished: 0
   _atomPlace: 
-  _stepsPlace: 080000000a000000
+  _stepsPlace: 
   _bossAssets: []
-  _wind: 0

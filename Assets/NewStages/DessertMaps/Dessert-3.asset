@@ -12,46 +12,60 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 06444818b2c5c5245a52126020660b89, type: 3}
   m_Name: Dessert-3
   m_EditorClassIdentifier: 
-  _spawnPoint: 24
-  _exitPoint: 1
-  _allPlaces: 0000000001000000020000000300000004000000050000000600000007000000090000000d0000000e00000012000000130000001800000008000000
+  _spawnPoint: 10
+  _exitPoint: 4
+  _allPlaces: 000000000100000002000000030000000400000005000000060000000700000008000000090000000a0000000b0000000c0000000d0000000e00000011000000130000001200000017000000
   _elements:
-  - _onPlace: 3
+  - _onPlace: 11
+    _elementType: 1
+    _quantity: 1
+    _changed: 1
+  - _onPlace: 12
     _elementType: 2
     _quantity: 1
-    _changed: 0
-    _emptyAtom: 0
-  - _onPlace: 4
-    _elementType: 2
+    _changed: 1
+  - _onPlace: 17
+    _elementType: 1
     _quantity: 1
-    _changed: 0
-    _emptyAtom: 0
-  - _onPlace: 13
-    _elementType: 0
-    _quantity: 1
-    _changed: 0
-    _emptyAtom: 0
+    _changed: 1
   _hazards:
-  - _onPlace: 2
+  - _onPlace: 5
+    _hazards: 3
+    _rotation: 0
+    _finished: 1
+  - _onPlace: 6
     _hazards: 0
     _rotation: 0
     _finished: 0
-  - _onPlace: 5
-    _hazards: 1
-    _rotation: 0
-    _finished: 0
-  - _onPlace: 6
-    _hazards: 1
-    _rotation: 0
-    _finished: 0
   - _onPlace: 7
-    _hazards: 1
+    _hazards: 0
     _rotation: 0
     _finished: 0
   - _onPlace: 8
-    _hazards: 1
+    _hazards: 0
     _rotation: 0
     _finished: 0
-  _stepsPlace: 00000000
+  - _onPlace: 6
+    _hazards: 0
+    _rotation: 0
+    _finished: 0
+  - _onPlace: 9
+    _hazards: 0
+    _rotation: 0
+    _finished: 0
+  - _onPlace: 23
+    _hazards: 6
+    _rotation: 1
+    _finished: 0
+  - _onPlace: 13
+    _hazards: 6
+    _rotation: 1
+    _finished: 0
+  - _onPlace: 18
+    _hazards: 7
+    _rotation: 0
+    _finished: 1
+  _atomPlace: 
+  _stepsPlace: 0000000002000000
   _bossAssets: []
   _wind: 0

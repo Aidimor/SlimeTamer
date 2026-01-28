@@ -145,6 +145,8 @@ public class NewMainGameplay : MonoBehaviour
 
 
     bool joystickEnUso = false;
+    public int _stepsCollected;
+    public bool _timerEnds = false;
     void Start()
     {   
         StartVoids();
@@ -154,7 +156,7 @@ public class NewMainGameplay : MonoBehaviour
         switch (MainController.Instance._onWorldGlobal)
         {
             case 2:
-                _snowParticle.Play();
+                //_snowParticle.Play();
                 break;
             case 3:
                 _movementsToSandStorm = Random.Range(2, 4);
@@ -207,9 +209,9 @@ public class NewMainGameplay : MonoBehaviour
         if (!_restarted)
         {
             StageCreationVoid();
-            SetSteps();
+           
         }
-
+        SetSteps();
         SetElements();
         //SetAtoms();
 
@@ -289,9 +291,15 @@ public class NewMainGameplay : MonoBehaviour
     public IEnumerator StartGameNumerator()
     {
         var Main = MainController.Instance;
+
+        int stageIndex = Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage];
+        var stage = _allStages[stageIndex];
         Main._tutorialAssets._continueText.gameObject.SetActive(false);
         var gi = GameInitScript.Instance;
         ResetAllHazards();
+        _sandStorm.Stop();
+        _sandStormOn = false;
+
         //_slimeObject.GetComponent<RectTransform>().localScale = Vector3.zero;
         switch (_allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._wind)
         {
@@ -304,6 +312,19 @@ public class NewMainGameplay : MonoBehaviour
             case NewGameEvent.Wind.Right:
                 _lowAirRight.Play();
                 Main._scriptSFX._windSetVolume = 0.2f;
+                break;
+        }
+
+        switch (stageIndex)
+        {
+            case 11:
+            case 12:
+            case 13:
+            case 14:
+            case 15:
+            case 16:
+            case 25:
+                _snowParticle.Play(); 
                 break;
         }
 
@@ -445,7 +466,7 @@ public class NewMainGameplay : MonoBehaviour
             _exitEntranceObjects[1].GetComponent<ExitScriptObject>()._exitPlatforms[0].gameObject.SetActive(true);
             _exitEntranceObjects[1].GetComponent<ExitScriptObject>()._exitPlatforms[1].gameObject.SetActive(false);    
         }
-
+        CalculateMoves();
         yield return new WaitForSeconds(1);
         _slimeObject.GetComponent<Animator>().Play("SlimeEnters");
         yield return new WaitForSeconds(0.5f);
@@ -522,10 +543,13 @@ public class NewMainGameplay : MonoBehaviour
         {
             StartCoroutine(ExitPanelNumerator());
         }
+
+        FinalTimerVoid();
     }
 
     public void AtomPanelController()
     {
+        var Main = MainController.Instance;
         float h = Input.GetAxisRaw("Horizontal");
         float v = Input.GetAxisRaw("Vertical");
 
@@ -570,7 +594,25 @@ public class NewMainGameplay : MonoBehaviour
                     {
                         TransformSpecialSlimeVoid();
 
+          
+                       
+                                Main._elementAnimatorAssets._border.color = Main._elementsColor[0];
+                                Main._elementAnimatorAssets._elementText.color = Main._elementsColor[0];
+                                Main._elementAnimatorAssets._elementText.text = "C";
+                        Main._elementAnimatorAssets._center.color = Main._elementsColor[0];
+                        Main._elementAnimatorAssets._quantityText.text = "";              
+                                Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element1");
+                                LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element1"));
 
+                       
+        
+           
+                
+           
+                         
+  
+                          
+                        
                     }
                     break;
                 case 2:
@@ -579,7 +621,13 @@ public class NewMainGameplay : MonoBehaviour
                     if (!_transformed)
                     {
                         TransformSpecialSlimeVoid();
-
+                        Main._elementAnimatorAssets._border.color = Main._elementsColor[3];
+                        Main._elementAnimatorAssets._elementText.color = Main._elementsColor[3];
+                        Main._elementAnimatorAssets._elementText.text = "Fe";
+                        Main._elementAnimatorAssets._center.color = Main._elementsColor[3];
+                        Main._elementAnimatorAssets._quantityText.text = "";
+                        Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element4");
+                        LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element4"));
                     }
                     break;
                  
@@ -589,8 +637,14 @@ public class NewMainGameplay : MonoBehaviour
                     if (!_transformed)
                     {
                         TransformSpecialSlimeVoid();
-
-                    }
+                Main._elementAnimatorAssets._border.color = Main._elementsColor[2];
+                Main._elementAnimatorAssets._elementText.color = Main._elementsColor[2];
+                Main._elementAnimatorAssets._elementText.text = "O";
+                        Main._elementAnimatorAssets._center.color = Main._elementsColor[2];
+                        Main._elementAnimatorAssets._quantityText.text = "";
+                        Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element3");
+                LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element3"));
+            }
                     break;
             
                 case 4:
@@ -599,7 +653,15 @@ public class NewMainGameplay : MonoBehaviour
                     if (!_transformed)
                     {
                         TransformSpecialSlimeVoid();
+   
 
+                        Main._elementAnimatorAssets._border.color = Main._elementsColor[1];
+                        Main._elementAnimatorAssets._elementText.color = Main._elementsColor[1];
+                        Main._elementAnimatorAssets._elementText.text = "H";
+                        Main._elementAnimatorAssets._center.color = Main._elementsColor[1];
+                        Main._elementAnimatorAssets._quantityText.text = "";
+                        Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element2");
+                        LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element2"));
                     }
                     break;
             }
@@ -1548,9 +1610,15 @@ public class NewMainGameplay : MonoBehaviour
         // 🌍 EFECTOS POR MUNDO
         // ==========================
 
-        switch (Main._onWorldGlobal)
+        //switch (Main._onWorldGlobal)
+         switch (stageIndex)
         {
-            case 1:
+            case 5:
+            case 6:
+            case 7:
+            case 8:
+            case 9:
+            case 10:
                 if (_sandStorm != null)
                 {
                     if (!_sandStormOn)
@@ -1573,7 +1641,12 @@ public class NewMainGameplay : MonoBehaviour
                 }
                 break;
 
-            case 3:
+            case 17:
+            case 18:
+            case 19:
+            case 20:
+            case 21:
+            case 22:
                 _turnToStorm--;
 
                 if (_turnToStorm <= 0)
@@ -1886,7 +1959,14 @@ public class NewMainGameplay : MonoBehaviour
         }
         _allAttacks.Clear();
 
-
+        for (int i = 0; i < _allSteps.Count; i++)
+        {
+            Destroy(_allSteps[i].gameObject);
+        }
+        _allSteps.Clear();
+        _stepsList.Clear();
+        MainController.Instance._saveLoadValues._totalSteps -= _stepsCollected;
+        _stepsCollected = 0;
 
         _allCountAttacks.Clear();
         _restarted = true;
@@ -1956,7 +2036,14 @@ public class NewMainGameplay : MonoBehaviour
         }
         _allAttacks.Clear();
 
-
+        for (int i = 0; i < _allSteps.Count; i++)
+        {
+            Destroy(_allSteps[i].gameObject);
+        }
+        _allSteps.Clear();
+        _stepsList.Clear();
+        MainController.Instance._saveLoadValues._totalSteps -= _stepsCollected;
+        _stepsCollected = 0;
 
         _allCountAttacks.Clear();
         _restarted = true;
@@ -2040,8 +2127,14 @@ public class NewMainGameplay : MonoBehaviour
             Destroy(_allAttacks[i]);
         }
         _allAttacks.Clear();
+
+
         _allCountAttacks.Clear();
         _restarted = false;
+
+        _windParticle[0].Stop();
+        _windParticle[1].Stop();
+        _snowParticle.Stop();
 
         if(Main._onWorldGlobal == 0 && _idStage == 1)
         {
@@ -2086,7 +2179,7 @@ public class NewMainGameplay : MonoBehaviour
 
         }
 
-        if (Main._onWorldGlobal == 3 && _idStage == 1)
+        if (Main._onWorldGlobal == 3 && _idStage == 3)
         {
             ComicController.Instance._imagesID.Add(17);
             ComicController.Instance._imagesID.Add(18);
@@ -2108,7 +2201,7 @@ public class NewMainGameplay : MonoBehaviour
         }
 
 
-        if (Main._onWorldGlobal == 4 && _idStage == 1)
+        if (Main._onWorldGlobal == 4 && _idStage == 3)
         {
             ComicController.Instance._imagesID.Add(23);
             ComicController.Instance._imagesID.Add(24);
@@ -2168,6 +2261,13 @@ public class NewMainGameplay : MonoBehaviour
         }
         _transformed = false;
         MainController.Instance.SaveProgress();
+
+        if (Main._onWorldGlobal == 4 && _idStage == 4)
+        {
+            Main._finalTimerAssets._timer = 30;
+            Main._finalTimerAssets._timerOn = true;
+
+        }
         yield return new WaitForSeconds(0.5f);
 
         MainController.Instance._bordersAnimator.SetBool("BorderOut", true);
@@ -2333,11 +2433,13 @@ public class NewMainGameplay : MonoBehaviour
     }
     public IEnumerator ElectroNumerator()
     {
+        var sfx = SFXscript.Instance;
         _movementAvailable = false;
         var Main = MainController.Instance;
         var HazardInfo = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
         yield return new WaitForSeconds(1);
-
+        sfx.PlaySound(sfx._electricity);
+        sfx.PlaySound(sfx._platform);
         _boulderSwitch._columnObject.GetComponent<ObstaclesScript>()._allObstacles[4].GetComponent<Animator>().SetTrigger("Column");
         for (int z = 0; z < HazardInfo._hazards.Length; z++)
         {
@@ -2444,6 +2546,7 @@ public class NewMainGameplay : MonoBehaviour
                         Main._elementAnimatorAssets._elementText.text = "";
                         Main._elementAnimatorAssets._elementName.text = "";
                         Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
+                        Main._elementAnimatorAssets._center.color = Color.white;
                         _atomsObtained += ElementInfo._elements[i]._quantity;
                         Main._elementAnimatorAssets._center.gameObject.SetActive(true);
                     }
@@ -2456,6 +2559,7 @@ public class NewMainGameplay : MonoBehaviour
                                 Main._elementAnimatorAssets._elementText.color = Main._elementsColor[0];
                                 Main._elementAnimatorAssets._elementText.text = "C";
                                 Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
+                                Main._elementAnimatorAssets._center.color = Main._elementsColor[0];
                                 _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
                                 Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element1");
                                 LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element1"));
@@ -2467,6 +2571,7 @@ public class NewMainGameplay : MonoBehaviour
                                 Main._elementAnimatorAssets._elementText.text = "H";
                                 Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
                                 _slimeInfo._elementsParticles[1] += ElementInfo._elements[i]._quantity;
+                                Main._elementAnimatorAssets._center.color = Main._elementsColor[1];
                                 Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element2");
                                 LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element2"));
                                 break;
@@ -2476,6 +2581,7 @@ public class NewMainGameplay : MonoBehaviour
                                 Main._elementAnimatorAssets._elementText.text = "O";
                                 Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
                                 _slimeInfo._elementsParticles[2] += ElementInfo._elements[i]._quantity;
+                                Main._elementAnimatorAssets._center.color = Main._elementsColor[2];
                                 Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element3");
                                 LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element3"));
                                 break;
@@ -2485,6 +2591,7 @@ public class NewMainGameplay : MonoBehaviour
                                 Main._elementAnimatorAssets._elementText.text = "Fe";
                                 Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
                                 _slimeInfo._elementsParticles[3] += ElementInfo._elements[i]._quantity;
+                                Main._elementAnimatorAssets._center.color = Main._elementsColor[3];
                                 Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element4");
                                 LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element4"));
                                 break;
@@ -2620,9 +2727,9 @@ public class NewMainGameplay : MonoBehaviour
                     yield return new WaitForSeconds(1);
                     Main._tutorialAssets._continueText.gameObject.SetActive(true);
                     yield return new WaitForSeconds(0.25f);
-                              MainController.Instance._saveLoadValues._totalSteps++;
-                Debug.Log("Steps en: " + _stepsList[i].ToString());
-                Destroy(_allSteps[i]);
+                    _stepsCollected++;
+                    MainController.Instance._saveLoadValues._totalSteps++;
+                    Destroy(_allSteps[i]);
                 _allSteps.RemoveAt(i);
                 _stepsList.RemoveAt(i);    
                     while (!Input.GetButtonDown("Submit"))
@@ -2636,7 +2743,8 @@ public class NewMainGameplay : MonoBehaviour
                 }
                 else
                 {
-                    MainController.Instance._saveLoadValues._totalSteps++;
+                    _stepsCollected++;         
+                    MainController.Instance._saveLoadValues._totalSteps++; 
                     Debug.Log("Steps en: " + _stepsList[i].ToString());
                     Destroy(_allSteps[i]);
                     _allSteps.RemoveAt(i);
@@ -2656,7 +2764,9 @@ public class NewMainGameplay : MonoBehaviour
     public void TransformSlimeVoid()
     {
         var Main = MainController.Instance;
-    
+        int stageIndex = Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage];
+
+
         if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[3] >= 1)
         {
             itTransforms = true;
@@ -2681,9 +2791,13 @@ public class NewMainGameplay : MonoBehaviour
         }
         else if (_slimeInfo._elementsParticles[1] >= 2 && _slimeInfo._elementsParticles[2] >= 1)
         {
-            switch (MainController.Instance._onWorldGlobal)
+            switch (stageIndex)
             {
-                case 2:
+                case 11:
+                case 12:                
+                case 14:
+                case 15:
+                case 16:          
                     itTransforms = true;
                     _slimeInfo._slimeID = 4;
 
@@ -2797,7 +2911,8 @@ public class NewMainGameplay : MonoBehaviour
         var Main = MainController.Instance;
         Main._saveLoadValues._progressSave[7] = true;
         Main._scriptSFX.PlaySound(Main._scriptSFX._slimeRelease);
-        Debug.Log("CORRECT FUSION");
+        int stageIndex = Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage];
+
         if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[3] >= 1)
         {
             itTransforms = true;
@@ -2822,9 +2937,14 @@ public class NewMainGameplay : MonoBehaviour
         }
         else if (_slimeInfo._elementsParticles[1] >= 2 && _slimeInfo._elementsParticles[2] >= 1)
         {
-            switch (MainController.Instance._onWorldGlobal)
+            switch (stageIndex)
             {
-                case 2:
+                case 11:
+                case 12:
+                case 13:
+                case 14:
+                case 15:
+                case 16:
                     itTransforms = true;
                     _slimeInfo._slimeID = 4;
 
@@ -3092,7 +3212,7 @@ public class NewMainGameplay : MonoBehaviour
         _elementsBool.Clear();
         MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
         MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
-
+        MainController.Instance._saveLoadValues._totalSteps += _stepsCollected;
         yield return new WaitForSeconds(1);
         switch (_idStage == Main._allTurnsInfo[Main._onWorldGlobal]._stagesID.Count - 1)
         {
@@ -3139,6 +3259,7 @@ public class NewMainGameplay : MonoBehaviour
             case 4:
                 if (MainController.Instance._onWorldGlobal == 4 && _idStage == MainController.Instance._allTurnsInfo[4]._stagesID.Count - 1)
                 {
+                    MainController.Instance._finalTimerAssets._timerOn = false;
                     ComicController.Instance._imagesID.Add(25);
                     ComicController.Instance._imagesID.Add(26);
                     ComicController.Instance._imagesID.Add(27);
@@ -3164,9 +3285,6 @@ public class NewMainGameplay : MonoBehaviour
         MainController.Instance._saveLoadValues._restartAvailable = true;
         MainController.Instance._introSpecial = true;
         MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
-
-
-        //MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
         _AtomsPanelOn = false;
         MainController.Instance._AtomAnimator.SetBool("AtomsIn", false);
         switch (MainController.Instance._onWorldGlobal)
@@ -3235,6 +3353,53 @@ public class NewMainGameplay : MonoBehaviour
         rt.anchoredPosition = Vector2.zero;
     }
 
+    public void FinalTimerVoid()
+    {
+        MainController.Instance._finalTimerAssets._timerText.gameObject.SetActive(MainController.Instance._finalTimerAssets._timerOn);
+        if (MainController.Instance._finalTimerAssets._timerOn && !_AtomsPanelOn && !MainController.Instance._exitAssets._exitPanelOn)
+        {
+            MainController.Instance._finalTimerAssets._timer -= Time.deltaTime;
+            MainController.Instance._finalTimerAssets._timerText.text = MainController.Instance._finalTimerAssets._timer.ToString("f2");
+            if (MainController.Instance._finalTimerAssets._timer <= 0 && !_timerEnds)
+            {
+                StartCoroutine(TimerExitNumerator());
+            }
+        }
+
+  
+    }
+
+    public IEnumerator TimerExitNumerator()
+    {
+        _timerEnds = true;
+        var Main = MainController.Instance;
+        MainController.Instance._finalTimerAssets._timerOn = false;
+        SFXscript.Instance._fireSetVolume = 0f;
+        SFXscript.Instance._strongWindSetVolume = 0f;
+        _slimeObject.GetComponent<Animator>().Play("SlimeDies");
+        Main._scriptMusic._audioBGM.Stop();
+        Main._scriptSFX.PlaySound(Main._scriptSFX._slimeDead);
+        _deadSlimeParticle.Play();
+        _gameStarts = false;
+        MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
+        _AtomsPanelOn = false;
+        MainController.Instance._AtomAnimator.SetBool("AtomsIn", false);
+        StopMoveCoroutine();
+        _movementAvailable = false;
+        yield return new WaitForSeconds(0.5f);
+        MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
+        MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
+        MainController.Instance._saveLoadValues._totalSteps += _stepsCollected;
+        MainController.Instance.SaveProgress();
+        MainController.Instance._scriptMusic._audioBGM.Play();
+        Main._finalTimerAssets._timerText.gameObject.SetActive(false);
+        Main._scriptMusic._audioBGM.clip = Main._scriptMusic._allThemes[6];
+        Main._scriptMusic._audioBGM.Play();
+        yield return new WaitForSeconds(1);
+        Main._cinematicBorders.SetBool("FadeIn", false);
+        MainController.Instance.LoadSceneByName("IntroScene");
+
+    }
 
 
 

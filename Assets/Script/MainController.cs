@@ -220,6 +220,15 @@ public class MainController : MonoBehaviour
     }
     public AtomPanelInfo _atomPanelInfo;
 
+    [System.Serializable]
+    public class FinalTimerAssets
+    {
+        public float _timer;
+        public TextMeshProUGUI _timerText;
+        public bool _timerOn;
+    }
+    public FinalTimerAssets _finalTimerAssets;
+
     void Awake()
     {
         if (Instance == null)
@@ -272,69 +281,42 @@ public class MainController : MonoBehaviour
 
     public void SetStagesID()
     {
-
         _allTurnsInfo[0]._stagesID = new List<int> { 0, 1, 2, 3, 4 };
-        //_allTurnsInfo[0]._stagesID = new List<int> { 0};
-        List<int> posiblesNumeros = new List<int> { 6, 7, 8, 9, 10, 11, 12, 16, 18, 19 };
+        _allTurnsInfo[1]._stagesID = new List<int> { 5, 6, 7, 8, 9, 10 };
+        _allTurnsInfo[2]._stagesID = new List<int> { 11, 12, 13, 14, 15, 16 };
+        _allTurnsInfo[3]._stagesID = new List<int> { 17, 18, 19, 20, 21, 22 };
 
+        // ----- TURNO 4 RANDOM -----
+        List<int> possibleStages = new List<int> { 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
+        List<int> bossPosibleStages = new List<int> {21, 22, 23, 24, 25 };
 
-        _allTurnsInfo[1]._stagesID.Add(6);
-        _allTurnsInfo[1]._stagesID.Add(7);     
-        _allTurnsInfo[1]._stagesID.Add(12);
-        //_allTurnsInfo[1]._stagesID.Add(11);
-        _allTurnsInfo[1]._stagesID.Add(26);
-        _allTurnsInfo[1]._stagesID.Add(25);
+        List<int> randomStages = new List<int>();
+        List<int> bossRandomStages = new List<int>();
 
-
-        //_allTurnsInfo[2]._stagesID.Add(13);
-        //_allTurnsInfo[2]._stagesID.Add(Random.Range(6, 12));
-        //_allTurnsInfo[2]._stagesID.Add(14);
-        //_allTurnsInfo[2]._stagesID.Add(Random.Range(6, 12));
-        //_allTurnsInfo[2]._stagesID.Add(28);
-        _allTurnsInfo[2]._stagesID.Add(8);
-        _allTurnsInfo[2]._stagesID.Add(9);
-  
-
-        //_allTurnsInfo[2]._stagesID.Add(26);
-        //_allTurnsInfo[2]._stagesID.Add(26);
-
-        //for (int i = 0; i < 2; i++)
-        //{
-        //    int randomIndex = Random.Range(0, posiblesNumeros.Count);
-        //    _allTurnsInfo[2]._stagesID.Add(posiblesNumeros[randomIndex]);
-        //}
-        //_allTurnsInfo[2]._stagesID.Add(17);
-        //_allTurnsInfo[2]._stagesID.Add(15);
-        //_allTurnsInfo[2]._stagesID.Add(28);
-
-        _allTurnsInfo[3]._stagesID.Add(16);
-        _allTurnsInfo[3]._stagesID.Add(29);
-        _allTurnsInfo[3]._stagesID.Add(30);
-        //_allTurnsInfo[3]._stagesID.Add(17);
-        //_allTurnsInfo[3]._stagesID.Add(18);
-        //_allTurnsInfo[3]._stagesID.Add(19);
-        //for (int i = 0; i < 6; i++)
-        //{
-        //    int randomIndex = Random.Range(0, posiblesNumeros.Count);
-        //    _allTurnsInfo[3]._stagesID.Add(posiblesNumeros[randomIndex]);
-        //}
-        //_allTurnsInfo[3]._stagesID.Add(29);
-        //_allTurnsInfo[3]._stagesID.Add(30);
-
-
-
-
-
-        List<int> LastposiblesNumeros = new List<int> { 6, 7, 8, 9, 10, 11, 12, 16, 17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30 };
-        for (int i = 0; i < 1; i++)
+        for (int i = 0; i < 4; i++)
         {
-            int randomIndex = Random.Range(0, LastposiblesNumeros.Count);
-            _allTurnsInfo[4]._stagesID.Add(LastposiblesNumeros[randomIndex]);
+            int randomIndex = Random.Range(0, possibleStages.Count);
+            randomStages.Add(possibleStages[randomIndex]);
+            possibleStages.RemoveAt(randomIndex);
         }
+
+        for (int i = 0; i < 5; i++)
+        {
+            int bossRandomIndex = Random.Range(0, bossPosibleStages.Count);
+            bossRandomStages.Add(bossPosibleStages[bossRandomIndex]); // ✅ lista correcta
+            bossPosibleStages.RemoveAt(bossRandomIndex);
+        }
+
+        // Inicializas la lista del turno 4
+        _allTurnsInfo[4]._stagesID = new List<int>();
+
+        // Agregas todo en orden
+        _allTurnsInfo[4]._stagesID.AddRange(randomStages);
+        _allTurnsInfo[4]._stagesID.AddRange(bossRandomStages);
 
     }
 
- 
+
 
     public void LoadSceneByName(string sceneName) => SceneManager.LoadScene(sceneName);
 

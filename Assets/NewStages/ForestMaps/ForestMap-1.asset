@@ -20,12 +20,12 @@ MonoBehaviour:
     _elementType: 0
     _quantity: 1
     _changed: 0
-    _emptyAtom: 0
+    _emptyAtom: 1
   - _onPlace: 7
     _elementType: 2
     _quantity: 2
     _changed: 0
-    _emptyAtom: 0
+    _emptyAtom: 1
   _hazards:
   - _onPlace: 14
     _hazards: 0
@@ -47,6 +47,6 @@ MonoBehaviour:
     _hazards: 1
     _rotation: 0
     _finished: 0
-  _stepsPlace: 
+  _stepsPlace: 1000000017000000
   _bossAssets: []
   _wind: 1

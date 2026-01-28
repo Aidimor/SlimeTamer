@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 06444818b2c5c5245a52126020660b89, type: 3}
-  m_Name: Boss1
+  m_Name: Boss-Dessert
   m_EditorClassIdentifier: 
   _spawnPoint: 2
   _exitPoint: 17

@@ -19,11 +19,12 @@ MonoBehaviour:
   _hazards:
   - _onPlace: 14
     _hazards: 1
+    _rotation: 0
     _finished: 0
   - _onPlace: 23
     _hazards: 1
+    _rotation: 0
     _finished: 0
-  _atomPlace: 14000000
-  _stepsPlace: 1100000003000000
+  _stepsPlace: 0300000015000000
   _bossAssets: []
   _wind: 1
