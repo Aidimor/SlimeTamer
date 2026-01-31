@@ -3,7 +3,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
-using LoL;  // <- necesario para GameInitScript
+using LoL;
 using LoLSDK;
 
 public class NewMainGameplay : MonoBehaviour
@@ -147,6 +147,8 @@ public class NewMainGameplay : MonoBehaviour
     bool joystickEnUso = false;
     public int _stepsCollected;
     public bool _timerEnds = false;
+    public bool _beingPushed;
+
     void Start()
     {   
         StartVoids();
@@ -351,11 +353,12 @@ public class NewMainGameplay : MonoBehaviour
                     Main._tutorialAssets._tutorialText.text = gi.GetText("tutorial0");
 
 
-                    string key = "tutorial0";                 
-                    // SpeakText necesita la KEY, no el ID
+                    string key = "tutorial0";
+                    //string text = GameInitScript.Instance.GetText(key);
                     string speakKey = key;
-                    yield return new WaitForSeconds(0.2f);
                     LOLSDK.Instance.SpeakText(speakKey);
+
+                    yield return new WaitForSeconds(0.2f);                
                     SFXscript.Instance.PlaySound(SFXscript.Instance._next);
                     Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
                     Main._tutorialAssets._arrowsParent.SetActive(true);
@@ -363,7 +366,12 @@ public class NewMainGameplay : MonoBehaviour
                     Main._tutorialAssets._atomParent.SetActive(false);
                     yield return new WaitForSeconds(1);
                     Main._tutorialAssets._continueText.gameObject.SetActive(true);
-                    yield return new WaitForSeconds(0.25f);
+                    yield return new WaitForSeconds(0.25f);          
+                   
+                  
+                
+                  
+
                     while (!Input.GetButtonDown("Submit"))
                     {
                         yield return null;
@@ -398,10 +406,12 @@ public class NewMainGameplay : MonoBehaviour
                     Main._tutorialAssets._tutorialText.text = gi.GetText("tutorial5");
 
                     string key = "tutorial5";
-                    // SpeakText necesita la KEY, no el ID
+                    //string text = GameInitScript.Instance.GetText(key);
                     string speakKey = key;
-                    yield return new WaitForSeconds(0.2f);
                     LOLSDK.Instance.SpeakText(speakKey);
+
+                    yield return new WaitForSeconds(0.2f);
+                  
                     SFXscript.Instance.PlaySound(SFXscript.Instance._next);
                     Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
                     Main._tutorialAssets._arrowsParent.SetActive(false);
@@ -425,11 +435,12 @@ public class NewMainGameplay : MonoBehaviour
                     yield return new WaitForSeconds(1);
                     Main._tutorialAssets._tutorialText.text = gi.GetText(("hazard") + Main._onWorldGlobal.ToString());
 
-                    string key = "hazard" + Main._onWorldGlobal.ToString();
-                    // SpeakText necesita la KEY, no el ID
+                    string key = "hazard" + Main._onWorldGlobal.ToString();                      
                     string speakKey = key;
-                    yield return new WaitForSeconds(0.2f);
                     LOLSDK.Instance.SpeakText(speakKey);
+
+                    yield return new WaitForSeconds(0.2f);
+        
                     SFXscript.Instance.PlaySound(SFXscript.Instance._next);
                     Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
                     Main._tutorialAssets._arrowsParent.SetActive(false);
@@ -454,6 +465,10 @@ public class NewMainGameplay : MonoBehaviour
 
         }
 
+        //if(stage._bossAssets.Length > 0)
+        //{
+        //    SFXscript.Instance.PlaySound(SFXscript.Instance._roar);
+        //}
         Main._tutorialAssets._tutorialDeployed = true;
 
         var StageInfo2 = Main._allTurnsInfo[Main._onWorldGlobal];
@@ -470,8 +485,10 @@ public class NewMainGameplay : MonoBehaviour
         }
         CalculateMoves();
         yield return new WaitForSeconds(1);
+        SFXscript.Instance.PlaySound(SFXscript.Instance._chooseElement);
         _slimeObject.GetComponent<Animator>().Play("SlimeEnters");
         yield return new WaitForSeconds(0.5f);
+
         _turnToStorm = 5;
         _gameStarts = true;
              _movementAvailable = true;
@@ -604,17 +621,20 @@ public class NewMainGameplay : MonoBehaviour
                         Main._elementAnimatorAssets._center.color = Main._elementsColor[0];
                         Main._elementAnimatorAssets._quantityText.text = "";              
                                 Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element1");
-                                LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element1"));
-
                        
-        
-           
-                
-           
-                         
-  
-                          
-                        
+
+
+                        string key = "element1".ToString();
+                        //string text = GameInitScript.Instance.GetText(key);
+                        string speakKey = key;
+                        LOLSDK.Instance.SpeakText(speakKey);
+
+
+
+
+
+
+
                     }
                     break;
                 case 2:
@@ -629,7 +649,11 @@ public class NewMainGameplay : MonoBehaviour
                         Main._elementAnimatorAssets._center.color = Main._elementsColor[3];
                         Main._elementAnimatorAssets._quantityText.text = "";
                         Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element4");
-                        LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element4"));
+
+                        string key = "element4".ToString();
+                        //string text = GameInitScript.Instance.GetText(key);
+                        string speakKey = key;
+                        LOLSDK.Instance.SpeakText(speakKey);
                     }
                     break;
                  
@@ -645,8 +669,13 @@ public class NewMainGameplay : MonoBehaviour
                         Main._elementAnimatorAssets._center.color = Main._elementsColor[2];
                         Main._elementAnimatorAssets._quantityText.text = "";
                         Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element3");
-                LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element3"));
-            }
+
+
+                        string key = "element3".ToString();
+                        //string text = GameInitScript.Instance.GetText(key);
+                        string speakKey = key;
+                        LOLSDK.Instance.SpeakText(speakKey);
+                    }
                     break;
             
                 case 4:
@@ -663,7 +692,11 @@ public class NewMainGameplay : MonoBehaviour
                         Main._elementAnimatorAssets._center.color = Main._elementsColor[1];
                         Main._elementAnimatorAssets._quantityText.text = "";
                         Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element2");
-                        LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element2"));
+
+                        string key = "element2".ToString();
+                        //string text = GameInitScript.Instance.GetText(key);
+                        string speakKey = key;
+                        LOLSDK.Instance.SpeakText(speakKey);
                     }
                     break;
             }
@@ -1390,7 +1423,7 @@ public class NewMainGameplay : MonoBehaviour
                     _bossAnimator.SetTrigger("Attack");
                     _tentacleAssets[_onCamera]._tentacle
                         .SetTrigger("TentacleIn");
-
+                    SFXscript.Instance.PlaySound(SFXscript.Instance._slimeArrives);
                     //ReduceCounter();
                     for (int y = 0; y < CurrentGrounds._groundAttacks.Length; y++)
                     {
@@ -1483,7 +1516,7 @@ public class NewMainGameplay : MonoBehaviour
             _movementSpeed * Time.deltaTime
         );
 
-        if (_movementAvailable) {
+        if (_movementAvailable && !_beingPushed) {
             // Reset input
             if (Input.GetAxisRaw("Horizontal") == 0 &&
             Input.GetAxisRaw("Vertical") == 0)
@@ -1663,6 +1696,7 @@ public class NewMainGameplay : MonoBehaviour
         // ==========================
 
         _movementAvailable = false;
+    
         _slimeAnimator.SetBool("Moving", true);
 
         yield return new WaitForSeconds(0.5f);
@@ -1719,7 +1753,7 @@ public class NewMainGameplay : MonoBehaviour
                             case NewGameEvent.Wind.Left:
                                 if (_windParticle != null && _windParticle.Length > 0 && _windParticle[0] != null)
                                     _windParticle[0].Play();
-                        
+                                _beingPushed = true;
 
                                 yield return new WaitForSeconds(0.25f);
 
@@ -1735,13 +1769,14 @@ public class NewMainGameplay : MonoBehaviour
 
                                 yield return new WaitForSeconds(0.25f);
                                 Main._scriptSFX._strongWindSetVolume = 0;
+                                _beingPushed = false;
                                 break;
 
                             case NewGameEvent.Wind.Right:
                                 if (_windParticle != null && _windParticle.Length > 1 && _windParticle[1] != null)
                                     _windParticle[1].Play();
-                         
 
+                                _beingPushed = true;
                                 yield return new WaitForSeconds(0.25f);
 
                                 if (_movesAvailable != null &&
@@ -1753,9 +1788,10 @@ public class NewMainGameplay : MonoBehaviour
                                     Main._scriptSFX._strongWind.volume = 0.7f;
                                     _onPose--;
                                 }
-                          
+
                                 yield return new WaitForSeconds(0.25f);
                                 Main._scriptSFX._strongWindSetVolume = 0f;
+                                _beingPushed = false;
                                 break;
                         }
                     }
@@ -1767,7 +1803,7 @@ public class NewMainGameplay : MonoBehaviour
                     }
 
                     CalculateMoves();
-                    AtomDetection();
+                    StartCoroutine(AtomDetection());
                     StartCoroutine(ElementDetection());
                     HazardDetection();
                     StepDetection();
@@ -1828,6 +1864,11 @@ public class NewMainGameplay : MonoBehaviour
                     Main._elementsCircles[1]._elementLetters.text = "O";
                     Main._elementsCircles[1]._elementLetters.color = Main._elementsColor[2];
                     Main._elementsCircles[1]._quantity.text = "";
+
+                    //string key1 = "tutorial6".ToString();
+                    //string speakKey1 = key1;
+                    //LOLSDK.Instance.SpeakText(speakKey1);
+
                 }
 
                 Main._dataTexts[0].text = GameInitScript.Instance.GetText("snow1");
@@ -1835,6 +1876,11 @@ public class NewMainGameplay : MonoBehaviour
 
                 MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("ICEextra");
                 MainController.Instance._nameText.text = GameInitScript.Instance.GetText("ICE");
+
+                string key = "ICE".ToString();
+                string speakKey = key;
+                LOLSDK.Instance.SpeakText(speakKey);
+
 
                 if (_waterWalk != null) _waterWalk.Play();
                 if (_smoke != null) _smoke.Stop();
@@ -1962,6 +2008,11 @@ public class NewMainGameplay : MonoBehaviour
             Main._tutorialAssets._elementsParent.SetActive(false);
             Main._tutorialAssets._atomParent.SetActive(true);
             Main._tutorialAssets._stepParent.SetActive(false);
+
+            string key = "tutotrial1".ToString();
+            //string text = GameInitScript.Instance.GetText(key);
+            string speakKey = key;
+            LOLSDK.Instance.SpeakText(speakKey);
             yield return new WaitForSeconds(1);
             Main._tutorialAssets._continueText.gameObject.SetActive(true);
             yield return new WaitForSeconds(0.25f);
@@ -2383,8 +2434,18 @@ public class NewMainGameplay : MonoBehaviour
                                 Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("water1");
                                 Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("water2");
 
-                                MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("H20extra");
-                                MainController.Instance._nameText.text = GameInitScript.Instance.GetText("H20");
+                                MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("H2Oextra");
+                                MainController.Instance._nameText.text = GameInitScript.Instance.GetText("H2O");
+
+  
+                                string key = "H2O".ToString();
+                                //string text = GameInitScript.Instance.GetText(key);
+                                string speakKey = key;
+                                LOLSDK.Instance.SpeakText(speakKey);
+
+                        
+                         
+
 
                                 _waterWalk.Play();
                                 _smoke.Stop();
@@ -2392,7 +2453,7 @@ public class NewMainGameplay : MonoBehaviour
 
                                 break;
                         }  
-                        Debug.Log("Fire");
+  
                
                         break;
                 case NewGameEvent.Hazards.HazardsType.Hole:
@@ -2401,7 +2462,7 @@ public class NewMainGameplay : MonoBehaviour
                             StartCoroutine(RestartLevel());
                         }                 
                             
-                            Debug.Log("Hole");
+                         
                  
                         break;
                  case NewGameEvent.Hazards.HazardsType.Switch:
@@ -2425,7 +2486,7 @@ public class NewMainGameplay : MonoBehaviour
                             }
                         }                       
                        
-                        Debug.Log("Switch");
+                   
                         break;
                  case NewGameEvent.Hazards.HazardsType.Column:
                      break;
@@ -2557,10 +2618,15 @@ public class NewMainGameplay : MonoBehaviour
                         Main._tutorialAssets._elementsParent.SetActive(true);
                         Main._tutorialAssets._atomParent.SetActive(false);
                         Main._tutorialAssets._stepParent.SetActive(false);
+
+                        string key = "tutorial2".ToString();
+                        string speakKey = key;
+                        LOLSDK.Instance.SpeakText(speakKey);
+
                         yield return new WaitForSeconds(1);
                         Main._tutorialAssets._continueText.gameObject.SetActive(true);
-                        yield return new WaitForSeconds(0.25f);
-                        yield return new WaitForSeconds(0.25f);
+                        yield return new WaitForSeconds(0.5f);
+              
                         while (!Input.GetButtonDown("Submit"))
                         {
                             yield return null;
@@ -2569,6 +2635,7 @@ public class NewMainGameplay : MonoBehaviour
                         Main._tutorialAssets._continueText.gameObject.SetActive(false);
                         Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
                         Main._saveLoadValues._elementTutorial = true;
+
                     }
 
                     if (ElementInfo._elements[i]._emptyAtom)
@@ -2585,10 +2652,15 @@ public class NewMainGameplay : MonoBehaviour
                             Main._tutorialAssets._elementsParent.SetActive(false);
                             Main._tutorialAssets._atomParent.SetActive(true);
                             Main._tutorialAssets._stepParent.SetActive(false);
+
+                            string key = "tutorialatom".ToString();
+                            string speakKey = key;
+                            LOLSDK.Instance.SpeakText(speakKey);
+
                             yield return new WaitForSeconds(1);
                             Main._tutorialAssets._continueText.gameObject.SetActive(true);
-                            yield return new WaitForSeconds(0.25f);
-                            yield return new WaitForSeconds(0.25f);
+                            yield return new WaitForSeconds(0.5f);
+                     
                             while (!Input.GetButtonDown("Submit"))
                             {
                                 yield return null;
@@ -2599,6 +2671,11 @@ public class NewMainGameplay : MonoBehaviour
                             Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
                             Main._saveLoadValues._atomTutorial = true;
                             Main._saveLoadValues._pauseAvailable = true;
+
+
+                            string key1 = "atom".ToString();
+                            string speakKey1 = key;
+                            LOLSDK.Instance.SpeakText(speakKey1);
                         }
 
                         _movementAvailable = true;
@@ -2624,7 +2701,11 @@ public class NewMainGameplay : MonoBehaviour
                                 _slimeInfo._elementsParticles[0] += ElementInfo._elements[i]._quantity;
                                 Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element1");
                                 LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element1"));
-                           
+
+                                string key = "element1".ToString();              
+                                string speakKey = key;
+                                LOLSDK.Instance.SpeakText(speakKey);
+
                                 break;
                             case NewGameEvent.Elements.ElementType.H:
                                 Main._elementAnimatorAssets._border.color = Main._elementsColor[1];
@@ -2635,6 +2716,10 @@ public class NewMainGameplay : MonoBehaviour
                                 Main._elementAnimatorAssets._center.color = Main._elementsColor[1];
                                 Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element2");
                                 LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element2"));
+
+                                string key1 = "element2".ToString();
+                                string speakKey1 = key1;
+                                LOLSDK.Instance.SpeakText(speakKey1);
                                 break;
                             case NewGameEvent.Elements.ElementType.O:
                                 Main._elementAnimatorAssets._border.color = Main._elementsColor[2];
@@ -2645,6 +2730,10 @@ public class NewMainGameplay : MonoBehaviour
                                 Main._elementAnimatorAssets._center.color = Main._elementsColor[2];
                                 Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element3");
                                 LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element3"));
+
+                                string key2 = "element3".ToString();
+                                string speakKey2 = key2;
+                                LOLSDK.Instance.SpeakText(speakKey2);
                                 break;
                             case NewGameEvent.Elements.ElementType.Fe:
                                 Main._elementAnimatorAssets._border.color = Main._elementsColor[3];
@@ -2655,6 +2744,10 @@ public class NewMainGameplay : MonoBehaviour
                                 Main._elementAnimatorAssets._center.color = Main._elementsColor[3];
                                 Main._elementAnimatorAssets._elementName.text = GameInitScript.Instance.GetText("element4");
                                 LOLSDK.Instance.SpeakText(GameInitScript.Instance.GetText("element4"));
+
+                                string key3 = "element4".ToString();
+                                string speakKey3 = key3;
+                                LOLSDK.Instance.SpeakText(speakKey3);
                                 break;
                         }
                  
@@ -2726,6 +2819,12 @@ public class NewMainGameplay : MonoBehaviour
                     Main._tutorialAssets._elementsParent.SetActive(false);
                     Main._tutorialAssets._atomParent.SetActive(true);
                     Main._tutorialAssets._stepParent.SetActive(false);
+
+                    string key = gi.GetText("tutorial4").ToString();
+                    //string text = GameInitScript.Instance.GetText(key);
+                    string speakKey = key;
+                    LOLSDK.Instance.SpeakText(speakKey);
+
                     yield return new WaitForSeconds(1);
                     Main._tutorialAssets._continueText.gameObject.SetActive(true);
                     yield return new WaitForSeconds(0.25f);
@@ -2752,11 +2851,16 @@ public class NewMainGameplay : MonoBehaviour
                 {
                   
                     MainController.Instance._saveLoadValues._totalAtoms += _allAtoms[i].GetComponent<AtomScript>()._quantity;
-                    Debug.Log("Atomo en: " + _allAtoms[i].GetComponent<AtomScript>()._onPose.ToString());
+        
                     Destroy(_allAtoms[i]);
                     _allAtoms.RemoveAt(i);
-                    //_atomList.RemoveAt(i);
+        
                     _atomsObtained++;
+
+                    string key = ("atom").ToString();
+                    //string text = GameInitScript.Instance.GetText(key);
+                    string speakKey = key;
+                    LOLSDK.Instance.SpeakText(speakKey);
                 }
             }
 
@@ -2785,6 +2889,11 @@ public class NewMainGameplay : MonoBehaviour
                     Main._tutorialAssets._elementsParent.SetActive(false);
                     Main._tutorialAssets._atomParent.SetActive(false);
                     Main._tutorialAssets._stepParent.SetActive(true);
+
+                    string key = "tutorial3".ToString();
+                    string speakKey = key;
+                    LOLSDK.Instance.SpeakText(speakKey);
+
                     yield return new WaitForSeconds(1);
                     Main._tutorialAssets._continueText.gameObject.SetActive(true);
                     yield return new WaitForSeconds(0.25f);
@@ -2848,6 +2957,10 @@ public class NewMainGameplay : MonoBehaviour
 
             MainController.Instance._nameText.text = GameInitScript.Instance.GetText("FC");
             MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("FCextra");
+            string key = "FC".ToString();
+            string speakKey = key;
+            LOLSDK.Instance.SpeakText(speakKey);
+
             StartCoroutine(TransormatioNumerator());
         }
         else if (_slimeInfo._elementsParticles[1] >= 2 && _slimeInfo._elementsParticles[2] >= 1)
@@ -2880,6 +2993,9 @@ public class NewMainGameplay : MonoBehaviour
                
                     _waterWalk.Play();
                     _smoke.Stop();
+                    string key0 = "ICE".ToString();
+                    string speakKey0 = key0;
+                    LOLSDK.Instance.SpeakText(speakKey0);
                     StartCoroutine(TransormatioNumerator());
                     _turnsReturnToWater = -1;
                     break;
@@ -2902,7 +3018,9 @@ public class NewMainGameplay : MonoBehaviour
 
                     MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("H2Oextra");
                     MainController.Instance._nameText.text = GameInitScript.Instance.GetText("H2O");
-            
+                    string key = "H2O".ToString();
+                    string speakKey = key;
+                    LOLSDK.Instance.SpeakText(speakKey);
                     _waterWalk.Play();
                     _smoke.Stop();
                     StartCoroutine(TransormatioNumerator());
@@ -2932,6 +3050,9 @@ public class NewMainGameplay : MonoBehaviour
             _smoke.Play();
             _waterWalk.Stop();
             MainController.Instance._nameText.text = GameInitScript.Instance.GetText("CO2");
+            string key = "CO2".ToString();
+            string speakKey = key;
+            LOLSDK.Instance.SpeakText(speakKey);
             StartCoroutine(TransormatioNumerator());
         }
         else if (_slimeInfo._elementsParticles[2] >= 4 && _slimeInfo._elementsParticles[3] >= 3) {
@@ -2957,6 +3078,11 @@ public class NewMainGameplay : MonoBehaviour
             _smoke.Play();
             _waterWalk.Stop();
             MainController.Instance._nameText.text = GameInitScript.Instance.GetText("FE3O4");
+
+            string key = "FE304".ToString();
+            string speakKey = key;
+            LOLSDK.Instance.SpeakText(speakKey);
+
             StartCoroutine(TransormatioNumerator());
         }
         else
@@ -3047,8 +3173,8 @@ public class NewMainGameplay : MonoBehaviour
                     Main._dataTexts[0].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("water1");
                     Main._dataTexts[1].text = MainController.Instance._nameText.text = GameInitScript.Instance.GetText("water2");
 
-                    MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("H20extra");
-                    MainController.Instance._nameText.text = GameInitScript.Instance.GetText("H20");
+                    MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("H2O0extra");
+                    MainController.Instance._nameText.text = GameInitScript.Instance.GetText("H2O");
 
                     _waterWalk.Play();
                     _smoke.Stop();
@@ -3128,7 +3254,7 @@ public class NewMainGameplay : MonoBehaviour
     {
    
         var Main = MainController.Instance;
-        SFXscript.Instance.PlaySound(SFXscript.Instance._slimeCharge);
+        //SFXscript.Instance.PlaySound(SFXscript.Instance._slimeCharge);
         MainController.Instance._AtomAnimator.SetBool("AtomsIn", false);
         _AtomsPanelOn = false;
         _transformed = true;
@@ -3185,6 +3311,11 @@ public class NewMainGameplay : MonoBehaviour
             Main._tutorialAssets._atomParent.SetActive(false);
             Main._tutorialAssets._stepParent.SetActive(false);
             Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+
+            string key = "tutorial6".ToString();
+            string speakKey = key;
+            LOLSDK.Instance.SpeakText(speakKey);
+
             yield return new WaitForSeconds(1);
             Main._tutorialAssets._continueText.gameObject.SetActive(true);
             while (!Input.GetButtonDown("Submit"))
@@ -3198,29 +3329,7 @@ public class NewMainGameplay : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
         }
 
-        if (!MainController.Instance._saveLoadValues._hazardTutorial)
-        {
 
-            var gi = GameInitScript.Instance;
-   
-            Main._tutorialAssets._tutorialText.text = gi.GetText("tutorial6");
-            Main._tutorialAssets._arrowsParent.SetActive(false);
-            Main._tutorialAssets._elementsParent.SetActive(false);
-            Main._tutorialAssets._atomParent.SetActive(false);
-            Main._tutorialAssets._stepParent.SetActive(false);
-            Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
-            yield return new WaitForSeconds(1);
-            Main._tutorialAssets._continueText.gameObject.SetActive(true);
-            while (!Input.GetButtonDown("Submit"))
-            {
-                yield return null;
-            }
-            SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
-            Main._tutorialAssets._continueText.gameObject.SetActive(false);
-            Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
-            MainController.Instance._saveLoadValues._hazardTutorial = true;
-            yield return new WaitForSeconds(0.5f);
-        }
     
 
 
@@ -3302,30 +3411,32 @@ public class NewMainGameplay : MonoBehaviour
         {
             case 0:
                 MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
-                MainController.Instance._onWorldGlobal = 1;
+             
                 MainController.Instance._saveLoadValues._worldsUnlocked[1] = true;
                 break;
             case 1:
-                MainController.Instance._onWorldGlobal = 2;
+      
                 MainController.Instance._saveLoadValues._worldsUnlocked[2] = true;
                 break;
             case 2:
-                MainController.Instance._onWorldGlobal = 3;
+    
                 MainController.Instance._saveLoadValues._worldsUnlocked[3] = true;
                 break;
             case 3:
-                MainController.Instance._onWorldGlobal = 4;
-                MainController.Instance._saveLoadValues._worldsUnlocked[4] = true;
+           
+                MainController.Instance._saveLoadValues._worldsUnlocked[4] = true;           
                 break;
             case 4:
                 if (MainController.Instance._onWorldGlobal == 4 && _idStage == MainController.Instance._allTurnsInfo[4]._stagesID.Count - 1)
                 {
+                    //ComicController.Instance._continuar.text = GameInitScript.Instance.GetText("endgame");
                     MainController.Instance._finalTimerAssets._timerOn = false;
                     ComicController.Instance._imagesID.Add(25);
                     ComicController.Instance._imagesID.Add(26);
                     ComicController.Instance._imagesID.Add(27);
-                    ComicController.Instance._waitSeconds = 2;
+                    ComicController.Instance._waitSeconds = 4;
                     ComicController.Instance._comicOn = true;
+                    MainController.Instance._gameFinished = true;
                     StartCoroutine(ComicController.Instance.ComicStripOn());
                     while (ComicController.Instance._comicOn)
                     {
@@ -3333,7 +3444,7 @@ public class NewMainGameplay : MonoBehaviour
                     }
                     MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
                     yield return new WaitForSeconds(0.5f);
-                    ComicController.Instance._continuar.text = GameInitScript.Instance.GetText("endgame");
+               
                     MainController.Instance._saveLoadValues._progressSave[6] = true;
                     ComicController.Instance._continueParent.gameObject.SetActive(false);
                     ComicController.Instance._comicAnimator.SetBool("ComicOn", false);
@@ -3351,15 +3462,17 @@ public class NewMainGameplay : MonoBehaviour
         switch (MainController.Instance._onWorldGlobal)
         {
             case 0:
-         
+                MainController.Instance._onWorldGlobal = 1;
                 break;
             case 1:
-                //MainController.Instance._scriptMusic.PlayMusic(0);
+                MainController.Instance._onWorldGlobal = 2;
                 break;
             case 2:
+                MainController.Instance._onWorldGlobal = 3;
                 MainController.Instance._scriptMusic.PlayMusic(0);
                 break;
-            case 3:             
+            case 3:
+                MainController.Instance._onWorldGlobal = 4;
                 break;
             case 4:
                 MainController.Instance._scriptMusic.PlayMusic(0);
@@ -3454,7 +3567,7 @@ public class NewMainGameplay : MonoBehaviour
         MainController.Instance.SaveProgress();
       
         Main._finalTimerAssets._timerText.gameObject.SetActive(false);
-        Main._scriptMusic.PlayMusic(6);
+        Main._scriptMusic.PlayMusic(0);
         yield return new WaitForSeconds(1);
         Main._cinematicBorders.SetBool("FadeIn", false);
         MainController.Instance.LoadSceneByName("IntroScene");

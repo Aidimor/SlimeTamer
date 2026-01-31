@@ -886,7 +886,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
         //        _scriptMain._saveLoadValues._hintCoins++;
         //        break;
         //}
-        MainController.Instance.UpdateCurrencyUI();
+     
   
         yield return new WaitForSeconds(1);
  
@@ -916,7 +916,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
 
     public IEnumerator LoseLifeNumerator()
     {
-        MainController.Instance.UpdateCurrencyUI();
+   
         _scriptMain._currencyAnimator.SetTrigger("LoseLife");
         _scriptMain._scriptSFX.PlaySound(_scriptMain._scriptSFX._slimeDead);
         yield return new WaitForSeconds(0.2f);

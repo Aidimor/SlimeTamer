@@ -7,13 +7,13 @@ using LoLSDK;
 using System.Collections.Generic;
 
 // Clase simple de progreso
-//[System.Serializable]
-//public class Progress
-//{
-//    public int currentProgress;
-//    public int maxProgress = 8;
-//    //public int score = 100;
-//}
+[System.Serializable]
+public class Progress
+{
+    public int currentProgress;
+    public int maxProgress = 8;
+    //public int score = 100;
+}
 
 public class MainController : MonoBehaviour
 {
@@ -22,7 +22,7 @@ public class MainController : MonoBehaviour
     public bool _newGameplay;
 
     // --- SISTEMA CENTRALIZADO DE PROGRESO ---
-    //public Progress progress = new Progress();
+    public Progress progress = new Progress();
 
     // --- Referencias a Scripts ---
     public PortraitController _scriptPortrait;
@@ -42,6 +42,7 @@ public class MainController : MonoBehaviour
     [System.Serializable]
     public class SaveLoadValues
     {
+        public int _progress;
         public bool[] _worldsUnlocked = new bool[4] { true, false, false, false };
         public bool[] _progressSave = new bool[8];
         //1 - Start the game
@@ -62,8 +63,8 @@ public class MainController : MonoBehaviour
         public bool _hazardTutorial;
         public bool _atomTutorial;
 
-        public int _progress;
-        public int maxProgress = 8;
+        //public int _progress;
+        //public int maxProgress = 8;
     }
 
     public SaveLoadValues _saveLoadValues;
@@ -217,6 +218,7 @@ public class MainController : MonoBehaviour
             public TextMeshProUGUI _extra;
         }
         public FusionElementsAssets[] _fusionElementAssets;
+    
     }
     public AtomPanelInfo _atomPanelInfo;
 
@@ -229,7 +231,8 @@ public class MainController : MonoBehaviour
     }
     public FinalTimerAssets _finalTimerAssets;
     public TextMeshProUGUI _continuarTutorial;
-
+    public bool _gameFinished;
+    public TextMeshProUGUI _textoBorrar;
     void Awake()
     {
         if (Instance == null)
@@ -250,6 +253,7 @@ public class MainController : MonoBehaviour
         {
             GameInitScript.Instance.mainController = this;
         }
+        //SetIntProgress();
         SetStagesID();
 
 
@@ -259,26 +263,11 @@ public class MainController : MonoBehaviour
     {
         Debug.Log("🚀 MainController: Contenido iniciado.");
         Time.timeScale = 1f;
-        UpdateCurrencyUI();
+    
       
     }
 
-    public void UpdateCurrencyUI()
-    {
-        if (_currencyAssets == null || _currencyAssets.Length < 2 || _saveLoadValues == null)
-        {
-            Debug.LogError("❌ No se puede actualizar la UI.");
-            return;
-        }
 
-        //_currencyAssets[0]._quantityText.text = _saveLoadValues._healthCoins.ToString("f0");
-        //_currencyAssets[1]._quantityText.text = _saveLoadValues._hintCoins.ToString("f0");
-
-        //for(int i = 0; i < _pauseAssets._allSlimeText.Length; i++)
-        //{
-        //    _pauseAssets._allSlimeText[i].gameObject.SetActive(_saveLoadValues._slimeUnlocked[i + 1]);
-        //}
-    }
 
     public void SetStagesID()
     {
@@ -287,7 +276,8 @@ public class MainController : MonoBehaviour
         _allTurnsInfo[2]._stagesID = new List<int> { 11, 12, 13, 14, 15, 16 };
         _allTurnsInfo[3]._stagesID = new List<int> { 17, 18, 19, 20, 21, 22 };
 
-        // ----- TURNO 4 RANDOM -----
+
+         //----- TURNO 4 RANDOM -----
         List<int> possibleStages = new List<int> { 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
         List<int> bossPosibleStages = new List<int> {21, 22, 23, 24, 25 };
 
@@ -378,7 +368,7 @@ public class MainController : MonoBehaviour
         }
 
         // Recalcular progreso
-        SetIntProgress();
+        //SetIntProgress();
         //for (int i = 0; i < _saveLoadValues._progressSave.Length; i++)
         //{
         //    if (_saveLoadValues._progressSave[i])
@@ -388,51 +378,51 @@ public class MainController : MonoBehaviour
         // Sincronizar con Progress
         //progress.currentProgress = _saveLoadValues._progress;
 
-        //// Actualizar en LoadedFullState si existe
+        // Actualizar en LoadedFullState si existe
         //if (GameInitScript.Instance.LoadedFullState != null)
         //    GameInitScript.Instance.LoadedFullState.currentProgress = _saveLoadValues._progress;
-        SubmitProgressToLoL(_saveLoadValues._progress);
+        //SubmitProgressToLoL(_saveLoadValues._progress);
 
         GameInitScript.Instance.SaveGame();
         Debug.Log("💾 Guardado OK.");
     }
 
-    public void SubmitProgressToLoL(int currentProgress, int score = 0)
-    {
-        if (LOLSDK.Instance == null)
-        {
-            Debug.LogWarning("⚠️ LoL SDK no inicializado.");
-            return;
-        }
+    //public void SubmitProgressToLoL(int currentProgress)
+    //{
+    //    if (LOLSDK.Instance == null)
+    //    {
+    //        Debug.LogWarning("⚠️ LoL SDK no inicializado.");
+    //        return;
+    //    }
 
-        int maxProgress = 8;
-        if (currentProgress < _lastReportedProgress)
-            //currentProgress = _lastReportedProgress;
-        currentProgress = _saveLoadValues._progress;
+    //    int maxProgress = 8;
+    //    if (currentProgress < _lastReportedProgress)
+    //        //currentProgress = _lastReportedProgress;
+    //    currentProgress = progress.currentProgress;
 
-        //_lastReportedProgress = currentProgress;
+    //    //_lastReportedProgress = currentProgress;
 
-        LOLSDK.Instance.SubmitProgress(currentProgress, maxProgress, score);
-    }
+    //    LOLSDK.Instance.SubmitProgress(currentProgress, maxProgress);
+    //}
 
-    public void SetCoinsAndSave(int health, int hint)
-    {
-        //_saveLoadValues._healthCoins = health;
-        //_saveLoadValues._hintCoins = hint;
-        UpdateCurrencyUI();
-        SaveProgress();
-        Debug.Log($"Monedas forzadas: Health={health}, Hint={hint}");
-    }
+    //public void SetCoinsAndSave(int health, int hint)
+    //{
 
-    public void SetIntProgress()
-    {
-        _saveLoadValues._progress = 0;
-        for(int i = 0; i < _saveLoadValues._progressSave.Length; i++)
-        {
-            if (_saveLoadValues._progressSave[i])
-            {
-                _saveLoadValues._progress++;
-            }
-        }
-    }
+
+    //    SaveProgress();
+
+    //}
+
+    //public void SetIntProgress()
+    //{
+    //    progress.currentProgress = 0;
+    //    progress.maxProgress = _saveLoadValues._progressSave.Length;
+    //    for(int i = 0; i < _saveLoadValues._progressSave.Length; i++)
+    //    {
+    //        if (_saveLoadValues._progressSave[i])
+    //        {
+    //            progress.currentProgress++;
+    //        }
+    //    }
+    //}
 }

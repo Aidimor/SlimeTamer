@@ -229,6 +229,8 @@ public class PortraitController : MonoBehaviour
 
         _worldBackgroundImage.color =
             Color.Lerp(_worldBackgroundImage.color, _allWorlds[_onWorldPos]._backgroundColor, 2 * Time.deltaTime);
+
+
     }
 
     private void HandleWorldSelection()
@@ -240,6 +242,12 @@ public class PortraitController : MonoBehaviour
                 _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._next);
                 _onWorldPos--;
                 _worldPressed = true;
+
+                string key = "WorldName" + (_onWorldPos + 1).ToString();
+                Debug.Log(key);
+                string text = GameInitScript.Instance.GetText(key);
+                string speakKey = key;
+                LOLSDK.Instance.SpeakText(speakKey);
             }
 
             if (Input.GetAxisRaw("Horizontal") > 0 && !_worldPressed && _onWorldPos < _worldsUnlocked - 1)
@@ -247,6 +255,11 @@ public class PortraitController : MonoBehaviour
                 _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._next);
                 _onWorldPos++;
                 _worldPressed = true;
+
+                string key = "WorldName" + (_onWorldPos + 1).ToString();              
+                //string text = GameInitScript.Instance.GetText(key);
+                string speakKey = key;
+                LOLSDK.Instance.SpeakText(speakKey);
             }
 
             if(Input.GetAxisRaw("Horizontal") == 0)
@@ -290,7 +303,7 @@ public class PortraitController : MonoBehaviour
 
     public IEnumerator StartGame()
     {
-        Debug.Log("empieza");
+        GameInitScript.Instance.SubmitProgressToSDK();
         _gameStarts = true;
         _scriptMainController._cinematicBorders.SetBool("FadeIn", true);
         _scriptMainController._scriptSFX.PlaySound(_scriptMainController._scriptSFX._chooseElement);

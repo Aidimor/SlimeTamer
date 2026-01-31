@@ -37,11 +37,14 @@ namespace LoL
         public bool _atomTutorial;
     }
 
+
+
+
     // 🔥 CLASE HELPER REQUERIDA POR LOL
     [System.Serializable]
     public class GameFullState
     {
-        public int score;
+        //public int score;
         public int currentProgress;
         public int maximumProgress;
         public GameSaveState data;
@@ -53,6 +56,7 @@ namespace LoL
     {
         public static GameInitScript Instance;
 
+        private const int MAX_PROGRESS = 8;
         [Header("Language")]
         public string _languageCode = "en";
         public bool languageReady = false;
@@ -476,32 +480,6 @@ namespace LoL
             }
         }
 
-        // --- Tu método ya existente que aplica el GameSaveState al LoadedFullState
-        //private void OnLoadGameSave(GameSaveState loadedSave)
-        //{
-        //    Debug.Log($"OnLoadGameSave invoked. loadedSave == null? {loadedSave == null}");
-
-        //    if (loadedSave != null)
-        //    {
-        //        LoadedFullState = new GameFullState
-        //        {
-        //            data = loadedSave,
-        //            currentProgress = loadedSave._progress,
-        //            maximumProgress = Mathf.Max(loadedSave._progress, 8)
-        //        };
-
-        //        Debug.Log("OnLoadGameSave: datos cargados desde SDK: " + JsonUtility.ToJson(loadedSave));
-
-        //    }
-        //    else
-        //    {
-        //        LoadedFullState = null;
-        //        Debug.Log("OnLoadGameSave: no había datos (nueva partida).");
-        //    }
-
-        //    StartCoroutine(ApplyLoadedStateWhenReady());
-        //}
-
         private void OnLoadGameSave(GameSaveState loadedSave)
         {
             if (forceNewGame)
@@ -521,7 +499,7 @@ namespace LoL
             {
                 data = loadedSave,
                 currentProgress = loadedSave._progress,
-                maximumProgress = Mathf.Max(loadedSave._progress, 8)
+                maximumProgress = MAX_PROGRESS
             };
 
             StartCoroutine(ApplyLoadedStateWhenReady());
@@ -538,11 +516,9 @@ namespace LoL
         {
             Debug.Log("📂 Esperando inicialización de MainController...");
 
-            // Espera hasta que el MainController de la escena actual esté listo
+            // Espera hasta que MainController y sus valores estén listos
             while (MainController.Instance == null || MainController.Instance._saveLoadValues == null)
-            {
                 yield return null;
-            }
 
             var mc = MainController.Instance;
 
@@ -551,79 +527,66 @@ namespace LoL
                 if (LoadedFullState != null && LoadedFullState.data != null)
                 {
                     GameSaveState loadedData = LoadedFullState.data;
-                    //Debug.Log($"DIAGNÓSTICO INIT: Valor cargado del SDK (Persistente): {loadedData._healthCoins}");
 
-                    // Aplicación del estado (protegida)
-                    try
-                    {
-                        ApplyLoadedState(loadedData, mc);
-                    }
-                    catch (System.Exception exApply)
-                    {
-                        Debug.LogError("ApplyLoadedState: excepción al aplicar estado cargado: " + exApply);
-                    }
+                    // Aplicar al MainController
+                    ApplyLoadedState(loadedData, mc);
 
-                    // Reportar progreso (si corresponde)
-                    try
-                    {
-                        ReportProgressToTeacherApp(LoadedFullState.currentProgress, LoadedFullState.maximumProgress);
-                    }
-                    catch (System.Exception exReport)
-                    {
-                        Debug.LogWarning("ReportProgressToTeacherApp: excepción al reportar progreso: " + exReport);
-                    }
+                    // Actualizar LoadedFullState con los valores correctos
+                    UpdateGameFullState();
+
+                    //Debug.Log($"📂 Estado cargado aplicado. Progress: {LoadedFullState.currentProgress}/{LoadedFullState.maximumProgress}, Score: {LoadedFullState.score}");
                 }
                 else
                 {
-                    // Fallback: no hay guardado -> usar valores por defecto del MainController
                     Debug.Log("DIAGNÓSTICO INIT: LoadedFullState es NULL o no contiene data. Usando valores por defecto de MainController.");
-                    //mc.UpdateCurrencyUI();
+                    UpdateGameFullState();
                 }
             }
             catch (System.Exception ex)
             {
                 Debug.LogError("ApplyLoadedStateWhenReady: excepción inesperada: " + ex);
-                //// Asegurarse que la UI se actualice aunque algo haya fallado
-                //mc.UpdateCurrencyUI();
-            }
-            mc.UpdateCurrencyUI();
-            stateLoaded = true;
-            CheckReadyState();
-            // ⬇️ GUARDA SOLO CUANDO TODO YA ESTÁ LISTO (HARNESS SAFE)
-            if (_pendingForcedReset)
-            {
-                Debug.Log("💾 Guardando estado NUEVO después de StartGame");
-                LOLSDK.Instance.SaveState(LoadedFullState.data);
-                _pendingForcedReset = false;
             }
 
+            stateLoaded = true;
+            CheckReadyState();
+
+          SubmitProgressToSDK();
+
+            // Guardar si se forzó nueva partida
+            if (_pendingForcedReset)
+            {
+                if (LoadedFullState != null && LoadedFullState.data != null)
+                {
+                    Debug.Log("💾 FORZANDO guardado de estado NUEVO después de StartGame");
+                    LOLSDK.Instance.SaveState(LoadedFullState.data);
+                }
+                _pendingForcedReset = false;
+            }
         }
+
 
 
         private void ApplyLoadedState(GameSaveState state, MainController mc)
         {
-            mc._saveLoadValues._progress = state._progress;
-
-            // Asegurar que los arrays de destino existan o re-dimensionarlos si el guardado trae datos.
             var saveValues = mc._saveLoadValues;
 
-            // Worlds Unlocked (y otros arrays)
+            // Worlds Unlocked
             if (state._worldsUnlocked != null)
             {
-                // Solo re-dimensiona si el array del saveValues es null o tiene un tamaño diferente
                 if (saveValues._worldsUnlocked == null || saveValues._worldsUnlocked.Length != state._worldsUnlocked.Length)
                     saveValues._worldsUnlocked = new bool[state._worldsUnlocked.Length];
                 System.Array.Copy(state._worldsUnlocked, saveValues._worldsUnlocked, state._worldsUnlocked.Length);
             }
+
+            // Progress Save
             if (state._progressSave != null)
             {
-                // Solo re-dimensiona si el array del saveValues es null o tiene un tamaño diferente
                 if (saveValues._progressSave == null || saveValues._progressSave.Length != state._progressSave.Length)
                     saveValues._progressSave = new bool[state._progressSave.Length];
                 System.Array.Copy(state._progressSave, saveValues._progressSave, state._progressSave.Length);
             }
 
-
+            saveValues._progress = state._progress;
             saveValues._totalAtoms = state._totalAtoms;
             saveValues._totalSteps = state._totalSteps;
             saveValues._pauseAvailable = state._pauseAvailable;
@@ -633,25 +596,107 @@ namespace LoL
             saveValues._restartAvailable = state._restartAvailable;
             saveValues._atomTutorial = state._atomTutorial;
 
-            mc.UpdateCurrencyUI();
+            // 🔹 Actualizar LoadedFullState después de aplicar el save
+            UpdateGameFullState();
         }
+
 
         // -----------------------------------------------------------------
         // Funciones de Reporte de Progreso y Guardado - Sin cambios
         // -----------------------------------------------------------------
 
-        public void ReportProgressToTeacherApp(int currentProgress, int maxProgress)
+        //public void ReportProgressToTeacherApp(int currentProgress, int maxProgress)
+        //{
+        //    if (maxProgress > 0)
+        //    {
+        //        LOLSDK.Instance.SubmitProgress(currentProgress, maxProgress);
+        //        Debug.Log($"📊 Progreso reportado al maestro: {currentProgress}/{maxProgress}");
+        //    }
+        //    else
+        //    {
+        //        Debug.LogWarning("⚠️ No se pudo reportar progreso: maximumProgress es 0. Asegúrate de definirlo.");
+        //    }
+        //}
+
+        //public void ReportProgressToTeacherApp(int currentProgress, int maxProgress)
+        //{
+        //     maxProgress = MainController.Instance._saveLoadValues._progressSave.Length;
+        //     currentProgress = MainController.Instance._saveLoadValues._progress;
+
+        //    LOLSDK.Instance.SubmitProgress(currentProgress, maxProgress);
+
+        //    Debug.Log($"📊 Progreso reportado al maestro: {currentProgress}/{maxProgress}");
+        //}
+
+        // -----------------------------------------
+        // Actualiza LoadedFullState desde MainController
+        // -----------------------------------------
+        private void UpdateGameFullState()
         {
-            if (maxProgress > 0)
+            if (LoadedFullState == null)
+                LoadedFullState = new GameFullState();
+
+            var save = MainController.Instance._saveLoadValues;
+            if (save == null || save._progressSave == null) return;
+
+            int completed = 0;
+         
+            for (int i = 0; i < save._progressSave.Length; i++)
+                if (save._progressSave[i]) completed++;
+
+            int maxProgress = save._progressSave.Length;
+            //int score = save._totalAtoms;
+            int score = 100;
+
+   
+
+
+            LoadedFullState.currentProgress = completed;
+            LoadedFullState.maximumProgress = MAX_PROGRESS;
+            //LoadedFullState.score = save._totalAtoms;
+
+            // 🔹 Crear un GameSaveState a partir de SaveLoadValues
+            LoadedFullState.data = new GameSaveState
             {
-                LOLSDK.Instance.SubmitProgress(currentProgress, maxProgress);
-                Debug.Log($"📊 Progreso reportado al maestro: {currentProgress}/{maxProgress}");
-            }
-            else
-            {
-                Debug.LogWarning("⚠️ No se pudo reportar progreso: maximumProgress es 0. Asegúrate de definirlo.");
-            }
+                _progress = save._progress,
+                _totalAtoms = save._totalAtoms,
+                _totalSteps = save._totalSteps,
+                _pauseAvailable = save._pauseAvailable,
+                _restartTutorial = save._restartTutorial,
+                _elementTutorial = save._elementTutorial,
+                _hazardTutorial = save._hazardTutorial,
+                _restartAvailable = save._restartAvailable,
+                _atomTutorial = save._atomTutorial,
+                _worldsUnlocked = (bool[])save._worldsUnlocked.Clone(),
+                _progressSave = (bool[])save._progressSave.Clone()
+            };
+            LOLSDK.Instance.SubmitProgress(score, completed, maxProgress);
+
         }
+
+
+        public void SubmitProgressToSDK()
+        {
+            // Esperar un frame para asegurarnos que el SDK esté listo
+            if (MainController.Instance == null) return;
+
+            var save = MainController.Instance._saveLoadValues;
+            if (save == null || save._progressSave == null) return;
+
+            int completed = 0;
+            for (int i = 0; i < save._progressSave.Length; i++)
+                if (save._progressSave[i]) completed++;
+
+            int maxProgress = save._progressSave.Length;
+            int score = 100; // o 100 si quieres fijo
+
+            // DEBUG CRÍTICO
+            Debug.Log($"🚀 SubmitProgress -> score:{score}, current:{completed}, max:{maxProgress}");
+
+            LOLSDK.Instance.SubmitProgress(score, completed, maxProgress);
+            MainController.Instance._textoBorrar.text = ($" SubmitProgress -> score:{score}, current:{completed}, max:{maxProgress}");
+        }
+
 
         public void SaveGame()
         {

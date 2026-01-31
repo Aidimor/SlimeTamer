@@ -42,26 +42,41 @@ public class ComicController : MonoBehaviour
 
     public IEnumerator ComicStripOn()
     {
-
+        var GJ = GameInitScript.Instance;
+        string key = "continue";
+        string text = GameInitScript.Instance.GetText(key);
         var Main = MainController.Instance._scriptMusic;
         if (MainController.Instance != null)
         {
             switch (MainController.Instance._onWorldGlobal)
             {
                 case 0:
-
+                    _continuar.text = GJ.GetText("continue");
                     Main.PlayMusic(1);
                     break;
                 case 1:
+                    _continuar.text = GJ.GetText("continue");
                     Main.PlayMusic(3);
                     break;
                 case 2:
+                    _continuar.text = GJ.GetText("continue");
                     Main.PlayMusic(4);
                     break;
                 case 3:
+                    _continuar.text = GJ.GetText("continue");
                     Main.PlayMusic(5);
                     break;
                 case 4:
+                    switch (MainController.Instance._gameFinished)
+                    {
+                        case true:
+                            _continuar.text = GJ.GetText("endgame");
+                            break;
+                        case false:
+                            _continuar.text = GJ.GetText("continue");
+                            break;
+                    }
+      
                     Main.PlayMusic(6);
                     break;
             }
@@ -69,10 +84,8 @@ public class ComicController : MonoBehaviour
  
         }
 
-        var GJ = GameInitScript.Instance;
-        string key = "continue";
-        string text = GameInitScript.Instance.GetText(key);
-        _continuar.text = GJ.GetText("continue");
+
+        //_continuar.text = GJ.GetText("continue");
  
         _comicAnimator.SetBool("ComicOn", true);
         MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
