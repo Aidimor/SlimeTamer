@@ -52,19 +52,19 @@ public class ComicController : MonoBehaviour
             {
                 case 0:
                     _continuar.text = GJ.GetText("continue");
-                    Main.PlayMusic(1);
+                 
                     break;
                 case 1:
                     _continuar.text = GJ.GetText("continue");
-                    Main.PlayMusic(3);
+             
                     break;
                 case 2:
                     _continuar.text = GJ.GetText("continue");
-                    Main.PlayMusic(4);
+               
                     break;
                 case 3:
                     _continuar.text = GJ.GetText("continue");
-                    Main.PlayMusic(5);
+           
                     break;
                 case 4:
                     switch (MainController.Instance._gameFinished)
@@ -76,12 +76,12 @@ public class ComicController : MonoBehaviour
                             _continuar.text = GJ.GetText("continue");
                             break;
                     }
-      
-                    Main.PlayMusic(6);
+
+     
                     break;
             }
+            Main.PlayMusic(1);
 
- 
         }
 
 
@@ -105,7 +105,7 @@ public class ComicController : MonoBehaviour
                 SFXscript.Instance._strongWindSetVolume = 0.2f;
             }
 
-            if (MainController.Instance._onWorldGlobal == 1 && _imagesID[i] == 13)
+            if (MainController.Instance._onWorldGlobal == 1 && _imagesID[i] == 10)
             {
                 Main.PlayMusic(2);
                 SFXscript.Instance._fireSetVolume = 0.2f;
@@ -114,14 +114,14 @@ public class ComicController : MonoBehaviour
 
             if (MainController.Instance._onWorldGlobal == 3 && _imagesID[i] == 18)
             {
-                Main.PlayMusic(6);
+                Main.PlayMusic(2);
                 SFXscript.Instance._fireSetVolume = 0.2f;
                 SFXscript.Instance._strongWindSetVolume = 0.2f;
             }
 
             if (MainController.Instance._onWorldGlobal == 4 && _imagesID[i] == 24)
             {
-                Main.PlayMusic(7);
+                Main.PlayMusic(3);
                 SFXscript.Instance._fireSetVolume = 0.2f;
                 SFXscript.Instance._strongWindSetVolume = 0.2f;
             }

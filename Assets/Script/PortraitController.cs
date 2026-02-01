@@ -68,10 +68,12 @@ public class PortraitController : MonoBehaviour
         if (SceneManager.GetActiveScene().isLoaded)
             OnSceneLoaded(SceneManager.GetActiveScene(), LoadSceneMode.Single);
 
-        if (_scriptMainController != null && MainController.Instance._onWorldGlobal != 4)
-        {
-            MainController.Instance._scriptMusic.PlayMusic(0);
-        }
+        //if (_scriptMainController != null && MainController.Instance._onWorldGlobal != 4)
+        //{
+        //    MainController.Instance._scriptMusic.PlayMusic(0);
+        //}
+
+        MainController.Instance._scriptMusic.PlayMusic(0);
 
         StartCoroutine(UpdateWorldTexts());
         if (MainController.Instance._introSpecial)
@@ -334,9 +336,9 @@ public class PortraitController : MonoBehaviour
                 ComicController.Instance._waitSeconds = 4;
                 break;
             case 2:
-                ComicController.Instance._imagesID.Add(9);
-                ComicController.Instance._imagesID.Add(10);
                 ComicController.Instance._imagesID.Add(11);
+                ComicController.Instance._imagesID.Add(12);
+                ComicController.Instance._imagesID.Add(13);
                 ComicController.Instance._waitSeconds = 4;
                 break;
             case 3:

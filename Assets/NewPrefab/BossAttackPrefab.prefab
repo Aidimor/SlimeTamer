@@ -5093,11 +5093,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ID: 0
+  _quantity: 0
   _onPose: 0
   _onTurnText: {fileID: 5960751444032475300}
   _tentacleRawImage:
   - {fileID: 6749834990403880997}
   - {fileID: 1417842306994730517}
+  _quantityText: {fileID: 0}
 --- !u!1 &6179931132081869414
 GameObject:
   m_ObjectHideFlags: 0
