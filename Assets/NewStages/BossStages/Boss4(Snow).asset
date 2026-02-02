@@ -19,17 +19,22 @@ MonoBehaviour:
   - _onPlace: 0
     _elementType: 1
     _quantity: 2
+    _changed: 0
+    _emptyAtom: 0
   - _onPlace: 15
     _elementType: 2
     _quantity: 1
+    _changed: 0
+    _emptyAtom: 0
   _hazards:
   - _onPlace: 1
     _hazards: 2
+    _rotation: 0
     _finished: 0
   - _onPlace: 3
     _hazards: 3
+    _rotation: 0
     _finished: 0
-  _atomPlace: 
   _stepsPlace: 0700000008000000
   _bossAssets:
   - _xposition: 2
@@ -39,5 +44,6 @@ MonoBehaviour:
       _attackCount: 2
       _tentacleID: 0
     - _groundID: 11
-      _attackCount: 3
+      _attackCount: 2
       _tentacleID: 1
+  _wind: 0

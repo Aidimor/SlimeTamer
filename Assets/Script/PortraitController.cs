@@ -52,7 +52,7 @@ public class PortraitController : MonoBehaviour
     public Animator _comicAnimator;
     public Image _comicStrip;
     public TextMeshProUGUI[] _textTutorials;
-
+    public TextMeshProUGUI _scapeGame;
 
 
     public void Awake()
@@ -179,6 +179,13 @@ public class PortraitController : MonoBehaviour
 
         MainController.Instance._continuarTutorial.text = GameInitScript.Instance.GetText("continue");
 
+        MainController.Instance._elementsName[0].text = gi.GetText("element1");
+        MainController.Instance._elementsName[1].text = gi.GetText("element2");
+        MainController.Instance._elementsName[2].text = gi.GetText("element3");
+        MainController.Instance._elementsName[3].text = gi.GetText("element4");
+
+        _scapeGame.text = GameInitScript.Instance.GetText("escapegame");
+
         yield return new WaitForSeconds(0.5f);
 
         _scriptMainController._bordersAnimator.SetBool("BorderOut", true);
@@ -214,6 +221,13 @@ public class PortraitController : MonoBehaviour
                 StartCoroutine(StartGameSpecial());
             }
         }
+
+        if (Input.GetButtonDown("Cancel"))
+        {
+            Application.Quit();
+        }
+
+
 
         //MainController.Instance._currencyAssets[0]._quantityText.text = MainController.Instance._saveLoadValues._healthCoins.ToString("f0");
         //MainController.Instance._currencyAssets[1]._quantityText.text = MainController.Instance._saveLoadValues._hintCoins.ToString("f0");

@@ -43,26 +43,30 @@ public class ComicController : MonoBehaviour
     public IEnumerator ComicStripOn()
     {
         var GJ = GameInitScript.Instance;
-        string key = "continue";
-        string text = GameInitScript.Instance.GetText(key);
+        string key;
+        //string text = GameInitScript.Instance.GetText(key);
         var Main = MainController.Instance._scriptMusic;
         if (MainController.Instance != null)
         {
             switch (MainController.Instance._onWorldGlobal)
             {
                 case 0:
+            
                     _continuar.text = GJ.GetText("continue");
                  
                     break;
                 case 1:
+           
                     _continuar.text = GJ.GetText("continue");
              
                     break;
                 case 2:
+  
                     _continuar.text = GJ.GetText("continue");
                
                     break;
                 case 3:
+           
                     _continuar.text = GJ.GetText("continue");
            
                     break;
@@ -70,9 +74,11 @@ public class ComicController : MonoBehaviour
                     switch (MainController.Instance._gameFinished)
                     {
                         case true:
+            
                             _continuar.text = GJ.GetText("endgame");
                             break;
                         case false:
+                  
                             _continuar.text = GJ.GetText("continue");
                             break;
                     }
@@ -121,7 +127,7 @@ public class ComicController : MonoBehaviour
 
             if (MainController.Instance._onWorldGlobal == 4 && _imagesID[i] == 24)
             {
-                Main.PlayMusic(3);
+                Main.PlayMusic(2);
                 SFXscript.Instance._fireSetVolume = 0.2f;
                 SFXscript.Instance._strongWindSetVolume = 0.2f;
             }
@@ -129,8 +135,47 @@ public class ComicController : MonoBehaviour
             _comicAnimator.SetTrigger("NextImage");
             MainController.Instance._scriptSFX.PlaySound(MainController.Instance._scriptSFX._slimeJumping);
             yield return new WaitForSeconds(_waitSeconds);
-        }     
-        LOLSDK.Instance.SpeakText(key);
+        }
+        switch (MainController.Instance._onWorldGlobal)
+        {
+            case 0:
+                key = "continue";
+                LOLSDK.Instance.SpeakText(key);
+
+                break;
+            case 1:
+                key = "continue";
+
+                LOLSDK.Instance.SpeakText(key);
+                break;
+            case 2:
+                key = "continue";
+                LOLSDK.Instance.SpeakText(key);
+
+                break;
+            case 3:
+                key = "continue";
+
+                LOLSDK.Instance.SpeakText(key);
+                break;
+            case 4:
+                switch (MainController.Instance._gameFinished)
+                {
+                    case true:
+                        GameInitScript.Instance.SubmitProgressToSDK();
+                        key = "endgame";
+                        LOLSDK.Instance.SpeakText(key);
+                        break;
+                    case false:
+                        key = "continue";
+                        LOLSDK.Instance.SpeakText(key);
+                        break;
+                }
+
+
+                break;
+        }
+
         yield return new WaitForSeconds(0.5f);
         _continueParent.gameObject.SetActive(true);
         while (!Input.GetButtonDown("Submit"))

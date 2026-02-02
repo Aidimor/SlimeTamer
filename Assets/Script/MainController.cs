@@ -119,16 +119,13 @@ public class MainController : MonoBehaviour
     public int _onWorldGlobal;
     public bool _introSpecial;
     private int _lastReportedProgress = 0;
-    //[System.Serializable]
-    //public class AllStagesData
-    //{
-    //    public int[] _stageList;
-    //}
-    //public AllStagesData[] _allStagesData;
+
 
     public Image _joystickImage;
     public TextMeshProUGUI _atomQuantityText;
     public TextMeshProUGUI[] _elementsQuantityText;
+    public Animator[] _elementsAnimator;
+    public TextMeshProUGUI[] _elementsName;
 
     [System.Serializable]
     public class AllTurnsInfo
@@ -213,11 +210,13 @@ public class MainController : MonoBehaviour
         public TextMeshProUGUI[] _textInfo;
         [System.Serializable]
         public class FusionElementsAssets
-        {
+        {       
             public TextMeshProUGUI _name;
             public TextMeshProUGUI _extra;
         }
         public FusionElementsAssets[] _fusionElementAssets;
+
+        public Animator _circleParents;
     
     }
     public AtomPanelInfo _atomPanelInfo;

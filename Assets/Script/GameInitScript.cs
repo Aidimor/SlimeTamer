@@ -694,7 +694,7 @@ namespace LoL
             Debug.Log($"🚀 SubmitProgress -> score:{score}, current:{completed}, max:{maxProgress}");
 
             LOLSDK.Instance.SubmitProgress(score, completed, maxProgress);
-            MainController.Instance._textoBorrar.text = ($" SubmitProgress -> score:{score}, current:{completed}, max:{maxProgress}");
+
         }
 
 
