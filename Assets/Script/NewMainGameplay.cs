@@ -869,6 +869,8 @@ public class NewMainGameplay : MonoBehaviour
                 case 0:
                     MainController.Instance._exitAssets._exitAnimator.SetBool("ExitEnter", false);      
                     MainController.Instance._exitAssets._exitPanelOn = false;
+                    MainController.Instance._finalTimerAssets._timerText.gameObject.SetActive(false);
+                    MainController.Instance._finalTimerAssets._timerOn = false;
                     break;
                 case 1:
                     StartCoroutine(NormalExitNumerator());
@@ -1552,7 +1554,7 @@ public class NewMainGameplay : MonoBehaviour
                     _bossAnimator.SetTrigger("Attack");
                     _tentacleAssets[_onCamera]._tentacle
                         .SetTrigger("TentacleIn");
-                    SFXscript.Instance.PlaySound(SFXscript.Instance._slimeArrives);
+                    SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
                     //ReduceCounter();
                     for (int y = 0; y < CurrentGrounds._groundAttacks.Length; y++)
                     {
@@ -2580,10 +2582,10 @@ public class NewMainGameplay : MonoBehaviour
                                 MainController.Instance._nameText.text = GameInitScript.Instance.GetText("H2O");
 
   
-                                string key = "H2O".ToString();
-                                //string text = GameInitScript.Instance.GetText(key);
-                                string speakKey = key;
-                                LOLSDK.Instance.SpeakText(speakKey);
+                                //string key = "H2O".ToString();
+                                ////string text = GameInitScript.Instance.GetText(key);
+                                //string speakKey = key;
+                                //LOLSDK.Instance.SpeakText(speakKey);
 
                         
                          
@@ -2814,9 +2816,6 @@ public class NewMainGameplay : MonoBehaviour
                             Main._saveLoadValues._pauseAvailable = true;
 
 
-                            string key1 = "atom".ToString();
-                            string speakKey1 = key;
-                            LOLSDK.Instance.SpeakText(speakKey1);
                         }
 
                         _movementAvailable = true;
@@ -3369,7 +3368,7 @@ public class NewMainGameplay : MonoBehaviour
 
             MainController.Instance._atributeText.text = GameInitScript.Instance.GetText("FE3O4extra");
 
-            Debug.Log("Fe3O4");
+         
             _smoke.Play();
             _waterWalk.Stop();
             MainController.Instance._nameText.text = GameInitScript.Instance.GetText("FE3O4");
@@ -3455,19 +3454,6 @@ public class NewMainGameplay : MonoBehaviour
 
         yield return new WaitForSeconds(1);
 
-        switch (_slimeInfo._slimeID)
-        {
-            case 1:
-                break;
-            case 2:
-                break;
-            case 3:
-                break;
-            case 4:
-                break;
-            case 5:
-                break;
-        }
 
         MainController.Instance._continueText.gameObject.SetActive(true);
         while (!Input.GetButtonDown("Submit"))

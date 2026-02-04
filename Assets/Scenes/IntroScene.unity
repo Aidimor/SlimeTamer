@@ -4208,8 +4208,8 @@ RectTransform:
   m_LocalScale: {x: 1.2346197, y: 1.2346197, z: 1.2346197}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 670792206}
   - {fileID: 1955862550}
+  - {fileID: 670792206}
   - {fileID: 2081517946}
   - {fileID: 1592326585}
   - {fileID: 718179289}
@@ -23468,7 +23468,7 @@ MonoBehaviour:
   lastAnswer: 
   SaveJson: 
   _json: {fileID: 0}
-  forceNewGame: 1
+  forceNewGame: 0
 --- !u!4 &1955862550
 Transform:
   m_ObjectHideFlags: 0
