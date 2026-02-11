@@ -232,7 +232,7 @@ public class MainGameplayScript : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        MainController.Instance._introSpecial = false;
+        //MainController.Instance._introSpecial = false;
         _totalStages._xPoses.Clear();
         StartNewWorld();
         _allStageAssets[_scriptMain._onWorldGlobal]._parentStage.SetActive(true);
@@ -1045,7 +1045,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
 
     public IEnumerator ExitNumerator()
     {
-        MainController.Instance._introSpecial = false;
+        //MainController.Instance._introSpecial = false;
         if (_scriptEvents._currentEventPrefab.name != "Intro(Clone)")
         {
        
@@ -1123,7 +1123,7 @@ _slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(-240f, 
 
     public IEnumerator GameEndsNumerator()
     {
-        MainController.Instance._introSpecial = false;
+        //MainController.Instance._introSpecial = false;
         //scriptMain._saveLoadValues._progressSave[7] = true;
 
         _endGameAssets._parent.SetActive(true);

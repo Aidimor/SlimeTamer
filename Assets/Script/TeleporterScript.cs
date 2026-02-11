@@ -22,7 +22,7 @@ public class TeleporterScript : MonoBehaviour
 
         yield return new WaitForSeconds(2);
         _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
-        _scriptMain._scriptMain._introSpecial = true;
+        //_scriptMain._scriptMain._introSpecial = true;
         yield return new WaitForSeconds(1);
         _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
 

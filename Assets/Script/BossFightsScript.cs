@@ -135,7 +135,7 @@ public class BossFightsScript : MonoBehaviour
 
     public IEnumerator ExitNumerator()
     {
-        MainController.Instance._introSpecial = true;
+        //MainController.Instance._introSpecial = true;
         _scriptMain._scriptMain._cinematicBorders.SetBool("FadeIn", true);
         yield return new WaitForSeconds(2f);
 
@@ -155,7 +155,7 @@ public class BossFightsScript : MonoBehaviour
         _scriptMain._flyingSlimeParticles[1].Play();
         yield return new WaitForSeconds(2);
         _scriptMain._scriptMain._bordersAnimator.SetBool("BorderOut", false);
-        _scriptMain._scriptMain._introSpecial = true;
+        ////_scriptMain._scriptMain._introSpecial = true;
         yield return new WaitForSeconds(1);
         _scriptMain._bossAnimator.transform.gameObject.SetActive(false);
         _scriptMain._scriptMain._saveLoadValues._worldsUnlocked[0] = false;

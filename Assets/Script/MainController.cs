@@ -62,6 +62,7 @@ public class MainController : MonoBehaviour
         public bool _restartAvailable;
         public bool _hazardTutorial;
         public bool _atomTutorial;
+        
 
         //public int _progress;
         //public int maxProgress = 8;
@@ -117,7 +118,7 @@ public class MainController : MonoBehaviour
     public NewSlimePanel newSlimePanel;
 
     public int _onWorldGlobal;
-    public bool _introSpecial;
+    //public bool _introSpecial;
     private int _lastReportedProgress = 0;
 
 
@@ -173,7 +174,7 @@ public class MainController : MonoBehaviour
         public GameObject _elementsParent;
         public GameObject _atomParent;
         public GameObject _stepParent;
-
+        public GameObject _exitParent;
         public TextMeshProUGUI _continueText;
         public bool _tutorialDeployed;
     }

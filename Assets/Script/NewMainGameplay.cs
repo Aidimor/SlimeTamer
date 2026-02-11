@@ -346,36 +346,36 @@ public class NewMainGameplay : MonoBehaviour
         }
 
 
-        if (_idStage == 0)
-        {
+        //if (_idStage == 0)
+        //{
 
-            yield return new WaitForSeconds(1);
-            Main._tutorialAssets._tutorialText.text = gi.GetText("tutorial5");
+        //    yield return new WaitForSeconds(1);
+        //    Main._tutorialAssets._tutorialText.text = gi.GetText("tutorial5");
 
-            string key = "tutorial5";
-            //string text = GameInitScript.Instance.GetText(key);
-            string speakKey = key;
-            LOLSDK.Instance.SpeakText(speakKey);
+        //    string key = "tutorial5";
+        //    //string text = GameInitScript.Instance.GetText(key);
+        //    string speakKey = key;
+        //    LOLSDK.Instance.SpeakText(speakKey);
 
-            yield return new WaitForSeconds(0.2f);
+        //    yield return new WaitForSeconds(0.2f);
 
-            SFXscript.Instance.PlaySound(SFXscript.Instance._next);
-            Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
-            Main._tutorialAssets._arrowsParent.SetActive(false);
-            Main._tutorialAssets._elementsParent.SetActive(false);
-            Main._tutorialAssets._atomParent.SetActive(false);
-            Main._tutorialAssets._stepParent.SetActive(false);
-            yield return new WaitForSeconds(1);
-            Main._tutorialAssets._continueText.gameObject.SetActive(true);
-            yield return new WaitForSeconds(0.25f);
-            while (!Input.GetButtonDown("Submit"))
-            {
-                yield return null;
-            }
-            SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
-            Main._tutorialAssets._continueText.gameObject.SetActive(false);
-            Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
-        }
+        //    SFXscript.Instance.PlaySound(SFXscript.Instance._next);
+        //    Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+        //    Main._tutorialAssets._arrowsParent.SetActive(false);
+        //    Main._tutorialAssets._elementsParent.SetActive(false);
+        //    Main._tutorialAssets._atomParent.SetActive(false);
+        //    Main._tutorialAssets._stepParent.SetActive(false);
+        //    yield return new WaitForSeconds(1);
+        //    Main._tutorialAssets._continueText.gameObject.SetActive(true);
+        //    yield return new WaitForSeconds(0.25f);
+        //    while (!Input.GetButtonDown("Submit"))
+        //    {
+        //        yield return null;
+        //    }
+        //    SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
+        //    Main._tutorialAssets._continueText.gameObject.SetActive(false);
+        //    Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+        //}
 
         switch (Main._onWorldGlobal)
         {
@@ -391,38 +391,102 @@ public class NewMainGameplay : MonoBehaviour
                     //    _worldNameShown = true;
                     //    yield return new WaitForSeconds(2);
                     //}
-       
-
-                    //yield return new WaitForSeconds(1);
-                    //Main._tutorialAssets._tutorialText.text = gi.GetText("tutorial0");
 
 
-                    //string key = "tutorial0";
-                    ////string text = GameInitScript.Instance.GetText(key);
-                    //string speakKey = key;
-                    //LOLSDK.Instance.SpeakText(speakKey);
+                    yield return new WaitForSeconds(1);
+                    Main._tutorialAssets._tutorialText.text = gi.GetText("tutorial0");
 
-                    //yield return new WaitForSeconds(0.2f);                
-                    //SFXscript.Instance.PlaySound(SFXscript.Instance._next);
-                    //Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
-                    //Main._tutorialAssets._arrowsParent.SetActive(true);
-                    //Main._tutorialAssets._elementsParent.SetActive(false);
-                    //Main._tutorialAssets._atomParent.SetActive(false);
-                    //yield return new WaitForSeconds(1);
-                    //Main._tutorialAssets._continueText.gameObject.SetActive(true);
-                    //yield return new WaitForSeconds(0.25f);          
-                   
-                  
-                
-                  
 
-                    //while (!Input.GetButtonDown("Submit"))
-                    //{
-                    //    yield return null;
-                    //}
-                    //SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
-                    //Main._tutorialAssets._continueText.gameObject.SetActive(false);
-                    //Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+                    string key = "tutorial0";
+                    //string text = GameInitScript.Instance.GetText(key);
+                    string speakKey = key;
+                    LOLSDK.Instance.SpeakText(speakKey);
+
+                    yield return new WaitForSeconds(0.2f);
+                    SFXscript.Instance.PlaySound(SFXscript.Instance._next);
+                    Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                    Main._tutorialAssets._arrowsParent.SetActive(true);
+                    Main._tutorialAssets._elementsParent.SetActive(false);
+                    Main._tutorialAssets._atomParent.SetActive(false);
+                    Main._tutorialAssets._exitParent.SetActive(false);
+                    yield return new WaitForSeconds(1);
+                    Main._tutorialAssets._continueText.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(0.25f);
+
+
+
+
+
+                    while (!Input.GetButtonDown("Submit"))
+                    {
+                        yield return null;
+                    }
+                    SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
+                    Main._tutorialAssets._continueText.gameObject.SetActive(false);
+                    Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+
+
+
+                    yield return new WaitForSeconds(1);
+                    Main._tutorialAssets._tutorialText.text = gi.GetText("reach").ToString();
+
+                    string key1 = "reach";
+                    string speakKey1 = key;
+                    LOLSDK.Instance.SpeakText(speakKey1);
+
+                    yield return new WaitForSeconds(0.2f);
+                    SFXscript.Instance.PlaySound(SFXscript.Instance._next);
+                    Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                    Main._tutorialAssets._arrowsParent.SetActive(false);
+                    Main._tutorialAssets._elementsParent.SetActive(false);
+                    Main._tutorialAssets._atomParent.SetActive(false);
+                    Main._tutorialAssets._exitParent.SetActive(true);
+                 
+                    yield return new WaitForSeconds(1);
+                    Main._tutorialAssets._continueText.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(0.25f);
+
+
+
+
+
+                    while (!Input.GetButtonDown("Submit"))
+                    {
+                        yield return null;
+                    }
+                    SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
+                    Main._tutorialAssets._continueText.gameObject.SetActive(false);
+                    Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+                }
+
+                if(_idStage == 3)
+                {
+                    yield return new WaitForSeconds(1);
+                    Main._tutorialAssets._tutorialText.text = gi.GetText("tutorial5");
+
+                    string key = "tutorial5";
+                    //string text = GameInitScript.Instance.GetText(key);
+                    string speakKey = key;
+                    LOLSDK.Instance.SpeakText(speakKey);
+
+                    yield return new WaitForSeconds(0.2f);
+
+                    SFXscript.Instance.PlaySound(SFXscript.Instance._next);
+                    Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                    Main._tutorialAssets._arrowsParent.SetActive(false);
+                    Main._tutorialAssets._elementsParent.SetActive(false);
+                    Main._tutorialAssets._atomParent.SetActive(false);
+                    Main._tutorialAssets._stepParent.SetActive(false);
+                    yield return new WaitForSeconds(1);
+                    Main._tutorialAssets._continueText.gameObject.SetActive(true);
+                    yield return new WaitForSeconds(0.25f);
+                    while (!Input.GetButtonDown("Submit"))
+                    {
+                        yield return null;
+                    }
+                    SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
+                    Main._tutorialAssets._continueText.gameObject.SetActive(false);
+                    Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
                 }
 
 
@@ -446,7 +510,7 @@ public class NewMainGameplay : MonoBehaviour
                     Main._tutorialAssets._elementsParent.SetActive(false);
                     Main._tutorialAssets._atomParent.SetActive(false);
                     Main._tutorialAssets._stepParent.SetActive(false);
-
+                    Main._tutorialAssets._exitParent.SetActive(false);
 
                     yield return new WaitForSeconds(2f);
 
@@ -474,7 +538,7 @@ public class NewMainGameplay : MonoBehaviour
                     Main._tutorialAssets._elementsParent.SetActive(false);
                     Main._tutorialAssets._atomParent.SetActive(false);
                     Main._tutorialAssets._stepParent.SetActive(false);
-
+                    Main._tutorialAssets._exitParent.SetActive(false);
 
                     yield return new WaitForSeconds(2f);
 
@@ -499,7 +563,7 @@ public class NewMainGameplay : MonoBehaviour
                     Main._tutorialAssets._elementsParent.SetActive(false);
                     Main._tutorialAssets._atomParent.SetActive(false);
                     Main._tutorialAssets._stepParent.SetActive(false);
-
+                    Main._tutorialAssets._exitParent.SetActive(false);
 
                     yield return new WaitForSeconds(2f);
 
@@ -558,8 +622,8 @@ public class NewMainGameplay : MonoBehaviour
                     Main._tutorialAssets._elementsParent.SetActive(false);
                     Main._tutorialAssets._atomParent.SetActive(false);
                     Main._tutorialAssets._stepParent.SetActive(false);
-     
-               
+                    Main._tutorialAssets._exitParent.SetActive(false);
+
                     yield return new WaitForSeconds(2f);
 
                     SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
@@ -914,7 +978,7 @@ public class NewMainGameplay : MonoBehaviour
     IEnumerator NormalExitNumerator()
     {
         //MainController.Instance._saveLoadValues._restartAvailable = true;
-        MainController.Instance._introSpecial = false;
+        //MainController.Instance._introSpecial = false;
         MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
         _AtomsPanelOn = false;
         MainController.Instance._AtomAnimator.SetBool("AtomsIn", false);
@@ -2761,7 +2825,7 @@ public class NewMainGameplay : MonoBehaviour
                         Main._tutorialAssets._elementsParent.SetActive(true);
                         Main._tutorialAssets._atomParent.SetActive(false);
                         Main._tutorialAssets._stepParent.SetActive(false);
-
+                        Main._tutorialAssets._exitParent.SetActive(false);
                         string key = "tutorial2".ToString();
                         string speakKey = key;
                         LOLSDK.Instance.SpeakText(speakKey);
@@ -2959,7 +3023,7 @@ public class NewMainGameplay : MonoBehaviour
                     Main._tutorialAssets._elementsParent.SetActive(false);
                     Main._tutorialAssets._atomParent.SetActive(true);
                     Main._tutorialAssets._stepParent.SetActive(false);
-
+                    Main._tutorialAssets._exitParent.SetActive(false);
                     string key = gi.GetText("tutorial4").ToString();
                     //string text = GameInitScript.Instance.GetText(key);
                     string speakKey = key;
@@ -3029,7 +3093,7 @@ public class NewMainGameplay : MonoBehaviour
                     Main._tutorialAssets._elementsParent.SetActive(false);
                     Main._tutorialAssets._atomParent.SetActive(false);
                     Main._tutorialAssets._stepParent.SetActive(true);
-
+                    Main._tutorialAssets._exitParent.SetActive(false);
                     string key = "tutorial3".ToString();
                     string speakKey = key;
                     LOLSDK.Instance.SpeakText(speakKey);
@@ -3577,7 +3641,7 @@ public class NewMainGameplay : MonoBehaviour
         switch (MainController.Instance._onWorldGlobal)
         {
             case 0:
-                MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
+                //MainController.Instance._cinematicBorders.SetBool("FadeIn", true);
              
                 MainController.Instance._saveLoadValues._worldsUnlocked[1] = true;
                 MainController.Instance._saveLoadValues._restartAvailable = true;
@@ -3623,7 +3687,8 @@ public class NewMainGameplay : MonoBehaviour
                 break;
         }
         MainController.Instance._saveLoadValues._restartAvailable = true;
-        MainController.Instance._introSpecial = true;
+        //MainController.Instance._introSpecial = true;
+        MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
         MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
         _AtomsPanelOn = false;
         MainController.Instance._AtomAnimator.SetBool("AtomsIn", false);
