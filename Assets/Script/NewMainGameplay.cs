@@ -140,6 +140,7 @@ public class NewMainGameplay : MonoBehaviour
 
 
     public TextMeshProUGUI _exitText;
+    public TextMeshProUGUI _descriptionExitText;
     public TextMeshProUGUI _restartText;
     public bool _gameStarts;
     public ParticleSystem _lowAirLeft;
@@ -243,6 +244,7 @@ public class NewMainGameplay : MonoBehaviour
         SetHazards();
         SetEntranceExit();
         _exitEntranceObjects[0].GetComponent<ExitScriptObject>()._entranceText.text = GameInitScript.Instance.GetText("entrance");
+        _descriptionExitText.text = GameInitScript.Instance.GetText("escape");
         _fusionMenuTexts[0].text = GameInitScript.Instance.GetText("fusion1");
         _fusionMenuTexts[1].text = GameInitScript.Instance.GetText("fusion2");
         if (MainController.Instance._saveLoadValues._atomTutorial)
@@ -487,6 +489,45 @@ public class NewMainGameplay : MonoBehaviour
                     SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
                     Main._tutorialAssets._continueText.gameObject.SetActive(false);
                     Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+                }
+
+                if (_idStage == 2)
+                {
+                    for(int i = 0; i < 2; i++)
+                    {
+                        yield return new WaitForSeconds(1);
+                        Main._tutorialAssets._tutorialText.text = gi.GetText("princess" + (i + 1).ToString());
+
+                        string key = "princess" + (i + 1).ToString();
+                    //string text = GameInitScript.Instance.GetText(key);
+                    string speakKey = key;
+                        LOLSDK.Instance.SpeakText(speakKey);
+
+                        yield return new WaitForSeconds(0.2f);
+
+                        SFXscript.Instance.PlaySound(SFXscript.Instance._next);
+                        Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
+                        Main._tutorialAssets._arrowsParent.SetActive(false);
+                        Main._tutorialAssets._elementsParent.SetActive(false);
+                        Main._tutorialAssets._atomParent.SetActive(false);
+                        Main._tutorialAssets._stepParent.SetActive(false);
+                        Main._tutorialAssets._exitParent.gameObject.SetActive(false);
+                        yield return new WaitForSeconds(1);
+                        Main._tutorialAssets._continueText.gameObject.SetActive(false);
+                        yield return new WaitForSeconds(0.25f);
+                        while (!Input.GetButtonDown("Submit"))
+                        {
+                            yield return null;
+                        }
+                        SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
+                        Main._tutorialAssets._continueText.gameObject.SetActive(false);
+                        Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+                    }
+
+  
+
+
+
                 }
 
 
@@ -3713,6 +3754,7 @@ public class NewMainGameplay : MonoBehaviour
                 break;
         }
         MainController.Instance.SaveProgress();
+        MainController.Instance._onPortrait = false;
         MainController.Instance._scriptMusic._audioBGM.Play();
         yield return new WaitForSeconds(1);
         MainController.Instance.LoadSceneByName("IntroScene");

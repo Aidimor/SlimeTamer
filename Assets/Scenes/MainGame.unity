@@ -152413,7 +152413,7 @@ GameObject:
   - component: {fileID: 981063524}
   - component: {fileID: 981063523}
   m_Layer: 5
-  m_Name: Text (TMP) (1)
+  m_Name: DescriptionExit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -182918,6 +182918,7 @@ MonoBehaviour:
   _escapeText: {fileID: 664156818}
   _buttonEscapeText: {fileID: 1364692907}
   _exitText: {fileID: 1861262695}
+  _descriptionExitText: {fileID: 981063523}
   _restartText: {fileID: 664156818}
   _gameStarts: 0
   _lowAirLeft: {fileID: 1463515568}

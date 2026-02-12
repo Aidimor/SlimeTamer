@@ -13,7 +13,6 @@
       "tutorial": 100
     }
   },
-
   "en": {
     "world": "World",
     "WorldName1": "ROYAL CASTLE",
@@ -42,7 +41,7 @@
     "tutorial2": "Collect atoms and transform into a new chemical compound to complete the stage",
     "tutorial3": "You can step back onto purple squares if you have enough Step Coins",
     "tutorial4": "You can create your own formula if the stage does not have enough elements and you have enough atoms.",
-    "tutorial5": "Press Space if you need to restart the stage",
+    "tutorial5": "Press Space if you need to restart the stage at any point",
     "tutorial6": "Transform into different slime types to overcome any hazard in your way",
 
     "tutorialatom": "You've got a blank atom. Now you can choose the element you want and create a new chemical compound",
@@ -94,9 +93,12 @@
     "fusion2": "Fusion",
     "escapegame": "Press Escape to exit the game",
     "restart": "Restart",
-    "reach": "Enter the portal to go to the next level"
-  },
+    "reach": "Enter the portal to go to the next level",
 
+    "comic1": "Rescue the princess!",
+    "princess1": "The princess has used her power and summoned elemental particles into the world",
+    "princess2": "Use the elements to transform and rescue the princess"
+  },
   "es": {
     "world": "Mundo",
     "WorldName1": "CASTILLO REAL",
@@ -125,7 +127,7 @@
     "tutorial2": "Recolecta átomos y transfórmate en un nuevo compuesto químico para completar la fase",
     "tutorial3": "Puedes volver a pisar cuadros morados si tienes suficientes Monedas de Paso",
     "tutorial4": "Puedes crear tu propia fórmula si la fase no tiene suficientes elementos y tienes los átomos necesarios",
-    "tutorial5": "Presiona Espacio si necesitas reiniciar la fase",
+    "tutorial5": "Presiona Espacio si necesitas reiniciar la fase en cualquier punto",
     "tutorial6": "Transfórmate en diferentes tipos de slime para superar cualquier peligro en tu camino",
 
     "tutorialatom": "Has obtenido un átomo vacío. Ahora puedes elegir el elemento que quieras y crear un nuevo compuesto químico",
@@ -177,9 +179,12 @@
     "fusion2": "Fusión",
     "escapegame": "Presiona Escape para salir del juego",
     "restart": "Reinicia",
-   "reach": "Entra al portal para ir al siguiente nivel"
+    "reach": "Entra al portal para ir al siguiente nivel",
+
+    "comic1": "¡Rescata a la princesa!",
+    "princess1": "La princesa ha usado su poder y ha invocado partículas elementales en el mundo",
+    "princess2": "Usa los elementos para transformarte y rescatar a la princesa"
   }
 }
-
 
 

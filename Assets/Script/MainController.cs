@@ -232,7 +232,7 @@ public class MainController : MonoBehaviour
     public FinalTimerAssets _finalTimerAssets;
     public TextMeshProUGUI _continuarTutorial;
     public bool _gameFinished;
-    public TextMeshProUGUI _textoBorrar;
+    public bool _onPortrait;
     void Awake()
     {
         if (Instance == null)
