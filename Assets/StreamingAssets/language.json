@@ -53,13 +53,13 @@
 
     "FC": "IRON",
     "H2O": "WATER",
-    "ICE": "COMPACT SNOW",
+    "ICE": "ICE CUBE",
     "CO2": "CARBON DIOXIDE",
     "FE3O4": "MAGNETITE",
 
     "FCextra": "Heavy Solid",
     "H2Oextra": "Light Liquid",
-    "ICEextra": "Compact Solid",
+    "ICEextra": "Solidied Liquid",
     "CO2extra": "Heavy Gas",
     "FE3O4extra": "Light Solid",
 
@@ -75,8 +75,8 @@
     "water1": "Required for all known life",
     "water2": "Absorbs heat and is a good conductor of electricity",
 
-    "snow1": "Snow can absorb sound",
-    "snow2": "It is so compacted that its weight has increased",
+"snow1": "Ice is denser than liquid water in solid form",
+"snow2": "It is frozen solid, making its particles tightly packed together",
 
     "dioxide1": "Humans and animals breathe it out",
     "dioxide2": "Being a heavy gas, it can float above lighter gases",
@@ -139,13 +139,13 @@
 
     "FC": "HIERRO",
     "H2O": "AGUA",
-    "ICE": "NIEVE COMPACTA",
+    "ICE": "CUBO DE HIELO",
     "CO2": "DIÓXIDO DE CARBONO",
     "FE3O4": "MAGNETITA",
 
     "FCextra": "Sólido Pesado",
     "H2Oextra": "Líquido Ligero",
-    "ICEextra": "Sólido Compacto",
+    "ICEextra": "LIQUIDO SOLIFICADO",
     "CO2extra": "Gas Pesado",
     "FE3O4extra": "Sólido Ligero",
 
@@ -161,8 +161,8 @@
     "water1": "Necesaria para toda forma de vida conocida",
     "water2": "Absorbe calor y es una buena conductora de electricidad",
 
-    "snow1": "La nieve puede absorber el sonido",
-    "snow2": "Está tan compactada que su peso ha aumentado",
+    "snow1": "El hielo es más denso que el agua líquida en estado sólido",
+    "snow2": "Está completamente congelado, lo que hace que sus partículas estén muy compactas",
 
     "dioxide1": "Los humanos y animales lo exhalan",
     "dioxide2": "Al ser un gas pesado, puede flotar sobre gases más ligeros",

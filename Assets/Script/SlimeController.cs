@@ -34,7 +34,7 @@ public class SlimeController : MonoBehaviour
 
     public int _fightChances;
     public float _slimeSpeed;
-
+    public GameObject _iceCube;
 
     public GameObject _slimeParent;
     void Start()
@@ -51,6 +51,8 @@ public class SlimeController : MonoBehaviour
         //_slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_FillAmount", fillAmount);
         //_slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_FillColorA", _materialColors[1]);
         //_slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_FillColorB", _materialColors[2]);
+        //_slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_LightColor", Color.Lerp(_slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.GetColor("_LightColor"), _slimeAssets[_slimeType]._mainColor, 3f * Time.deltaTime));
+
 
         //if (_slimeAnimator.GetBool("Moving"))
         //{
@@ -79,8 +81,10 @@ public class SlimeController : MonoBehaviour
         //_scriptMain._scriptMain._saveLoadValues._slimeUnlocked[_slimeType] = true;
 
         // Cambiar color en la instancia del material
-        _slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_BaseColor", _slimeAssets[_slimeType]._mainColor);
-      
+        //_slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_BaseColor", _slimeAssets[_slimeType]._mainColor);
+        //_slimeMainBody.GetComponent<SkinnedMeshRenderer>().sharedMaterial.SetColor("_BaseColor", _slimeAssets[_slimeType]._mainColor);
+
+
     }
 
     public void DeactivateElementsInfo()

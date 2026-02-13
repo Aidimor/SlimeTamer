@@ -16,10 +16,10 @@ public class LightBinder : MonoBehaviour
         if (targetLight != null && rend != null)
         {
             Vector3 pos = targetLight.transform.position;
-            Color col = targetLight.color * targetLight.intensity;
+            //Color col = targetLight.color * targetLight.intensity;
 
             rend.material.SetVector("_LightPos", new Vector4(pos.x, pos.y, pos.z, 1));
-            rend.material.SetColor("_LightColor", col);
+            //rend.material.SetColor("_LightColor", col);
         }
     }
 }

@@ -154,7 +154,14 @@ public class NewMainGameplay : MonoBehaviour
     public int _stepsCollected;
     public bool _timerEnds = false;
     public bool _beingPushed;
- 
+
+    private SkinnedMeshRenderer _renderer;
+    private MaterialPropertyBlock _propBlock;
+    private RectTransform _mainUIRect;
+    private RectTransform _boulderRect;
+    private RectTransform _switchRect;
+
+
     void Start()
     {   
         StartVoids();
@@ -178,6 +185,16 @@ public class NewMainGameplay : MonoBehaviour
         _slimeInfo._stepsText.text = MainController.Instance._saveLoadValues._totalSteps.ToString();
         //MainController.Instance._atomPanelInfo._fusionElementAssets[1]._name.text = GameInitScript.Instance.GetText("H2O");
         //MainController.Instance._atomPanelInfo._fusionElementAssets[1]._extra.text = GameInitScript.Instance.GetText("H2Oextra");
+
+        //_renderer = _scriptSlime._slimeMainBody.GetComponent<SkinnedMeshRenderer>();
+        //_propBlock = new MaterialPropertyBlock();
+
+        //_mainUIRect = _mainUI.GetComponent<RectTransform>();
+        //_boulderRect = _boulderSwitch._boulder.GetComponent<RectTransform>();
+        //_switchRect = _boulderSwitch._switchPose.GetComponent<RectTransform>();
+
+
+
     }
 
 
@@ -486,6 +503,8 @@ public class NewMainGameplay : MonoBehaviour
                     {
                         yield return null;
                     }
+                    MainController.Instance._saveLoadValues._restartAvailable = true;
+                    _escapeObject.gameObject.SetActive(true);
                     SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
                     Main._tutorialAssets._continueText.gameObject.SetActive(false);
                     Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
@@ -724,63 +743,86 @@ public class NewMainGameplay : MonoBehaviour
 
     void Update()
     {
+        // --- Slime Color (SIN INSTANCE) ---
+        _slimeMainColor = Color.Lerp(
+            _slimeMainColor,
+            _slimeInfo._allSlimeColors[_slimeInfo._slimeID],
+            2 * Time.deltaTime
+        );
+
+        _scriptSlime._slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_BaseColor", Color.Lerp(_scriptSlime._slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.GetColor("_BaseColor"), _scriptSlime._slimeAssets[_scriptSlime._slimeType]._mainColor, 3f * Time.deltaTime));
+        _scriptSlime._iceCube.GetComponent<MeshRenderer>().material.SetColor("_BaseColor", Color.Lerp(_scriptSlime._iceCube.GetComponent<MeshRenderer>().material.GetColor("_BaseColor"), _scriptSlime._slimeAssets[_scriptSlime._slimeType]._mainColor, 3f * Time.deltaTime));
+        //_scriptSlime._slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_LightColor", Color.Lerp(_scriptSlime._slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.GetColor("_LightColor"), _scriptSlime._slimeAssets[_scriptSlime._slimeType]._mainColor, 3f * Time.deltaTime));
+
+        //_renderer.GetPropertyBlock(_propBlock);
+        //_propBlock.SetColor("_BaseColor", _slimeMainColor);
+        //_renderer.SetPropertyBlock(_propBlock);
+
+        // --- Gameplay ---
         if (!_AtomsPanelOn)
         {
-
             if (!MainController.Instance._exitAssets._exitPanelOn)
             {
                 PlayerMovementController();
             }
-   
-            _slimeMainColor = Color.Lerp(_slimeMainColor, _slimeInfo._allSlimeColors[_slimeInfo._slimeID], 2 * Time.deltaTime);
-            _scriptSlime._slimeMainBody.GetComponent<SkinnedMeshRenderer>().material.SetColor("_BaseColor", _slimeMainColor);
+
             for (int i = 0; i < _slimeInfo._elementsParticles.Length; i++)
             {
-                _slimeInfo._quantityElementText[i].text = _slimeInfo._elementsParticles[i].ToString();
+                _slimeInfo._quantityElementText[i].text =
+                    _slimeInfo._elementsParticles[i].ToString();
             }
-            //_slimeInfo._atomsText.text = MainController.Instance._saveLoadValues._totalAtoms.ToString();
-            //_slimeInfo._stepsText.text = MainController.Instance._saveLoadValues._totalSteps.ToString();
 
-            _mainUI.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_mainUI.GetComponent<RectTransform>().anchoredPosition, new Vector2(0, 0), 2 * Time.deltaTime);
+            //_mainUIRect.anchoredPosition = Vector2.Lerp(
+            //    _mainUIRect.anchoredPosition,
+            //    Vector2.zero,
+            //    2 * Time.deltaTime
+            //);
 
-            if (Input.GetButtonDown("Submit") && MainController.Instance._tutorialAssets._tutorialAnimator.GetBool("TutorialIn") == false && MainController.Instance._saveLoadValues._restartAvailable && _movementAvailable && !MainController.Instance._exitAssets._exitPanelOn)
+            if (Input.GetButtonDown("Submit") &&
+                !MainController.Instance._tutorialAssets._tutorialAnimator.GetBool("TutorialIn") &&
+                MainController.Instance._saveLoadValues._restartAvailable &&
+                _movementAvailable &&
+                !MainController.Instance._exitAssets._exitPanelOn)
             {
                 SpecialRestartLevel();
             }
-
-
         }
-   
-        if (Input.GetButtonDown("Pause") && MainController.Instance._saveLoadValues._pauseAvailable && !MainController.Instance._exitAssets._exitPanelOn && _gameStarts && _movementAvailable)
-        {
 
+        // --- Pause ---
+        if (Input.GetButtonDown("Pause") &&
+            MainController.Instance._saveLoadValues._pauseAvailable &&
+            !MainController.Instance._exitAssets._exitPanelOn &&
+            _gameStarts &&
+            _movementAvailable)
+        {
             _AtomsPanelOn = !_AtomsPanelOn;
             MainController.Instance._AtomAnimator.SetBool("AtomsIn", _AtomsPanelOn);
-
         }
-        else
+        else if (!MainController.Instance._exitAssets._exitPanelOn && _AtomsPanelOn)
         {
-            if (!MainController.Instance._exitAssets._exitPanelOn && _AtomsPanelOn)
-            {
-                AtomPanelController();
-            }
-      
+            AtomPanelController();
         }
 
-        if (_boulderSwitch._movingBoulder){
-            _boulderSwitch._boulder.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_boulderSwitch._boulder.GetComponent<RectTransform>().anchoredPosition,
-               _boulderSwitch._switchPose.GetComponent<RectTransform>().anchoredPosition, 2 * Time.deltaTime);
+        // --- Boulder Movement ---
+        if (_boulderSwitch._movingBoulder)
+        {
+            _boulderRect.anchoredPosition = Vector2.Lerp(
+                _boulderRect.anchoredPosition,
+                _switchRect.anchoredPosition,
+                2 * Time.deltaTime
+            );
         }
 
-
+        // --- Safety Clamp ---
         if (MainController.Instance._saveLoadValues._totalAtoms < 0)
         {
             MainController.Instance._saveLoadValues._totalAtoms = 0;
         }
+
+        // --- Exit Panel ---
         if (MainController.Instance._exitAssets._exitPanelOn)
         {
             ExitPanelController();
-      
         }
 
         if (Input.GetButtonDown("Cancel"))
@@ -788,8 +830,9 @@ public class NewMainGameplay : MonoBehaviour
             StartCoroutine(ExitPanelNumerator());
         }
 
-        FinalTimerVoid();
+     
     }
+
 
     public void AtomPanelController()
     {
@@ -2097,6 +2140,7 @@ public class NewMainGameplay : MonoBehaviour
             {
                 itTransforms = true;
                 _slimeInfo._slimeID = 4;
+                _scriptSlime._slimeType = 4;
 
                 if (Main._elementsCircles != null && Main._elementsCircles.Length >= 2)
                 {
@@ -2340,6 +2384,7 @@ public class NewMainGameplay : MonoBehaviour
         _waterWalk.Stop();
         _smoke.Stop();
         _slimeInfo._slimeID = 0;
+        _scriptSlime._slimeType = 0;
         _slimeAnimator.SetInteger("ID", 0);
         _transformed = false;
         MainController.Instance._tutorialAssets._tutorialDeployed = false;
@@ -2419,6 +2464,7 @@ public class NewMainGameplay : MonoBehaviour
         _waterWalk.Stop();
         _smoke.Stop();
         _slimeInfo._slimeID = 0;
+        _scriptSlime._slimeType = 0;
         _slimeAnimator.SetInteger("ID", 0);
         _transformed = false;
         MainController.Instance._tutorialAssets._tutorialDeployed = false;
@@ -2605,6 +2651,7 @@ public class NewMainGameplay : MonoBehaviour
         StartVoids();          // recrea stage
         CalculateMoves();      // recalcula movimientos
         _slimeInfo._slimeID = 0;
+        _scriptSlime._slimeType = 0;
         _slimeAnimator.SetInteger("ID", 0);
         _waterWalk.Stop();
         _smoke.Stop();
@@ -2669,6 +2716,7 @@ public class NewMainGameplay : MonoBehaviour
                                 Main._scriptSFX.PlaySound(Main._scriptSFX._fall);
                                 itTransforms = true;
                                 _slimeInfo._slimeID = 2;
+                                _scriptSlime._slimeType = 2;
 
                                 Main._elementsCircles[0]._cirlce.color = Main._elementsColor[1];
                                 Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[1];
@@ -2843,6 +2891,7 @@ public class NewMainGameplay : MonoBehaviour
     public IEnumerator ElementDetection()
     {
         var Main = MainController.Instance;
+      
         var ElementInfo = _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]];
         Main._elementAnimatorAssets._center.gameObject.SetActive(false);
         for (int i = 0; i < ElementInfo._elements.Length; i++)
@@ -2871,6 +2920,7 @@ public class NewMainGameplay : MonoBehaviour
                         string speakKey = key;
                         LOLSDK.Instance.SpeakText(speakKey);
 
+                      
                         yield return new WaitForSeconds(1);
                         Main._tutorialAssets._continueText.gameObject.SetActive(true);
                         yield return new WaitForSeconds(0.5f);
@@ -3186,6 +3236,7 @@ public class NewMainGameplay : MonoBehaviour
         if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[3] >= 1)
         {
             itTransforms = true;
+            _scriptSlime._slimeType = 1;
             _slimeInfo._slimeID = 1;      
 
             Main._elementsCircles[0]._cirlce.color = Main._elementsColor[0];
@@ -3221,6 +3272,7 @@ public class NewMainGameplay : MonoBehaviour
                 case 16:
                 case 25:
                     itTransforms = true;
+                    _scriptSlime._slimeType = 4;
                     _slimeInfo._slimeID = 4;
 
                     Main._elementsCircles[0]._cirlce.color = Main._elementsColor[1];
@@ -3249,6 +3301,7 @@ public class NewMainGameplay : MonoBehaviour
                     break;
                 default:
                     itTransforms = true;
+                    _scriptSlime._slimeType = 2;
                     _slimeInfo._slimeID = 2;
 
                     Main._elementsCircles[0]._cirlce.color = Main._elementsColor[1];
@@ -3279,6 +3332,7 @@ public class NewMainGameplay : MonoBehaviour
         else if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[2] >= 2)
         {
             itTransforms = true;
+            _scriptSlime._slimeType = 3;
             _slimeInfo._slimeID = 3;
 
             Main._elementsCircles[0]._cirlce.color = Main._elementsColor[0];
@@ -3305,6 +3359,7 @@ public class NewMainGameplay : MonoBehaviour
         }
         else if (_slimeInfo._elementsParticles[2] >= 4 && _slimeInfo._elementsParticles[3] >= 3) {
             itTransforms = true;
+            _scriptSlime._slimeType = 5;
             _slimeInfo._slimeID = 5;
 
             Main._elementsCircles[1]._cirlce.color = Main._elementsColor[0];
@@ -3349,6 +3404,7 @@ public class NewMainGameplay : MonoBehaviour
         if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[3] >= 1)
         {
             itTransforms = true;
+            _scriptSlime._slimeType = 1;
             _slimeInfo._slimeID = 1;
     
             Main._elementsCircles[0]._cirlce.color = Main._elementsColor[0];
@@ -3379,6 +3435,7 @@ public class NewMainGameplay : MonoBehaviour
                 case 15:
                 case 16:
                     itTransforms = true;
+                    _scriptSlime._slimeType = 4;
                     _slimeInfo._slimeID = 4;
 
                     Main._elementsCircles[0]._cirlce.color = Main._elementsColor[1];
@@ -3405,7 +3462,7 @@ public class NewMainGameplay : MonoBehaviour
                 default:
                     itTransforms = true;
                     _slimeInfo._slimeID = 2;
-
+                    _scriptSlime._slimeType = 2;
                     Main._elementsCircles[0]._cirlce.color = Main._elementsColor[1];
                     Main._elementsCircles[0]._elementLetters.color = Main._elementsColor[1];
                     Main._elementsCircles[0]._elementLetters.text = "H";
@@ -3432,6 +3489,7 @@ public class NewMainGameplay : MonoBehaviour
         else if (_slimeInfo._elementsParticles[0] >= 1 && _slimeInfo._elementsParticles[2] >= 2)
         {
             itTransforms = true;
+            _scriptSlime._slimeType = 3;
             _slimeInfo._slimeID = 3;
 
             Main._elementsCircles[0]._cirlce.color = Main._elementsColor[0];
@@ -3456,6 +3514,7 @@ public class NewMainGameplay : MonoBehaviour
         else if (_slimeInfo._elementsParticles[2] >= 4 && _slimeInfo._elementsParticles[3] >= 3)
         {
             itTransforms = true;
+            _scriptSlime._slimeType = 5;
             _slimeInfo._slimeID = 5;
 
             Main._elementsCircles[1]._cirlce.color = Main._elementsColor[0];

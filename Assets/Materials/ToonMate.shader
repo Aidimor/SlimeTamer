@@ -16,7 +16,6 @@
         {
             Tags { "RenderType" = "Opaque" "Queue" = "Geometry" }
             LOD 200
-
             ZWrite On
 
             Pass
@@ -44,7 +43,7 @@
 
                 sampler2D _MainTex;
                 float4 _BaseColor;
-                int _ShadowSteps;
+                float _ShadowSteps;
                 float4 _RimColor;
                 float _RimPower;
 
@@ -56,34 +55,40 @@
                     v2f o;
                     o.pos = UnityObjectToClipPos(v.vertex);
                     o.uv = v.uv;
-                    o.normalDir = normalize(UnityObjectToWorldNormal(v.normal));
+
                     o.worldPos = mul(unity_ObjectToWorld, v.vertex).xyz;
+                    o.normalDir = normalize(UnityObjectToWorldNormal(v.normal));
                     o.viewDir = normalize(_WorldSpaceCameraPos - o.worldPos);
+
                     return o;
                 }
 
                 fixed4 frag(v2f i) : SV_Target
                 {
-                    // Luz desde posición custom
-                    float3 lightDir = normalize(_LightPos.xyz - i.worldPos);
-                    float NdotL = saturate(dot(i.normalDir, lightDir));
+                    // Texture base
+                    fixed4 tex = tex2D(_MainTex, i.uv);
 
-                    // Toon shading con steps
-                    float stepShade = ceil(NdotL * _ShadowSteps) / _ShadowSteps;
-                    stepShade = saturate(stepShade);
+                // Light direction
+                float3 lightDir = normalize(_LightPos.xyz - i.worldPos);
+                float NdotL = saturate(dot(i.normalDir, lightDir));
 
-                    // Base
-                    fixed4 tex = tex2D(_MainTex, i.uv) * _BaseColor;
-                    tex.rgb *= stepShade * _LightColor.rgb;
+                // Toon step shading
+                float stepShade = ceil(NdotL * _ShadowSteps) / _ShadowSteps;
+                stepShade = saturate(stepShade);
 
-                    // Rim light
-                    float rim = pow(1.0 - max(0, dot(i.viewDir, i.normalDir)), _RimPower);
-                    tex.rgb += _RimColor.rgb * rim;
+                // Apply lighting first
+                float3 litColor = tex.rgb * stepShade * _LightColor.rgb;
 
-                    tex.a = 1.0;
-                    return tex;
-                }
-                ENDCG
+                // THEN multiply by base color (important)
+                litColor *= _BaseColor.rgb;
+
+                // Rim lighting
+                float rim = pow(1.0 - saturate(dot(i.viewDir, i.normalDir)), _RimPower);
+                litColor += _RimColor.rgb * rim;
+
+                return fixed4(litColor, 1.0);
             }
+            ENDCG
+        }
         }
 }
