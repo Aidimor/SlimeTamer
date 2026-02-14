@@ -62,6 +62,7 @@ public class MainController : MonoBehaviour
         public bool _restartAvailable;
         public bool _hazardTutorial;
         public bool _atomTutorial;
+        public bool _fusionTutorial;
         
 
         //public int _progress;
@@ -175,8 +176,11 @@ public class MainController : MonoBehaviour
         public GameObject _atomParent;
         public GameObject _stepParent;
         public GameObject _exitParent;
+        public GameObject _slimeParent;
         public TextMeshProUGUI _continueText;
         public bool _tutorialDeployed;
+
+        public TextMeshProUGUI[] _slimeNameText;
     }
     public TutorialAssets _tutorialAssets;
 

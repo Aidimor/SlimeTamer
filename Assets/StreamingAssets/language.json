@@ -44,7 +44,9 @@
     "tutorial5": "Press Space if you need to restart the stage at any point",
     "tutorial6": "Transform into different slime types to overcome any hazard in your way",
 
-    "tutorialatom": "You've got a blank atom. Now you can choose the element you want and create a new chemical compound",
+    "tutorialatom0": "You've got a blank atom",
+    "tutorialatom1": "Now you can choose the element you want and create a new chemical compound",
+    "tutorialatom2": "Move with the arrow keys and choose with Spacebar to create the correct element",
     "tutorialhint": "Get a hint to solve the level",
     "tutorialmenu": "Press Enter to open the hint menu",
 
@@ -75,8 +77,8 @@
     "water1": "Required for all known life",
     "water2": "Absorbs heat and is a good conductor of electricity",
 
-"snow1": "Ice is denser than liquid water in solid form",
-"snow2": "It is frozen solid, making its particles tightly packed together",
+    "snow1": "Ice is denser than liquid water in solid form",
+    "snow2": "It is frozen solid, making its particles tightly packed together",
 
     "dioxide1": "Humans and animals breathe it out",
     "dioxide2": "Being a heavy gas, it can float above lighter gases",
@@ -130,7 +132,9 @@
     "tutorial5": "Presiona Espacio si necesitas reiniciar la fase en cualquier punto",
     "tutorial6": "Transfórmate en diferentes tipos de slime para superar cualquier peligro en tu camino",
 
-    "tutorialatom": "Has obtenido un átomo vacío. Ahora puedes elegir el elemento que quieras y crear un nuevo compuesto químico",
+    "tutorialatom0": "Has obtenido un átomo vacío",
+    "tutorialatom1": "Ahora puedes elegir el elemento que quieras y crear un nuevo compuesto químico",
+    "tutorialatom2": "Muevete con las flechas y selecciona con la barra espaciadora para crear el element correcto",
     "tutorialhint": "Obtén una pista para resolver el nivel",
     "tutorialmenu": "Presiona Enter para abrir el menú de pistas",
 
@@ -186,5 +190,6 @@
     "princess2": "Usa los elementos para transformarte y rescatar a la princesa"
   }
 }
+
 
 

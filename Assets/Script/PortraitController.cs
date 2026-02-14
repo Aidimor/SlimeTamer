@@ -231,6 +231,10 @@ public class PortraitController : MonoBehaviour
         MainController.Instance._elementsName[2].text = gi.GetText("element3");
         MainController.Instance._elementsName[3].text = gi.GetText("element4");
 
+        MainController.Instance._tutorialAssets._slimeNameText[0].text = gi.GetText("CO2");
+        MainController.Instance._tutorialAssets._slimeNameText[1].text = gi.GetText("H2O");
+        MainController.Instance._tutorialAssets._slimeNameText[2].text = gi.GetText("FC");
+
         _scapeGame.text = GameInitScript.Instance.GetText("escapegame");
 
         yield return new WaitForSeconds(0.5f);
