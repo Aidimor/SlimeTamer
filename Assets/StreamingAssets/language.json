@@ -47,6 +47,7 @@
     "tutorialatom0": "You've got a blank atom",
     "tutorialatom1": "Now you can choose the element you want and create a new chemical compound",
     "tutorialatom2": "Move with the arrow keys and choose with Spacebar to create the correct element",
+    "tutorialatom3": "From now on if you get an blank atom you will have to create your own formula on the Fusion Menu",
     "tutorialhint": "Get a hint to solve the level",
     "tutorialmenu": "Press Enter to open the hint menu",
 
@@ -135,6 +136,7 @@
     "tutorialatom0": "Has obtenido un átomo vacío",
     "tutorialatom1": "Ahora puedes elegir el elemento que quieras y crear un nuevo compuesto químico",
     "tutorialatom2": "Muevete con las flechas y selecciona con la barra espaciadora para crear el element correcto",
+    "tutorialatom3": "Apartir de ahora si consigues un atomo en blanco tendras que crear tus propias formulas en el menu",
     "tutorialhint": "Obtén una pista para resolver el nivel",
     "tutorialmenu": "Presiona Enter para abrir el menú de pistas",
 

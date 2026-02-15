@@ -168,6 +168,8 @@ public class NewMainGameplay : MonoBehaviour
     public TextMeshProUGUI _pressEnter;
     public bool _atomOnGame;
     public bool _atomPanelMovementAvailable;
+    public bool _restartLocked;
+    public bool _SpecialLock;
 
     void Start()
     {   
@@ -330,7 +332,7 @@ public class NewMainGameplay : MonoBehaviour
     public IEnumerator StartGameNumerator()
     {
         var Main = MainController.Instance;
-
+        _restartLocked = true;
         int stageIndex = Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage];
         var stage = _allStages[stageIndex];
         Main._tutorialAssets._continueText.gameObject.SetActive(false);
@@ -743,7 +745,7 @@ public class NewMainGameplay : MonoBehaviour
         SFXscript.Instance.PlaySound(SFXscript.Instance._chooseElement);
         _slimeObject.GetComponent<Animator>().Play("SlimeEnters");
         yield return new WaitForSeconds(0.5f);
-
+        _restartLocked = false;
         _turnToStorm = 5;
         _gameStarts = true;
         CalculateMoves();
@@ -773,7 +775,7 @@ public class NewMainGameplay : MonoBehaviour
         // --- Gameplay ---
         if (!_AtomsPanelOn)
         {
-            if (!MainController.Instance._exitAssets._exitPanelOn)
+            if (!MainController.Instance._exitAssets._exitPanelOn && !_SpecialLock)
             {
                 PlayerMovementController();
             }
@@ -793,7 +795,7 @@ public class NewMainGameplay : MonoBehaviour
             if (Input.GetButtonDown("Submit") &&
                 !MainController.Instance._tutorialAssets._tutorialAnimator.GetBool("TutorialIn") &&
                 MainController.Instance._saveLoadValues._restartAvailable &&
-                _movementAvailable &&
+                !_restartLocked &&
                 !MainController.Instance._exitAssets._exitPanelOn)
             {
                 SpecialRestartLevel();
@@ -805,7 +807,7 @@ public class NewMainGameplay : MonoBehaviour
             MainController.Instance._saveLoadValues._pauseAvailable &&
             !MainController.Instance._exitAssets._exitPanelOn &&
             _gameStarts &&
-            _movementAvailable)
+            !_restartLocked)
         {
             _AtomsPanelOn = !_AtomsPanelOn;
             MainController.Instance._AtomAnimator.SetBool("AtomsIn", _AtomsPanelOn);
@@ -1233,6 +1235,7 @@ public class NewMainGameplay : MonoBehaviour
 
     void SetElements()
     {
+        _atomOnGame = false;
         var Main = MainController.Instance;
  
         foreach (var data in _allStages[Main._allTurnsInfo[Main._onWorldGlobal]._stagesID[_idStage]]._elements)
@@ -1266,6 +1269,7 @@ public class NewMainGameplay : MonoBehaviour
                     }
                     else
                     {
+                  
                         GameObject element1 = Instantiate(_elementPrefab, _parent);
                         RectTransform rt1 = element1.GetComponent<RectTransform>();
                         rt1.position = _allPositions[data._onPlace].GetComponent<RectTransform>().position;
@@ -1325,6 +1329,7 @@ public class NewMainGameplay : MonoBehaviour
                     }
                     else
                     {
+                   
                         GameObject element1 = Instantiate(_elementPrefab, _parent);
                         RectTransform rt1 = element1.GetComponent<RectTransform>();
                         rt1.position = _allPositions[data._onPlace].GetComponent<RectTransform>().position;
@@ -1386,6 +1391,7 @@ public class NewMainGameplay : MonoBehaviour
                     }
                     else
                     {
+         
                         GameObject element1 = Instantiate(_elementPrefab, _parent);
                         RectTransform rt1 = element1.GetComponent<RectTransform>();
                         rt1.position = _allPositions[data._onPlace].GetComponent<RectTransform>().position;
@@ -1514,8 +1520,8 @@ public class NewMainGameplay : MonoBehaviour
     
         }
 
-   
 
+        Debug.Log("Set Element =" + _atomOnGame);
 
 
 
@@ -2958,16 +2964,19 @@ public class NewMainGameplay : MonoBehaviour
 
                     if (ElementInfo._elements[i]._emptyAtom)
                     {
+                        Main._elementAnimatorAssets._border.color = Color.white;
+                        Main._elementAnimatorAssets._elementText.color = Color.white;
+                        Main._elementAnimatorAssets._elementText.text = "";
+                        Main._elementAnimatorAssets._elementName.text = "";
+                        Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
+                        Main._elementAnimatorAssets._center.color = Color.white;
+                        _atomsObtained += ElementInfo._elements[i]._quantity;
+                        Main._elementAnimatorAssets._center.gameObject.SetActive(true);
+             
+
                         if (!Main._saveLoadValues._atomTutorial)
                         {
-                            Main._elementAnimatorAssets._border.color = Color.white;
-                            Main._elementAnimatorAssets._elementText.color = Color.white;
-                            Main._elementAnimatorAssets._elementText.text = "";
-                            Main._elementAnimatorAssets._elementName.text = "";
-                            Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
-                            Main._elementAnimatorAssets._center.color = Color.white;
-                            _atomsObtained += ElementInfo._elements[i]._quantity;
-                            Main._elementAnimatorAssets._center.gameObject.SetActive(true);
+         
 
 
                             for (int y = 0; y < 2; y++)
@@ -3005,40 +3014,12 @@ public class NewMainGameplay : MonoBehaviour
                                 //yield return new WaitForSeconds(0.5f);
                             }
                             Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
-
-
-
                         }
 
-                        yield return new WaitForSeconds(1);
-                        //Main._elementAnimatorAssets._border.color = Color.white;
-                        //Main._elementAnimatorAssets._elementText.color = Color.white;
-                        //Main._elementAnimatorAssets._elementText.text = "";
-                        //Main._elementAnimatorAssets._elementName.text = "";
-                        //Main._elementAnimatorAssets._quantityText.text = ElementInfo._elements[i]._quantity.ToString();
-                        //Main._elementAnimatorAssets._center.color = Color.white;
-                        //_atomsObtained += ElementInfo._elements[i]._quantity;
-                        //Main._elementAnimatorAssets._center.gameObject.SetActive(true);
-
-                        //_pressEnterParent.SetActive(true);
-                        //_fusionButtonAnim.SetBool("FusionOn", true);
-                        //yield return new WaitForSeconds(1);
-                        //while (!Input.GetButtonDown("Pause"))
-                        //{
-                        //    yield return null;
-                        //}
-                        //_pressEnterParent.SetActive(false);
-                        //_fusionButtonAnim.SetBool("FusionOn", false);
-                        //Main._AtomAnimator.SetBool("AtomsIn", true);
-                        //_AtomsPanelOn = true;
-                        //while (_AtomsPanelOn)
-                        //{
-                        //    yield return null;
-                        //}
-                        //yield return new WaitForSeconds(1);
+             
 
 
-                        _movementAvailable = true;
+                        //_movementAvailable = true;
 
 
 
@@ -3108,7 +3089,7 @@ public class NewMainGameplay : MonoBehaviour
                  
                     }
 
-                    _movementAvailable = false;
+            
 
 
                     SFXscript.Instance.PlaySound(SFXscript.Instance._slimeRelease);
@@ -3127,13 +3108,13 @@ public class NewMainGameplay : MonoBehaviour
                     }
 
 
+              
 
+                    //if (!itTransforms)
+                    //{
 
-                    if (!itTransforms)
-                    {
-
-                        _movementAvailable = true;
-                    }
+                    //    _movementAvailable = true;
+                    //}
 
 
 
@@ -3151,6 +3132,7 @@ public class NewMainGameplay : MonoBehaviour
     }
     public IEnumerator ElementNumerator()
     {
+        _movementAvailable = false;
         var Main = MainController.Instance;
         yield return new WaitForSeconds(0.5f);
         for (int i = 0; i < _allElements.Count; i++)
@@ -3167,6 +3149,8 @@ public class NewMainGameplay : MonoBehaviour
 
         if (_allAtoms.Count == 0 && _atomOnGame && _allElements.Count == 0 && !MainController.Instance._saveLoadValues._fusionTutorial)
         {
+            _SpecialLock = true;
+            _restartLocked = true;
             _movementAvailable = false;
             _pressEnterParent.SetActive(true);
             _fusionButtonAnim.SetBool("FusionOn", true);
@@ -3176,7 +3160,7 @@ public class NewMainGameplay : MonoBehaviour
             }
             _AtomsPanelOn = true;
             Main._AtomAnimator.SetBool("AtomsIn", true);
-            yield return new WaitForSeconds(1);
+            //yield return new WaitForSeconds(1);
             Main._tutorialAssets._tutorialText.text = GameInitScript.Instance.GetText("tutorialatom2");
             yield return new WaitForSeconds(1);
             Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
@@ -3196,9 +3180,9 @@ public class NewMainGameplay : MonoBehaviour
             Main._tutorialAssets._continueText.gameObject.SetActive(false);
             yield return new WaitForSeconds(1);
             _atomPanelMovementAvailable = true;
+            _restartLocked = false;
 
-
-
+            _SpecialLock = false;
             //while (_AtomsPanelOn)
             //{
             //    yield return null;
@@ -3208,6 +3192,11 @@ public class NewMainGameplay : MonoBehaviour
             //MainController.Instance._saveLoadValues._fusionTutorial = true;
             //_atomOnGame = false;
             //_movementAvailable = true;
+        }
+        else
+        {
+            //Debug.Log("aqui la caga");
+            _movementAvailable = true;
         }
     }
 
@@ -3253,7 +3242,7 @@ public class NewMainGameplay : MonoBehaviour
                     }
                     Main._tutorialAssets._continueText.gameObject.SetActive(false);
                     Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
-                    _movementAvailable = true;
+                    //_movementAvailable = true;
                     MainController.Instance._AtomAnimator.SetBool("AtomsIn", true);
                     MainController.Instance._saveLoadValues._pauseAvailable = true;
                     _AtomsPanelOn = true;
@@ -3675,7 +3664,7 @@ public class NewMainGameplay : MonoBehaviour
 
     public IEnumerator TransormatioNumerator()
     {
-   
+        _restartLocked = true;
         var Main = MainController.Instance;
         //SFXscript.Instance.PlaySound(SFXscript.Instance._slimeCharge);
         MainController.Instance._AtomAnimator.SetBool("AtomsIn", false);
@@ -3776,12 +3765,45 @@ public class NewMainGameplay : MonoBehaviour
             yield return new WaitForSeconds(0.5f);
         }
 
-        HazardDetection();
-    
+        if (_allAtoms.Count == 0 && _atomOnGame && _allElements.Count == 0 && !MainController.Instance._saveLoadValues._fusionTutorial)
+        {
+            var gi = GameInitScript.Instance;
 
+            Main._tutorialAssets._tutorialText.text = gi.GetText("tutorialatom3");
+            Main._tutorialAssets._arrowsParent.SetActive(false);
+            Main._tutorialAssets._elementsParent.SetActive(false);
+            Main._tutorialAssets._atomParent.SetActive(false);
+            Main._tutorialAssets._stepParent.SetActive(false);
+            Main._tutorialAssets._slimeParent.SetActive(false);
+      
+            Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", true);
 
+            string key1 = "tutorialatom3".ToString();
+            string speakKey = key1;
+            LOLSDK.Instance.SpeakText(speakKey);
 
-        _movementAvailable = true;
+            yield return new WaitForSeconds(1);
+            Main._tutorialAssets._continueText.gameObject.SetActive(true);
+            while (!Input.GetButtonDown("Submit"))
+            {
+                yield return null;
+            }
+            SFXscript.Instance.PlaySound(SFXscript.Instance._whip);
+            Main._tutorialAssets._continueText.gameObject.SetActive(false);
+            Main._tutorialAssets._tutorialAnimator.SetBool("TutorialIn", false);
+            MainController.Instance._saveLoadValues._hazardTutorial = true;
+            yield return new WaitForSeconds(0.5f);
+            MainController.Instance._saveLoadValues._fusionTutorial = true;
+            _restartLocked = false;
+            _movementAvailable = true;
+        }
+
+            HazardDetection();
+
+        _movementAvailable = true; //BORRAR SI SIGUE DAN EL PROBLEMA
+        _restartLocked = false;
+
+        //_movementAvailable = true;
     }
 
     public void ExitDetection()
