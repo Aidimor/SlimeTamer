@@ -2374,7 +2374,7 @@ public class NewMainGameplay : MonoBehaviour
         {
             _realID._hazards[i]._finished = false;
         }
-        Debug.Log(_realID._spawnPoint);
+        //Debug.Log(_realID._spawnPoint);
         for (int i = 0; i < _allGrounds.Count; i++)
         {
             _allGrounds[i].GetComponent<StageGroundScript>()._lockedBool = false;
@@ -2645,7 +2645,7 @@ public class NewMainGameplay : MonoBehaviour
 
         }
         yield return new WaitForSeconds(0.5f);
-
+        _restartLocked = false;
         MainController.Instance._bordersAnimator.SetBool("BorderOut", true);
         MainController.Instance._cinematicBorders.SetBool("FadeIn", false);
     }
@@ -2738,6 +2738,7 @@ public class NewMainGameplay : MonoBehaviour
                             {
                                 if(_allHazards[y].GetComponent<ObstaclesScript>()._id == 3)
                                 {
+                                    Debug.Log(y);
                                     _allHazards[y].GetComponent<ObstaclesScript>()._allObstacles[4].GetComponent<Animator>().SetTrigger("Column");
                                     for(int z = 0; z < HazardInfo._hazards.Length; z++)
                                     {
@@ -2749,9 +2750,9 @@ public class NewMainGameplay : MonoBehaviour
 
                                 }
                             }
-                        }                       
-                       
-                   
+                        }
+                        CalculateMoves();
+
                         break;
                  case NewGameEvent.Hazards.HazardsType.Column:
                      break;
@@ -3780,6 +3781,7 @@ public class NewMainGameplay : MonoBehaviour
 
     public IEnumerator ExitNumerator()
     {
+        _restartLocked = true;
         var Main = MainController.Instance;
         _gameStarts = false;
         SFXscript.Instance._windSetVolume = 0;
@@ -3920,6 +3922,7 @@ public class NewMainGameplay : MonoBehaviour
         MainController.Instance._onPortrait = false;
         MainController.Instance._scriptMusic._audioBGM.Play();
         yield return new WaitForSeconds(1);
+        _restartLocked = false;
         MainController.Instance.LoadSceneByName("IntroScene");
 
     }

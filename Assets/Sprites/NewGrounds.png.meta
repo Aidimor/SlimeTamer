@@ -165,10 +165,10 @@ TextureImporter:
       name: NewGrounds_0
       rect:
         serializedVersion: 2
-        x: 79
-        y: 517
-        width: 418
-        height: 427
+        x: 37
+        y: 261
+        width: 214
+        height: 214
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -186,10 +186,10 @@ TextureImporter:
       name: NewGrounds_1
       rect:
         serializedVersion: 2
-        x: 529
-        y: 518
-        width: 424
-        height: 424
+        x: 261
+        y: 263
+        width: 212
+        height: 210
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -207,10 +207,10 @@ TextureImporter:
       name: NewGrounds_2
       rect:
         serializedVersion: 2
-        x: 75
-        y: 65
-        width: 435
-        height: 430
+        x: 35
+        y: 31
+        width: 218
+        height: 218
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -228,10 +228,10 @@ TextureImporter:
       name: NewGrounds_3
       rect:
         serializedVersion: 2
-        x: 526
-        y: 69
-        width: 418
-        height: 422
+        x: 261
+        y: 33
+        width: 212
+        height: 216
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}

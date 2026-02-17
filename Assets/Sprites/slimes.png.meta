@@ -82,14 +82,14 @@ TextureImporter:
     forceMaximumCompressionQuality_BC6H_BC7: 0
   - serializedVersion: 3
     buildTarget: WebGL
-    maxTextureSize: 2048
+    maxTextureSize: 128
     resizeAlgorithm: 0
-    textureFormat: -1
+    textureFormat: 12
     textureCompression: 1
     compressionQuality: 50
     crunchedCompression: 0
     allowsAlphaSplitting: 0
-    overridden: 0
+    overridden: 1
     ignorePlatformSupport: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
@@ -165,10 +165,10 @@ TextureImporter:
       name: slimes_0
       rect:
         serializedVersion: 2
-        x: 69
-        y: 622
-        width: 277
-        height: 247
+        x: 17
+        y: 170
+        width: 81
+        height: 76
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -186,10 +186,10 @@ TextureImporter:
       name: slimes_1
       rect:
         serializedVersion: 2
-        x: 159
-        y: 863
-        width: 29
-        height: 18
+        x: 21
+        y: 115
+        width: 81
+        height: 43
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -204,34 +204,13 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: slimes_2
-      rect:
-        serializedVersion: 2
-        x: 85
-        y: 420
-        width: 272
-        height: 140
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: e16f7f073e755334fb004808d7b945d8
-      internalID: 267474683
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
       name: slimes_3
       rect:
         serializedVersion: 2
-        x: 431
-        y: 541
-        width: 7
-        height: 6
+        x: 1
+        y: 11
+        width: 136
+        height: 94
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -241,27 +220,6 @@ TextureImporter:
       bones: []
       spriteID: a46fc7dbc8b95af48819f1cd52467e37
       internalID: 1928340803
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: slimes_4
-      rect:
-        serializedVersion: 2
-        x: 13
-        y: 42
-        width: 471
-        height: 327
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: bb70e149868468c44855e46d1cc19fc6
-      internalID: 1808675490
       vertices: []
       indices: 
       edges: []
@@ -281,7 +239,6 @@ TextureImporter:
       slimes_1: 636874483
       slimes_2: 267474683
       slimes_3: 1928340803
-      slimes_4: 1808675490
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

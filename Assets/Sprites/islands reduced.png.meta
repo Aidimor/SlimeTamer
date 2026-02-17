@@ -166,9 +166,9 @@ TextureImporter:
       rect:
         serializedVersion: 2
         x: 0
-        y: 300
-        width: 208
-        height: 190
+        y: 156
+        width: 108
+        height: 99
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -186,10 +186,10 @@ TextureImporter:
       name: islands reduced_1
       rect:
         serializedVersion: 2
-        x: 252
-        y: 305
-        width: 231
-        height: 173
+        x: 131
+        y: 159
+        width: 121
+        height: 90
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -207,10 +207,10 @@ TextureImporter:
       name: islands reduced_2
       rect:
         serializedVersion: 2
-        x: 10
-        y: 40
-        width: 191
-        height: 244
+        x: 5
+        y: 21
+        width: 100
+        height: 127
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -228,10 +228,10 @@ TextureImporter:
       name: islands reduced_3
       rect:
         serializedVersion: 2
-        x: 271
-        y: 49
-        width: 180
-        height: 174
+        x: 141
+        y: 5
+        width: 94
+        height: 111
       alignment: 0
       pivot: {x: 0, y: 0}
       border: {x: 0, y: 0, z: 0, w: 0}
@@ -241,90 +241,6 @@ TextureImporter:
       bones: []
       spriteID: 88cdc364df6d6884ab27e48e6c5414a8
       internalID: -174616215
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: islands reduced_4
-      rect:
-        serializedVersion: 2
-        x: 346
-        y: 33
-        width: 10
-        height: 13
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 4d125ccecc1d65e4b8fe748456fe69dd
-      internalID: 1521470562
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: islands reduced_5
-      rect:
-        serializedVersion: 2
-        x: 381
-        y: 39
-        width: 5
-        height: 6
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 2bbb878df3e69f74386616ea213e236f
-      internalID: -840720872
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: islands reduced_6
-      rect:
-        serializedVersion: 2
-        x: 358
-        y: 23
-        width: 11
-        height: 12
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: ba165b7c67878b943b53afac4e0a5a87
-      internalID: -2014893094
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: islands reduced_7
-      rect:
-        serializedVersion: 2
-        x: 362
-        y: 10
-        width: 4
-        height: 5
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: fcfc53de176efd844b50e3b57a5eb2cd
-      internalID: 1170441153
       vertices: []
       indices: 
       edges: []
@@ -346,8 +262,6 @@ TextureImporter:
       islands reduced_3: -174616215
       islands reduced_4: 1521470562
       islands reduced_5: -840720872
-      islands reduced_6: -2014893094
-      islands reduced_7: 1170441153
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 

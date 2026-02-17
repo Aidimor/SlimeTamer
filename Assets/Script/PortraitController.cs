@@ -322,6 +322,7 @@ public class PortraitController : MonoBehaviour
         SFXscript.Instance.PlaySound(SFXscript.Instance._chooseElement);
         _portraitParent.GetComponent<RectTransform>().anchoredPosition = new Vector2(_portraitParent.GetComponent<RectTransform>().anchoredPosition.x, _portraitParent.GetComponent<RectTransform>().anchoredPosition.y + 10);
         MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
+        SFXscript.Instance.PlaySound(SFXscript.Instance._chooseElement);
         yield return new WaitForSeconds(1);
 
         StartCoroutine(UpdateWorldTexts());
