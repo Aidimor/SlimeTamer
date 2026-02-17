@@ -74,8 +74,16 @@ public class ComicController : MonoBehaviour
                     switch (MainController.Instance._gameFinished)
                     {
                         case true:
-            
-                            _continuar.text = GJ.GetText("endgame");
+                            switch (MainController.Instance._firstWorld)
+                            {
+                                case true:
+                                    _continuar.text = GJ.GetText("continue");
+                                    break;
+                                case false:
+                                    _continuar.text = GJ.GetText("endgame");
+                                    break;
+                            }
+                    
                             break;
                         case false:
                   

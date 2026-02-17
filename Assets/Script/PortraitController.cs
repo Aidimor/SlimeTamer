@@ -74,6 +74,8 @@ public class PortraitController : MonoBehaviour
     public GameObject _portraitParent;
     public TextMeshProUGUI _startText;
 
+    public GameObject _newWolrdChoose;
+
     public void Awake()
     {
         Instance = this;
@@ -182,7 +184,7 @@ public class PortraitController : MonoBehaviour
 
     public IEnumerator UpdateWorldTexts()
     {
-        Debug.Log("aqui la caga");
+        //Debug.Log("aqui la caga");
         yield return new WaitUntil(() =>
             GameInitScript.Instance != null &&
             GameInitScript.Instance.languageReady
@@ -294,9 +296,22 @@ public class PortraitController : MonoBehaviour
             Application.Quit();
         }
 
-        _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.MoveTowards(_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(135, _newAllWorlds[_onWorldPos]._worldParent.GetComponent<RectTransform>().anchoredPosition.y - 25), 1500f * Time.deltaTime);
+        //_slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.MoveTowards(_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(135, _newAllWorlds[_onWorldPos]._worldParent.GetComponent<RectTransform>().anchoredPosition.y - 25), 1500f * Time.deltaTime);
+        _slimeParent.GetComponent<RectTransform>().anchoredPosition = Vector2.MoveTowards(_slimeParent.GetComponent<RectTransform>().anchoredPosition, new Vector2(135, _newAllWorlds[_onWorldPos]._yPos), 1500f * Time.deltaTime);
+
+
+
         _parent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_parent.GetComponent<RectTransform>().anchoredPosition, Vector2.zero, 20 * Time.deltaTime);
         _portraitParent.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_portraitParent.GetComponent<RectTransform>().anchoredPosition, Vector2.zero, 20 * Time.deltaTime);
+
+        if(_onWorldPos == 4)
+        {
+            _newWolrdChoose.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_newWolrdChoose.GetComponent<RectTransform>().anchoredPosition, new Vector2(_newWolrdChoose.GetComponent<RectTransform>().anchoredPosition.x, 175), 15 * Time.deltaTime);
+        }
+        else
+        {
+            _newWolrdChoose.GetComponent<RectTransform>().anchoredPosition = Vector2.Lerp(_newWolrdChoose.GetComponent<RectTransform>().anchoredPosition, new Vector2(_newWolrdChoose.GetComponent<RectTransform>().anchoredPosition.x, -10), 15 * Time.deltaTime);
+        }
 
     }
 
@@ -336,7 +351,7 @@ public class PortraitController : MonoBehaviour
                 LOLSDK.Instance.SpeakText(speakKey);
             }
 
-            if (Input.GetAxisRaw("Vertical") < 0 && !_worldPressed && _onWorldPos < _worldsUnlocked - 1)
+            if (Input.GetAxisRaw("Vertical") < 0 && !_worldPressed && _onWorldPos < _newAllWorlds.Length - 1)
             {
                 SFXscript.Instance.PlaySound(SFXscript.Instance._next);
                 _onWorldPos++;
@@ -455,6 +470,7 @@ public class PortraitController : MonoBehaviour
         {
             yield return null;
         }
+        MainController.Instance._firstWorld = true;
         MainController.Instance._saveLoadValues._progressSave[0] = true;
         MainController.Instance._bordersAnimator.SetBool("BorderOut", false);
         yield return new WaitForSeconds(1);

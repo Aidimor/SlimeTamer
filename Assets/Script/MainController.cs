@@ -221,6 +221,8 @@ public class MainController : MonoBehaviour
         }
         public FusionElementsAssets[] _fusionElementAssets;
 
+        public GameObject _lockedBar;
+        public bool _lockedBool;
         public Animator _circleParents;
     
     }
@@ -237,6 +239,8 @@ public class MainController : MonoBehaviour
     public TextMeshProUGUI _continuarTutorial;
     public bool _gameFinished;
     public bool _onPortrait;
+    public bool _firstWorld;
+
     void Awake()
     {
         if (Instance == null)
