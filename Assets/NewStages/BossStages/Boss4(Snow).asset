@@ -45,5 +45,5 @@ MonoBehaviour:
       _tentacleID: 0
     - _groundID: 11
       _attackCount: 2
-      _tentacleID: 1
+      _tentacleID: 0
   _wind: 0

@@ -37,6 +37,7 @@ public class SlimeController : MonoBehaviour
     public GameObject _iceCube;
 
     public GameObject _slimeParent;
+    public ParticleSystem _impactParticle;
     void Start()
     {
         _slimeAnimator = GetComponent<Animator>();
@@ -365,6 +366,7 @@ public class SlimeController : MonoBehaviour
     public void HeavyJumpSlime()
     {
         StartCoroutine(_scriptNewMain.TremorNumerator());
+        _impactParticle.Play();
         //main._mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 2);
         SFXscript.Instance.PlaySound(SFXscript.Instance._explosion);
     }

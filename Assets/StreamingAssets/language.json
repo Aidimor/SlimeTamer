@@ -20,7 +20,6 @@
     "WorldName3": "SNOWY MOUNTAIN",
     "WorldName4": "WINDY FOREST",
     "WorldName5": "CURSED CASTLE",
-
     "escape": "Press Escape",
     "exitmenu": "Exit",
     "pause1": "Resume",
@@ -28,172 +27,134 @@
     "pause3": "Exit Game",
     "continue": "PRESS SPACE TO CONTINUE",
     "spacebar": "Press Spacebar",
-
     "entrance": "Entrance",
-
     "element1": "Carbon",
     "element2": "Hydrogen",
     "element3": "Oxygen",
     "element4": "Iron",
     "elementa": "Atom",
-
     "tutorial0": "Use the arrow keys to move",
-    "tutorial1": "If you step on a purple square or a hazard, the stage will restart",
-    "tutorial2": "Collect atoms and transform into a new chemical compound to complete the stage",
-    "tutorial3": "You can step back onto purple squares if you have enough Step Coins",
-    "tutorial4": "You can create your own formula if the stage does not have enough elements and you have enough atoms.",
-    "tutorial5": "Press Space if you need to restart the stage at any point",
-    "tutorial6": "Transform into different slime types to overcome any hazard in your way",
-
-    "tutorialatom0": "You've got a blank atom",
-    "tutorialatom1": "Now you can choose the element you want and create a new chemical compound",
-    "tutorialatom2": "Move with the arrow keys and choose with Spacebar to create the correct element",
-    "tutorialatom3": "From now on if you get an blank atom you will have to create your own formula on the Fusion Menu",
+    "tutorial1": "Stepping on a purple square or hazard restarts the stage",
+    "tutorial2": "Collect atoms and transform into a chemical compound to finish",
+    "tutorial3": "You can step on purple squares if you have enough Step Coins",
+    "tutorial4": "Create your own formula if the stage lacks elements but you have atoms",
+    "tutorial5": "Press Space to restart the stage at any point",
+    "tutorial6": "Transform into different slime types to overcome hazards",
+    "tutorialatom0": "You've acquired a blank atom",
+    "tutorialatom1": "Now choose an element and create a new chemical compound",
+    "tutorialatom2": "Use arrow keys to move and Spacebar to select the correct element",
+    "tutorialatom3": "Blank atoms now require you to create formulas in the Fusion Menu",
     "tutorialhint": "Get a hint to solve the level",
     "tutorialmenu": "Press Enter to open the hint menu",
-
     "pressenter": "PRESS ENTER",
     "hintmenu": "HINT MENU",
-
     "FC": "IRON",
     "H2O": "WATER",
     "ICE": "ICE CUBE",
     "CO2": "CARBON DIOXIDE",
     "FE3O4": "MAGNETITE",
-
     "FCextra": "Heavy Solid",
     "H2Oextra": "Light Liquid",
-    "ICEextra": "Solidied Liquid",
+    "ICEextra": "Solidified Liquid",
     "CO2extra": "Heavy Gas",
     "FE3O4extra": "Light Solid",
-
     "hazard1": "Sandstorm approaching",
-    "hazard2": "The wind is too cold and can change the results of the formula",
+    "hazard2": "The wind is too cold; it may change the formula results",
     "hazard3": "Strong winds can change your position",
     "hazard4": "Sandstorm approaching",
     "hazard5": "Not ready yet",
-
     "iron1": "Earth’s core is mostly iron",
     "iron2": "A good conductor of heat and electricity",
-
     "water1": "Required for all known life",
-    "water2": "Absorbs heat and is a good conductor of electricity",
-
-    "snow1": "Ice is denser than liquid water in solid form",
-    "snow2": "It is frozen solid, making its particles tightly packed together",
-
+    "water2": "Absorbs heat and conducts electricity well",
+    "snow1": "Ice is less dense than liquid water",
+    "snow2": "Particles are tightly packed in its solid form",
     "dioxide1": "Humans and animals breathe it out",
-    "dioxide2": "Being a heavy gas, it can float above lighter gases",
-
+    "dioxide2": "As a heavy gas, it floats above lighter gases",
     "magnetite1": "It has been found in meteorites",
     "magnetite2": "Used in magnetic recording materials",
-
     "endgame": "To be continued...",
-
     "movewith": "Use the arrow keys to move",
-    "pressbutton": "Press the spacebar to choose",
-
+    "pressbutton": "Press Spacebar to choose",
     "fusion1": "Press Enter",
     "fusion2": "Fusion",
     "escapegame": "Press Escape to exit the game",
     "restart": "Restart",
-    "reach": "Enter the portal to go to the next level",
-
+    "reach": "Enter the portal to reach the next level",
     "comic1": "Rescue the princess!",
-    "princess1": "The princess has used her power and summoned elemental particles into the world",
-    "princess2": "Use the elements to transform and rescue the princess"
+    "princess1": "The princess summoned elemental particles into the world",
+    "princess2": "Use the elements to transform and rescue her"
   },
   "es": {
     "world": "Mundo",
     "WorldName1": "CASTILLO REAL",
-    "WorldName2": "DESIERTO INFINITO",
+    "WorldName2": "DESIERTO ETERNO",
     "WorldName3": "MONTAÑA NEVADA",
     "WorldName4": "BOSQUE VENTOSO",
     "WorldName5": "CASTILLO MALDITO",
-
     "escape": "Presiona Escape",
     "exitmenu": "Salir",
     "pause1": "Reanudar",
     "pause2": "Menú Principal",
     "pause3": "Salir del Juego",
     "continue": "PRESIONA ESPACIO PARA CONTINUAR",
-    "spacebar": "Presiona Barra Espaciadora",
-
+    "spacebar": "Presiona Espacio",
     "entrance": "Entrada",
-
     "element1": "Carbono",
     "element2": "Hidrógeno",
     "element3": "Oxígeno",
     "element4": "Hierro",
-    "elementa": "Atomo",
-
-    "tutorial0": "Usa las flechas del teclado para moverte",
-    "tutorial1": "Si pisas un cuadro morado o un peligro, la fase se reiniciará",
-    "tutorial2": "Recolecta átomos y transfórmate en un nuevo compuesto químico para completar la fase",
-    "tutorial3": "Puedes volver a pisar cuadros morados si tienes suficientes Monedas de Paso",
-    "tutorial4": "Puedes crear tu propia fórmula si la fase no tiene suficientes elementos y tienes los átomos necesarios",
-    "tutorial5": "Presiona Espacio si necesitas reiniciar la fase en cualquier punto",
-    "tutorial6": "Transfórmate en diferentes tipos de slime para superar cualquier peligro en tu camino",
-
+    "elementa": "Átomo",
+    "tutorial0": "Usa las flechas para moverte",
+    "tutorial1": "Pisar un cuadro morado o peligro reiniciará el nivel",
+    "tutorial2": "Reúne átomos y transfórmate en un compuesto para ganar",
+    "tutorial3": "Puedes pisar cuadros morados si tienes Monedas de Paso",
+    "tutorial4": "Crea tu fórmula si faltan elementos pero tienes átomos",
+    "tutorial5": "Presiona Espacio para reiniciar el nivel en cualquier momento",
+    "tutorial6": "Cambia de tipo de slime para superar cualquier peligro",
     "tutorialatom0": "Has obtenido un átomo vacío",
-    "tutorialatom1": "Ahora puedes elegir el elemento que quieras y crear un nuevo compuesto químico",
-    "tutorialatom2": "Muevete con las flechas y selecciona con la barra espaciadora para crear el element correcto",
-    "tutorialatom3": "Apartir de ahora si consigues un atomo en blanco tendras que crear tus propias formulas en el menu",
+    "tutorialatom1": "Ahora elige un elemento y crea un nuevo compuesto químico",
+    "tutorialatom2": "Muévete con las flechas y elige con Espacio el elemento",
+    "tutorialatom3": "Los átomos vacíos requieren crear fórmulas en el Menú de Fusión",
     "tutorialhint": "Obtén una pista para resolver el nivel",
     "tutorialmenu": "Presiona Enter para abrir el menú de pistas",
-
     "pressenter": "PRESIONA ENTER",
     "hintmenu": "MENÚ DE PISTAS",
-
     "FC": "HIERRO",
     "H2O": "AGUA",
     "ICE": "CUBO DE HIELO",
     "CO2": "DIÓXIDO DE CARBONO",
     "FE3O4": "MAGNETITA",
-
     "FCextra": "Sólido Pesado",
     "H2Oextra": "Líquido Ligero",
-    "ICEextra": "LIQUIDO SOLIFICADO",
+    "ICEextra": "Líquido Solidificado",
     "CO2extra": "Gas Pesado",
     "FE3O4extra": "Sólido Ligero",
-
-    "hazard1": "Se aproxima una tormenta de arena",
-    "hazard2": "El viento es demasiado frío y puede cambiar el resultado de la fórmula",
-    "hazard3": "Los vientos fuertes pueden cambiar tu posición",
-    "hazard4": "Se aproxima una tormenta de arena",
+    "hazard1": "Tormenta de arena acercándose",
+    "hazard2": "El viento es frío y puede alterar la fórmula",
+    "hazard3": "Vientos fuertes pueden cambiar tu posición",
+    "hazard4": "Tormenta de arena acercándose",
     "hazard5": "Aún no está listo",
-
-    "iron1": "El núcleo de la Tierra está compuesto principalmente de hierro",
+    "iron1": "El núcleo terrestre es mayormente hierro",
     "iron2": "Buen conductor de calor y electricidad",
-
     "water1": "Necesaria para toda forma de vida conocida",
-    "water2": "Absorbe calor y es una buena conductora de electricidad",
-
-    "snow1": "El hielo es más denso que el agua líquida en estado sólido",
-    "snow2": "Está completamente congelado, lo que hace que sus partículas estén muy compactas",
-
+    "water2": "Absorbe calor y conduce bien la electricidad",
+    "snow1": "El hielo es menos denso que el agua líquida",
+    "snow2": "Sus partículas están muy juntas en estado sólido",
     "dioxide1": "Los humanos y animales lo exhalan",
-    "dioxide2": "Al ser un gas pesado, puede flotar sobre gases más ligeros",
-
-    "magnetite1": "Ha sido encontrada en meteoritos",
+    "dioxide2": "Al ser un gas pesado, flota sobre gases ligeros",
+    "magnetite1": "Se ha encontrado en meteoritos",
     "magnetite2": "Usada en materiales de grabación magnética",
-
     "endgame": "Continuará...",
-
     "movewith": "Usa las flechas para moverte",
-    "pressbutton": "Presiona la barra espaciadora para elegir",
-
+    "pressbutton": "Presiona Espacio para elegir",
     "fusion1": "Presiona Enter",
     "fusion2": "Fusión",
-    "escapegame": "Presiona Escape para salir del juego",
-    "restart": "Reinicia",
+    "escapegame": "Presiona Escape para salir",
+    "restart": "Reiniciar",
     "reach": "Entra al portal para ir al siguiente nivel",
-
     "comic1": "¡Rescata a la princesa!",
-    "princess1": "La princesa ha usado su poder y ha invocado partículas elementales en el mundo",
-    "princess2": "Usa los elementos para transformarte y rescatar a la princesa"
+    "princess1": "La princesa invocó partículas elementales al mundo",
+    "princess2": "Usa los elementos para transformarte y rescatarla"
   }
 }
-
-
-

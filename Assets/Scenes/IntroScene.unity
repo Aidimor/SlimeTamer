@@ -161,10 +161,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: ---
+  m_text: sfgfsdf
   m_isRightToLeft: 0
-  m_fontAsset: {fileID: 11400000, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
-  m_sharedMaterial: {fileID: 2140032, guid: dc36b3fdc14f47ebb36fd484a67e268a, type: 2}
+  m_fontAsset: {fileID: 11400000, guid: 720515bb109716a45acc29e279c32a3a, type: 2}
+  m_sharedMaterial: {fileID: 2100000, guid: 720515bb109716a45acc29e279c32a3a, type: 2}
   m_fontSharedMaterials: []
   m_fontMaterial: {fileID: 0}
   m_fontMaterials: []
@@ -29181,7 +29181,7 @@ MonoBehaviour:
   lastAnswer: 
   SaveJson: 
   _json: {fileID: 0}
-  forceNewGame: 1
+  forceNewGame: 0
 --- !u!4 &1955862550
 Transform:
   m_ObjectHideFlags: 0
@@ -30750,6 +30750,7 @@ MonoBehaviour:
   _slimeSpeed: 0
   _iceCube: {fileID: 0}
   _slimeParent: {fileID: 0}
+  _impactParticle: {fileID: 0}
 --- !u!4 &2082077616 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 30993f185ef650d42849d7b2ac5f89b4, type: 3}

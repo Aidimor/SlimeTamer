@@ -305226,6 +305226,7 @@ MonoBehaviour:
   _slimeSpeed: 200
   _iceCube: {fileID: 1000750577}
   _slimeParent: {fileID: 2082077612}
+  _impactParticle: {fileID: 124422106}
 --- !u!1 &2100963221
 GameObject:
   m_ObjectHideFlags: 0
