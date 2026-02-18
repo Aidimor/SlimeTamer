@@ -78,4 +78,9 @@ public class SpecialAnimatorEvents : MonoBehaviour
         _scriptMain._mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 2);
     }
 
+    public void SlideSound()
+    {
+        SFXscript.Instance.PlaySound(SFXscript.Instance._stoneSlide);
+    }
+
 }

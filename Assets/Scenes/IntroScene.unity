@@ -23935,7 +23935,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1543677712
 RectTransform:
   m_ObjectHideFlags: 0
@@ -28190,6 +28190,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1888501278}
   - component: {fileID: 1888501279}
+  - component: {fileID: 1888501280}
   m_Layer: 11
   m_Name: AtomsPanel
   m_TagString: Untagged
@@ -28238,6 +28239,21 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1888501280
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1888501277}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4f01b48d56b449943a64c591af29cfc9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _chestParticle: {fileID: 0}
+  _scriptMain: {fileID: 0}
+  _scriptMainController: {fileID: 0}
 --- !u!1 &1915450781
 GameObject:
   m_ObjectHideFlags: 0
@@ -29165,7 +29181,7 @@ MonoBehaviour:
   lastAnswer: 
   SaveJson: 
   _json: {fileID: 0}
-  forceNewGame: 0
+  forceNewGame: 1
 --- !u!4 &1955862550
 Transform:
   m_ObjectHideFlags: 0
@@ -30686,7 +30702,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f925dbc2f7d7d2d4c96312f643efd402, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scriptMain: {fileID: 0}
   _scriptNewMain: {fileID: 0}
   _slimeType: 0
   _slimeAnimator: {fileID: 2082077613}

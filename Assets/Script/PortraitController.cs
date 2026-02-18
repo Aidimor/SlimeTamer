@@ -344,12 +344,15 @@ public class PortraitController : MonoBehaviour
                 _worldPressed = true;
 
                 ParentWorldScale();
+                if (MainController.Instance._saveLoadValues._worldsUnlocked[_onWorldPos])
+                {
+                    string key = "WorldName" + (_onWorldPos + 1).ToString();
+           
+                    string text = GameInitScript.Instance.GetText(key);
+                    string speakKey = key;
+                    LOLSDK.Instance.SpeakText(speakKey);
+                }
 
-                string key = "WorldName" + (_onWorldPos + 1).ToString();
-                Debug.Log(key);
-                string text = GameInitScript.Instance.GetText(key);
-                string speakKey = key;
-                LOLSDK.Instance.SpeakText(speakKey);
             }
 
             if (Input.GetAxisRaw("Vertical") < 0 && !_worldPressed && _onWorldPos < _newAllWorlds.Length - 1)
@@ -360,10 +363,14 @@ public class PortraitController : MonoBehaviour
 
                 ParentWorldScale();
 
-                string key = "WorldName" + (_onWorldPos + 1).ToString();              
-                //string text = GameInitScript.Instance.GetText(key);
-                string speakKey = key;
-                LOLSDK.Instance.SpeakText(speakKey);
+                if (MainController.Instance._saveLoadValues._worldsUnlocked[_onWorldPos])
+                {
+                    string key = "WorldName" + (_onWorldPos + 1).ToString();
+                    //string text = GameInitScript.Instance.GetText(key);
+                    string speakKey = key;
+                    LOLSDK.Instance.SpeakText(speakKey);
+                }
+      
             }
 
             if(Input.GetAxisRaw("Vertical") == 0)

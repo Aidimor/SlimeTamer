@@ -35,6 +35,7 @@
     "element2": "Hydrogen",
     "element3": "Oxygen",
     "element4": "Iron",
+    "elementa": "Atom",
 
     "tutorial0": "Use the arrow keys to move",
     "tutorial1": "If you step on a purple square or a hazard, the stage will restart",
@@ -124,6 +125,7 @@
     "element2": "Hidrógeno",
     "element3": "Oxígeno",
     "element4": "Hierro",
+    "elementa": "Atomo",
 
     "tutorial0": "Usa las flechas del teclado para moverte",
     "tutorial1": "Si pisas un cuadro morado o un peligro, la fase se reiniciará",

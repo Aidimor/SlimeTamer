@@ -5,7 +5,7 @@ using LoL;
 
 public class SlimeController : MonoBehaviour
 {
-    [SerializeField] private MainGameplayScript _scriptMain;
+    //[SerializeField] private MainGameplayScript _scriptMain;
     [SerializeField] private NewMainGameplay _scriptNewMain;
     public int _slimeType; //0 = Null, 1 = Water, 2 = Air, 3 = Earth
     public Animator _slimeAnimator;
@@ -87,263 +87,263 @@ public class SlimeController : MonoBehaviour
 
     }
 
-    public void DeactivateElementsInfo()
-    {
-        for (int i = 0; i < 4; i++)
-        {
-            _scriptMain._scriptRythm._elementsInfo[i]._parent.SetActive(false);
-            _scriptMain._scriptRythm._elementsInfo[i]._selector.transform.localScale = Vector2.zero;
-            _scriptMain._scriptRythm._elementsInfo[i]._imageColor.color = _scriptMain._scriptRythm._halfColors[0];
-        }
-    }
+    //public void DeactivateElementsInfo()
+    //{
+    //    for (int i = 0; i < 4; i++)
+    //    {
+    //        _scriptMain._scriptRythm._elementsInfo[i]._parent.SetActive(false);
+    //        _scriptMain._scriptRythm._elementsInfo[i]._selector.transform.localScale = Vector2.zero;
+    //        _scriptMain._scriptRythm._elementsInfo[i]._imageColor.color = _scriptMain._scriptRythm._halfColors[0];
+    //    }
+    //}
 
-    public IEnumerator ActionSlimeNumerator()
-    {
-        _scriptMain._eventOn = true;
-        _slimeAnimator.SetBool("Scared", false);
-        switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._weakto.Length)
-        {
-            case 1:
-                if (_slimeType == _scriptMain._rightElementID[0])
-                {
+    //public IEnumerator ActionSlimeNumerator()
+    //{
+    //    _scriptMain._eventOn = true;
+    //    _slimeAnimator.SetBool("Scared", false);
+    //    switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._weakto.Length)
+    //    {
+    //        case 1:
+    //            if (_slimeType == _scriptMain._rightElementID[0])
+    //            {
    
 
-                    _scriptMain._slimeChanging = true;
-                    _scriptMain._lightChanging = true;
-                    _scriptMain._darkenerChanging = true;
-                    _scriptMain._scriptRythm._elementChoosed = true;
-                    _scriptMain._shineParticle.Play();
-                    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._slimeCharge);
+    //                _scriptMain._slimeChanging = true;
+    //                _scriptMain._lightChanging = true;
+    //                _scriptMain._darkenerChanging = true;
+    //                _scriptMain._scriptRythm._elementChoosed = true;
+    //                _scriptMain._shineParticle.Play();
+    //                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._slimeCharge);
 
-                    _scriptMain._scriptMain.newSlimePanel._backgroundImage.color = _scriptMain._scriptSlime._slimeAssets[_slimeType]._mainColor;
+    //                _scriptMain._scriptMain.newSlimePanel._backgroundImage.color = _scriptMain._scriptSlime._slimeAssets[_slimeType]._mainColor;
 
-                    _scriptMain._scriptMain.newSlimePanel._slimeNameText.text = GameInitScript.Instance.GetText("Slime" + _slimeType.ToString("f0"));                   
-                    _scriptMain._scriptMain.newSlimePanel._parent.SetBool("AnnounceIn", true);
+    //                _scriptMain._scriptMain.newSlimePanel._slimeNameText.text = GameInitScript.Instance.GetText("Slime" + _slimeType.ToString("f0"));                   
+    //                _scriptMain._scriptMain.newSlimePanel._parent.SetBool("AnnounceIn", true);
 
 
                     
-                    yield return new WaitForSeconds(1F);
-                    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._slimeRelease);
-                    ChangeSlime();
-                    _scriptMain._snowBool = false;
-                    _scriptMain._shineParticle.Stop();
-                    yield return new WaitForSeconds(0.25f);
-                    _scriptMain._scriptMain.newSlimePanel._parent.SetBool("AnnounceIn", false);                
-                    yield return new WaitForSeconds(0.5F);
-                    _scriptMain._slimeChanging = false;
+    //                yield return new WaitForSeconds(1F);
+    //                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._slimeRelease);
+    //                ChangeSlime();
+    //                _scriptMain._snowBool = false;
+    //                _scriptMain._shineParticle.Stop();
+    //                yield return new WaitForSeconds(0.25f);
+    //                _scriptMain._scriptMain.newSlimePanel._parent.SetBool("AnnounceIn", false);                
+    //                yield return new WaitForSeconds(0.5F);
+    //                _scriptMain._slimeChanging = false;
                 
-                    yield return new WaitForSeconds(0.5F);
+    //                yield return new WaitForSeconds(0.5F);
                
-                    _scriptMain._darkenerChanging = false;
-                    _scriptMain._scriptEvents._winRound = true;
+    //                _scriptMain._darkenerChanging = false;
+    //                _scriptMain._scriptEvents._winRound = true;
                  
-                    _scriptMain._lightChanging = false;
-                    yield return new WaitForSeconds(1);
+    //                _scriptMain._lightChanging = false;
+    //                yield return new WaitForSeconds(1);
 
-                    _scriptMain._successAssets._background.color = _scriptMain._successAssets._colors[0];
-                    _scriptMain._successAssets._text.text = "SUCCESS";
-                    _scriptMain._successAssets._parent.SetBool("Success", true);
-                    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._successSound);
+    //                _scriptMain._successAssets._background.color = _scriptMain._successAssets._colors[0];
+    //                _scriptMain._successAssets._text.text = "SUCCESS";
+    //                _scriptMain._successAssets._parent.SetBool("Success", true);
+    //                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._successSound);
              
-                    yield return new WaitForSeconds(1);
-                    _scriptMain._successAssets._parent.SetBool("Success", false);
+    //                yield return new WaitForSeconds(1);
+    //                _scriptMain._successAssets._parent.SetBool("Success", false);
        
 
-                    _scriptMain._scriptSlime._slimeAnimator.SetTrigger("Action");
+    //                _scriptMain._scriptSlime._slimeAnimator.SetTrigger("Action");
 
-                    switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventClassification)
-                    {
-                        case GameEvent.EventClassification.Normal:
-                            case GameEvent.EventClassification.Fight:
-                            switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType)
-                            {
-                                case GameEvent.EventType.Bridge:
-                                    _scriptMain._airPushParticle.Play();
-                                    _scriptMain._scriptMain._scriptSFX._windSetVolume = 1f;
-                                    yield return new WaitForSeconds(0.5f);
+    //                switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventClassification)
+    //                {
+    //                    case GameEvent.EventClassification.Normal:
+    //                        case GameEvent.EventClassification.Fight:
+    //                        switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType)
+    //                        {
+    //                            case GameEvent.EventType.Bridge:
+    //                                _scriptMain._airPushParticle.Play();
+    //                                _scriptMain._scriptMain._scriptSFX._windSetVolume = 1f;
+    //                                yield return new WaitForSeconds(0.5f);
                        
-                                    _scriptMain._windBlockPalanca.Play();
-                                    yield return new WaitForSeconds(0.5f);
-                                    _scriptMain._scriptMain._scriptSFX._windSetVolume = 0f;
-                                    _scriptMain._airPushParticle.Stop();
-                                    _scriptMain._windBlockPalanca.Stop();
-                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BridgeEvent>()._activateBridge = true;
-                                    yield return new WaitForSeconds(2);
-                                    break;
-                                case GameEvent.EventType.Lagoon:
-                                    _scriptMain._snowParticle.Play();
-                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFallEvent>().ActivateFreeze();
-                                    yield return new WaitForSeconds(4);
-                                    break;
-                                case GameEvent.EventType.Well:
-                                    _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
-                                    _scriptMain._scriptEvents._rainParticle.Play();
-                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFillEvent>()._fillBool = true;
-                                    yield return new WaitForSeconds(2);
-                                    break;
-                                case GameEvent.EventType.StrongAir:
-                                    _scriptMain._windBlocker.GetComponent<ParticleSystem>().Play();                               
-                                    yield return new WaitForSeconds(2);
-                                    break;
-                                case GameEvent.EventType.FallingBridge:
-                                    _scriptMain._cutParticles[0].Play();
-                                    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._cut);
-                                    yield return new WaitForSeconds(0.5f);
-                                    _scriptMain._cutParticles[1].Play();
-                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<SandCutEventScript>().StartCuttingVoid();
-                                    yield return new WaitForSeconds(2);
-                                    break;
-                                case GameEvent.EventType.Gears:
-                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._stainsAnimator.SetTrigger("Splash");
-                                    yield return new WaitForSeconds(0.5f);
-                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._Stopped = true;
-                                    yield return new WaitForSeconds(2);
-                                    break;
-                                case GameEvent.EventType.Fire:
-                                    _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
-                                    _scriptMain._scriptEvents._rainParticle.Play();
-                                    yield return new WaitForSeconds(1);
-                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<FireEventScript>().FireExtinguishVoid();
-                                    yield return new WaitForSeconds(2);
-                                    break;
-                                case GameEvent.EventType.BossFight0:
-                                    break;
-                                case GameEvent.EventType.BossFight1:
-                                    Debug.Log("frozen");
-                                    _scriptMain._cascadeFrozen = true;                           
-                                    _scriptMain._snowBool = true;
-                                    _scriptMain._bossAnimator.Play("Frozen");
-                                    _scriptMain._bossAnimator.SetBool("Frozen", true);
-                                    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._frozen);
-                                    _scriptMain._proyectileCharge[0].Stop();
-                                    _scriptMain._proyectileCharge[1].Stop();
-                                    _scriptMain._proyectileCharge[2].Stop();
-                                    _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
-                                    _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
-                                    _scriptMain._windBossParticles[0].Stop();
-                                    _scriptMain._windBossParticles[1].Stop();
-                                    _scriptMain._windBossParticles[2].Stop();
-                                    _scriptMain._windBossParticles[3].Stop();
-                                    yield return new WaitForSeconds(2);
-                                    break;
-                                case GameEvent.EventType.BossFight2:
-                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._events[2].GetComponent<Animator>().SetBool("Cut", true);
-                                    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._cut);
-                                    yield return new WaitForSeconds(0.5f);
-                                    _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._boosDamaged);
-                                    _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
-                                    _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
-                                    _scriptMain._proyectileCharge[0].Stop();
-                                    _scriptMain._proyectileCharge[1].Stop();
-                                    _scriptMain._proyectileCharge[2].Stop();
+    //                                _scriptMain._windBlockPalanca.Play();
+    //                                yield return new WaitForSeconds(0.5f);
+    //                                _scriptMain._scriptMain._scriptSFX._windSetVolume = 0f;
+    //                                _scriptMain._airPushParticle.Stop();
+    //                                _scriptMain._windBlockPalanca.Stop();
+    //                                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BridgeEvent>()._activateBridge = true;
+    //                                yield return new WaitForSeconds(2);
+    //                                break;
+    //                            case GameEvent.EventType.Lagoon:
+    //                                _scriptMain._snowParticle.Play();
+    //                                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFallEvent>().ActivateFreeze();
+    //                                yield return new WaitForSeconds(4);
+    //                                break;
+    //                            case GameEvent.EventType.Well:
+    //                                _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
+    //                                _scriptMain._scriptEvents._rainParticle.Play();
+    //                                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFillEvent>()._fillBool = true;
+    //                                yield return new WaitForSeconds(2);
+    //                                break;
+    //                            case GameEvent.EventType.StrongAir:
+    //                                _scriptMain._windBlocker.GetComponent<ParticleSystem>().Play();                               
+    //                                yield return new WaitForSeconds(2);
+    //                                break;
+    //                            case GameEvent.EventType.FallingBridge:
+    //                                _scriptMain._cutParticles[0].Play();
+    //                                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._cut);
+    //                                yield return new WaitForSeconds(0.5f);
+    //                                _scriptMain._cutParticles[1].Play();
+    //                                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<SandCutEventScript>().StartCuttingVoid();
+    //                                yield return new WaitForSeconds(2);
+    //                                break;
+    //                            case GameEvent.EventType.Gears:
+    //                                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._stainsAnimator.SetTrigger("Splash");
+    //                                yield return new WaitForSeconds(0.5f);
+    //                                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<GearsPrefabEventScript>()._Stopped = true;
+    //                                yield return new WaitForSeconds(2);
+    //                                break;
+    //                            case GameEvent.EventType.Fire:
+    //                                _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
+    //                                _scriptMain._scriptEvents._rainParticle.Play();
+    //                                yield return new WaitForSeconds(1);
+    //                                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<FireEventScript>().FireExtinguishVoid();
+    //                                yield return new WaitForSeconds(2);
+    //                                break;
+    //                            case GameEvent.EventType.BossFight0:
+    //                                break;
+    //                            case GameEvent.EventType.BossFight1:
+    //                                Debug.Log("frozen");
+    //                                _scriptMain._cascadeFrozen = true;                           
+    //                                _scriptMain._snowBool = true;
+    //                                _scriptMain._bossAnimator.Play("Frozen");
+    //                                _scriptMain._bossAnimator.SetBool("Frozen", true);
+    //                                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._frozen);
+    //                                _scriptMain._proyectileCharge[0].Stop();
+    //                                _scriptMain._proyectileCharge[1].Stop();
+    //                                _scriptMain._proyectileCharge[2].Stop();
+    //                                _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
+    //                                _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
+    //                                _scriptMain._windBossParticles[0].Stop();
+    //                                _scriptMain._windBossParticles[1].Stop();
+    //                                _scriptMain._windBossParticles[2].Stop();
+    //                                _scriptMain._windBossParticles[3].Stop();
+    //                                yield return new WaitForSeconds(2);
+    //                                break;
+    //                            case GameEvent.EventType.BossFight2:
+    //                                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._events[2].GetComponent<Animator>().SetBool("Cut", true);
+    //                                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._cut);
+    //                                yield return new WaitForSeconds(0.5f);
+    //                                _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._boosDamaged);
+    //                                _scriptMain._scriptMain._scriptSFX._chargeAttackVolume = 0;
+    //                                _scriptMain._scriptMain._scriptSFX._chargeAttackPitch = 0.75f;
+    //                                _scriptMain._proyectileCharge[0].Stop();
+    //                                _scriptMain._proyectileCharge[1].Stop();
+    //                                _scriptMain._proyectileCharge[2].Stop();
 
-                                    _scriptMain._windBossParticles[0].Stop();
-                                    _scriptMain._windBossParticles[1].Stop();
-                                    _scriptMain._windBossParticles[2].Stop();
-                                    _scriptMain._windBossParticles[3].Stop();                             
-                                    _scriptMain._enemyExplosion.Play();
-                                    yield return new WaitForSeconds(0.5f);
-                                    StartCoroutine(_scriptMain.GameEndsNumerator());
-                                    yield break;
+    //                                _scriptMain._windBossParticles[0].Stop();
+    //                                _scriptMain._windBossParticles[1].Stop();
+    //                                _scriptMain._windBossParticles[2].Stop();
+    //                                _scriptMain._windBossParticles[3].Stop();                             
+    //                                _scriptMain._enemyExplosion.Play();
+    //                                yield return new WaitForSeconds(0.5f);
+    //                                StartCoroutine(_scriptMain.GameEndsNumerator());
+    //                                yield break;
                       
-                                case GameEvent.EventType.BossFight3:
+    //                            case GameEvent.EventType.BossFight3:
                               
-                                    break;
-                                case GameEvent.EventType.BossFight4:
-                                    _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
-                                    _scriptMain._scriptEvents._rainParticle.Play();
-                                    yield return new WaitForSeconds(1);
-                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>().FireExtinguish();
-                                    //yield break;
-                                    break;
-                                case GameEvent.EventType.BossFight5:
+    //                                break;
+    //                            case GameEvent.EventType.BossFight4:
+    //                                _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
+    //                                _scriptMain._scriptEvents._rainParticle.Play();
+    //                                yield return new WaitForSeconds(1);
+    //                                _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>().FireExtinguish();
+    //                                //yield break;
+    //                                break;
+    //                            case GameEvent.EventType.BossFight5:
                                     
-                                    break;
-                            }
-                            break;
-                        case GameEvent.EventClassification.Tutorial:
-                            _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
-                            _scriptMain._scriptEvents._rainParticle.Play();
-                            _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFillEvent>()._fillBool = true;
-                            yield return new WaitForSeconds(2);
-                            break;
-                    }
+    //                                break;
+    //                        }
+    //                        break;
+    //                    case GameEvent.EventClassification.Tutorial:
+    //                        _scriptMain._scriptMain._scriptSFX._rainSetVolume = 1;
+    //                        _scriptMain._scriptEvents._rainParticle.Play();
+    //                        _scriptMain._scriptEvents._currentEventPrefab.GetComponent<WaterFillEvent>()._fillBool = true;
+    //                        yield return new WaitForSeconds(2);
+    //                        break;
+    //                }
 
       
-                    _scriptMain._darkenerChanging = false;            
+    //                _scriptMain._darkenerChanging = false;            
       
-                    StartCoroutine(_scriptMain.ExitNumerator());                
-                }
-                else
-                {
+    //                StartCoroutine(_scriptMain.ExitNumerator());                
+    //            }
+    //            else
+    //            {
            
-                    _scriptMain._scriptEvents._winRound = false;
-                    switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventClassification)
-                    {
-                        case GameEvent.EventClassification.Normal:
-                        case GameEvent.EventClassification.Fight:
+    //                _scriptMain._scriptEvents._winRound = false;
+    //                switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventClassification)
+    //                {
+    //                    case GameEvent.EventClassification.Normal:
+    //                    case GameEvent.EventClassification.Fight:
                         
-                            if(_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType != GameEvent.EventType.BossFight3 ||
-                               _scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType != GameEvent.EventType.StrongAir)
-                            {
-                                _slimeAnimator.SetTrigger("Wrong");
-                            }
-                            _wrongParticle.Play();
+    //                        if(_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType != GameEvent.EventType.BossFight3 ||
+    //                           _scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType != GameEvent.EventType.StrongAir)
+    //                        {
+    //                            _slimeAnimator.SetTrigger("Wrong");
+    //                        }
+    //                        _wrongParticle.Play();
 
-                            _scriptMain._successAssets._background.color = _scriptMain._successAssets._colors[1];
-                            _scriptMain._successAssets._text.text = "WRONG";
-                            _scriptMain._successAssets._parent.SetBool("Success", true);
-                            _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._failSound);
-                            yield return new WaitForSeconds(1);
-                            _scriptMain._successAssets._parent.SetBool("Success", false);
+    //                        _scriptMain._successAssets._background.color = _scriptMain._successAssets._colors[1];
+    //                        _scriptMain._successAssets._text.text = "WRONG";
+    //                        _scriptMain._successAssets._parent.SetBool("Success", true);
+    //                        _scriptMain._scriptMain._scriptSFX.PlaySound(_scriptMain._scriptMain._scriptSFX._failSound);
+    //                        yield return new WaitForSeconds(1);
+    //                        _scriptMain._successAssets._parent.SetBool("Success", false);
                         
 
-                            switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType)
-                            {
-                                case GameEvent.EventType.BossFight0:
-                                    break;
-                                case GameEvent.EventType.BossFight1:
-                                case GameEvent.EventType.BossFight2:
-                                    _slimeAnimator.SetTrigger("Action");
-                                    _scriptMain._slimeFlying = true;
-                                    yield return new WaitForSeconds(0.25f);
-                                    if (!_scriptMain._dead)
-                                    {
-                                        StartCoroutine(_scriptMain.LoseLifeNumerator());                              
-                                    }
+    //                        switch (_scriptMain._scriptEvents._specialEvents[_scriptMain._GamesList[_scriptMain._scriptEvents._onEvent]]._eventType)
+    //                        {
+    //                            case GameEvent.EventType.BossFight0:
+    //                                break;
+    //                            case GameEvent.EventType.BossFight1:
+    //                            case GameEvent.EventType.BossFight2:
+    //                                _slimeAnimator.SetTrigger("Action");
+    //                                _scriptMain._slimeFlying = true;
+    //                                yield return new WaitForSeconds(0.25f);
+    //                                if (!_scriptMain._dead)
+    //                                {
+    //                                    StartCoroutine(_scriptMain.LoseLifeNumerator());                              
+    //                                }
 
-                                    break;
-                                case GameEvent.EventType.BossFight3:
-                                    _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
-                                    yield return new WaitForSeconds(0.5f);                                 
-                                    StartCoroutine(_scriptMain.LoseLifeNumerator());
-                                    break;
-                                case GameEvent.EventType.BossFight4:
-                                    _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
-                                    yield return new WaitForSeconds(0.5f);
-                                    for(int i = 0; i < _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._fire.Length; i++)
-                                    {
-                                        _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._fire[i].Play();
-                                    }                 
-                                     StartCoroutine(_scriptMain.LoseLifeNumerator());
-                                    break;
-                                default:
-                                    yield return new WaitForSeconds(2);
-                                    StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
-                                    break;
-                            }
-                            break;           
-                        case GameEvent.EventClassification.Questionary:
-                            break;
-                    }
+    //                                break;
+    //                            case GameEvent.EventType.BossFight3:
+    //                                _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
+    //                                yield return new WaitForSeconds(0.5f);                                 
+    //                                StartCoroutine(_scriptMain.LoseLifeNumerator());
+    //                                break;
+    //                            case GameEvent.EventType.BossFight4:
+    //                                _scriptMain._scriptSlime._slimeAnimator.SetBool("Scared", true);
+    //                                yield return new WaitForSeconds(0.5f);
+    //                                for(int i = 0; i < _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._fire.Length; i++)
+    //                                {
+    //                                    _scriptMain._scriptEvents._currentEventPrefab.GetComponent<BossFightsScript>()._fire[i].Play();
+    //                                }                 
+    //                                 StartCoroutine(_scriptMain.LoseLifeNumerator());
+    //                                break;
+    //                            default:
+    //                                yield return new WaitForSeconds(2);
+    //                                StartCoroutine(_scriptMain._scriptRythm.RythmNumerator());
+    //                                break;
+    //                        }
+    //                        break;           
+    //                    case GameEvent.EventClassification.Questionary:
+    //                        break;
+    //                }
 
-                }
-                break; 
-        }
+    //            }
+    //            break; 
+    //    }
 
-        _scriptMain._eventOn = false;
+    //    _scriptMain._eventOn = false;
 
-    }
+    //}
 
     //public void JumpingSlime()
     //{
@@ -352,18 +352,20 @@ public class SlimeController : MonoBehaviour
     //}
     public void StepVoid()
     {
-        _scriptNewMain._hitWalk.Play();
+        //_scriptNewMain._hitWalk.Play();
     }
 
     public void JumpSlime()
     {
         SFXscript.Instance.PlaySound(SFXscript.Instance._slimeJumping);
+
         //_scriptNewMain._mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, -2);
     }
 
     public void HeavyJumpSlime()
     {
-        _scriptNewMain._mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 2);
+        StartCoroutine(_scriptNewMain.TremorNumerator());
+        //main._mainUI.GetComponent<RectTransform>().anchoredPosition = new Vector2(0, 2);
         SFXscript.Instance.PlaySound(SFXscript.Instance._explosion);
     }
 

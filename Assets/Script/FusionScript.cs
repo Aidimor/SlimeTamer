@@ -74,64 +74,64 @@ public class FusionScript : MonoBehaviour
 
 
 
-    public void FuseElements()
-    {
+    //public void FuseElements()
+    //{
     
-        if (_elementSelection.Count < 2)
-        {
-            Debug.Log("Need at least 2 elements to fuse!");
-            //return;
-        }
+    //    if (_elementSelection.Count < 2)
+    //    {
+    //        Debug.Log("Need at least 2 elements to fuse!");
+    //        //return;
+    //    }
 
-        int e1 = _elementSelection[0];
-        int e2 = _elementSelection[1];
+    //    int e1 = _elementSelection[0];
+    //    int e2 = _elementSelection[1];
 
-        // Same element → produce that element's slime
-        if (e1 == e2)
-        {
-            Debug.Log($"Created {_elementsOptions[e1]._parent.name} Slime!");
-            _scriptSlime._slimeType = e1 + 1;
-            Debug.Log(e1 + 1);
-            _elementSelection.Clear();
-            _particleOnSlime[0].gameObject.SetActive(false);
-            StartCoroutine(_scriptSlime.ActionSlimeNumerator());
-            _scriptSlime.ChangeSlime();
-            //return;
-        }
+    //    // Same element → produce that element's slime
+    //    if (e1 == e2)
+    //    {
+    //        Debug.Log($"Created {_elementsOptions[e1]._parent.name} Slime!");
+    //        _scriptSlime._slimeType = e1 + 1;
+    //        Debug.Log(e1 + 1);
+    //        _elementSelection.Clear();
+    //        _particleOnSlime[0].gameObject.SetActive(false);
+    //        //StartCoroutine(_scriptSlime.ActionSlimeNumerator());
+    //        _scriptSlime.ChangeSlime();
+    //        //return;
+    //    }
 
-        // Fusion combinations
-        if ((e1 == 2 && e2 == 1) || (e1 == 1 && e2 == 2))
-        {
-            // Earth + Wind = Sand
-            Debug.Log("Created Sand Slime!");
-            _scriptSlime._slimeType = 4;
-            _elementSelection.Clear();
-            _particleOnSlime[0].gameObject.SetActive(false);
-            StartCoroutine(_scriptSlime.ActionSlimeNumerator());
-            _scriptSlime.ChangeSlime();
-        }
-        else if ((e1 == 1 && e2 == 0) || (e1 == 0 && e2 == 1))
-        {
-            // Wind + Water = Snow
-            Debug.Log("Created Snow Slime!");
-            _scriptSlime._slimeType = 5;
-            _elementSelection.Clear();
-            _particleOnSlime[0].gameObject.SetActive(false);
-            StartCoroutine(_scriptSlime.ActionSlimeNumerator());
-            _scriptSlime.ChangeSlime();
-        }
-        else if ((e1 == 2 && e2 == 0) || (e1 == 0 && e2 == 2))
-        {
-            // Earth + Water = Sticky Mud
-            Debug.Log("Created Sticky Mud Slime!");
-            _scriptSlime._slimeType = 6;
-            _elementSelection.Clear();
-            _particleOnSlime[0].gameObject.SetActive(false);
-            StartCoroutine(_scriptSlime.ActionSlimeNumerator());
-            _scriptSlime.ChangeSlime();
-        }
+    //    // Fusion combinations
+    //    if ((e1 == 2 && e2 == 1) || (e1 == 1 && e2 == 2))
+    //    {
+    //        // Earth + Wind = Sand
+    //        Debug.Log("Created Sand Slime!");
+    //        _scriptSlime._slimeType = 4;
+    //        _elementSelection.Clear();
+    //        _particleOnSlime[0].gameObject.SetActive(false);
+    //        StartCoroutine(_scriptSlime.ActionSlimeNumerator());
+    //        _scriptSlime.ChangeSlime();
+    //    }
+    //    else if ((e1 == 1 && e2 == 0) || (e1 == 0 && e2 == 1))
+    //    {
+    //        // Wind + Water = Snow
+    //        Debug.Log("Created Snow Slime!");
+    //        _scriptSlime._slimeType = 5;
+    //        _elementSelection.Clear();
+    //        _particleOnSlime[0].gameObject.SetActive(false);
+    //        StartCoroutine(_scriptSlime.ActionSlimeNumerator());
+    //        _scriptSlime.ChangeSlime();
+    //    }
+    //    else if ((e1 == 2 && e2 == 0) || (e1 == 0 && e2 == 2))
+    //    {
+    //        // Earth + Water = Sticky Mud
+    //        Debug.Log("Created Sticky Mud Slime!");
+    //        _scriptSlime._slimeType = 6;
+    //        _elementSelection.Clear();
+    //        _particleOnSlime[0].gameObject.SetActive(false);
+    //        StartCoroutine(_scriptSlime.ActionSlimeNumerator());
+    //        _scriptSlime.ChangeSlime();
+    //    }
      
       
    
-    }
+    //}
 }

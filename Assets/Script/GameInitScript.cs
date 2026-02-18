@@ -484,7 +484,7 @@ namespace LoL
         {
             if (forceNewGame)
             {
-                Debug.Log("🧨 FORZANDO NUEVA PARTIDA (ignorando save del SDK)");
+                //Debug.Log("🧨 FORZANDO NUEVA PARTIDA (ignorando save del SDK)");
                 loadedSave = CreateDefaultGameState();
                 _pendingForcedReset = true; // 👈 se guarda después
             }

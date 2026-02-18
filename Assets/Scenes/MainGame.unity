@@ -279125,6 +279125,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 7
       objectReference: {fileID: 0}
+    - target: {fileID: 4424396828587804706, guid: 30993f185ef650d42849d7b2ac5f89b4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5311317787303913608, guid: 30993f185ef650d42849d7b2ac5f89b4, type: 3}
       propertyPath: m_Layer
       value: 0
@@ -279192,6 +279196,10 @@ PrefabInstance:
     - target: {fileID: 7036213049465896255, guid: 30993f185ef650d42849d7b2ac5f89b4, type: 3}
       propertyPath: m_Layer
       value: 7
+      objectReference: {fileID: 0}
+    - target: {fileID: 7036213049465896255, guid: 30993f185ef650d42849d7b2ac5f89b4, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8003028576119023140, guid: 30993f185ef650d42849d7b2ac5f89b4, type: 3}
       propertyPath: m_Materials.Array.data[0]
@@ -305170,10 +305178,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f925dbc2f7d7d2d4c96312f643efd402, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  _scriptMain: {fileID: 0}
   _scriptNewMain: {fileID: 1220292390}
   _slimeType: 0
-  _slimeAnimator: {fileID: 2082077613}
+  _slimeAnimator: {fileID: 0}
   _slimeRawImage: {fileID: 0}
   _allParticles:
   - {fileID: 0}
@@ -305185,19 +305192,19 @@ MonoBehaviour:
   - {fileID: 0}
   _slimeAssets:
   - name: Default Slime
-    _mainColor: {r: 0.9647059, g: 0.7137255, b: 1, a: 1}
+    _mainColor: {r: 1, g: 0.6273585, b: 0.9896297, a: 1}
     _particlesID: 0
   - name: Water Slime
-    _mainColor: {r: 0.5882353, g: 1, b: 1, a: 1}
+    _mainColor: {r: 0.6862745, g: 0.6862745, b: 0.6862745, a: 1}
     _particlesID: 1
   - name: Air Slime
-    _mainColor: {r: 0, g: 1, b: 1, a: 1}
+    _mainColor: {r: 0, g: 0.9706273, b: 1, a: 0.6745098}
     _particlesID: 2
   - name: Earth Slime
     _mainColor: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 0.88235295}
     _particlesID: 3
   - name: Sand Slime
-    _mainColor: {r: 1, g: 1, b: 1, a: 1}
+    _mainColor: {r: 0.7971698, g: 1, b: 1, a: 0.78431374}
     _particlesID: 4
   - name: Snow Slime
     _mainColor: {r: 0.8160377, g: 1, b: 0.97067267, a: 1}
@@ -305211,14 +305218,14 @@ MonoBehaviour:
   - {r: 1, g: 1, b: 1, a: 1}
   _borrar: 0
   fillAmount: 0
-  _wrongParticle: {fileID: 321646325}
-  _alarmParticle: {fileID: 1944276634}
+  _wrongParticle: {fileID: 0}
+  _alarmParticle: {fileID: 0}
   _WindBlocker: {fileID: 0}
   _slimeMainBody: {fileID: 16626017}
   _fightChances: 0
   _slimeSpeed: 200
   _iceCube: {fileID: 1000750577}
-  _slimeParent: {fileID: 0}
+  _slimeParent: {fileID: 2082077612}
 --- !u!1 &2100963221
 GameObject:
   m_ObjectHideFlags: 0

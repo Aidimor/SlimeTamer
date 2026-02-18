@@ -619,7 +619,7 @@ public class RythmFusionScript : MonoBehaviour
         else if ((e1 == 3 && e2 == 1) || (e1 == 1 && e2 == 3)) _scriptSlime._slimeType = 6;
 
         _elementsSelection.Clear();
-        _scriptSlime.DeactivateElementsInfo(); 
-        StartCoroutine(_scriptSlime.ActionSlimeNumerator());
+        //_scriptSlime.DeactivateElementsInfo(); 
+        //StartCoroutine(_scriptSlime.ActionSlimeNumerator());
     }
 }
