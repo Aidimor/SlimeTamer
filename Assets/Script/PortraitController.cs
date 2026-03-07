@@ -355,7 +355,7 @@ public class PortraitController : MonoBehaviour
 
             }
 
-            if (Input.GetAxisRaw("Vertical") < 0 && !_worldPressed && _onWorldPos < _newAllWorlds.Length - 1)
+            if (Input.GetAxisRaw("Vertical") < 0 && !_worldPressed && _onWorldPos < _newAllWorlds.Length - 2)
             {
                 SFXscript.Instance.PlaySound(SFXscript.Instance._next);
                 _onWorldPos++;

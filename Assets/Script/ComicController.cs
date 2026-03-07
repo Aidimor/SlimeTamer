@@ -66,11 +66,8 @@ public class ComicController : MonoBehaviour
                
                     break;
                 case 3:
-           
-                    _continuar.text = GJ.GetText("continue");
-           
-                    break;
-                case 4:
+
+
                     switch (MainController.Instance._gameFinished)
                     {
                         case true:
@@ -83,13 +80,35 @@ public class ComicController : MonoBehaviour
                                     _continuar.text = GJ.GetText("endgame");
                                     break;
                             }
-                    
+
                             break;
                         case false:
-                  
+
                             _continuar.text = GJ.GetText("continue");
                             break;
                     }
+
+                    break;
+                case 4:
+                    //switch (MainController.Instance._gameFinished)
+                    //{
+                    //    case true:
+                    //        switch (MainController.Instance._firstWorld)
+                    //        {
+                    //            case true:
+                    //                _continuar.text = GJ.GetText("continue");
+                    //                break;
+                    //            case false:
+                    //                _continuar.text = GJ.GetText("endgame");
+                    //                break;
+                    //        }
+                    
+                    //        break;
+                    //    case false:
+                  
+                    //        _continuar.text = GJ.GetText("continue");
+                    //        break;
+                    //}
 
      
                     break;
@@ -162,14 +181,10 @@ public class ComicController : MonoBehaviour
 
                 break;
             case 3:
-                key = "continue";
-
-                LOLSDK.Instance.SpeakText(key);
-                break;
-            case 4:
                 switch (MainController.Instance._gameFinished)
                 {
                     case true:
+                        MainController.Instance._saveLoadValues._progressSave[5] = true;
                         GameInitScript.Instance.SubmitProgressToSDK();
                         key = "endgame";
                         LOLSDK.Instance.SpeakText(key);
@@ -179,6 +194,21 @@ public class ComicController : MonoBehaviour
                         LOLSDK.Instance.SpeakText(key);
                         break;
                 }
+                break;
+            case 4:
+                //switch (MainController.Instance._gameFinished)
+                //{
+                //    case true:
+                //        MainController.Instance._saveLoadValues._progressSave[5] = true;
+                //        GameInitScript.Instance.SubmitProgressToSDK();
+                //        key = "endgame";
+                //        LOLSDK.Instance.SpeakText(key);
+                //        break;
+                //    case false:
+                //        key = "continue";
+                //        LOLSDK.Instance.SpeakText(key);
+                //        break;
+                //}
 
 
                 break;

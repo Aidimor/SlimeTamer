@@ -50,7 +50,7 @@ public class MainController : MonoBehaviour
         //3 - Dessert Level
         //4 - Snow Level
         //5 - Forest Level
-        //6 - Castle Level
+        //6 - Boss First Encounter
         //7 - Boss Beaten Endgame
         //8 - Corrrect Element Fusion
         public int _totalSteps;
@@ -282,10 +282,11 @@ public class MainController : MonoBehaviour
         _allTurnsInfo[0]._stagesID = new List<int> { 0, 1, 2, 3, 4 };
         _allTurnsInfo[1]._stagesID = new List<int> { 5, 6, 7, 8, 9, 10 };
         _allTurnsInfo[2]._stagesID = new List<int> { 11, 12, 13, 14, 15, 16 };
-        _allTurnsInfo[3]._stagesID = new List<int> { 17, 18, 19, 20, 21, 22 };
+        //_allTurnsInfo[3]._stagesID = new List<int> { 17, 18, 19, 20, 21, 22, 25 };
+        _allTurnsInfo[3]._stagesID = new List<int> { 23, 24, 25 };
 
 
-         //----- TURNO 4 RANDOM -----
+        //----- TURNO 4 RANDOM -----
         List<int> possibleStages = new List<int> { 5, 6, 7, 8, 9, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20 };
         List<int> bossPosibleStages = new List<int> {21, 22, 23, 24, 25 };
 

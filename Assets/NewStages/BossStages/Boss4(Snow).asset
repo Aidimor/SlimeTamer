@@ -17,25 +17,25 @@ MonoBehaviour:
   _allPlaces: 000000000100000003000000050000000600000007000000080000000a0000000b0000000c0000000f00000010000000110000001400000015000000160000000400000003000000
   _elements:
   - _onPlace: 0
-    _elementType: 1
-    _quantity: 2
-    _changed: 0
+    _elementType: 0
+    _quantity: 1
+    _changed: 1
     _emptyAtom: 0
   - _onPlace: 15
-    _elementType: 2
+    _elementType: 3
     _quantity: 1
-    _changed: 0
+    _changed: 1
     _emptyAtom: 0
   _hazards:
   - _onPlace: 1
     _hazards: 2
     _rotation: 0
-    _finished: 0
+    _finished: 1
   - _onPlace: 3
     _hazards: 3
     _rotation: 0
-    _finished: 0
-  _stepsPlace: 0700000008000000
+    _finished: 1
+  _stepsPlace: 
   _bossAssets:
   - _xposition: 2
     _yposition: 1
@@ -43,7 +43,7 @@ MonoBehaviour:
     - _groundID: 12
       _attackCount: 2
       _tentacleID: 0
-    - _groundID: 11
+    - _groundID: 6
       _attackCount: 2
       _tentacleID: 0
-  _wind: 0
+  _wind: 1

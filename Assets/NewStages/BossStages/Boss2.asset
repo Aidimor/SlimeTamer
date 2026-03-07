@@ -17,7 +17,6 @@ MonoBehaviour:
   _allPlaces: 0a0000000b0000000c0000000d0000000e0000000f00000010000000110000001200000013000000160000001700000018000000
   _elements: []
   _hazards: []
-  _atomPlace: 0a000000
   _stepsPlace: 
   _bossAssets:
   - _xposition: 0
@@ -29,3 +28,4 @@ MonoBehaviour:
     - _groundID: 16
       _attackCount: 3
       _tentacleID: 0
+  _wind: 1
